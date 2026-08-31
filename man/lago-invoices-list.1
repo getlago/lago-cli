@@ -1,0 +1,169 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-invoices-list - List all invoices
+
+
+.SH SYNOPSIS
+\fBlago invoices list [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint is used for retrieving all invoices.
+
+
+.SH OPTIONS
+\fB--all\fP[=false]
+	Fetch every page
+
+.PP
+\fB--amount-from\fP=""
+	Filter invoices of at least a specific amount. This parameter must be defined in cents to ensure consistent handling for all currency types.
+
+.PP
+\fB--amount-to\fP=""
+	Filter invoices up to a specific amount. This parameter must be defined in cents to ensure consistent handling for all currency types.
+
+.PP
+\fB--billing-entity-codes\fP=""
+	Filter invoices by billing entity codes. Possible values are the billing entity codes you have created.
+
+.PP
+\fB--currency\fP=""
+	Filter invoices by currency. Possible values ISO 4217 currency codes.
+
+.PP
+\fB--external-customer-id\fP=""
+	Unique identifier assigned to the customer in your application.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for list
+
+.PP
+\fB--invoice-type\fP=""
+	Filter invoices by invoice type. Possible values are 'subscription', 'add_on', 'credit', 'one_off', 'advance_charges' or 'progressive_billing'.; one of: subscription, add_on, credit, one_off, advance_charges, progressive_billing
+
+.PP
+\fB--issuing-date-from\fP=""
+	Filter invoices starting from a specific date.
+
+.PP
+\fB--issuing-date-to\fP=""
+	Filter invoices up to a specific date.
+
+.PP
+\fB--limit\fP=""
+	Maximum number of results
+
+.PP
+\fB--metadata[key]\fP=""
+	Filter invoices by metadata. Replace 'key' with the actual metadata key you want to match, and provide the corresponding value. Providing empty value will search for invoice without given metadata key. For example, 'metadata[color]=blue'.
+
+.PP
+\fB--page\fP=""
+	Page number.
+
+.PP
+\fB--payment-dispute-lost\fP=""
+	Filter invoices with a payment dispute lost. Possible values are 'true' or 'false'.
+
+.PP
+\fB--payment-overdue\fP=""
+	Filter invoices by payment_overdue. Possible values are 'true' or 'false'.
+
+.PP
+\fB--payment-statuses\fP=""
+	Filter invoices by payment statuses. Possible values are 'pending', 'failed' or 'succeeded'.
+
+.PP
+\fB--per-page\fP=""
+	Number of records per page.
+
+.PP
+\fB--purchase-order-number\fP=""
+	Filter by the invoice purchase order number. The match is exact but case-insensitive.
+
+.PP
+\fB--search-term\fP=""
+	Search invoices by id, number, customer name, customer external_id or customer email.
+
+.PP
+\fB--self-billed\fP=""
+	Filter invoices by self billed. Possible values are 'true' or 'false'.
+
+.PP
+\fB--statuses\fP=""
+	Filter invoices by statuses. Possible values are 'draft', 'failed', 'finalized', 'pending' and 'voided'.
+
+.PP
+\fB--watch\fP[=false]
+	Poll and re-render when the response changes
+
+.PP
+\fB--watch-interval\fP=2s
+	Polling interval used with --watch
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago invoices list
+.EE
+
+
+.SH SEE ALSO
+\fBlago-invoices(1)\fP

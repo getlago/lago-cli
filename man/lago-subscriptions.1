@@ -1,0 +1,75 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-subscriptions - Manage Lago subscriptions
+
+
+.SH SYNOPSIS
+\fBlago subscriptions [flags]\fP
+
+
+.SH DESCRIPTION
+Manage Lago subscriptions
+
+
+.SH OPTIONS
+\fB-h\fP, \fB--help\fP[=false]
+	help for subscriptions
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH SEE ALSO
+\fBlago(1)\fP, \fBlago-subscriptions-alerts(1)\fP, \fBlago-subscriptions-charges(1)\fP, \fBlago-subscriptions-create(1)\fP, \fBlago-subscriptions-create-subscription-alert(1)\fP, \fBlago-subscriptions-create-subscription-charge-filter(1)\fP, \fBlago-subscriptions-delete-all-subscription-alerts(1)\fP, \fBlago-subscriptions-delete-subscription-alert(1)\fP, \fBlago-subscriptions-destroy-subscription-charge-filter(1)\fP, \fBlago-subscriptions-filters(1)\fP, \fBlago-subscriptions-fixed-charges(1)\fP, \fBlago-subscriptions-get(1)\fP, \fBlago-subscriptions-get-subscription-alert(1)\fP, \fBlago-subscriptions-get-subscription-charge(1)\fP, \fBlago-subscriptions-get-subscription-charge-filter(1)\fP, \fBlago-subscriptions-get-subscription-fixed-charge(1)\fP, \fBlago-subscriptions-lifetime-usage(1)\fP, \fBlago-subscriptions-list(1)\fP, \fBlago-subscriptions-override-subscription-charge(1)\fP, \fBlago-subscriptions-override-subscription-fixed-charge(1)\fP, \fBlago-subscriptions-terminate(1)\fP, \fBlago-subscriptions-update(1)\fP, \fBlago-subscriptions-update-subscription-alert(1)\fP, \fBlago-subscriptions-update-subscription-charge-filter(1)\fP, \fBlago-subscriptions-update-subscription-lifetime-usage(1)\fP

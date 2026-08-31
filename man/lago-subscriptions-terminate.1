@@ -1,0 +1,112 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-subscriptions-terminate - Terminate a subscription
+
+
+.SH SYNOPSIS
+\fBlago subscriptions terminate  [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint allows you to terminate a subscription.
+
+
+.SH OPTIONS
+\fB-h\fP, \fB--help\fP[=false]
+	help for terminate
+
+.PP
+\fB--on-termination-credit-note\fP=""
+	When a pay-in-advance subscription is terminated before the end of its billing period, we generate a credit note for the unused subscription time by default.
+This field allows you to control the behavior of the credit note generation:
+.IP \(bu 2
+\&'credit': A credit note is generated for the unused subscription time. The unused amount is credited back to the customer.
+.IP \(bu 2
+\&'refund': A credit note is generated for the unused subscription time. If the invoice is paid or partially paid, the unused paid amount is refunded; any unpaid unused amount is credited back to the customer.
+.IP \(bu 2
+\&'skip': No credit note is generated for the unused subscription time.
+
+.PP
+\fINote: This field is only applicable to pay-in-advance plans and is ignored for pay-in-arrears plans.\fP; one of: credit, refund, skip
+
+.PP
+\fB--on-termination-invoice\fP=""
+	When a subscription is terminated before the end of its billing period, we generate an invoice for the unbilled usage.
+This field allows you to control the behavior of the invoice generation:
+.IP \(bu 2
+\&'generate': An invoice is generated for the unbilled usage.
+.IP \(bu 2
+\&'skip': No invoice is generated for the unbilled usage.; one of: generate, skip
+
+.PP
+\fB--status\fP=""
+	Selects which subscription to terminate for the given 'external_id', based on its status. If the field is not defined, Lago targets only 'active' subscriptions.
+.IP \(bu 2
+\&'pending': cancel a subscription scheduled for a future activation (include 'status=pending').
+.IP \(bu 2
+\&'incomplete': cancel a payment-gated subscription that is still awaiting its activation payment (include 'status=incomplete'). The subscription is canceled with 'cancellation_reason: manual', its invoice is closed and nothing is billed, and any pending payment is canceled on a best-effort basis with the payment provider (some provider statuses cannot be canceled). Applied coupons, credit notes and wallet credits are recredited. Termination behaviours ('on_termination_credit_note', 'on_termination_invoice') are ignored, as an incomplete subscription has never been billed.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago subscriptions terminate <external_id>
+.EE
+
+
+.SH SEE ALSO
+\fBlago-subscriptions(1)\fP

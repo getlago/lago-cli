@@ -1,0 +1,75 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-quotes - Manage Lago quotes
+
+
+.SH SYNOPSIS
+\fBlago quotes [flags]\fP
+
+
+.SH DESCRIPTION
+Manage Lago quotes
+
+
+.SH OPTIONS
+\fB-h\fP, \fB--help\fP[=false]
+	help for quotes
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH SEE ALSO
+\fBlago(1)\fP, \fBlago-quotes-approve-quote-version(1)\fP, \fBlago-quotes-clone-quote-version(1)\fP, \fBlago-quotes-get(1)\fP, \fBlago-quotes-get-quote-version(1)\fP, \fBlago-quotes-list(1)\fP, \fBlago-quotes-versions(1)\fP, \fBlago-quotes-void-quote-version(1)\fP

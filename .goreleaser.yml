@@ -1,0 +1,113 @@
+version: 2
+project_name: lago
+
+before:
+  hooks:
+    - go mod tidy
+    - go run ./internal/gen -check
+    - go test ./...
+
+builds:
+  - id: lago
+    main: ./cmd/lago
+    binary: lago
+    env: [CGO_ENABLED=0]
+    goos: [darwin, linux, windows]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    ldflags:
+      - -s -w -X github.com/getlago/lago-cli/internal/cli.version={{.Version}}
+
+archives:
+  - id: archives
+    ids: [lago]
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+      - completions/*
+      - man/*
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+sboms:
+  - artifacts: archive
+
+signs:
+  - cmd: cosign
+    artifacts: checksum
+    args: ["sign-blob", "--yes", "--output-signature=${signature}", "${artifact}"]
+
+homebrew_casks:
+  - name: lago
+    repository:
+      owner: getlago
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    homepage: https://getlago.com
+    description: Official CLI for the Lago billing platform
+    license: MIT
+    binaries: [lago]
+    manpages: [man/lago.1]
+    completions:
+      bash: completions/lago.bash
+      zsh: completions/_lago
+      fish: completions/lago.fish
+    url:
+      verified: github.com/getlago/lago-cli/releases/download
+
+dockers_v2:
+  - id: lago
+    images: [ghcr.io/getlago/lago-cli]
+    tags:
+      - "{{ .Version }}"
+      - "{{ if not .IsPrerelease }}latest{{ end }}"
+    dockerfile: Dockerfile.release
+    platforms: [linux/amd64, linux/arm64]
+    labels:
+      org.opencontainers.image.source: https://github.com/getlago/lago-cli
+      org.opencontainers.image.version: "{{ .Version }}"
+      org.opencontainers.image.licenses: MIT
+
+winget:
+  - name: Lago.LagoCLI
+    publisher: Lago
+    license: MIT
+    homepage: https://getlago.com
+    short_description: Official CLI for the Lago billing platform
+    repository:
+      owner: getlago
+      name: winget-pkgs
+      token: "{{ .Env.WINGET_GITHUB_TOKEN }}"
+      branch: "lago-cli-{{ .Version }}"
+      pull_request:
+        enabled: true
+        base:
+          owner: microsoft
+          name: winget-pkgs
+          branch: master
+
+scoops:
+  - name: lago
+    repository:
+      owner: getlago
+      name: scoop-bucket
+      token: "{{ .Env.SCOOP_BUCKET_GITHUB_TOKEN }}"
+    directory: bucket
+    homepage: https://getlago.com
+    description: Official CLI for the Lago billing platform
+    license: MIT
+
+changelog:
+  use: github-native
+  filters:
+    exclude: ['^docs:', '^test:', '^chore:']
+
+release:
+  prerelease: auto

@@ -1,0 +1,117 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-wallets-wallet-transactions - List all wallet transactions
+
+
+.SH SYNOPSIS
+\fBlago wallets wallet-transactions  [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint is used to list all wallet transactions.
+
+
+.SH OPTIONS
+\fB--all\fP[=false]
+	Fetch every page
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for wallet-transactions
+
+.PP
+\fB--limit\fP=""
+	Maximum number of results
+
+.PP
+\fB--page\fP=""
+	Page number.
+
+.PP
+\fB--per-page\fP=""
+	Number of records per page.
+
+.PP
+\fB--status\fP=""
+	The status of the wallet transaction. Possible values are 'pending' or 'settled'.
+
+.PP
+\fB--transaction-status\fP=""
+	The transaction status of the wallet transaction. Possible values are 'purchased' (with pending or settled status), 'granted' (without invoice_id), 'voided' or 'invoiced'.
+
+.PP
+\fB--transaction-type\fP=""
+	The transaction type of the wallet transaction. Possible values are 'inbound' (increasing the wallet balance) or 'outbound' (decreasing the wallet balance).
+
+.PP
+\fB--watch\fP[=false]
+	Poll and re-render when the response changes
+
+.PP
+\fB--watch-interval\fP=2s
+	Polling interval used with --watch
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago wallets wallet-transactions <lago_id>
+.EE
+
+
+.SH SEE ALSO
+\fBlago-wallets(1)\fP

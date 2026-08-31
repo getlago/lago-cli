@@ -1,0 +1,105 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-events-estimate-instant-fees - Estimate instant fees for a pay in advance charge
+
+
+.SH SYNOPSIS
+\fBlago events estimate-instant-fees [flags]\fP
+
+
+.SH DESCRIPTION
+Estimate the fees that would be created after reception of an event for a billable metric attached to one or multiple pay in advance standard or percentage charges
+
+
+.SH OPTIONS
+\fB--code\fP=""
+	The code that identifies a targeted billable metric. It is essential that this code matches the 'code' property of one of your active billable metrics. If the provided code does not correspond to any active billable metric, it will be ignored during the process.
+
+.PP
+\fB--external-subscription-id\fP=""
+	The unique identifier of the subscription within your application.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for estimate-instant-fees
+
+.PP
+\fB--idempotency-key\fP=""
+	Idempotency key for safe mutation retries
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--properties\fP=""
+	This field represents additional properties associated with the event, which are utilized in the calculation of the final fee. This object becomes mandatory when the targeted billable metric employs a 'sum_agg', 'max_agg', or 'unique_count_agg' aggregation method. However, when using a simple 'count_agg', this object is not required.
+
+.PP
+\fB--transaction-id\fP=""
+	This field represents a unique identifier for the event.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago events estimate-instant-fees --input @payload.json
+.EE
+
+
+.SH SEE ALSO
+\fBlago-events(1)\fP

@@ -1,0 +1,133 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-customers-current-usage - Retrieve customer current usage
+
+
+.SH SYNOPSIS
+\fBlago customers current-usage  [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint enables the retrieval of the usage-based billing data for a customer within the current period.
+
+
+.SH OPTIONS
+\fB--apply-taxes\fP=""
+	Optional flag to determine if taxes should be applied. Defaults to 'true' if not provided or if null.
+
+.PP
+\fB--billable-metric-code\fP=""
+	Filter usage to a specific billable metric by its code.
+
+.PP
+\fB--charge-code\fP=""
+	Filter usage to a specific charge by its code. Replaces deprecated 'filter_by_charge_code'.
+
+.PP
+\fB--charge-id\fP=""
+	Filter usage to a specific charge by its Lago ID (UUID). Replaces deprecated 'filter_by_charge_id'.
+
+.PP
+\fB--external-subscription-id\fP=""
+	The unique identifier of the subscription within your application.
+
+.PP
+\fB--filter-by-charge-code\fP=""
+	\fBDeprecated.\fP Filter usage to a specific charge by its code.
+
+.PP
+\fB--filter-by-charge-id\fP=""
+	\fBDeprecated.\fP Filter usage to a specific charge by its Lago ID (UUID).
+
+.PP
+\fB--filter-by-group\fP=""
+	\fBDeprecated.\fP Filter usage by pricing group. Pass key/value pairs as query parameters, e.g. 'filter_by_group[cloud]=aws'.
+
+.PP
+\fB--filter-by-presentation\fP=""
+	Filter 'presentation_breakdowns' by a JSON-encoded array of presentation group key values. Only breakdowns matching the provided values will be returned. Pass an empty array to disable 'presentation_breakdowns' entirely.
+
+.PP
+\fB--full-usage\fP=""
+	When 'true', returns usage since subscription start instead of the current billing period. Requires one of 'charge_id', 'charge_code', 'group' (or their deprecated 'filter\fIby\fP*' equivalents) to be set.
+
+.PP
+\fB--group\fP=""
+	Filter usage by pricing group. Pass key/value pairs as query parameters, e.g. 'group[cloud]=aws'. Replaces deprecated 'filter_by_group'.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for current-usage
+
+.PP
+\fB--watch\fP[=false]
+	Poll and re-render when the response changes
+
+.PP
+\fB--watch-interval\fP=2s
+	Polling interval used with --watch
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago customers current-usage <external_customer_id>
+.EE
+
+
+.SH SEE ALSO
+\fBlago-customers(1)\fP

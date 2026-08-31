@@ -1,0 +1,123 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-coupons-apply - Apply a coupon to a customer
+
+
+.SH SYNOPSIS
+\fBlago coupons apply [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint is used to apply a specific coupon to a customer, before or during a subscription.
+
+
+.SH OPTIONS
+\fB--amount-cents\fP=""
+	The amount of the coupon in cents. This field is required only for coupon with 'fixed_amount' type.
+
+.PP
+\fB--amount-currency\fP=""
+	The currency of the coupon. This field is required only for coupon with 'fixed_amount' type.; one of: , AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SZL, THB, TJS, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
+
+.PP
+\fB--coupon-code\fP=""
+	Unique code used to identify the coupon.
+
+.PP
+\fB--external-customer-id\fP=""
+	The customer external unique identifier (provided by your own application)
+
+.PP
+\fB--frequency\fP=""
+	The type of frequency for the coupon. It can have three possible values: 'once', 'recurring' or 'forever'.
+.IP \(bu 2
+If set to 'once', the coupon is applicable only for a single use.
+.IP \(bu 2
+If set to 'recurring', the coupon can be used multiple times for recurring billing periods.
+.IP \(bu 2
+If set to 'forever', the coupon has unlimited usage and can be applied indefinitely.; one of: once, recurring, forever,
+
+.PP
+\fB--frequency-duration\fP=""
+	Specifies the number of billing periods to which the coupon applies. This field is required only for coupons with a 'recurring' frequency type
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for apply
+
+.PP
+\fB--idempotency-key\fP=""
+	Idempotency key for safe mutation retries
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--percentage-rate\fP=""
+	The percentage rate of the coupon. This field is required only for coupons with a 'percentage' coupon type.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago coupons apply --input @payload.json
+.EE
+
+
+.SH SEE ALSO
+\fBlago-coupons(1)\fP

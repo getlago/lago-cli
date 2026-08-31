@@ -1,0 +1,7 @@
+FROM alpine:3.22 AS certificates
+RUN apk add --no-cache ca-certificates
+FROM scratch
+COPY --from=certificates /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY lago /lago
+USER 65532:65532
+ENTRYPOINT ["/lago"]

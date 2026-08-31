@@ -1,0 +1,239 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-plans-update-plan-charge - Update a charge
+
+
+.SH SYNOPSIS
+\fBlago plans update-plan-charge   [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint updates a specific charge for a plan.
+
+
+.SH OPTIONS
+\fB--accepts-target-wallet\fP=""
+	Specifies whether the charge accepts a target wallet for prepaid credits deduction.
+When set to 'true', events may include a 'target_wallet_code' in their 'properties' to direct credit deduction to a specific wallet.
+If no 'target_wallet_code' is provided on the event, the standard wallet selection logic is applied.
+If the 'target_wallet_code' does not match an existing wallet, no credits will be applied for that event.
+
+.PP
+This field requires a premium integration.
+
+.PP
+\fB--applied-pricing-unit-code\fP=""
+	The code of the pricing unit.
+
+.PP
+\fB--applied-pricing-unit-conversion-rate\fP=""
+	The conversion rate from pricing units to the plan's currency.
+This rate determines how many currency units (in the plan's base currency) equal one pricing unit.
+For example, if the plan uses USD and the conversion rate is 0.5, then 1 pricing unit = $0.50.
+
+.PP
+\fB--billable-metric-id\fP=""
+	Unique identifier of the billable metric created by Lago.
+
+.PP
+\fB--cascade-updates\fP=""
+	This field determines whether the changes made to the charge should be cascaded to the children plans. When set to 'true', the changes will be cascaded into children. Conversely, when set to 'false', the changes will only be applied to the plan itself. If not defined in the request, default value is 'false'.
+
+.PP
+\fB--charge-model\fP=""
+	Specifies the pricing model used for the calculation of the final fee. It can be any of the following values:
+  - 'dynamic'
+\[la]https://docs.getlago.com/guide/plans/charges/charge\-models/dynamic\[ra]
+  - 'graduated_percentage'
+\[la]https://docs.getlago.com/guide/plans/charges/charge\-models/graduated\-percentage\[ra]
+  - 'graduated'
+\[la]https://docs.getlago.com/guide/plans/charges/charge\-models/graduated\[ra]
+  - 'package'
+\[la]https://docs.getlago.com/guide/plans/charges/charge\-models/package\[ra]
+  - 'percentage'
+\[la]https://docs.getlago.com/guide/plans/charges/charge\-models/percentage\[ra]
+  - 'standard'
+\[la]https://docs.getlago.com/guide/plans/charges/charge\-models/standard\[ra]
+  - 'volume'
+\[la]https://docs.getlago.com/guide/plans/charges/charge\-models/volume\[ra]; one of: dynamic, graduated, graduated_percentage, package, percentage, standard, volume
+
+.PP
+\fB--code\fP=""
+	Unique code identifying the charge within the plan.
+
+.PP
+\fB--filters\fP=""
+	List of filters used to apply differentiated pricing based on additional event properties.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for update-plan-charge
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--invoice-display-name\fP=""
+	Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name.
+
+.PP
+\fB--invoiceable\fP=""
+	This field specifies whether the charge should be included in a proper invoice. If set to false, no invoice will be issued for this charge. You can only set it to 'false' when 'pay_in_advance' is 'true'.
+
+.PP
+\fB--min-amount-cents\fP=""
+	The minimum spending amount required for the charge, measured in cents and excluding any applicable taxes. It indicates the minimum amount that needs to be charged for each billing period.
+
+.PP
+\fB--pay-in-advance\fP=""
+	This field determines the billing timing for this specific usage-based charge. When set to 'true', the charge is due and invoiced immediately. Conversely, when set to false, the charge is due and invoiced at the end of each billing period.
+
+.PP
+\fB--properties-amount\fP=""
+	- The unit price, excluding tax, for a 'standard' charge model. It is expressed as a decimal value.
+- The amount, excluding tax, for a complete set of units in a 'package' charge model. It is expressed as a decimal value.
+
+.PP
+\fB--properties-fixed-amount\fP=""
+	The fixed fee that is applied to each transaction for a 'percentage' charge model. It is expressed as a decimal value.
+
+.PP
+\fB--properties-free-units\fP=""
+	The quantity of units that are provided free of charge for each billing period in a 'package' charge model. This field specifies the number of units that customers can use without incurring any additional cost during each billing cycle.
+
+.PP
+\fB--properties-free-units-per-events\fP=""
+	The count of transactions that are not impacted by the 'percentage' rate and fixed fee in a percentage charge model. This field indicates the number of transactions that are exempt from the calculation of charges based on the specified percentage rate and fixed fee.
+
+.PP
+\fB--properties-free-units-per-total-aggregation\fP=""
+	The transaction amount that is not impacted by the 'percentage' rate and fixed fee in a percentage charge model. This field indicates the portion of the transaction amount that is exempt from the calculation of charges based on the specified percentage rate and fixed fee.
+
+.PP
+\fB--properties-graduated-percentage-ranges\fP=""
+	Graduated percentage ranges, sorted from bottom to top tiers, used for a 'graduated_percentage' charge model.
+
+.PP
+\fB--properties-graduated-ranges\fP=""
+	Graduated ranges, sorted from bottom to top tiers, used for a 'graduated' charge model.
+
+.PP
+\fB--properties-grouped-by\fP=""
+	\fBDeprecated.\fP Replaced by 'pricing_group_keys'.
+The list of event properties that are used to group the events on the invoice for a 'standard' charge model.
+
+.PP
+\fB--properties-package-size\fP=""
+	The quantity of units included in each pack or set for a 'package' charge model. It indicates the number of units that are bundled together as a single package or set within the pricing structure.
+
+.PP
+\fB--properties-per-transaction-max-amount\fP=""
+	Specifies the maximum allowable spending for a single transaction. Working as a transaction cap.
+
+.PP
+\fB--properties-per-transaction-min-amount\fP=""
+	Specifies the minimum allowable spending for a single transaction. Working as a transaction floor.
+
+.PP
+\fB--properties-presentation-group-keys\fP=""
+	Groups usage into sub-items on invoices for display only, without affecting pricing or aggregation.
+
+.PP
+\fB--properties-pricing-group-keys\fP=""
+	The list of event properties that are used to group the events on the invoice.
+
+.PP
+\fB--properties-rate\fP=""
+	The percentage rate that is applied to the amount of each transaction for a 'percentage' charge model. It is expressed as a decimal value.
+
+.PP
+\fB--properties-volume-ranges\fP=""
+	Volume ranges, sorted from bottom to top tiers, used for a 'volume' charge model.
+
+.PP
+\fB--prorated\fP=""
+	Specifies whether a charge is prorated based on the remaining number of days in the billing period or billed fully.
+.IP \(bu 2
+If set to 'true', the charge is prorated based on the remaining days in the current billing period.
+.IP \(bu 2
+If set to 'false', the charge is billed in full.
+.IP \(bu 2
+If not defined in the request, default value is 'false'.
+
+.PP
+\fB--regroup-paid-fees\fP=""
+	This setting can only be configured if 'pay_in_advance' is 'true' and 'invoiceable' is 'false'.
+This field determines whether and when the charge fee should be included in
+the invoice. If 'null', no invoice will be issued for this charge fee.
+If 'invoice', an invoice will be generated at the end of the period,
+consolidating all charge fees with a succeeded payment status.; one of: , invoice
+
+.PP
+\fB--tax-codes\fP=""
+	List of unique code used to identify the taxes.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago plans update-plan-charge <code> <charge_code> --input @payload.json
+.EE
+
+
+.SH SEE ALSO
+\fBlago-plans(1)\fP

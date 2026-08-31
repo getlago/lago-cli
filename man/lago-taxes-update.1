@@ -1,0 +1,105 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-taxes-update - Update a tax
+
+
+.SH SYNOPSIS
+\fBlago taxes update  [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint updates an existing tax representing a customizable tax rate applicable to either the organization or a specific customer.
+
+
+.SH OPTIONS
+\fB--applied-to-organization\fP=""
+	\fBDeprecated.\fP This field will be removed in a future version. When set to true, it applies the tax to the organization's default billing entity. To apply or remove a tax from any billing entity (including the default one), please use the 'PUT /billing_entities/:code' endpoint instead.
+
+.PP
+\fB--code\fP=""
+	Unique code used to identify the tax associated with the API request.
+
+.PP
+\fB--description\fP=""
+	Internal description of the taxe
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for update
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--name\fP=""
+	Name of the tax.
+
+.PP
+\fB--rate\fP=""
+	The percentage rate of the tax
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago taxes update <code> --input @payload.json
+.EE
+
+
+.SH SEE ALSO
+\fBlago-taxes(1)\fP

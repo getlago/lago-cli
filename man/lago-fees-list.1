@@ -1,0 +1,165 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-fees-list - List all fees
+
+
+.SH SYNOPSIS
+\fBlago fees list [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint is used for retrieving all fees that has been issued.
+
+
+.SH OPTIONS
+\fB--all\fP[=false]
+	Fetch every page
+
+.PP
+\fB--billable-metric-code\fP=""
+	Filter results by the 'code' of the billable metric attached to the fee. Only applies to 'charge' types.
+
+.PP
+\fB--created-at-from\fP=""
+	Filter results created after creation date and time in UTC.
+
+.PP
+\fB--created-at-to\fP=""
+	Filter results created before creation date and time in UTC.
+
+.PP
+\fB--currency\fP=""
+	Filter results by fee"s currency.; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SZL, THB, TJS, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
+
+.PP
+\fB--event-transaction-id\fP=""
+	Filter results by event transaction ID
+
+.PP
+\fB--external-customer-id\fP=""
+	Unique identifier assigned to the customer in your application.
+
+.PP
+\fB--external-subscription-id\fP=""
+	External subscription ID
+
+.PP
+\fB--failed-at-from\fP=""
+	Filter results with payment failure after creation date and time in UTC.
+
+.PP
+\fB--failed-at-to\fP=""
+	Filter results with payment failure after creation date and time in UTC.
+
+.PP
+\fB--fee-type\fP=""
+	The fee type. Possible values are 'add-on', 'charge', 'credit', 'subscription' or "commitment".; one of: charge, add_on, subscription, credit, commitment
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for list
+
+.PP
+\fB--limit\fP=""
+	Maximum number of results
+
+.PP
+\fB--page\fP=""
+	Page number.
+
+.PP
+\fB--payment-status\fP=""
+	Indicates the payment status of the fee. It represents the current status of the payment associated with the fee. The possible values for this field are 'pending', 'succeeded', 'failed' and refunded'.; one of: pending, succeeded, failed, refunded
+
+.PP
+\fB--per-page\fP=""
+	Number of records per page.
+
+.PP
+\fB--refunded-at-from\fP=""
+	Filter results with payment refund after creation date and time in UTC.
+
+.PP
+\fB--refunded-at-to\fP=""
+	Filter results with payment refund after creation date and time in UTC.
+
+.PP
+\fB--succeeded-at-from\fP=""
+	Filter results with payment success after creation date and time in UTC.
+
+.PP
+\fB--succeeded-at-to\fP=""
+	Filter results with payment success after creation date and time in UTC.
+
+.PP
+\fB--watch\fP[=false]
+	Poll and re-render when the response changes
+
+.PP
+\fB--watch-interval\fP=2s
+	Polling interval used with --watch
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago fees list
+.EE
+
+
+.SH SEE ALSO
+\fBlago-fees(1)\fP

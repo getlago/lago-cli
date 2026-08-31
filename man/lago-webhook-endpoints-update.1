@@ -1,0 +1,101 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-webhook-endpoints-update - Update a webhook endpoint
+
+
+.SH SYNOPSIS
+\fBlago webhook-endpoints update  [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint is used to update an existing webhook endpoint.
+
+
+.SH OPTIONS
+\fB--event-types\fP=""
+	A list of event types that will trigger the webhook. Passing null means that all event types will be sent.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for update
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--name\fP=""
+	The name of the webhook.
+
+.PP
+\fB--signature-algo\fP=""
+	The signature used for the webhook. If no value is passed,; one of: jwt, hmac,
+
+.PP
+\fB--webhook-url\fP=""
+	The URL of the webhook endpoint.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago webhook-endpoints update <lago_id> --input @payload.json
+.EE
+
+
+.SH SEE ALSO
+\fBlago-webhook-endpoints(1)\fP

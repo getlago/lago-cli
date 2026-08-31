@@ -1,0 +1,108 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-billable-metrics-evaluate-expression - Evaluate an expression for a billable metric
+
+
+.SH SYNOPSIS
+\fBlago billable-metrics evaluate-expression [flags]\fP
+
+
+.SH DESCRIPTION
+Evaluate an expression for a billable metric creation by providing the expression and test data
+
+
+.SH OPTIONS
+\fB--event-code\fP=""
+	The code that identifies a targeted billable metric.
+
+.PP
+\fB--event-properties\fP=""
+	This field represents additional properties associated with the event. They can be used when evaluating the expression.
+
+.PP
+\fB--event-timestamp\fP=""
+	This field captures the Unix timestamp in seconds indicating the occurrence of the event in Coordinated Universal Time (UTC).
+If this timestamp is not provided, the API will automatically set it to the time of event reception.
+
+.PP
+\fB--expression\fP=""
+	Expression used to calculate the event units. The expression is evalutated for each event and the result is then used to calculate the total aggregated units.
+Accepted function are 'ceil', 'concat' and 'round' as well as '+', '-', '\\' and '*' operations.
+Round is accepting an optional second parameter to specify the number of decimal.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for evaluate-expression
+
+.PP
+\fB--idempotency-key\fP=""
+	Idempotency key for safe mutation retries
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago billable-metrics evaluate-expression --input @payload.json
+.EE
+
+
+.SH SEE ALSO
+\fBlago-billable-metrics(1)\fP

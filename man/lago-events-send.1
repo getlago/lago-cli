@@ -1,0 +1,129 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-events-send - Send usage events
+
+
+.SH SYNOPSIS
+\fBlago events send [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint is used for transmitting usage measurement events to either a designated customer or a specific subscription.
+
+
+.SH OPTIONS
+\fB--code\fP=""
+	The code that identifies a targeted billable metric. It is essential that this code matches the 'code' property of one of your active billable metrics. If the provided code does not correspond to any active billable metric, it will be ignored during the process.
+
+.PP
+\fB--concurrency\fP=4
+	Concurrent bulk event requests (1-64)
+
+.PP
+\fB--external-subscription-id\fP=""
+	The unique identifier of the subscription in your application. This field is mandatory in order to link events to the correct customer subscription.
+
+.PP
+\fB--file\fP=""
+	Stream newline-delimited JSON events from a file, or - for stdin
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for send
+
+.PP
+\fB--idempotency-key\fP=""
+	Idempotency key for safe mutation retries
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--precise-total-amount-cents\fP=""
+	The precise total amount in cents with precision used by the 'dynamic' pricing model to compute the usage amount.
+
+.PP
+\fB--properties\fP=""
+	This field represents additional properties associated with the event, which are utilized in the calculation of the final fee. This object becomes mandatory when the targeted billable metric employs a 'sum_agg', 'max_agg', or 'unique_count_agg' aggregation method. However, when using a simple 'count_agg', this object is not required.
+
+.PP
+\fB--timestamp\fP=""
+	This field captures the Unix timestamp in seconds indicating the occurrence of the event in Coordinated Universal Time (UTC).
+If this timestamp is not provided, the API will automatically set it to the time of event reception.
+You can also provide miliseconds precision by appending decimals to the timestamp.
+
+.PP
+\fB--transaction-id\fP=""
+	This field represents a unique identifier for the event.
+It is crucial for ensuring idempotency, meaning that each event can be uniquely identified and processed without causing any unintended side effects.
+
+.PP
+WARNING: If the Lago organization is configured to use the new Clickhouse-based event pipeline (designed for high-volume processing), the idempotency logic is handled differently.
+Event uniqueness is maintained with both 'transaction_id' and 'timestamp' fields.
+If a new event arrives with identical values for these two fields as an existing event, the new one will overwrite the previous event rather than being rejected.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago events send --input @payload.json
+.EE
+
+
+.SH SEE ALSO
+\fBlago-events(1)\fP

@@ -1,0 +1,66 @@
+The official CLI for Lago billing
+
+Usage:
+  lago [flags]
+  lago [command]
+
+Available Commands:
+  activity-logs     Manage Lago activity logs
+  add-ons           Manage Lago add ons
+  alias             Manage user-defined command aliases
+  analytics         Manage Lago analytics
+  api               Make an authenticated request to any Lago API endpoint
+  api-logs          Manage Lago api logs
+  billable-metrics  Manage Lago billable metrics
+  billing-entities  Manage Lago billing entities
+  completion        Generate shell completion scripts
+  coupons           Manage Lago coupons
+  credit-notes      Manage Lago credit notes
+  customers         Manage Lago customers
+  docs              Open Lago API documentation for a resource
+  doctor            Diagnose configuration, permissions, network, and authentication
+  entitlements      Manage Lago entitlements
+  events            Manage Lago events
+  features          Manage Lago features
+  fees              Manage Lago fees
+  fixtures          Run declarative Lago API scenarios
+  help              Help about any command
+  init              Configure a Lago profile and validate its credentials
+  invoices          Manage Lago invoices
+  logs              Inspect Lago API request logs
+  order-forms       Manage Lago order forms
+  orders            Manage Lago orders
+  organizations     Manage Lago organizations
+  payment-methods   Manage Lago payment methods
+  payment-receipts  Manage Lago payment receipts
+  payment-requests  Manage Lago payment requests
+  payments          Manage Lago payments
+  plans             Manage Lago plans
+  quotes            Manage Lago quotes
+  seed              Populate a test account with reproducible data
+  subscriptions     Manage Lago subscriptions
+  taxes             Manage Lago taxes
+  upgrade           Upgrade a script-installed Lago CLI
+  version           Show the Lago CLI version
+  wallets           Manage Lago wallets
+  webhook-endpoints Manage Lago webhook endpoints
+  webhooks          Manage Lago webhooks
+  whoami            Show the active profile and organization
+
+Flags:
+      --api-key string     Override the Lago API key
+      --api-url string     Override the Lago API URL
+      --confirm string     Confirm a dangerous operation with its resource identifier
+      --dry-run            Print mutating requests without sending them
+  -h, --help               help for lago
+      --insecure           Allow insecure HTTP or TLS for self-hosted Lago
+      --mode string        Environment mode: live or test
+      --no-retry           Disable automatic retries
+  -o, --output string      Output format: table, json, or yaml (default "table")
+      --profile string     Named profile to use
+      --query string       JMESPath expression applied to the response
+      --timeout duration   Total request timeout (default 30s)
+      --timing             Print request latency breakdown
+      --verbose            Print redacted request and response details
+
+Use "lago [command] --help" for more information about a command.

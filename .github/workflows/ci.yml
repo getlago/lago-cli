@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+      - run: make generate-check
+      - run: make lint
+      - run: make test
+      - run: make coverage
+      - run: ./scripts/check-ci-policy.sh
+      - run: ./scripts/check-fixtures.sh
+
+  cross-platform:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        arch: [amd64, arm64]
+        exclude:
+          - os: windows-latest
+            arch: arm64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - name: Build target
+        shell: bash
+        run: |
+          suffix=""
+          if [ "${{ runner.os }}" = Windows ]; then suffix=.exe; fi
+          GOARCH=${{ matrix.arch }} CGO_ENABLED=0 go build -trimpath -o "lago${suffix}" ./cmd/lago
+      - name: Smoke test native target
+        if: matrix.arch == 'amd64'
+        shell: bash
+        run: ./lago${{ runner.os == 'Windows' && '.exe' || '' }} version --output json
+
+  startup-budget:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - run: make build
+      - name: Enforce 100 ms cold help budget
+        run: go test ./internal/cli -run TestStartupBudget -count=1

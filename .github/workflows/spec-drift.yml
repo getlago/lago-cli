@@ -1,0 +1,36 @@
+name: OpenAPI drift
+
+on:
+  schedule:
+    - cron: "23 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    if: github.repository == 'getlago/lago-cli'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - run: ./scripts/update-spec.sh
+      - run: go run ./internal/docgen -markdown docs/reference -man man -completions completions
+      - name: Open a reviewable drift PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: automation/openapi-drift
+          delete-branch: true
+          commit-message: "chore(spec): synchronize Lago OpenAPI"
+          title: "chore(spec): synchronize Lago OpenAPI"
+          body: |
+            Automated daily drift update from the public Lago OpenAPI document.
+
+            Owner: @getlago/developers
+            SLA: review and merge or close with rationale within one business day.
+          labels: spec-drift,automated
+          team-reviewers: developers
