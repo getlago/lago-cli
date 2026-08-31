@@ -63,9 +63,28 @@ func finishPassiveUpdate(result <-chan passiveUpdateResult, errOut interface{ Wr
 	}
 }
 
+// booleanRootFlags take no value, so the token after them is the command name.
+// Every other persistent flag consumes the following token unless it used `=`.
+var booleanRootFlags = map[string]bool{
+	"--dry-run": true, "--verbose": true, "--timing": true,
+	"--insecure": true, "--no-retry": true, "--help": true, "-h": true,
+}
+
+// excludedPassiveCommand reports whether the invoked command should skip the
+// once-daily update check: commands that must stay fast, run offline, or are
+// themselves about updating.
+//
+// A flag's value is not a command name. Treating it as one meant
+// `lago --output json version` started a check that `lago version` skips.
 func excludedPassiveCommand(arguments []string) bool {
+	skipNext := false
 	for _, argument := range arguments {
+		if skipNext {
+			skipNext = false
+			continue
+		}
 		if strings.HasPrefix(argument, "-") {
+			skipNext = !strings.Contains(argument, "=") && !booleanRootFlags[argument]
 			continue
 		}
 		switch argument {

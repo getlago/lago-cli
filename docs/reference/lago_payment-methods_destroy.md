@@ -19,7 +19,8 @@ lago payment-methods destroy <lago_id> <external_customer_id> [flags]
 ### Options
 
 ```
-  -h, --help   help for destroy
+  -h, --help                     help for destroy
+      --idempotency-key string   Idempotency key for safe mutation retries
 ```
 
 ### Options inherited from parent commands

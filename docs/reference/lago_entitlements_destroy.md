@@ -19,7 +19,8 @@ lago entitlements destroy <code> <feature_code> [flags]
 ### Options
 
 ```
-  -h, --help   help for destroy
+  -h, --help                     help for destroy
+      --idempotency-key string   Idempotency key for safe mutation retries
 ```
 
 ### Options inherited from parent commands

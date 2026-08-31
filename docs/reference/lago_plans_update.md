@@ -29,6 +29,7 @@ lago plans update <code> [flags]
       --description string                               The description on the plan.
       --fixed-charges string                             Additional fixed charges for this plan.
   -h, --help                                             help for update
+      --idempotency-key string                           Idempotency key for safe mutation retries
       --input string                                     Complete JSON request body or @file.json
       --interval string                                  The interval used for recurring billing. It represents the frequency at which subscription billing occurs. The interval can be one of the following values: 'yearly', 'semiannual', 'quarterly', 'monthly', or 'weekly'.; one of: weekly, monthly, quarterly, semiannual, yearly
       --invoice-display-name string                      Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the plan will be used as the default display name.

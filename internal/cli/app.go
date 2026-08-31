@@ -176,9 +176,16 @@ func (a *App) Confirm(identifier string) error {
 	if !isInteractive(a) {
 		return apperr.New(apperr.ExitUsage, fmt.Sprintf("confirmation required for %s", identifier), fmt.Sprintf("Pass --confirm %q or rerun in an interactive terminal.", identifier))
 	}
-	reader := bufio.NewReader(a.In)
-	if a.resolved.Profile.Mode == config.ModeLive {
-		fmt.Fprintf(a.Err, "[LIVE] Type %q to confirm this destructive operation: ", identifier)
+	return promptConfirmation(a.In, a.Err, identifier, a.resolved.Profile.Mode == config.ModeLive)
+}
+
+// promptConfirmation holds the confirmation policy, separated from the terminal check
+// in Confirm so it can be exercised without a pty. Live mode demands the identifier
+// typed back exactly; test mode accepts y/N. Both default to refusing.
+func promptConfirmation(in io.Reader, errOut io.Writer, identifier string, live bool) error {
+	reader := bufio.NewReader(in)
+	if live {
+		fmt.Fprintf(errOut, "[LIVE] Type %q to confirm this destructive operation: ", identifier)
 		value, err := reader.ReadString('\n')
 		if err != nil && !errors.Is(err, io.EOF) {
 			return apperr.Wrap(apperr.ExitGeneral, "read confirmation", err)
@@ -188,7 +195,7 @@ func (a *App) Confirm(identifier string) error {
 		}
 		return nil
 	}
-	fmt.Fprintf(a.Err, "Delete or terminate %q in test mode? [y/N]: ", identifier)
+	fmt.Fprintf(errOut, "Delete or terminate %q in test mode? [y/N]: ", identifier)
 	value, err := reader.ReadString('\n')
 	if err != nil && !errors.Is(err, io.EOF) {
 		return apperr.Wrap(apperr.ExitGeneral, "read confirmation", err)
@@ -218,9 +225,15 @@ func parsePathQuery(raw string) (string, url.Values, error) {
 	return parsed.Path, parsed.Query(), nil
 }
 
+// isIdempotentMethod reports whether the transport may replay a request on its own,
+// without an operator-supplied idempotency key. Only side-effect-free reads qualify.
+//
+// PUT and DELETE are idempotent in the RFC 9110 sense and still move money in Lago:
+// PUT /invoices/{id}/finalize issues an invoice and can trigger a payment attempt.
+// Mutations become replayable only by carrying an Idempotency-Key, never by verb.
 func isIdempotentMethod(method string) bool {
 	switch strings.ToUpper(method) {
-	case http.MethodGet, http.MethodHead, http.MethodPut, http.MethodDelete, http.MethodOptions:
+	case http.MethodGet, http.MethodHead, http.MethodOptions:
 		return true
 	default:
 		return false

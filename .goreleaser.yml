@@ -39,10 +39,19 @@ checksum:
 sboms:
   - artifacts: archive
 
+# Keyless signing over checksums.txt. The certificate is published alongside the
+# signature because scripts/install.sh needs both to run `cosign verify-blob`:
+# a signature with no certificate cannot be verified by an installer.
 signs:
   - cmd: cosign
     artifacts: checksum
-    args: ["sign-blob", "--yes", "--output-signature=${signature}", "${artifact}"]
+    certificate: "${artifact}.pem"
+    args:
+      - sign-blob
+      - --yes
+      - --output-signature=${signature}
+      - --output-certificate=${certificate}
+      - ${artifact}
 
 homebrew_casks:
   - name: lago

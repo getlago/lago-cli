@@ -19,7 +19,8 @@ lago wallets terminate <lago_id> [flags]
 ### Options
 
 ```
-  -h, --help   help for terminate
+  -h, --help                     help for terminate
+      --idempotency-key string   Idempotency key for safe mutation retries
 ```
 
 ### Options inherited from parent commands

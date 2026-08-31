@@ -6,15 +6,38 @@ The official command-line interface for [Lago](https://getlago.com), the open-so
 
 ## Install
 
-| Platform | Command |
-| --- | --- |
-| Homebrew tap | `brew install getlago/tap/lago` |
-| macOS / Linux | `curl -fsSL https://getlago.com/install.sh \| sh` |
-| Go | `go install github.com/getlago/lago-cli/cmd/lago@latest` |
-| Docker | `docker run --rm ghcr.io/getlago/lago-cli:latest version` |
-| Windows | `winget install Lago.LagoCLI` or `scoop install lago` |
+Until the first signed release, install from source:
 
-The canonical installer is served only from `getlago.com`, a Lago-controlled domain. It verifies the release checksum before installing. Release artifacts include checksums, signatures, provenance, and SBOMs.
+```console
+$ go install github.com/getlago/lago-cli/cmd/lago@latest
+```
+
+### Channels at GA
+
+These channels are provisioned as part of the release sequence. Each becomes a
+documented install command only after its endpoint is live and smoke-tested, so
+none of them are printed above as if they already work.
+
+| Platform | Command | Status |
+| --- | --- | --- |
+| macOS / Linux | `curl -fsSL https://getlago.com/install.sh \| sh` | endpoint not yet published |
+| Homebrew tap | `brew install getlago/tap/lago` | tap not yet provisioned |
+| Docker | `docker run --rm ghcr.io/getlago/lago-cli:latest version` | published on first tag |
+| Windows | `winget install Lago.LagoCLI` or `scoop install lago` | repositories not yet provisioned |
+| Go | `go install github.com/getlago/lago-cli/cmd/lago@latest` | available now |
+
+Publishing order is not a checklist. `curl -fsSL … | sh` on a missing endpoint
+fails silently: curl writes nothing, `sh` reads an empty stream, and the shell
+exits 0 having installed nothing. So each channel is published, then verified,
+then documented, in that order:
+
+1. Publish `install.sh` at `https://getlago.com/install.sh` and confirm HTTP 200.
+2. Provision the Homebrew tap and the Windows package repositories.
+3. Tag the release; the pipeline signs artifacts and publishes checksums.
+4. Run the post-release smoke job, which installs from the real endpoints.
+5. Only then move a row above into the install table.
+
+The canonical installer is served only from `getlago.com`, a Lago-controlled domain. It verifies the release checksum before installing. Release artifacts include checksums, signatures, provenance, and SBOMs; the installer verifies the checksum, and signature verification is tracked in [DECISIONS.md](DECISIONS.md).
 
 ## Five-minute billing flow
 

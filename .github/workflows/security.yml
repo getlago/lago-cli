@@ -32,6 +32,8 @@ jobs:
       - run: go run ./internal/moneycheck ./...
       - run: ./scripts/check-fixtures.sh
       - run: ./scripts/check-ci-policy.sh
+      - name: License compatibility
+        run: ./scripts/check-licenses.sh
 
   reproducible:
     runs-on: ubuntu-latest

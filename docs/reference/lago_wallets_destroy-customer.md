@@ -19,7 +19,8 @@ lago wallets destroy-customer <external_customer_id> <code> [flags]
 ### Options
 
 ```
-  -h, --help   help for destroy-customer
+  -h, --help                     help for destroy-customer
+      --idempotency-key string   Idempotency key for safe mutation retries
 ```
 
 ### Options inherited from parent commands

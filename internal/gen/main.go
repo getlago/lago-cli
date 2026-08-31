@@ -165,8 +165,8 @@ func (g generator) operations() ([]generated.Operation, error) {
 				DocsURL:     documentationURLs[resource],
 				Parameters:  parameters,
 				Body:        body,
-				Idempotent:  method == http.MethodGet || method == http.MethodHead || method == http.MethodPut || method == http.MethodDelete || method == http.MethodOptions,
-				Dangerous:   method == http.MethodDelete || strings.Contains(lowerAction, "terminate") || strings.Contains(lowerAction, "delete"),
+				Idempotent:  retryableOperation(operationMap, method),
+				Dangerous:   dangerousOperation(operationMap, method, path, lowerAction),
 				Paginated:   paginated,
 			})
 		}
@@ -626,4 +626,57 @@ func fatalIf(err error) {
 		fmt.Fprintln(os.Stderr, "generate:", err)
 		os.Exit(1)
 	}
+}
+
+// dangerousOperation reports whether an operation must be confirmation-gated.
+//
+// HTTP method semantics do not describe billing semantics: PUT /invoices/{id}/finalize
+// is idempotent by RFC 9110 and irreversible by accounting. Classification is therefore
+// derived from the spec path, not the verb, and defaults to deny: an operation Lago has
+// not explicitly declared safe is treated as dangerous. `x-lago-cli-dangerous` is the
+// upstream escape hatch, matching the `x-lago-cli-action` precedent in DECISIONS.md.
+func dangerousOperation(operation map[string]any, method, path, lowerAction string) bool {
+	if explicit, declared := boolExtension(operation, "x-lago-cli-dangerous"); declared {
+		return explicit
+	}
+	if method == http.MethodDelete {
+		return true
+	}
+	return matchesDestructiveVocabulary(path) || matchesDestructiveVocabulary(lowerAction)
+}
+
+// retryableOperation reports whether the transport may replay an operation on its own,
+// without an operator-supplied idempotency key. Only side-effect-free reads qualify.
+// PUT and DELETE are idempotent in the RFC sense and still move money in Lago, so they
+// are never auto-retried by default; `x-lago-cli-retryable` opts an operation back in.
+func retryableOperation(operation map[string]any, method string) bool {
+	if explicit, declared := boolExtension(operation, "x-lago-cli-retryable"); declared {
+		return explicit
+	}
+	return method == http.MethodGet || method == http.MethodHead || method == http.MethodOptions
+}
+
+// destructiveVocabulary lists the action segments that mark an irreversible or
+// money-moving Lago operation. Keep it in sync with internal/contract/parity_test.go.
+var destructiveVocabulary = []string{
+	"void", "finalize", "retry", "terminate", "delete", "destroy", "refund",
+}
+
+func matchesDestructiveVocabulary(value string) bool {
+	value = strings.ToLower(value)
+	for _, segment := range destructiveVocabulary {
+		if strings.Contains(value, segment) {
+			return true
+		}
+	}
+	return false
+}
+
+func boolExtension(operation map[string]any, key string) (bool, bool) {
+	value, exists := operation[key]
+	if !exists {
+		return false, false
+	}
+	result, ok := value.(bool)
+	return result, ok
 }

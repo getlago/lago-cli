@@ -5,7 +5,7 @@ COMMIT ?= $(shell git rev-parse --short=12 HEAD 2>/dev/null || printf unknown)
 DATE ?= $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 LDFLAGS := -s -w -X github.com/getlago/lago-cli/internal/cli.version=$(VERSION)
 
-.PHONY: build test coverage generate generate-check docs lint security release clean
+.PHONY: build test test-e2e-compile coverage generate generate-check docs lint security release clean
 
 build:
 	mkdir -p bin
@@ -14,9 +14,13 @@ build:
 test:
 	go test -race ./...
 
+# The golden-invoice harness is build-tagged and only executes against trusted
+# staging credentials. Compile it on every PR so it cannot rot silently.
+test-e2e-compile:
+	go vet -tags e2e ./test/...
+
 coverage:
-	go test -coverprofile=coverage.out ./pkg/...
-	go tool cover -func=coverage.out | awk '/^total:/ { gsub("%", "", $$3); if ($$3 + 0 < 85) { print "pkg coverage " $$3 "% is below 85%"; exit 1 } print "pkg coverage " $$3 "%" }'
+	./scripts/check-coverage.sh
 
 generate:
 	go run ./internal/gen -spec spec/openapi.yaml -out internal/generated/spec_gen.go -manifest spec/operations.json

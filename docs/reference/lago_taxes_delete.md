@@ -19,7 +19,8 @@ lago taxes delete <code> [flags]
 ### Options
 
 ```
-  -h, --help   help for delete
+  -h, --help                     help for delete
+      --idempotency-key string   Idempotency key for safe mutation retries
 ```
 
 ### Options inherited from parent commands

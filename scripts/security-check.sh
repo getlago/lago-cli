@@ -18,5 +18,6 @@ go run github.com/securego/gosec/v2/cmd/gosec@v2.22.10 -quiet -exclude-generated
 go run golang.org/x/vuln/cmd/govulncheck@v1.1.4 ./...
 ./scripts/check-ci-policy.sh
 ./scripts/check-fixtures.sh
+./scripts/check-licenses.sh
 
 echo "security: local gates passed"

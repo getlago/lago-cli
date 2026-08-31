@@ -30,7 +30,11 @@ func (r Renderer) Render(value any) error {
 		r.Out = io.Discard
 	}
 	if r.Query != "" {
-		queried, err := jmespath.Search(r.Query, value)
+		searchable, err := queryValue(value)
+		if err != nil {
+			return queryError(err)
+		}
+		queried, err := jmespath.Search(r.Query, searchable)
 		if err != nil {
 			return apperr.New(apperr.ExitUsage, fmt.Sprintf("invalid JMESPath query: %v", err), "Check --query syntax or remove the flag.")
 		}
@@ -47,7 +51,7 @@ func (r Renderer) Render(value any) error {
 	case YAML:
 		encoder := yaml.NewEncoder(r.Out)
 		defer encoder.Close()
-		return encoder.Encode(value)
+		return encoder.Encode(yamlValue(value))
 	default:
 		return apperr.New(apperr.ExitUsage, "output must be table, json, or yaml", "Pass --output table, --output json, or --output yaml.")
 	}

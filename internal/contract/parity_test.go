@@ -3,8 +3,10 @@ package contract_test
 import (
 	"encoding/json"
 	"io"
+	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/getlago/lago-cli/internal/cli"
@@ -80,4 +82,38 @@ func TestGeneratedManifestEmbedsPinnedSpecIdentity(t *testing.T) {
 	if manifest.Version != generated.SpecVersion || manifest.SHA != generated.SpecSHA256 || manifest.Count != len(generated.Operations) {
 		t.Fatalf("manifest identity is stale: %#v", manifest)
 	}
+}
+
+// destructiveSegments are the trailing path segments that identify an irreversible
+// or money-moving Lago operation. HTTP method semantics do not describe billing
+// semantics: PUT /invoices/{id}/finalize is idempotent by RFC and irreversible by
+// accounting. Every operation matching this vocabulary must be confirmation-gated
+// and must never be retried without an explicit idempotency key.
+var destructiveSegments = []string{
+	"void", "finalize", "retry", "retry_payment", "terminate", "delete", "destroy",
+}
+
+func TestDestructiveOperationsAreGatedAndNeverAutoRetried(t *testing.T) {
+	t.Parallel()
+	for _, operation := range generated.Operations {
+		if !isDestructiveOperation(operation) {
+			continue
+		}
+		if !operation.Dangerous {
+			t.Errorf("%s (%s %s) is destructive but is not confirmation-gated", operation.OperationID, operation.Method, operation.Path)
+		}
+		if operation.Idempotent {
+			t.Errorf("%s (%s %s) is destructive but is marked auto-retryable", operation.OperationID, operation.Method, operation.Path)
+		}
+	}
+}
+
+func isDestructiveOperation(operation generated.Operation) bool {
+	haystack := strings.ToLower(operation.Path + " " + operation.Action)
+	for _, segment := range destructiveSegments {
+		if strings.Contains(haystack, segment) {
+			return true
+		}
+	}
+	return operation.Method == http.MethodDelete
 }

@@ -18,6 +18,10 @@ This endpoint removes a specific feature entitlement from a subscription. The en
 	help for destroy-subscription
 
 .PP
+\fB--idempotency-key\fP=""
+	Idempotency key for safe mutation retries
+
+.PP
 \fB--subscription-status\fP=""
 	Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
 

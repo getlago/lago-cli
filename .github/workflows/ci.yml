@@ -20,6 +20,7 @@ jobs:
       - run: make generate-check
       - run: make lint
       - run: make test
+      - run: make test-e2e-compile
       - run: make coverage
       - run: ./scripts/check-ci-policy.sh
       - run: ./scripts/check-fixtures.sh

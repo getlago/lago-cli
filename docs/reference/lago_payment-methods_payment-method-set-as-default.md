@@ -19,7 +19,8 @@ lago payment-methods payment-method-set-as-default <lago_id> <external_customer_
 ### Options
 
 ```
-  -h, --help   help for payment-method-set-as-default
+  -h, --help                     help for payment-method-set-as-default
+      --idempotency-key string   Idempotency key for safe mutation retries
 ```
 
 ### Options inherited from parent commands

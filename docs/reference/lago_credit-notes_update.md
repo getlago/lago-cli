@@ -19,14 +19,15 @@ lago credit-notes update <lago_id> [flags]
 ### Options
 
 ```
-  -h, --help                   help for update
-      --input string           Complete JSON request body or @file.json
-      --metadata string        Metadata to set as key-value pairs. Keys are strings (max 100 characters), values can be strings (max 255 characters) or null.
-      --refund-status string   The status of the refund portion of the credit note. It indicates the current state or condition of the refund associated with the credit note. The possible values for this field are:
+  -h, --help                     help for update
+      --idempotency-key string   Idempotency key for safe mutation retries
+      --input string             Complete JSON request body or @file.json
+      --metadata string          Metadata to set as key-value pairs. Keys are strings (max 100 characters), values can be strings (max 255 characters) or null.
+      --refund-status string     The status of the refund portion of the credit note. It indicates the current state or condition of the refund associated with the credit note. The possible values for this field are:
 
-                               - 'pending': this status indicates that the refund is pending execution. The refund request has been initiated but has not been processed or completed yet.
-                               - 'succeeded': this status indicates that the refund has been successfully executed. The refund amount has been processed and returned to the customer or the designated recipient.
-                               - 'failed': this status indicates that the refund failed to execute. The refund request encountered an error or unsuccessful processing, and the refund amount could not be returned.; one of: pending, succeeded, failed
+                                 - 'pending': this status indicates that the refund is pending execution. The refund request has been initiated but has not been processed or completed yet.
+                                 - 'succeeded': this status indicates that the refund has been successfully executed. The refund amount has been processed and returned to the customer or the designated recipient.
+                                 - 'failed': this status indicates that the refund failed to execute. The refund request encountered an error or unsuccessful processing, and the refund amount could not be returned.; one of: pending, succeeded, failed
 ```
 
 ### Options inherited from parent commands

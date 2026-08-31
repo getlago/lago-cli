@@ -19,7 +19,8 @@ lago wallets delete-all-customer-wallet-metadata <external_customer_id> <wallet_
 ### Options
 
 ```
-  -h, --help   help for delete-all-customer-wallet-metadata
+  -h, --help                     help for delete-all-customer-wallet-metadata
+      --idempotency-key string   Idempotency key for safe mutation retries
 ```
 
 ### Options inherited from parent commands

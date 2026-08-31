@@ -19,7 +19,8 @@ lago wallets delete-customer-wallet-alert <external_customer_id> <wallet_code> <
 ### Options
 
 ```
-  -h, --help   help for delete-customer-wallet-alert
+  -h, --help                     help for delete-customer-wallet-alert
+      --idempotency-key string   Idempotency key for safe mutation retries
 ```
 
 ### Options inherited from parent commands

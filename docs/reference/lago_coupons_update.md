@@ -41,6 +41,7 @@ lago coupons update <code> [flags]
                                                   - If set to 'forever', the coupon has unlimited usage and can be applied indefinitely.; one of: once, recurring, forever
       --frequency-duration string                 Specifies the number of billing periods to which the coupon applies. This field is required only for coupons with a 'recurring' frequency type
   -h, --help                                      help for update
+      --idempotency-key string                    Idempotency key for safe mutation retries
       --input string                              Complete JSON request body or @file.json
       --name string                               The name of the coupon.
       --percentage-rate string                    The percentage rate of the coupon. This field is required only for coupons with a 'percentage' coupon type.

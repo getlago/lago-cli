@@ -1,7 +1,14 @@
 #!/bin/sh
 set -eu
 
+# Only Lago-owned repositories may be installed from. Without this the override
+# turned `curl … | sh` into an arbitrary-binary installer for anyone able to set
+# one environment variable, for example inside a compromised CI job.
 repo=${LAGO_INSTALL_REPOSITORY:-getlago/lago-cli}
+case $repo in
+  getlago/*) ;;
+  *) echo "lago installer: refusing to install from $repo; only getlago/* is allowed" >&2; exit 1 ;;
+esac
 version=${LAGO_INSTALL_VERSION:-latest}
 install_dir=${LAGO_INSTALL_DIR:-/usr/local/bin}
 
@@ -39,6 +46,29 @@ else
   actual=$(shasum -a 256 "$tmp_dir/$archive" | awk '{print $1}')
 fi
 [ "$actual" = "$expected" ] || { echo "lago installer: checksum verification failed" >&2; exit 1; }
+
+# The checksum file travels the same path as the artifact, so on its own it proves
+# integrity, not authenticity: whoever can serve a bad archive can serve a matching
+# checksums.txt. The release pipeline cosign-signs checksums.txt, so verify that
+# signature when cosign is available and say plainly when it is not.
+if command -v cosign >/dev/null 2>&1; then
+  if curl -fsSL --proto '=https' --tlsv1.2 "$base/checksums.txt.sig" -o "$tmp_dir/checksums.txt.sig" &&
+     curl -fsSL --proto '=https' --tlsv1.2 "$base/checksums.txt.pem" -o "$tmp_dir/checksums.txt.pem"; then
+    cosign verify-blob \
+      --certificate "$tmp_dir/checksums.txt.pem" \
+      --signature "$tmp_dir/checksums.txt.sig" \
+      --certificate-identity-regexp "^https://github.com/$repo/" \
+      --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+      "$tmp_dir/checksums.txt" ||
+      { echo "lago installer: signature verification failed" >&2; exit 1; }
+  else
+    echo "lago installer: no signature published for this release" >&2
+    exit 1
+  fi
+else
+  echo "lago installer: cosign not found; verified checksum only, not signature" >&2
+  echo "lago installer: install cosign for full supply-chain verification" >&2
+fi
 
 tar -xzf "$tmp_dir/$archive" -C "$tmp_dir" lago
 mkdir -p "$install_dir"

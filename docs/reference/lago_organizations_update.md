@@ -38,6 +38,7 @@ lago organizations update [flags]
       --email-settings string                               Represents the email settings of the organization. It allows you to define which documents are sent by email. The field value determines the types of documents that trigger email notifications. Possible values are 'invoice.finalized', 'credit_note.created' and 'payment_receipt.created'.
       --finalize-zero-amount-invoice string                 Determines whether invoices with a zero total amount should be finalized. If set to true, zero amount invoices will be finalized. If set to false, zero amount invoices will not be finalized.
   -h, --help                                                help for update
+      --idempotency-key string                              Idempotency key for safe mutation retries
       --input string                                        Complete JSON request body or @file.json
       --legal-name string                                   The legal name of your organization.
       --legal-number string                                 The legal number of your organization.

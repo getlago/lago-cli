@@ -374,7 +374,7 @@
           "description": "Unique code used to identify the add-on."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -666,7 +666,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -2304,7 +2304,7 @@
           "description": "Code of the existing billable metric."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -2573,7 +2573,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -4317,7 +4317,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -4887,7 +4887,7 @@
           "description": "Unique code used to identify the coupon."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -4918,7 +4918,7 @@
           "description": "Unique identifier of the applied coupon, created by Lago."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -5354,7 +5354,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -5484,7 +5484,7 @@
           "description": "The credit note unique identifier, created by Lago."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -5515,7 +5515,7 @@
           "description": "The metadata key to delete."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -5865,7 +5865,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -5888,8 +5888,8 @@
           "description": "The credit note unique identifier, created by Lago."
         }
       ],
-      "idempotent": true,
-      "dangerous": false,
+      "idempotent": false,
+      "dangerous": true,
       "paginated": false
     },
     {
@@ -7556,7 +7556,7 @@
           "description": "The customer external unique identifier (provided by your own application)"
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -8222,7 +8222,7 @@
           "description": "Code of the existing feature."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -8267,7 +8267,7 @@
           ]
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -8320,7 +8320,7 @@
           ]
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -8450,7 +8450,7 @@
           "description": "Code of the privilege to remove from the entitlement."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -8928,7 +8928,7 @@
           "description": "Code of the existing feature."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -8959,7 +8959,7 @@
           "description": "Code of the existing privilege."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -9079,7 +9079,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -9102,7 +9102,7 @@
           "description": "Unique identifier assigned to the fee within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the fee's record within the Lago system."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -9473,7 +9473,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -9751,7 +9751,7 @@
           "description": "Unique identifier assigned to the invoice within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the invoice's record within the Lago system."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -9797,8 +9797,8 @@
           "description": "Unique identifier assigned to the invoice within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the invoice's record within the Lago system."
         }
       ],
-      "idempotent": true,
-      "dangerous": false,
+      "idempotent": false,
+      "dangerous": true,
       "paginated": false
     },
     {
@@ -11130,7 +11130,7 @@
           "description": "Unique identifier assigned to the invoice within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the invoice's record within the Lago system."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -11154,7 +11154,7 @@
         }
       ],
       "idempotent": false,
-      "dangerous": false,
+      "dangerous": true,
       "paginated": false
     },
     {
@@ -11206,7 +11206,7 @@
         ]
       },
       "idempotent": false,
-      "dangerous": false,
+      "dangerous": true,
       "paginated": false
     },
     {
@@ -11257,7 +11257,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -11315,7 +11315,7 @@
         ]
       },
       "idempotent": false,
-      "dangerous": false,
+      "dangerous": true,
       "paginated": false
     },
     {
@@ -11530,7 +11530,7 @@
         }
       ],
       "idempotent": false,
-      "dangerous": false,
+      "dangerous": true,
       "paginated": false
     },
     {
@@ -12497,7 +12497,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -12528,7 +12528,7 @@
           "description": "The customer external unique identifier (provided by your own application)"
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -12598,7 +12598,7 @@
           "description": "The customer external unique identifier (provided by your own application)"
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -14248,7 +14248,7 @@
           "description": "The code of the plan. It serves as a unique identifier associated with a particular plan. The code is typically used for internal or system-level identification purposes, like assigning a subscription, for instance."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -14271,7 +14271,7 @@
           "description": "The code of the plan."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -14302,7 +14302,7 @@
           "description": "The metadata key to delete."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -14348,7 +14348,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -14402,7 +14402,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -14448,7 +14448,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -15119,7 +15119,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -15485,7 +15485,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -15713,7 +15713,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -16018,7 +16018,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -16267,7 +16267,7 @@
         }
       ],
       "idempotent": false,
-      "dangerous": false,
+      "dangerous": true,
       "paginated": false
     },
     {
@@ -17214,7 +17214,7 @@
           ]
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -17259,7 +17259,7 @@
           ]
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -17312,7 +17312,7 @@
           ]
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -18038,7 +18038,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -18282,7 +18282,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -18338,7 +18338,7 @@
           ]
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -18853,7 +18853,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -18943,7 +18943,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -19185,7 +19185,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -19223,7 +19223,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -19314,7 +19314,7 @@
           "description": "The code of the tax. It serves as a unique identifier associated with a particular tax. The code is typically used for internal or system-level identification purposes."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -19446,7 +19446,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -20511,7 +20511,7 @@
           "description": "A unique wallet identifier within a customer. It is either set by the user at creation or auto-generated by Lago if not provided."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -20542,7 +20542,7 @@
           "description": "A unique wallet identifier within a customer. It is either set by the user at creation or auto-generated by Lago if not provided."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -20565,7 +20565,7 @@
           "description": "Unique identifier assigned to the wallet within the Lago application."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -20604,7 +20604,7 @@
           "description": "Unique code of the alert"
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -20643,7 +20643,7 @@
           "description": "The metadata key to delete."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -20674,7 +20674,7 @@
           "description": "The metadata key to delete."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -20705,7 +20705,7 @@
           "description": "A unique wallet identifier within a customer. It is either set by the user at creation or auto-generated by Lago if not provided."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -21175,7 +21175,7 @@
           "description": "Unique identifier assigned to the wallet within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the wallet's record within the Lago system."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -21363,7 +21363,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -21559,7 +21559,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -21633,7 +21633,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },
@@ -21805,7 +21805,7 @@
           "description": "Unique identifier assigned to the webhook endpoint within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the webhook endpoint's record within the Lago system."
         }
       ],
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": true,
       "paginated": false
     },
@@ -21932,7 +21932,7 @@
           }
         ]
       },
-      "idempotent": true,
+      "idempotent": false,
       "dangerous": false,
       "paginated": false
     },

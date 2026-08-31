@@ -25,6 +25,7 @@ lago wallets update-customer <external_customer_id> <code> [flags]
       --code string                                                  The code of the wallet.
       --expiration-at string                                         The date and time that determines when the wallet will expire. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC).
   -h, --help                                                         help for update-customer
+      --idempotency-key string                                       Idempotency key for safe mutation retries
       --input string                                                 Complete JSON request body or @file.json
       --invoice-custom-section-invoice-custom-section-codes string   List of unique codes identifying the invoice custom sections to apply. These override the default invoice custom sections configured at the customer or billing entity level.
       --invoice-custom-section-skip-invoice-custom-sections string   Set to 'true' to exclude all invoice custom sections from PDF generation for invoices related to this resource. When 'true', 'invoice_custom_section_codes' is ignored.

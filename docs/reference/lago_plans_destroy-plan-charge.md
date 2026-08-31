@@ -21,6 +21,7 @@ lago plans destroy-plan-charge <code> <charge_code> [flags]
 ```
       --cascade-updates string   When set to 'true', the deletion will be cascaded to the children plans.
   -h, --help                     help for destroy-plan-charge
+      --idempotency-key string   Idempotency key for safe mutation retries
       --input string             Complete JSON request body or @file.json
 ```
 
