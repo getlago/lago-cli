@@ -1,0 +1,99 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-orders-execute - Execute an order
+
+
+.SH SYNOPSIS
+\fBlago orders execute  [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint carries out an order on demand, without waiting for its \fBexecute_at\fR schedule. It runs synchronously, so the response carries the resulting status and, when the execution fails, the reason it failed.
+An \fBexecute_in_lago\fR order applies the quoted deal, creating the subscriptions, coupons, wallets or one-off invoice it describes; an \fBorder_only\fR order is simply marked as executed. What the execution produced is listed in \fBexecution_record\fR\&.
+Executing is idempotent: an order that has already been executed is returned untouched. An order whose previous execution failed is executed again, and a \fB422\fR is returned when the order carries no execution mode and none is provided in the body.
+Restating an \fBexecution_mode\fR that differs from the one stored on the order updates it first, which only succeeds while the order is still \fBcreated\fR: a \fBfailed\fR order can be retried, but not switched to another mode. That update also re-validates the order's own \fBexecute_at\fR against the day the quoted deal stops being executable, so a \fB422\fR is possible even though no date was sent. An order carrying no \fBexecute_at\fR is not bounded that way, and a deal whose term has passed then only fails when the execution runs.
+A \fB404\fR is not limited to an unknown order: when the execution cannot find a catalog record the quote pinned, such as a deleted plan, charge, coupon or the subscription being amended, the missing resource is reported as a \fB404\fR and the order is left \fBfailed\fR\&.
+Concurrency is reported two ways. A mode change losing the race on the quote comes back as a \fB422\fR validation error, while the execution itself losing it comes back as a \fB422\fR carrying a lock code, because a scheduled execution relies on that error to be retried.
+This is a premium feature.
+
+
+.SH OPTIONS
+\fB--execution-mode\fP=""
+	How the order is carried out. It is only persisted when it differs from the mode already stored on the order, so restating the current mode never fails. Changing the mode of an order that has already been executed is rejected.; one of: execute_in_lago, order_only
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for execute
+
+.PP
+\fB--idempotency-key\fP=""
+	Idempotency key for safe mutation retries
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago orders execute <lago_id> --input @payload.json
+.EE
+
+
+.SH SEE ALSO
+\fBlago-orders(1)\fP

@@ -1,0 +1,198 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-plans-create-plan-fixed-charge - Create a fixed charge
+
+
+.SH SYNOPSIS
+\fBlago plans create-plan-fixed-charge  [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint creates a new fixed charge for a specific plan.
+
+
+.SH OPTIONS
+\fB--add-on-code\fP=""
+	Unique code identifying an add-on. Either add_on_id or add_on_code is required.
+
+.PP
+\fB--add-on-id\fP=""
+	Unique identifier of the add-on. Either add_on_id or add_on_code is required.
+
+.PP
+\fB--apply-units-immediately\fP=""
+	When set to 'true', the fixed charge units are applied immediately for active subscriptions. When set to 'false', the units are applied at the next billing period.
+
+.PP
+\fB--cascade-updates\fP=""
+	This field determines whether the creation of the fixed charge should be cascaded to the children plans. When set to 'true', the fixed charge will be created in children plans. Conversely, when set to 'false', the fixed charge will only be created in the plan itself. If not defined in the request, default value is 'false'.
+
+.PP
+\fB--charge-model\fP=""
+	Specifies the pricing model used for the calculation of the fixed charge fee. It can be any of the following values:
+  - 'standard'
+  - 'graduated'
+  - 'volume'; one of: standard, graduated, volume
+
+.PP
+\fB--code\fP=""
+	Unique code identifying the fixed charge within the plan.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for create-plan-fixed-charge
+
+.PP
+\fB--idempotency-key\fP=""
+	Idempotency key for safe mutation retries
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--invoice-display-name\fP=""
+	Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the add-on will be used as the default display name.
+
+.PP
+\fB--pay-in-advance\fP=""
+	This field determines the billing timing for this fixed charge. When set to 'true', the charge is due and invoiced immediately at the beginning of the billing period. When set to 'false', the charge is due and invoiced at the end of the billing period.
+
+.PP
+\fB--properties-amount\fP=""
+	- The unit price, excluding tax, for a 'standard' charge model. It is expressed as a decimal value.
+- The amount, excluding tax, for a complete set of units in a 'package' charge model. It is expressed as a decimal value.
+
+.PP
+\fB--properties-fixed-amount\fP=""
+	The fixed fee that is applied to each transaction for a 'percentage' charge model. It is expressed as a decimal value.
+
+.PP
+\fB--properties-free-units\fP=""
+	The quantity of units that are provided free of charge for each billing period in a 'package' charge model. This field specifies the number of units that customers can use without incurring any additional cost during each billing cycle.
+
+.PP
+\fB--properties-free-units-per-events\fP=""
+	The count of transactions that are not impacted by the 'percentage' rate and fixed fee in a percentage charge model. This field indicates the number of transactions that are exempt from the calculation of charges based on the specified percentage rate and fixed fee.
+
+.PP
+\fB--properties-free-units-per-total-aggregation\fP=""
+	The transaction amount that is not impacted by the 'percentage' rate and fixed fee in a percentage charge model. This field indicates the portion of the transaction amount that is exempt from the calculation of charges based on the specified percentage rate and fixed fee.
+
+.PP
+\fB--properties-graduated-percentage-ranges\fP=""
+	Graduated percentage ranges, sorted from bottom to top tiers, used for a 'graduated_percentage' charge model.
+
+.PP
+\fB--properties-graduated-ranges\fP=""
+	Graduated ranges, sorted from bottom to top tiers, used for a 'graduated' charge model.
+
+.PP
+\fB--properties-grouped-by\fP=""
+	\fBDeprecated.\fP Replaced by 'pricing_group_keys'.
+The list of event properties that are used to group the events on the invoice for a 'standard' charge model.
+
+.PP
+\fB--properties-package-size\fP=""
+	The quantity of units included in each pack or set for a 'package' charge model. It indicates the number of units that are bundled together as a single package or set within the pricing structure.
+
+.PP
+\fB--properties-per-transaction-max-amount\fP=""
+	Specifies the maximum allowable spending for a single transaction. Working as a transaction cap.
+
+.PP
+\fB--properties-per-transaction-min-amount\fP=""
+	Specifies the minimum allowable spending for a single transaction. Working as a transaction floor.
+
+.PP
+\fB--properties-pricing-group-keys\fP=""
+	The list of event properties that are used to group the events on the invoice.
+
+.PP
+\fB--properties-rate\fP=""
+	The percentage rate that is applied to the amount of each transaction for a 'percentage' charge model. It is expressed as a decimal value.
+
+.PP
+\fB--properties-volume-ranges\fP=""
+	Volume ranges, sorted from bottom to top tiers, used for a 'volume' charge model.
+
+.PP
+\fB--prorated\fP=""
+	Specifies whether a fixed charge is prorated based on the remaining number of days in the billing period or billed fully.
+.IP \(bu 2
+If set to 'true', the charge is prorated based on the remaining days in the current billing period.
+.IP \(bu 2
+If set to 'false', the charge is billed in full.
+
+.PP
+\fB--tax-codes\fP=""
+	List of unique code used to identify the taxes.
+
+.PP
+\fB--units\fP=""
+	The quantity of units for the fixed charge.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago plans create-plan-fixed-charge <code> --input @payload.json
+.EE
+
+
+.SH SEE ALSO
+\fBlago-plans(1)\fP

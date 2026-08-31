@@ -1,0 +1,4 @@
+* @getlago/developers
+/spec/ @getlago/developers
+/internal/generated/ @getlago/developers
+/.github/workflows/ @getlago/developers

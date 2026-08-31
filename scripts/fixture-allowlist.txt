@@ -1,0 +1,26 @@
+# Accepted matches for scripts/check-fixtures.sh.
+#
+# Each entry is a fixed string. A finding whose line contains an entry is exempt.
+# Every entry needs a reason. Anything not listed here fails the build, so adding
+# an entry is a deliberate, reviewable act, not a way to silence the scanner.
+
+# --- Placeholder credentials -------------------------------------------------
+# Literal "FAKE" markers, used in docs, help text and tests. They are not valid
+# keys and are recognisable as placeholders at a glance. The live-prefixed form
+# appears in the guardrail tests that prove live profiles are refused.
+lago_test_FAKE
+lago_live_FAKE
+
+# --- Lago's own published contact addresses ----------------------------------
+# Public, intentional, and already on getlago.com.
+tech@getlago.com
+sales@getlago.com
+security@getlago.com
+
+# --- Vendored upstream OpenAPI examples ---------------------------------------
+# spec/openapi.yaml is pinned upstream content from getlago/lago-openapi, not a
+# fixture authored here. These example values name real companies and should be
+# replaced upstream with example.com values; tracked as a lago-openapi issue.
+# Listed explicitly so the exposure stays visible instead of going unscanned.
+example: brex@brex.com
+example: billing@acme.com

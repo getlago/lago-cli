@@ -1,0 +1,32 @@
+name: Trusted staging E2E
+
+on:
+  schedule:
+    - cron: "41 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  golden-path:
+    if: github.repository == 'getlago/lago-cli'
+    environment: cli-staging
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [us, eu, self-hosted]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - run: make build
+      - name: Run real golden invoice flow
+        env:
+          LAGO_E2E_TARGET: ${{ matrix.target }}
+          LAGO_API_KEY: ${{ secrets.LAGO_CLI_E2E_API_KEY }}
+          LAGO_API_URL: ${{ secrets.LAGO_CLI_E2E_API_URL }}
+          LAGO_MODE: test
+        run: go test -tags=e2e ./test/e2e -run TestGoldenInvoice -count=1 -timeout=5m

@@ -1,0 +1,125 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-invoices-create - Create a one-off invoice
+
+
+.SH SYNOPSIS
+\fBlago invoices create [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint is used for issuing a one-off invoice.
+
+
+.SH OPTIONS
+\fB--billing-entity-code\fP=""
+	The code of the billing entity to issue the invoice from. If not provided, the customer's billing entity is used.
+
+.PP
+\fB--currency\fP=""
+	The currency of the invoice.; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SZL, THB, TJS, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
+
+.PP
+\fB--external-customer-id\fP=""
+	Unique identifier assigned to the customer in your application.
+
+.PP
+\fB--fees\fP=""
+	API field (array)
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for create
+
+.PP
+\fB--idempotency-key\fP=""
+	Idempotency key for safe mutation retries
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--invoice-custom-section-invoice-custom-section-codes\fP=""
+	List of unique codes identifying the invoice custom sections to apply. These override the default invoice custom sections configured at the customer or billing entity level.
+
+.PP
+\fB--invoice-custom-section-skip-invoice-custom-sections\fP=""
+	Set to 'true' to exclude all invoice custom sections from PDF generation for invoices related to this resource. When 'true', 'invoice_custom_section_codes' is ignored.
+
+.PP
+\fB--payment-method-payment-method-id\fP=""
+	The unique identifier of the payment method (required when using a specific provider payment method).
+
+.PP
+\fB--payment-method-payment-method-type\fP=""
+	The type of payment method to use.; one of: provider, manual
+
+.PP
+\fB--purchase-order-number\fP=""
+	The purchase order number to associate with the invoice.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago invoices create --input @payload.json
+.EE
+
+
+.SH SEE ALSO
+\fBlago-invoices(1)\fP

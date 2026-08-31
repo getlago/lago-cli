@@ -1,0 +1,153 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-customers-export - Export customers using the stable list response schema
+
+
+.SH SYNOPSIS
+\fBlago customers export [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint retrieves all existing customers.
+
+
+.SH OPTIONS
+\fB--account-type\fP=""
+	Filter customers by account type.
+
+.PP
+\fB--all\fP[=false]
+	Fetch every page
+
+.PP
+\fB--billing-entity-codes\fP=""
+	Filter customers by billing entity codes.
+
+.PP
+\fB--countries\fP=""
+	Filter customers by countries. Possible values are the ISO 3166-1 alpha-2 codes.
+
+.PP
+\fB--currencies\fP=""
+	Filter customers by currencies.
+
+.PP
+\fB--customer-type\fP=""
+	Filter customers by customer type.; one of: company, individual
+
+.PP
+\fB--external-id\fP=""
+	Filter customers by external ID.
+
+.PP
+\fB--has-customer-type\fP=""
+	Filter customers by whether they have a customer type or not.
+
+.PP
+\fB--has-tax-identification-number\fP=""
+	Filter customers by whether they have a tax identification number or not.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for export
+
+.PP
+\fB--limit\fP=""
+	Maximum number of results
+
+.PP
+\fB--metadata[key]\fP=""
+	Filter customers by metadata. Replace 'key' with the actual metadata key you want to match, and provide the corresponding value. Providing empty value will search for customers without given metadata key. For example, 'metadata[is_synced]=true&metadata[last_synced_at]='.
+
+.PP
+\fB--page\fP=""
+	Page number.
+
+.PP
+\fB--per-page\fP=""
+	Number of records per page.
+
+.PP
+\fB--search-term\fP=""
+	Filter customers by search term. This will filter all customers whose name, firstname, lastname, legal name, external id or email contain the search term.
+
+.PP
+\fB--states\fP=""
+	Filter customers by states.
+
+.PP
+\fB--watch\fP[=false]
+	Poll and re-render when the response changes
+
+.PP
+\fB--watch-interval\fP=2s
+	Polling interval used with --watch
+
+.PP
+\fB--zipcodes\fP=""
+	Filter customers by zipcodes.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago customers export
+.EE
+
+
+.SH SEE ALSO
+\fBlago-customers(1)\fP

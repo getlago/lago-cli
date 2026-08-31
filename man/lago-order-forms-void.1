@@ -1,0 +1,88 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-order-forms-void - Void an order form
+
+
+.SH SYNOPSIS
+\fBlago order-forms void  [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint voids an order form, with the \fBmanual\fR reason, and cascades to the quote version it was generated from, which is voided with the \fBcascade_of_voided\fR reason.
+Only a \fBgenerated\fR order form can be voided, so a \fB422\fR is returned once the order form has been signed, has expired or has already been voided.
+A concurrent write on the same quote is reported as a \fB422\fR rather than retried, so a duplicated call can fail while the first one is still in flight.
+This is a premium feature.
+
+
+.SH OPTIONS
+\fB-h\fP, \fB--help\fP[=false]
+	help for void
+
+.PP
+\fB--idempotency-key\fP=""
+	Idempotency key for safe mutation retries
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago order-forms void <lago_id>
+.EE
+
+
+.SH SEE ALSO
+\fBlago-order-forms(1)\fP

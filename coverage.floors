@@ -1,0 +1,32 @@
+# Per-package coverage floors, enforced by scripts/check-coverage.sh in CI.
+#
+# A single repo-wide average lets a well-covered package mask an untested one: the
+# gate this replaced measured only ./pkg/..., which is 111 lines, and reported 90%
+# while the packages holding money, credentials, and the live-mode guardrails went
+# unmeasured. Floors are per package and ratchet upward only.
+#
+# Raise a floor when you raise its coverage. Never lower one to make CI pass.
+#
+# The money, credential, and safety-gate packages (cli, config, transport, output,
+# apperr, redact, permissions, api) are held at the 85% target and marked below.
+# The remaining packages are code generators and doc tooling: a defect there fails
+# `make generate-check` visibly rather than moving money, so they carry today's
+# measured value as a ratchet floor instead of the 85% bar.
+
+# --- money, credentials, safety gates: 85% target ---------------------------
+internal/apperr         94.0
+internal/cli            86.0
+internal/config         85.0
+internal/output         96.0
+internal/permissions   100.0
+internal/redact        100.0
+internal/transport      93.0
+pkg/api                 90.0
+
+# --- generators and tooling: ratchet floors ---------------------------------
+internal/diagnostics    54.0
+internal/docgen         56.0
+internal/gen            10.0
+internal/generated      50.0
+internal/moneycheck     16.0
+internal/update         33.0

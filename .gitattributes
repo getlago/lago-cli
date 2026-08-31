@@ -1,0 +1,8 @@
+* text=auto eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+spec/openapi.yaml linguist-generated=true
+internal/generated/spec_gen.go linguist-generated=true
+spec/operations.json linguist-generated=true
+docs/reference/** linguist-generated=true
+man/** linguist-generated=true

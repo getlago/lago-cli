@@ -1,0 +1,48 @@
+name: Security
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "19 4 * * 1"
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - name: Gitleaks history and worktree
+        run: |
+          go run github.com/zricethezav/gitleaks/v8@v8.30.1 git --redact --no-banner .
+          go run github.com/zricethezav/gitleaks/v8@v8.30.1 dir --redact --no-banner .
+      - name: Gosec
+        run: go run github.com/securego/gosec/v2/cmd/gosec@v2.22.10 -exclude-generated ./...
+      - name: Vulnerability database
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.1.4 ./...
+      - run: go run ./internal/moneycheck ./...
+      - run: ./scripts/check-fixtures.sh
+      - run: ./scripts/check-ci-policy.sh
+      - name: License compatibility
+        run: ./scripts/check-licenses.sh
+
+  reproducible:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - run: |
+          CGO_ENABLED=0 go build -trimpath -o /tmp/lago-one ./cmd/lago
+          CGO_ENABLED=0 go build -trimpath -o /tmp/lago-two ./cmd/lago
+          cmp /tmp/lago-one /tmp/lago-two

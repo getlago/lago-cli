@@ -1,0 +1,122 @@
+.nh
+.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-credit-notes-create - Create a credit note
+
+
+.SH SYNOPSIS
+\fBlago credit-notes create [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint creates a new credit note.
+
+
+.SH OPTIONS
+\fB--credit-amount-cents\fP=""
+	The total amount to be credited to the customer balance for discounts on future invoices. For a total or partial refund, credit or offset, the amount in cents must include both the item amount and the applicable tax. The refunded, credited and offsetted amounts should always balance. The total, including taxes, cannot exceed the invoice's total fees.
+
+.PP
+\fB--description\fP=""
+	The description of the credit note.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for create
+
+.PP
+\fB--idempotency-key\fP=""
+	Idempotency key for safe mutation retries
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--invoice-id\fP=""
+	The invoice unique identifier, created by Lago.
+
+.PP
+\fB--items\fP=""
+	The list of credit note's items.
+
+.PP
+\fB--metadata\fP=""
+	Metadata to set as key-value pairs. Keys are strings (max 100 characters), values can be strings (max 255 characters) or null.
+
+.PP
+\fB--offset-amount-cents\fP=""
+	The total amount to be immediately deducted from the invoice balance. For a total or partial refund, credit or offset, the amount in cents must include both the item amount and the applicable tax. The refunded, credited and offsetted amounts should always balance. The total, including taxes, cannot exceed the invoice's total fees.
+
+.PP
+\fB--reason\fP=""
+	The reason of the credit note creation.
+Possible values are 'duplicated_charge', 'product_unsatisfactory', 'order_change', 'order_cancellation', 'fraudulent_charge' or 'other'.; one of: duplicated_charge, product_unsatisfactory, order_change, order_cancellation, fraudulent_charge, other,
+
+.PP
+\fB--refund-amount-cents\fP=""
+	The total amount to be refunded immediately to the payment method used by the customer. For a total or partial refund, credit or offset, the amount in cents must include both the item amount and the applicable tax. The refunded, credited and offsetted amounts should always balance. The total, including taxes, cannot exceed the invoice's total fees.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago credit-notes create --input @payload.json
+.EE
+
+
+.SH SEE ALSO
+\fBlago-credit-notes(1)\fP

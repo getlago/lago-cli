@@ -1,0 +1,6 @@
+{
+  "error": {
+    "message": "absolute API paths are not allowed",
+    "suggestion": "Use --api-url to select the server and pass a relative API path."
+  }
+}

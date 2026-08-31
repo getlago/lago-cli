@@ -1,0 +1,8 @@
+{
+  "currency": "USD",
+  "fees_amount_cents": 100,
+  "sub_total_excluding_taxes_amount_cents": 100,
+  "taxes_amount_cents": 0,
+  "total_amount_cents": 100,
+  "line_item_count": 1
+}

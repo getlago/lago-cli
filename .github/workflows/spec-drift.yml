@@ -1,0 +1,44 @@
+name: OpenAPI drift
+
+on:
+  schedule:
+    - cron: "23 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    if: github.repository == 'getlago/lago-cli'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - run: ./scripts/update-spec.sh
+      - run: go run ./internal/docgen -markdown docs/reference -man man -completions completions
+      # team-reviewers requires a token with org read scope. The default GITHUB_TOKEN
+      # has none, so with it the review request is silently dropped and the drift PR
+      # lands unassigned, defeating the one-business-day SLA in DECISIONS.md. Provide
+      # SPEC_DRIFT_TOKEN (a PAT with repo + read:org) to make the assignment real.
+      - name: Open a reviewable drift PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.SPEC_DRIFT_TOKEN || github.token }}
+          branch: automation/openapi-drift
+          delete-branch: true
+          commit-message: "chore(spec): synchronize Lago OpenAPI"
+          title: "chore(spec): synchronize Lago OpenAPI"
+          body: |
+            Automated daily drift update from the public Lago OpenAPI document.
+
+            Owner: @getlago/developers
+            SLA: review and merge or close with rationale within one business day.
+
+            If no reviewer is assigned to this PR, SPEC_DRIFT_TOKEN is missing and
+            the team review request was dropped. Fix that before relying on the SLA.
+          labels: spec-drift,automated
+          team-reviewers: developers
