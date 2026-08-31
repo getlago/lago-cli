@@ -318,7 +318,7 @@ func TestNormalizeBaseURLShapesTheAPIPath(t *testing.T) {
 		{"https://api.getlago.com/", "/api/v1"},
 		{"https://api.getlago.com/api/v1", "/api/v1"},
 		{"https://api.getlago.com/api/v1/", "/api/v1"},
-		{"https://lago.internal.example/lago", "/lago/api/v1"},
+		{"https://lago.selfhosted.example/lago", "/lago/api/v1"},
 	} {
 		parsed, err := NormalizeBaseURL(testCase.raw, false)
 		if err != nil {

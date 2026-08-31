@@ -6,8 +6,10 @@
 
 # --- Placeholder credentials -------------------------------------------------
 # Literal "FAKE" markers, used in docs, help text and tests. They are not valid
-# keys and are recognisable as placeholders at a glance.
+# keys and are recognisable as placeholders at a glance. The live-prefixed form
+# appears in the guardrail tests that prove live profiles are refused.
 lago_test_FAKE
+lago_live_FAKE
 
 # --- Lago's own published contact addresses ----------------------------------
 # Public, intentional, and already on getlago.com.

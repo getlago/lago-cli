@@ -18,8 +18,12 @@ trap 'rm -f "$findings" "$findings.err"' EXIT HUP INT TERM
 # in the vendored spec and drowns the signal. The rule below only fires on a UUID in a
 # credential context (api_key:, token:, Bearer ...), which is what a real leak looks like.
 #
+# Tracked files plus new files that are not ignored. Scanning only tracked files
+# let a newly written test pass this check locally and fail it in CI.
+#
 # Binary and vendored-lockfile noise would otherwise dominate the report.
-files=$(git ls-files | grep -vE '^(go\.sum|.*\.(png|jpg|jpeg|gif|ico|pdf|gz|zip))$')
+files=$(git ls-files --cached --others --exclude-standard \
+  | grep -vE '^(go\.sum|.*\.(png|jpg|jpeg|gif|ico|pdf|gz|zip))$')
 [ -n "$files" ] || { echo "fixture scan: no tracked files" >&2; exit 1; }
 
 # shellcheck disable=SC2086
