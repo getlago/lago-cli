@@ -37,6 +37,10 @@ func main() {
 	}
 	files := token.NewFileSet()
 	violations := 0
+	// root is argv[1], typed by the maintainer running `make lint`. The checker only reads
+	// Go source under it and writes nothing, so a traversal here reaches files the same
+	// person could already open.
+	// #nosec G703 -- maintainer-supplied scan root in a read-only linter.
 	err := filepath.WalkDir(root, func(path string, entry os.DirEntry, walkErr error) error {
 		if walkErr != nil {
 			return walkErr

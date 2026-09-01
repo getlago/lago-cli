@@ -298,3 +298,88 @@ func TestIdentifierOrderIsStable(t *testing.T) {
 		t.Fatalf("identifier order changed to %v; update the README and snapshots deliberately", got)
 	}
 }
+
+// A query that matches nothing must print a hint naming the keys that were available,
+// keep null on stdout, and stay quiet whenever there is nothing to explain.
+func TestEmptyMatchHint(t *testing.T) {
+	t.Parallel()
+	for _, testCase := range []struct {
+		name      string
+		value     any
+		query     string
+		wantOut   string
+		wantHint  []string
+		quietHint bool
+	}{
+		{
+			name:     "wrapper omitted",
+			value:    map[string]any{"customers": []any{map[string]any{"lago_id": "cus_1"}}, "meta": map[string]any{}},
+			query:    "lago_id",
+			wantOut:  "null",
+			wantHint: []string{"query matched nothing", "customers", "meta"},
+		},
+		{
+			name:      "successful query stays quiet",
+			value:     map[string]any{"customers": []any{map[string]any{"lago_id": "cus_1"}}},
+			query:     "customers[].lago_id",
+			wantOut:   "cus_1",
+			quietHint: true,
+		},
+		{
+			name:      "a null response is an answer, not a missed match",
+			value:     nil,
+			query:     "anything",
+			wantOut:   "null",
+			quietHint: true,
+		},
+		{
+			name:      "an empty list is a match, not a miss",
+			value:     map[string]any{"customers": []any{}},
+			query:     "customers",
+			wantOut:   "[]",
+			quietHint: true,
+		},
+		{
+			name:     "a non-object response still gets the bare hint",
+			value:    []any{"first"},
+			query:    "missing",
+			wantOut:  "null",
+			wantHint: []string{"query matched nothing"},
+		},
+	} {
+		t.Run(testCase.name, func(t *testing.T) {
+			t.Parallel()
+			var out, errOut bytes.Buffer
+			err := Renderer{Mode: JSON, Query: testCase.query, Out: &out, Err: &errOut}.Render(testCase.value)
+			if err != nil {
+				t.Fatalf("render failed: %v", err)
+			}
+			if !strings.Contains(out.String(), testCase.wantOut) {
+				t.Errorf("stdout = %q, want it to contain %q", out.String(), testCase.wantOut)
+			}
+			if testCase.quietHint {
+				if strings.Contains(errOut.String(), "matched nothing") {
+					t.Errorf("hint fired when it should not have: %q", errOut.String())
+				}
+				return
+			}
+			for _, want := range testCase.wantHint {
+				if !strings.Contains(errOut.String(), want) {
+					t.Errorf("hint missing %q: %q", want, errOut.String())
+				}
+			}
+		})
+	}
+}
+
+// A renderer with no Err writer must not panic when a query matches nothing.
+func TestEmptyMatchHintWithNoErrorWriterIsDiscarded(t *testing.T) {
+	t.Parallel()
+	var out bytes.Buffer
+	if err := (Renderer{Mode: JSON, Query: "missing", Out: &out}).Render(map[string]any{"customers": []any{}}); err != nil {
+		t.Fatalf("render failed: %v", err)
+	}
+	if strings.TrimSpace(out.String()) != "null" {
+		t.Errorf("stdout = %q, want null", out.String())
+	}
+}

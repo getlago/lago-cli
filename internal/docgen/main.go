@@ -78,7 +78,10 @@ func normalizeMarkdownTree(root string) error {
 		if entry.IsDir() || filepath.Ext(path) != ".md" {
 			return nil
 		}
-		// #nosec G304 -- path is yielded by WalkDir under the maintainer-selected output root.
+		// path is yielded by WalkDir under the output root this same program just created
+		// and wrote, on a maintainer's checkout. There is no adversary between the walk
+		// and the read to win a symlink race with, and no untrusted input reaches path.
+		// #nosec G304,G703,G122 -- maintainer-run doc generator rewriting its own output tree.
 		content, err := os.ReadFile(path)
 		if err != nil {
 			return err
@@ -88,7 +91,7 @@ func normalizeMarkdownTree(root string) error {
 			lines[i] = strings.TrimRight(lines[i], " \t\r")
 		}
 		normalized := strings.TrimRight(strings.Join(lines, "\n"), "\n") + "\n"
-		// #nosec G306 -- generated CLI reference is intentionally public.
+		// #nosec G306,G703,G122 -- generated CLI reference is intentionally public, written back to the path just read.
 		return os.WriteFile(path, []byte(normalized), 0o644)
 	})
 }

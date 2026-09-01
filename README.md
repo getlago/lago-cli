@@ -64,7 +64,15 @@ Create an API key in the Lago app under **Developers → API keys**, then point 
 | Cloud EU | `https://api.eu.getlago.com` |
 | Self-hosted | your Lago API base URL, for example `https://lago.example.com` |
 
-Pass the **base** URL. The CLI appends `/api/v1` itself. Pasting the full path works too: `https://api.getlago.com/api/v1` normalizes to the same host, and so do a trailing slash, a custom port, and a sub-path behind a proxy. Do not pass the **app** URL: `https://app.getlago.com` is the dashboard, not the API.
+Pass the **base** URL. The CLI appends `/api/v1` itself. Pasting the full path works too: `https://api.getlago.com/api/v1` normalizes to the same host, and so do a trailing slash, a custom port (`https://lago.example.com:8443`), and a sub-path behind a proxy (`https://tools.example.com/lago` keeps the sub-path). `init` saves the normalized URL, so what the profile holds is what the CLI calls.
+
+What does not work is the **app** URL. `https://app.getlago.com` is the dashboard, not the API, and it answers, which is what makes the mistake confusing. The CLI refuses it by name rather than sending your API key to the frontend:
+
+```console
+$ lago init --api-key "$LAGO_API_KEY" --api-url https://app.eu.getlago.com
+Error: app.eu.getlago.com is the Lago dashboard, not the Lago API
+Suggestion: Use https://api.eu.getlago.com instead. The API and the app are different hosts, and an API key sent to the app host will not authenticate.
+```
 
 `init` writes the profile only after a live `GET /api/v1/organizations` accepts the key, so a saved profile is a validated one.
 
@@ -84,7 +92,23 @@ $ lago init --api-key "$LAGO_API_KEY" --region self-hosted --api-url https://lag
 
 `--region us` and `--region eu` are shorthand for the two URLs in the table above; they resolve to exactly the same normalized host as passing `--api-url` explicitly.
 
-`lago whoami` reports the active profile, region, mode, API URL, and organization. `lago doctor` runs the configuration, permission, network, and authentication checks.
+Check which host you are actually hitting, on any deployment. `RESOLVED_API_URL` is the base URL the CLI calls; `API_URL` is what the profile holds:
+
+```console
+$ lago whoami
+API_URL           https://api.eu.getlago.com
+MODE              test
+ORGANIZATION      {"organization":{"lago_id":"org_...","name":"Example Organization"}}
+PROFILE           default
+REGION            eu
+RESOLVED_API_URL  https://api.eu.getlago.com/api/v1
+```
+
+`lago doctor` reports the same resolved URL as its own check, next to the configuration, permission, and authentication checks. It is the first line to paste into a support ticket: it separates "wrong credentials" from "right credentials, wrong host".
+
+```console
+$ lago doctor --output json --query 'checks[].{check: name, detail: detail}'
+```
 
 ### Precedence and the live-mode default
 
@@ -204,11 +228,34 @@ form `'finalized'`, which means double-quoting the whole expression for your she
 $ lago invoices list --output json --query "invoices[?status=='finalized'].[lago_id]"
 ```
 
-A query that skips the wrapper matches nothing and yields `null`:
+When a query matches nothing, the CLI says so on stderr and still prints `null` on stdout, so a script's parsing does not change:
 
 ```console
 $ lago customers list --output json --query 'lago_id'
+query matched nothing; top-level keys: customers, meta
 null
+```
+
+`--query` implies `--output json` when you have not chosen a format, because a JMESPath result is structured data and an empty table is not an answer. The switch is announced, not silent, and an explicit `--output` always wins:
+
+```console
+$ lago customers list --query 'customers[].external_id'
+--query implies --output json; pass --output table explicitly to render the result as a table.
+[
+  "quickstart_customer"
+]
+```
+
+### When an identifier is the wrong kind
+
+Lago answers an unknown identifier with a bare `404 Not Found`, which reads as "no data" rather than "no such thing". The CLI names the resource type and the value instead, and exits 4:
+
+```console
+$ lago events send --external-subscription-id ai_plan_gpt4_tokens --code api_calls
+Error: no subscription "ai_plan_gpt4_tokens" exists in this organization
+Suggestion: Check that each identifier is the right kind for the flag it was passed to: a plan code is not a subscription external ID, and a Lago ID is not an external ID.
+$ echo $?
+4
 ```
 
 `--all` and `--query` are mutually exclusive: `--all` streams pages without buffering, so a whole-collection expression has nothing to evaluate against. Use a per-page `--query`, or stream JSON pages into `jq`.
@@ -243,7 +290,7 @@ Changing this table is a breaking change.
 
 ## Development
 
-Go 1.25.13 or newer is required; older 1.25 patch releases contain reachable standard-library vulnerabilities and are rejected by the security gate.
+Go 1.27.0 or newer is required. `go.mod` pins the minimum, so `GOTOOLCHAIN=auto` (the default) fetches it for you. Older toolchains are rejected by the security gate.
 
 ```sh
 make generate

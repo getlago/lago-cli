@@ -120,6 +120,99 @@ checksum-verify and atomic-replace path was removed with the channel that needed
 The guardrail is a docs test: `test/docs` fails if any documented surface names a parked
 channel, or if the README stops documenting either supported one.
 
+## 2026-09-01 — Go 1.27 and the gates the bump moved
+
+`go.mod` declares `go 1.27.0`. Every workflow reads `go-version-file: go.mod`, so CI
+followed from one line; the Dockerfile and README are the only places a Go version is
+written as a literal, and a test asserts all three agree.
+
+Three things the bump moved, recorded because none of them is obvious from the diff:
+
+**gosec had to move with it.** gosec 2.22 cannot read Go 1.27 export data and fails with
+`internal error: package "flag" without types was imported`. The pin is now 2.29.0.
+Verifying the tool version against the tool version, not against the toolchain, showed
+all eight new findings come from rules added in 2.23-2.29, not from Go 1.27: 2.22.10 on
+the 1.27 tree and 2.29.0 on the 1.25 tree produce the same eight. G703 (path traversal by
+taint) and G122 (WalkDir symlink TOCTOU) fire only in the maintainer-run generators, where
+the taint source is the flag the maintainer typed; each site carries that reason.
+
+**One finding was a real hardening, so it was fixed rather than annotated.** G204 flagged
+`openBrowser` handing a URL to `open`/`xdg-open`/`rundll32`. The URL comes from the pinned
+spec, but those are general-purpose handlers that act on `file://` and custom schemes, so a
+spec-drift PR changing one URL would have become code execution on the reader's machine.
+`lago docs` now refuses anything that is not an absolute https URL, and a test asserts
+every documentation URL in the manifest satisfies that.
+
+**`golang.org/x/sys` went to v0.47.0** to clear GO-2026-5024. govulncheck now reports zero
+vulnerabilities in required modules, not just zero reachable ones.
+
+**Coverage floors were re-measured, not lowered.** Go 1.27 instruments more statements per
+function. With an unchanged suite, `internal/gen` reads 9.7% where it read 11.7%, and
+`internal/moneycheck` 15.5% where it read 16.0%, while config, diagnostics, docgen and
+transport rose. Both directions are recorded in `coverage.floors` with the date and the
+old value, so a future reader can tell a re-measurement from a regression. The
+ratchet-upward rule stands for everything else.
+
+Re-verified after the bump: full race suite, govulncheck, gosec, gitleaks, actionlint,
+the license audit, byte-identical repeated builds, and the cold `--help` budget
+(p50 42ms, p90 57ms against the 100ms budget).
+
+## 2026-09-01 — One URL normalizer, and errors that name what is wrong
+
+Four findings from live QA, each fixed once and tested on cloud US, cloud EU, and
+self-hosted alike. Nothing here special-cases a hostname.
+
+**One normalizer, and it is idempotent.** `transport.NormalizeBaseURL` is the only place
+a base URL is decided. It strips any `/api/v1` the operator pasted and appends exactly
+one, so the base form and the pasted form reach byte-identical URLs on every deployment,
+including custom ports and sub-paths behind a proxy. Stripping runs in a loop because a
+doubled prefix was already written into config files. `init` now saves the normalized
+value, which is why `whoami` reported one host while requests went to another. A second
+normalizer covers the request path: `lago api GET /api/v1/customers`, the form anyone
+copying from the API reference will type, no longer becomes `/api/v1/api/v1/customers`.
+`--region us|eu` resolves through the same function, and `USAPI`/`EUAPI` lost their
+`/api/v1` so the shorthand and the explicit base URL are provably one code path.
+
+**A region and an explicit URL that disagree is an error, not a precedence question.**
+`--region us --api-url https://api.eu.getlago.com` used to prefer one silently. That is
+how someone writes to the wrong continent. They are accepted together only when they
+normalize to the same URL, which is merely redundant.
+
+**The app URL is refused by name.** `app.getlago.com` answers, so sending an API key
+there produced a confusing parse error rather than "wrong host". The rule is the `app.`
+subdomain rather than a list of two cloud hosts, because self-hosted deployments follow
+the same split; a single-domain deployment is unaffected. It fails before any request,
+so the credential never leaves the machine.
+
+**`whoami` and `doctor` both report the resolved URL.** `api_url` is what the profile
+holds, `resolved_api_url` is what the client calls. Two lines instead of one, because the
+difference is the bug.
+
+**A query that matches nothing says so, on stderr.** Lago wraps every response, so
+`--query lago_id` against `{"customers": [...]}` is valid and matches nothing. `null`
+still goes to stdout unchanged; the hint and the available top-level keys go to stderr.
+A script's parsing does not change because a human was told something.
+
+**`--query` without `--output` switches to JSON, and announces it.** A JMESPath result is
+structured data and the table renderer has nothing useful to do with a projection: QA's
+query rendered an empty table that read as "no results". The alternative, exiting 2 and
+demanding `--output json`, costs a round trip to teach a rule the tool can simply follow.
+An explicit `--output` always wins, `--output table` included, so nothing is taken away,
+and the switch is printed rather than silent because a changed output format is something
+a script author needs to know about.
+
+**A 404 names the resource type and the value.** Lago sends a bare `Not Found`. The CLI
+carries the identifiers a request addressed into the error, so a plan code passed as
+`--external-subscription-id` reports `no subscription "ai_plan_..." exists in this
+organization` at exit 4 instead of something that reads as "no usage". Only
+identifier-shaped fields qualify (`id`, `code`, `*_id`, `*_code`), so a create's `name`
+never appears; other statuses keep the API's own message, because a 422's validation
+detail beats a list of identifiers.
+
+`transport.Config.DialContext` exists so these tests run against the production
+hostnames served locally, rather than proving URL handling only for `127.0.0.1`. CI runs
+the affected packages once per deployment target.
+
 ## Deferred beyond 1.x
 
 Plugin/extension system, TUI dashboard, and `lago scaffold` sample-app generation.

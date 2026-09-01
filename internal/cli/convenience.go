@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"os/exec"
 	"runtime"
@@ -22,25 +23,25 @@ func newDocsCommand(app *App) *cobra.Command {
 		ValidArgs: generatedResources(),
 		RunE: func(_ *cobra.Command, args []string) error {
 			resource := normalizeCommandName(args[0])
-			url := ""
+			documentation := ""
 			for _, operation := range generated.Operations {
 				if operation.Resource == resource && operation.DocsURL != "" {
-					url = operation.DocsURL
+					documentation = operation.DocsURL
 					break
 				}
 			}
-			if url == "" {
+			if documentation == "" {
 				return apperr.New(apperr.ExitNotFound, fmt.Sprintf("no documentation URL is declared for %s", resource), "Run `lago --help` to list generated resources.")
 			}
 			if !isInteractive(app) {
-				fmt.Fprintln(app.Out, url)
+				fmt.Fprintln(app.Out, documentation)
 				return nil
 			}
-			if err := openBrowser(url); err != nil {
-				fmt.Fprintln(app.Out, url)
+			if err := openBrowser(documentation); err != nil {
+				fmt.Fprintln(app.Out, documentation)
 				return apperr.Wrap(apperr.ExitGeneral, "open browser", err)
 			}
-			fmt.Fprintf(app.Out, "Opened %s\n", url)
+			fmt.Fprintf(app.Out, "Opened %s\n", documentation)
 			return nil
 		},
 	}
@@ -164,15 +165,31 @@ func generatedResources() []string {
 	return sortedStringKeys(resources)
 }
 
-func openBrowser(url string) error {
+// openBrowser hands a documentation URL to the platform opener.
+//
+// The URL comes from the pinned OpenAPI document's `tags[].externalDocs.url`, so it is
+// compiled into the binary and no operator input reaches it. It is still validated here:
+// `xdg-open` and `rundll32 url.dll` are general-purpose handlers that will happily act on
+// a `file://` path or a custom scheme, so a spec-drift PR that changed one URL would
+// otherwise become code execution on the reader's machine. Requiring https with a host
+// keeps the blast radius at "opens the wrong web page".
+func openBrowser(target string) error {
+	parsed, err := url.Parse(target)
+	if err != nil || parsed.Scheme != "https" || parsed.Host == "" {
+		return fmt.Errorf("refusing to open %q: documentation links must be absolute https URLs", target)
+	}
+	safe := parsed.String()
 	var command *exec.Cmd
 	switch runtime.GOOS {
 	case "darwin":
-		command = exec.Command("open", url)
+		// #nosec G204 -- safe is a validated absolute https URL passed as one argv element, never through a shell.
+		command = exec.Command("open", safe)
 	case "windows":
-		command = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
+		// #nosec G204 -- safe is a validated absolute https URL passed as one argv element, never through a shell.
+		command = exec.Command("rundll32", "url.dll,FileProtocolHandler", safe)
 	default:
-		command = exec.Command("xdg-open", url)
+		// #nosec G204 -- safe is a validated absolute https URL passed as one argv element, never through a shell.
+		command = exec.Command("xdg-open", safe)
 	}
 	command.Stdout = os.Stdout
 	command.Stderr = os.Stderr
