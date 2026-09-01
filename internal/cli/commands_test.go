@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/getlago/lago-cli/internal/apperr"
 	"github.com/getlago/lago-cli/internal/config"
+	"github.com/getlago/lago-cli/internal/generated"
 )
 
 // jsonAPI serves the supplied handler over TLS with a JSON content type.
@@ -324,5 +326,46 @@ func TestVersionCarriesSpecIdentity(t *testing.T) {
 	plain, _, err := execute(t, "", "version")
 	if err != nil || strings.TrimSpace(plain) == "" {
 		t.Errorf("plain version output failed: %q %v", plain, err)
+	}
+}
+
+// `lago docs` hands a URL from the pinned spec to the platform opener. xdg-open and
+// rundll32 act on any scheme, so a spec-drift PR that changed one URL to a file:// path
+// or a custom handler would become code execution on the reader's machine. The opener
+// takes absolute https URLs only.
+func TestBrowserOpenerRefusesNonHTTPSTargets(t *testing.T) {
+	t.Parallel()
+	for _, target := range []string{
+		"",
+		"not-a-url",
+		"file:///etc/passwd",
+		"javascript:alert(1)",
+		"http://docs.example.test/customers",
+		"https://",
+		"/relative/path",
+	} {
+		if err := openBrowser(target); err == nil {
+			t.Errorf("openBrowser accepted %q", target)
+		}
+	}
+}
+
+// Every documentation URL compiled into the binary must satisfy that rule, so the
+// guardrail cannot be tripped by the spec the CLI actually ships with.
+func TestEveryGeneratedDocsURLIsAbsoluteHTTPS(t *testing.T) {
+	t.Parallel()
+	seen := 0
+	for _, operation := range generated.Operations {
+		if operation.DocsURL == "" {
+			continue
+		}
+		seen++
+		parsed, err := url.Parse(operation.DocsURL)
+		if err != nil || parsed.Scheme != "https" || parsed.Host == "" {
+			t.Errorf("%s has documentation URL %q, which `lago docs` would refuse to open", operation.Resource, operation.DocsURL)
+		}
+	}
+	if seen == 0 {
+		t.Fatal("no operation declares a documentation URL; `lago docs` has nothing to open")
 	}
 }

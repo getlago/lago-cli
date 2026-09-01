@@ -243,7 +243,7 @@ Changing this table is a breaking change.
 
 ## Development
 
-Go 1.25.13 or newer is required; older 1.25 patch releases contain reachable standard-library vulnerabilities and are rejected by the security gate.
+Go 1.27.0 or newer is required. `go.mod` pins the minimum, so `GOTOOLCHAIN=auto` (the default) fetches it for you. Older toolchains are rejected by the security gate.
 
 ```sh
 make generate

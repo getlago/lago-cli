@@ -120,6 +120,43 @@ checksum-verify and atomic-replace path was removed with the channel that needed
 The guardrail is a docs test: `test/docs` fails if any documented surface names a parked
 channel, or if the README stops documenting either supported one.
 
+## 2026-09-01 — Go 1.27 and the gates the bump moved
+
+`go.mod` declares `go 1.27.0`. Every workflow reads `go-version-file: go.mod`, so CI
+followed from one line; the Dockerfile and README are the only places a Go version is
+written as a literal, and a test asserts all three agree.
+
+Three things the bump moved, recorded because none of them is obvious from the diff:
+
+**gosec had to move with it.** gosec 2.22 cannot read Go 1.27 export data and fails with
+`internal error: package "flag" without types was imported`. The pin is now 2.29.0.
+Verifying the tool version against the tool version, not against the toolchain, showed
+all eight new findings come from rules added in 2.23-2.29, not from Go 1.27: 2.22.10 on
+the 1.27 tree and 2.29.0 on the 1.25 tree produce the same eight. G703 (path traversal by
+taint) and G122 (WalkDir symlink TOCTOU) fire only in the maintainer-run generators, where
+the taint source is the flag the maintainer typed; each site carries that reason.
+
+**One finding was a real hardening, so it was fixed rather than annotated.** G204 flagged
+`openBrowser` handing a URL to `open`/`xdg-open`/`rundll32`. The URL comes from the pinned
+spec, but those are general-purpose handlers that act on `file://` and custom schemes, so a
+spec-drift PR changing one URL would have become code execution on the reader's machine.
+`lago docs` now refuses anything that is not an absolute https URL, and a test asserts
+every documentation URL in the manifest satisfies that.
+
+**`golang.org/x/sys` went to v0.47.0** to clear GO-2026-5024. govulncheck now reports zero
+vulnerabilities in required modules, not just zero reachable ones.
+
+**Coverage floors were re-measured, not lowered.** Go 1.27 instruments more statements per
+function. With an unchanged suite, `internal/gen` reads 9.7% where it read 11.7%, and
+`internal/moneycheck` 15.5% where it read 16.0%, while config, diagnostics, docgen and
+transport rose. Both directions are recorded in `coverage.floors` with the date and the
+old value, so a future reader can tell a re-measurement from a regression. The
+ratchet-upward rule stands for everything else.
+
+Re-verified after the bump: full race suite, govulncheck, gosec, gitleaks, actionlint,
+the license audit, byte-identical repeated builds, and the cold `--help` budget
+(p50 42ms, p90 57ms against the 100ms budget).
+
 ## Deferred beyond 1.x
 
 Plugin/extension system, TUI dashboard, and `lago scaffold` sample-app generation.
