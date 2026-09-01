@@ -157,6 +157,62 @@ Re-verified after the bump: full race suite, govulncheck, gosec, gitleaks, actio
 the license audit, byte-identical repeated builds, and the cold `--help` budget
 (p50 42ms, p90 57ms against the 100ms budget).
 
+## 2026-09-01 — One URL normalizer, and errors that name what is wrong
+
+Four findings from live QA, each fixed once and tested on cloud US, cloud EU, and
+self-hosted alike. Nothing here special-cases a hostname.
+
+**One normalizer, and it is idempotent.** `transport.NormalizeBaseURL` is the only place
+a base URL is decided. It strips any `/api/v1` the operator pasted and appends exactly
+one, so the base form and the pasted form reach byte-identical URLs on every deployment,
+including custom ports and sub-paths behind a proxy. Stripping runs in a loop because a
+doubled prefix was already written into config files. `init` now saves the normalized
+value, which is why `whoami` reported one host while requests went to another. A second
+normalizer covers the request path: `lago api GET /api/v1/customers`, the form anyone
+copying from the API reference will type, no longer becomes `/api/v1/api/v1/customers`.
+`--region us|eu` resolves through the same function, and `USAPI`/`EUAPI` lost their
+`/api/v1` so the shorthand and the explicit base URL are provably one code path.
+
+**A region and an explicit URL that disagree is an error, not a precedence question.**
+`--region us --api-url https://api.eu.getlago.com` used to prefer one silently. That is
+how someone writes to the wrong continent. They are accepted together only when they
+normalize to the same URL, which is merely redundant.
+
+**The app URL is refused by name.** `app.getlago.com` answers, so sending an API key
+there produced a confusing parse error rather than "wrong host". The rule is the `app.`
+subdomain rather than a list of two cloud hosts, because self-hosted deployments follow
+the same split; a single-domain deployment is unaffected. It fails before any request,
+so the credential never leaves the machine.
+
+**`whoami` and `doctor` both report the resolved URL.** `api_url` is what the profile
+holds, `resolved_api_url` is what the client calls. Two lines instead of one, because the
+difference is the bug.
+
+**A query that matches nothing says so, on stderr.** Lago wraps every response, so
+`--query lago_id` against `{"customers": [...]}` is valid and matches nothing. `null`
+still goes to stdout unchanged; the hint and the available top-level keys go to stderr.
+A script's parsing does not change because a human was told something.
+
+**`--query` without `--output` switches to JSON, and announces it.** A JMESPath result is
+structured data and the table renderer has nothing useful to do with a projection: QA's
+query rendered an empty table that read as "no results". The alternative, exiting 2 and
+demanding `--output json`, costs a round trip to teach a rule the tool can simply follow.
+An explicit `--output` always wins, `--output table` included, so nothing is taken away,
+and the switch is printed rather than silent because a changed output format is something
+a script author needs to know about.
+
+**A 404 names the resource type and the value.** Lago sends a bare `Not Found`. The CLI
+carries the identifiers a request addressed into the error, so a plan code passed as
+`--external-subscription-id` reports `no subscription "ai_plan_..." exists in this
+organization` at exit 4 instead of something that reads as "no usage". Only
+identifier-shaped fields qualify (`id`, `code`, `*_id`, `*_code`), so a create's `name`
+never appears; other statuses keep the API's own message, because a 422's validation
+detail beats a list of identifiers.
+
+`transport.Config.DialContext` exists so these tests run against the production
+hostnames served locally, rather than proving URL handling only for `127.0.0.1`. CI runs
+the affected packages once per deployment target.
+
 ## Deferred beyond 1.x
 
 Plugin/extension system, TUI dashboard, and `lago scaffold` sample-app generation.

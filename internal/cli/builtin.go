@@ -160,13 +160,22 @@ func newInitCommand(app *App) *cobra.Command {
 			selectedRegion = firstNonBlank(selectedRegion, config.RegionUS)
 			apiURL := firstNonBlank(app.apiURL, os.Getenv("LAGO_API_URL"), existing.APIURL)
 			switch selectedRegion {
-			case config.RegionUS:
-				if apiURL == "" || region != "" {
-					apiURL = transport.USAPI
+			case config.RegionUS, config.RegionEU:
+				cloudURL := transport.USAPI
+				if selectedRegion == config.RegionEU {
+					cloudURL = transport.EUAPI
 				}
-			case config.RegionEU:
-				if apiURL == "" || region != "" {
-					apiURL = transport.EUAPI
+				// A region and an explicit URL that disagree is an ambiguity, not a
+				// precedence question: silently preferring one is how somebody ends up
+				// writing to the wrong continent. They are only accepted together when
+				// they normalize to the same host.
+				if app.flagChanged("api-url") && apiURL != "" {
+					if conflict := conflictingTarget(apiURL, cloudURL, app.insecure); conflict != nil {
+						return conflict
+					}
+				}
+				if apiURL == "" || region != "" && !app.flagChanged("api-url") {
+					apiURL = cloudURL
 				}
 			case config.RegionSelf:
 				if apiURL == "" && interactive {
@@ -182,8 +191,17 @@ func newInitCommand(app *App) *cobra.Command {
 				return apperr.New(apperr.ExitUsage, "API key is required in a non-interactive terminal", "Pass --api-key or set LAGO_API_KEY.")
 			}
 			if apiURL == "" {
-				return apperr.New(apperr.ExitUsage, "API URL is required for a self-hosted profile", "Pass --api-url https://your-lago.example/api/v1.")
+				return apperr.New(apperr.ExitUsage, "API URL is required for a self-hosted profile", "Pass --api-url https://your-lago.example.")
 			}
+			// Normalize before saving. QA pasted the full API path and the raw value went
+			// into the config file, so `whoami` reported a URL that was not the one being
+			// called. The profile now records the resolved base URL, and every later read
+			// is the same string the client uses.
+			normalized, err := transport.NormalizeBaseURL(apiURL, app.insecure)
+			if err != nil {
+				return err
+			}
+			apiURL = normalized.String()
 			mode = firstNonBlank(mode, config.ModeLive)
 			if mode != config.ModeLive && mode != config.ModeTest {
 				return apperr.New(apperr.ExitUsage, "mode must be live or test", "Pass --mode live or --mode test.")
@@ -194,7 +212,7 @@ func newInitCommand(app *App) *cobra.Command {
 					timeout = parsed
 				}
 			}
-			client, err := transport.New(transport.Config{BaseURL: apiURL, APIKey: apiKey, Timeout: timeout, Insecure: app.insecure, NoRetry: app.noRetry, Verbose: app.verbose, UserAgent: "lago-cli/" + app.Version, Err: app.Err})
+			client, err := transport.New(transport.Config{BaseURL: apiURL, APIKey: apiKey, Timeout: timeout, Insecure: app.insecure, NoRetry: app.noRetry, Verbose: app.verbose, UserAgent: "lago-cli/" + app.Version, Err: app.Err, DialContext: app.dialContext})
 			if err != nil {
 				return err
 			}
@@ -240,7 +258,18 @@ func newWhoamiCommand(app *App) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			result := map[string]any{"profile": app.resolved.Name, "region": app.resolved.Profile.Region, "mode": app.resolved.Profile.Mode, "api_url": app.resolved.Profile.APIURL, "organization": value}
+			// resolved_api_url is the host the request actually went to. api_url is what
+			// the profile holds. They differ whenever a base URL was configured without
+			// the /api/v1 prefix, and an operator debugging "which environment am I on"
+			// needs the one the client used, not the one they typed.
+			result := map[string]any{
+				"profile":          app.resolved.Name,
+				"region":           app.resolved.Profile.Region,
+				"mode":             app.resolved.Profile.Mode,
+				"api_url":          app.resolved.Profile.APIURL,
+				"resolved_api_url": app.ResolvedAPIURL(),
+				"organization":     value,
+			}
 			return app.Render(result, response)
 		},
 	}
@@ -285,6 +314,10 @@ func newDoctorCommand(app *App) *cobra.Command {
 			}
 			checks = append(checks, diagnostic("configuration", true, "profile resolved"))
 			bundleChecks["configuration"] = true
+			// The resolved URL is the single most useful line in a support ticket: it
+			// distinguishes "wrong credentials" from "right credentials, wrong host".
+			checks = append(checks, diagnostic("api_url", true, app.ResolvedAPIURL()))
+			bundleChecks["api_url"] = true
 			response, requestErr := client.Do(cmd.Context(), transport.Request{Method: http.MethodGet, Path: "/organizations", Idempotent: true})
 			if requestErr != nil {
 				checks = append(checks, diagnostic("api", false, requestErr.Error()))
@@ -473,6 +506,26 @@ func validateJSON(data []byte) ([]byte, error) {
 		return nil, apperr.New(apperr.ExitUsage, fmt.Sprintf("request body is not valid JSON: %v", err), "Pass JSON directly, --data @file.json, or --data -.")
 	}
 	return data, nil
+}
+
+// conflictingTarget reports a usage error when an explicit --api-url and a --region
+// shorthand name different deployments. Equal after normalization is not a conflict:
+// `--region us --api-url https://api.getlago.com/api/v1` is redundant, not wrong.
+func conflictingTarget(apiURL, regionURL string, insecure bool) error {
+	explicit, err := transport.NormalizeBaseURL(apiURL, insecure)
+	if err != nil {
+		return err
+	}
+	shorthand, err := transport.NormalizeBaseURL(regionURL, insecure)
+	if err != nil {
+		return err
+	}
+	if explicit.String() == shorthand.String() {
+		return nil
+	}
+	return apperr.New(apperr.ExitUsage,
+		fmt.Sprintf("--api-url %s and the selected region (%s) are different deployments", explicit, shorthand),
+		"Pass one or the other: --region us|eu for Lago Cloud, or --region self-hosted with --api-url.")
 }
 
 func diagnostic(name string, ok bool, detail string) map[string]any {

@@ -24,6 +24,10 @@ type Renderer struct {
 	Query string
 	Out   io.Writer
 
+	// Err receives diagnostics that must not pollute stdout, currently the hint printed
+	// when a query matches nothing. Leaving it nil discards them.
+	Err io.Writer
+
 	// Identifiers restricts default table output to the terse identifier block.
 	// It applies to table output only: --output json and --output yaml always
 	// carry the complete resource. See DECISIONS.md.
@@ -43,6 +47,7 @@ func (r Renderer) Render(value any) error {
 		if err != nil {
 			return apperr.New(apperr.ExitUsage, fmt.Sprintf("invalid JMESPath query: %v", err), "Check --query syntax or remove the flag.")
 		}
+		r.hintOnEmptyMatch(value, queried)
 		value = queried
 	}
 	switch r.Mode {
@@ -63,6 +68,27 @@ func (r Renderer) Render(value any) error {
 	default:
 		return apperr.New(apperr.ExitUsage, "output must be table, json, or yaml", "Pass --output table, --output json, or --output yaml.")
 	}
+}
+
+// hintOnEmptyMatch tells the operator when a query silently matched nothing.
+//
+// Lago wraps every response, so `--query lago_id` against `{"customers": [...]}` is a
+// valid expression that matches nothing, and JMESPath answers `null`. QA read that null
+// as "no data" twice. The hint goes to stderr and names the keys that were actually
+// available; `null` still goes to stdout unchanged, because a script parsing it must not
+// have to care that a human was told something.
+//
+// It stays quiet when the response itself was null, which is a real answer rather than a
+// missed match.
+func (r Renderer) hintOnEmptyMatch(original, queried any) {
+	if r.Err == nil || queried != nil || original == nil {
+		return
+	}
+	message := "query matched nothing"
+	if object, ok := original.(map[string]any); ok && len(object) > 0 {
+		message += "; top-level keys: " + strings.Join(sortedKeys(object), ", ")
+	}
+	fmt.Fprintln(r.Err, message)
 }
 
 func renderTable(out io.Writer, value any) error {
