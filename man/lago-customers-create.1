@@ -1,5 +1,5 @@
 .nh
-.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
 lago-customers-create - Create a customer
@@ -277,6 +277,7 @@ Accepted values: 'stripe', 'adyen', 'cashfree', 'flutterwave', 'gocardless', 'mo
 .SH EXAMPLE
 .EX
   lago customers create --input @payload.json
+  lago customers create --input @payload.json --output json  # full resource
 .EE
 
 

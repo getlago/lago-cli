@@ -1,5 +1,5 @@
 .nh
-.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
 lago-invoices-update - Update an invoice
@@ -90,6 +90,7 @@ This endpoint is used for updating an existing invoice. A voided invoice cannot 
 .SH EXAMPLE
 .EX
   lago invoices update <lago_id> --input @payload.json
+  lago invoices update <lago_id> --input @payload.json --output json  # full resource
 .EE
 
 

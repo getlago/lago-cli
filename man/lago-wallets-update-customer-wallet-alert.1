@@ -1,5 +1,5 @@
 .nh
-.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
 lago-wallets-update-customer-wallet-alert - Update a wallet alert
@@ -94,6 +94,7 @@ This endpoint allows you to update an existing alert for a wallet.
 .SH EXAMPLE
 .EX
   lago wallets update-customer-wallet-alert <external_customer_id> <wallet_code> <code> --input @payload.json
+  lago wallets update-customer-wallet-alert <external_customer_id> <wallet_code> <code> --input @payload.json --output json  # full resource
 .EE
 
 

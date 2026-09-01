@@ -14,6 +14,7 @@ lago billable-metrics create [flags]
 
 ```
   lago billable-metrics create --input @payload.json
+  lago billable-metrics create --input @payload.json --output json  # full resource
 ```
 
 ### Options

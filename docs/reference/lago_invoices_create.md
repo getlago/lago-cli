@@ -14,6 +14,7 @@ lago invoices create [flags]
 
 ```
   lago invoices create --input @payload.json
+  lago invoices create --input @payload.json --output json  # full resource
 ```
 
 ### Options

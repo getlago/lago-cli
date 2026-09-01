@@ -14,6 +14,7 @@ lago webhook-endpoints update <lago_id> [flags]
 
 ```
   lago webhook-endpoints update <lago_id> --input @payload.json
+  lago webhook-endpoints update <lago_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options

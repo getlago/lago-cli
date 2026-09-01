@@ -66,6 +66,28 @@ no longer depends solely on `test/e2e`, which is build-tagged and skips without 
 staging credentials. `scripts/check-fixtures.sh` treats a malformed pattern as a failure
 rather than reporting a clean tree.
 
+## 2026-09-01 — Default mutation output is identifiers; full detail is `--output json`
+
+QA returned that a create printing 40 attributes buries the one thing the caller does
+not already have: the identifier Lago minted. Default table output for every generated
+create and update is therefore a terse block of `lago_id`, `external_id`, `code` and
+`name`, in that order, modelled on `gh`'s terse-success pattern. `--output json` and
+`--output yaml` are unchanged and always carry the complete resource, so scripts read
+the structured form and humans read the identifiers.
+
+The classification is a generator rule, not 48 hand edits: a POST, PUT or PATCH whose
+action is `create`/`update` or begins with `create-`/`update-`. It deliberately excludes
+read-shaped mutations (`invoices preview`, `credit-notes estimate`), state transitions
+whose interesting output is the new state (`invoices finalize`, `invoices void`,
+`orders execute`), and bulk ingestion whose output is a summary (`events send`). Three
+behaviours keep the reduction safe: a response with no recognisable identifier falls
+back to the full table rather than printing nothing, an explicit `--query` is honoured
+as written rather than reduced first, and `--dry-run` always prints the request envelope
+in full.
+
+Decided pre-1.0, while output shapes are not yet frozen. After 1.0 this is a breaking
+change requiring a major version, which is exactly why it is being made now.
+
 ## Deferred beyond 1.x
 
 Plugin/extension system, TUI dashboard, and `lago scaffold` sample-app generation.

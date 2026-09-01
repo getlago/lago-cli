@@ -14,6 +14,7 @@ lago plans update <code> [flags]
 
 ```
   lago plans update <code> --input @payload.json
+  lago plans update <code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

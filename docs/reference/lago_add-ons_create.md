@@ -14,6 +14,7 @@ lago add-ons create [flags]
 
 ```
   lago add-ons create --input @payload.json
+  lago add-ons create --input @payload.json --output json  # full resource
 ```
 
 ### Options

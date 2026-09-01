@@ -14,6 +14,9 @@ type Operation struct {
 	Idempotent  bool        `json:"idempotent"`
 	Dangerous   bool        `json:"dangerous"`
 	Paginated   bool        `json:"paginated"`
+	// Mutation marks a create or update whose default table output is the terse
+	// identifier block. Full detail stays available through --output json|yaml.
+	Mutation bool `json:"mutation"`
 }
 
 type Parameter struct {

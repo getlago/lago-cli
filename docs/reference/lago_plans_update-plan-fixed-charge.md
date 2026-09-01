@@ -14,6 +14,7 @@ lago plans update-plan-fixed-charge <code> <fixed_charge_code> [flags]
 
 ```
   lago plans update-plan-fixed-charge <code> <fixed_charge_code> --input @payload.json
+  lago plans update-plan-fixed-charge <code> <fixed_charge_code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

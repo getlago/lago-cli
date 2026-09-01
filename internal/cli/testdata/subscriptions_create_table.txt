@@ -1,0 +1,2 @@
+LAGO_ID      3c903c90-3c90-3c90-3c90-3c903c903c90
+EXTERNAL_ID  quickstart_subscription

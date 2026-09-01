@@ -168,6 +168,7 @@ func (g generator) operations() ([]generated.Operation, error) {
 				Idempotent:  retryableOperation(operationMap, method),
 				Dangerous:   dangerousOperation(operationMap, method, path, lowerAction),
 				Paginated:   paginated,
+				Mutation:    mutationOperation(method, lowerAction),
 			})
 		}
 	}
@@ -654,6 +655,31 @@ func retryableOperation(operation map[string]any, method string) bool {
 		return explicit
 	}
 	return method == http.MethodGet || method == http.MethodHead || method == http.MethodOptions
+}
+
+// mutationOperation reports whether a command's default table output is the terse
+// identifier block rather than the full attribute dump. See DECISIONS.md: an operator
+// running a create wants the ID they just minted, not 40 attributes they already sent.
+//
+// The rule is mechanical so it is predictable from the command name: a POST, PUT or
+// PATCH whose action is `create`/`update` or begins with `create-`/`update-`. It
+// deliberately excludes read-shaped mutations (`invoices preview`, `credit-notes
+// estimate`, `events estimate-fees`), state transitions whose interesting output is
+// the new state (`invoices finalize`, `invoices void`, `orders execute`), and bulk
+// ingestion whose output is a summary (`events send`, `events batch`). Widening the
+// set is a one-line change here, never 30 hand edits at the call sites.
+func mutationOperation(method, lowerAction string) bool {
+	switch method {
+	case http.MethodPost, http.MethodPut, http.MethodPatch:
+	default:
+		return false
+	}
+	for _, prefix := range []string{"create", "update"} {
+		if lowerAction == prefix || strings.HasPrefix(lowerAction, prefix+"-") {
+			return true
+		}
+	}
+	return false
 }
 
 // destructiveVocabulary lists the action segments that mark an irreversible or

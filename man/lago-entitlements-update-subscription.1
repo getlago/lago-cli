@@ -1,5 +1,5 @@
 .nh
-.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
 lago-entitlements-update-subscription - Update subscription entitlements
@@ -86,6 +86,7 @@ This accepts a list of entitlements to update. If the feature isn't part of the 
 .SH EXAMPLE
 .EX
   lago entitlements update-subscription <external_id> --input @payload.json
+  lago entitlements update-subscription <external_id> --input @payload.json --output json  # full resource
 .EE
 
 

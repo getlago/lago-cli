@@ -14,6 +14,7 @@ lago entitlements update <code> [flags]
 
 ```
   lago entitlements update <code> --input @payload.json
+  lago entitlements update <code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

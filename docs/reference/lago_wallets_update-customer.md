@@ -14,6 +14,7 @@ lago wallets update-customer <external_customer_id> <code> [flags]
 
 ```
   lago wallets update-customer <external_customer_id> <code> --input @payload.json
+  lago wallets update-customer <external_customer_id> <code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

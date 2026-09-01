@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/getlago/lago-cli/internal/cli"
 	"github.com/spf13/cobra/doc"
@@ -21,6 +22,14 @@ func main() {
 	fatalIf(generate(*markdown, *man, *completions))
 	fmt.Println("generated CLI reference and man pages")
 }
+
+// manPageDate pins the date rendered into every man page's .TH line.
+//
+// cobra/doc defaults it to time.Now(), which makes the 266 checked-in man pages change
+// on the first of every month and fails `make generate-check` on a PR that touched
+// nothing. Pinning it also keeps the generated documentation reproducible, matching the
+// reproducible-build gate on the binary. Bump it deliberately at a release.
+var manPageDate = time.Date(2026, time.September, 1, 0, 0, 0, 0, time.UTC)
 
 func generate(markdown, man, completions string) error {
 	// #nosec G301 -- generated public documentation directories intentionally use 0755.
@@ -45,7 +54,7 @@ func generate(markdown, man, completions string) error {
 	if err := normalizeMarkdownTree(markdown); err != nil {
 		return err
 	}
-	header := &doc.GenManHeader{Title: "LAGO", Section: "1", Source: "Lago CLI", Manual: "Lago CLI Manual"}
+	header := &doc.GenManHeader{Title: "LAGO", Section: "1", Source: "Lago CLI", Manual: "Lago CLI Manual", Date: &manPageDate}
 	if err := doc.GenManTree(root, header, man); err != nil {
 		return err
 	}

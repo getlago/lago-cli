@@ -14,6 +14,7 @@ lago wallets create-customer-wallet-alert <external_customer_id> <wallet_code> [
 
 ```
   lago wallets create-customer-wallet-alert <external_customer_id> <wallet_code> --input @payload.json
+  lago wallets create-customer-wallet-alert <external_customer_id> <wallet_code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

@@ -14,6 +14,7 @@ lago wallets create-wallet-transaction [flags]
 
 ```
   lago wallets create-wallet-transaction --input @payload.json
+  lago wallets create-wallet-transaction --input @payload.json --output json  # full resource
 ```
 
 ### Options

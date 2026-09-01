@@ -14,6 +14,7 @@ lago credit-notes update <lago_id> [flags]
 
 ```
   lago credit-notes update <lago_id> --input @payload.json
+  lago credit-notes update <lago_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options

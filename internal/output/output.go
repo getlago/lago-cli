@@ -23,6 +23,11 @@ type Renderer struct {
 	Mode  string
 	Query string
 	Out   io.Writer
+
+	// Identifiers restricts default table output to the terse identifier block.
+	// It applies to table output only: --output json and --output yaml always
+	// carry the complete resource. See DECISIONS.md.
+	Identifiers bool
 }
 
 func (r Renderer) Render(value any) error {
@@ -42,6 +47,9 @@ func (r Renderer) Render(value any) error {
 	}
 	switch r.Mode {
 	case "", Table:
+		if r.Identifiers {
+			return renderIdentifiers(r.Out, value)
+		}
 		return renderTable(r.Out, value)
 	case JSON:
 		encoder := json.NewEncoder(r.Out)
@@ -104,6 +112,76 @@ func renderTable(out io.Writer, value any) error {
 		fmt.Fprintln(w)
 	}
 	return w.Flush()
+}
+
+// identifierKeys are the fields an operator needs back from a create or update: the
+// Lago ID to address the resource by, the external ID they chose, and the human name
+// or code they will recognise it by. Order is the render order, not a preference list.
+var identifierKeys = []string{"lago_id", "external_id", "code", "name"}
+
+// renderIdentifiers prints only the identity of a created or updated resource.
+//
+// A create already echoes back every attribute the caller just sent; the one thing the
+// caller does not have is the identifier Lago minted. Printing 40 rows to hide that one
+// is the finding this renderer closes. Full detail stays one flag away: --output json.
+//
+// It never prints nothing: a response that carries no recognisable identifier falls
+// back to the full table, because a blank terminal is worse than a verbose one.
+func renderIdentifiers(out io.Writer, value any) error {
+	unwrapped := unwrapSingle(value)
+	switch typed := unwrapped.(type) {
+	case map[string]any:
+		fields := identifiersOf(typed)
+		if len(fields) == 0 {
+			return renderTable(out, value)
+		}
+		w := tabwriter.NewWriter(out, 0, 4, 2, ' ', 0)
+		for _, key := range fields {
+			fmt.Fprintf(w, "%s\t%s\n", strings.ToUpper(key), scalar(typed[key]))
+		}
+		return w.Flush()
+	case []any:
+		if len(typed) == 0 {
+			return renderTable(out, value)
+		}
+		rows := make([]any, 0, len(typed))
+		for _, rowValue := range typed {
+			row, ok := rowValue.(map[string]any)
+			if !ok {
+				return renderTable(out, value)
+			}
+			fields := identifiersOf(row)
+			if len(fields) == 0 {
+				return renderTable(out, value)
+			}
+			reduced := make(map[string]any, len(fields))
+			for _, key := range fields {
+				reduced[key] = row[key]
+			}
+			rows = append(rows, reduced)
+		}
+		return renderTable(out, rows)
+	default:
+		return renderTable(out, value)
+	}
+}
+
+// identifiersOf returns the identifier fields present on object, in render order.
+// A field whose value is an empty string is treated as absent: printing
+// `EXTERNAL_ID` with nothing after it tells the operator less than omitting it.
+func identifiersOf(object map[string]any) []string {
+	fields := make([]string, 0, len(identifierKeys))
+	for _, key := range identifierKeys {
+		value, exists := object[key]
+		if !exists || value == nil {
+			continue
+		}
+		if text, isText := value.(string); isText && strings.TrimSpace(text) == "" {
+			continue
+		}
+		fields = append(fields, key)
+	}
+	return fields
 }
 
 func unwrapSingle(value any) any {

@@ -14,6 +14,7 @@ lago subscriptions create-subscription-charge-filter <external_id> <charge_code>
 
 ```
   lago subscriptions create-subscription-charge-filter <external_id> <charge_code> --input @payload.json
+  lago subscriptions create-subscription-charge-filter <external_id> <charge_code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

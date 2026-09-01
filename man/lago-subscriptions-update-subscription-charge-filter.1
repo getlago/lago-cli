@@ -1,5 +1,5 @@
 .nh
-.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
 lago-subscriptions-update-subscription-charge-filter - Update a charge filter
@@ -156,6 +156,7 @@ The list of event properties that are used to group the events on the invoice fo
 .SH EXAMPLE
 .EX
   lago subscriptions update-subscription-charge-filter <external_id> <charge_code> <filter_id> --input @payload.json
+  lago subscriptions update-subscription-charge-filter <external_id> <charge_code> <filter_id> --input @payload.json --output json  # full resource
 .EE
 
 

@@ -14,6 +14,7 @@ lago entitlements create <code> [flags]
 
 ```
   lago entitlements create <code> --input @payload.json
+  lago entitlements create <code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

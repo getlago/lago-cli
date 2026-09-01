@@ -1,5 +1,5 @@
 .nh
-.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
 lago-wallets-create-customer - Create a wallet
@@ -182,6 +182,7 @@ This endpoint is used to create a wallet with prepaid credits.
 .SH EXAMPLE
 .EX
   lago wallets create-customer <external_customer_id> --input @payload.json
+  lago wallets create-customer <external_customer_id> --input @payload.json --output json  # full resource
 .EE
 
 

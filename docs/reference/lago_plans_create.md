@@ -14,6 +14,7 @@ lago plans create [flags]
 
 ```
   lago plans create --input @payload.json
+  lago plans create --input @payload.json --output json  # full resource
 ```
 
 ### Options

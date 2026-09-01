@@ -163,6 +163,9 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 		if err != nil {
 			return err
 		}
+		if operation.Mutation {
+			return app.RenderMutation(value, response)
+		}
 		return app.Render(value, response)
 	}
 	return cmd
@@ -388,6 +391,13 @@ func generatedExample(operation generated.Operation, pathParameters []generated.
 	}
 	if operation.Body != nil {
 		command.WriteString(" --input @payload.json")
+	}
+	if operation.Mutation {
+		// The terse default is the whole point of the identifier renderer, so the
+		// example has to teach the escape hatch or the operator will think the
+		// remaining attributes were lost.
+		full := command.String()
+		return full + "\n" + full + " --output json  # full resource"
 	}
 	return command.String()
 }

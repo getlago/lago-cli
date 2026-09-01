@@ -14,6 +14,7 @@ lago taxes create [flags]
 
 ```
   lago taxes create --input @payload.json
+  lago taxes create --input @payload.json --output json  # full resource
 ```
 
 ### Options

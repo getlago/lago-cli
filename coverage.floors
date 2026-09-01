@@ -17,7 +17,7 @@
 internal/apperr         94.0
 internal/cli            86.0
 internal/config         85.0
-internal/output         96.0
+internal/output         97.0
 internal/permissions   100.0
 internal/redact        100.0
 internal/transport      93.0

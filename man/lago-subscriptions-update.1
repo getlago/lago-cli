@@ -1,5 +1,5 @@
 .nh
-.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
 lago-subscriptions-update - Update a subscription
@@ -204,6 +204,7 @@ Sending an empty array removes all subscription-level thresholds. This field can
 .SH EXAMPLE
 .EX
   lago subscriptions update <external_id> --input @payload.json
+  lago subscriptions update <external_id> --input @payload.json --output json  # full resource
 .EE
 
 

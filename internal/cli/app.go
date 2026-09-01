@@ -57,6 +57,18 @@ func (a *App) Renderer() output.Renderer {
 	return output.Renderer{Mode: a.output, Query: a.query, Out: a.Out}
 }
 
+// IdentifierRenderer is the renderer for a create or update: terse identifiers in the
+// default table output, the complete resource under --output json|yaml.
+//
+// An explicit --query is honoured as written. The operator has already said which
+// fields they want; silently reducing the response first would drop the very keys
+// their expression addresses.
+func (a *App) IdentifierRenderer() output.Renderer {
+	renderer := a.Renderer()
+	renderer.Identifiers = a.query == ""
+	return renderer
+}
+
 func (a *App) Load(requireAuth bool) error {
 	if a.loaded {
 		if requireAuth && a.resolved.Profile.APIKey == "" {
@@ -150,7 +162,23 @@ func (a *App) Request(ctx context.Context, request transport.Request) (any, *tra
 }
 
 func (a *App) Render(value any, response *transport.Response) error {
-	if err := a.Renderer().Render(value); err != nil {
+	return a.render(a.Renderer(), value, response)
+}
+
+// RenderMutation renders a create or update response through the identifier renderer.
+//
+// A --dry-run response is the request envelope, not a resource, so it always renders
+// in full: reducing `{method, url, headers, body}` to an identifier block would print
+// nothing useful and hide the payload the flag exists to show.
+func (a *App) RenderMutation(value any, response *transport.Response) error {
+	if response != nil && response.DryRunData != nil {
+		return a.render(a.Renderer(), value, response)
+	}
+	return a.render(a.IdentifierRenderer(), value, response)
+}
+
+func (a *App) render(renderer output.Renderer, value any, response *transport.Response) error {
+	if err := renderer.Render(value); err != nil {
 		return err
 	}
 	if a.timing && response != nil {

@@ -14,6 +14,7 @@ lago webhook-endpoints create [flags]
 
 ```
   lago webhook-endpoints create --input @payload.json
+  lago webhook-endpoints create --input @payload.json --output json  # full resource
 ```
 
 ### Options

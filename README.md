@@ -51,25 +51,52 @@ Saved us profile "default" to ~/.config/lago/config.toml (mode: test).
 
 Create a metric, plan, customer, and subscription; then send usage and preview the invoice. Every payload and enum below comes from the pinned OpenAPI document.
 
-```sh
-lago billable-metrics create \
-  --name Requests --code quickstart_requests --aggregation-type count_agg
+```console
+$ lago billable-metrics create --name Requests --code quickstart_requests --aggregation-type count_agg
+LAGO_ID  0b8a1e70-1a90-4b2c-9f3d-5e6a7b8c9d01
+CODE     quickstart_requests
+NAME     Requests
 
-lago plans create --input '{"plan":{"name":"Quickstart","code":"quickstart","interval":"monthly","amount_cents":0,"amount_currency":"USD","pay_in_advance":false,"charges":[{"billable_metric_id":"REPLACE_WITH_METRIC_ID","charge_model":"standard","properties":{"amount":"1"}}]}}'
+$ lago plans create --input '{"plan":{"name":"Quickstart","code":"quickstart","interval":"monthly","amount_cents":0,"amount_currency":"USD","pay_in_advance":false,"charges":[{"billable_metric_id":"0b8a1e70-1a90-4b2c-9f3d-5e6a7b8c9d01","charge_model":"standard","properties":{"amount":"1"}}]}}'
+LAGO_ID  2b902b90-2b90-2b90-2b90-2b902b902b90
+CODE     quickstart
+NAME     Quickstart
 
-lago customers create --external-id quickstart_customer --name "Quickstart Customer"
+$ lago customers create --external-id quickstart_customer --name "Quickstart Customer"
+LAGO_ID      1a901a90-1a90-1a90-1a90-1a901a901a90
+EXTERNAL_ID  quickstart_customer
+NAME         Quickstart Customer
 
-lago subscriptions create \
-  --subscription-external-customer-id quickstart_customer \
-  --subscription-external-id quickstart_subscription \
-  --subscription-plan-code quickstart
+$ lago subscriptions create \
+    --subscription-external-customer-id quickstart_customer \
+    --subscription-external-id quickstart_subscription \
+    --subscription-plan-code quickstart
+LAGO_ID      3c903c90-3c90-3c90-3c90-3c903c903c90
+EXTERNAL_ID  quickstart_subscription
 
-lago events send \
-  --external-subscription-id quickstart_subscription \
-  --code quickstart_requests
+$ lago events send --external-subscription-id quickstart_subscription --code quickstart_requests
 
-lago invoices preview --input '{"customer":{"external_id":"quickstart_customer"},"subscriptions":{"external_ids":["quickstart_subscription"]}}'
+$ lago invoices preview --input '{"customer":{"external_id":"quickstart_customer"},"subscriptions":{"external_ids":["quickstart_subscription"]}}'
 ```
+
+Creates and updates print identifiers, not the full resource: after a create the one
+thing you do not already have is the ID Lago minted. The complete resource is one flag
+away, and that is the form to script against.
+
+```console
+$ lago customers create --external-id quickstart_customer --name "Quickstart Customer" --output json
+{
+  "customer": {
+    "lago_id": "1a901a90-1a90-1a90-1a90-1a901a901a90",
+    "external_id": "quickstart_customer",
+    "name": "Quickstart Customer",
+    "currency": "USD",
+    ...
+  }
+}
+```
+
+Reads are unchanged: `lago customers get` and `lago customers list` print every column.
 
 `events send` creates a transaction ID when one is omitted. For bulk ingestion, stream newline-delimited JSON without loading the full file into memory:
 

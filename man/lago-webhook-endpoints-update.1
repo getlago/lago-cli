@@ -1,5 +1,5 @@
 .nh
-.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
 lago-webhook-endpoints-update - Update a webhook endpoint
@@ -98,6 +98,7 @@ This endpoint is used to update an existing webhook endpoint.
 .SH EXAMPLE
 .EX
   lago webhook-endpoints update <lago_id> --input @payload.json
+  lago webhook-endpoints update <lago_id> --input @payload.json --output json  # full resource
 .EE
 
 

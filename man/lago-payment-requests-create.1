@@ -1,5 +1,5 @@
 .nh
-.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
 lago-payment-requests-create - Create a payment request
@@ -102,6 +102,7 @@ This endpoint is used to create a payment request to collect payments of overdue
 .SH EXAMPLE
 .EX
   lago payment-requests create --input @payload.json
+  lago payment-requests create --input @payload.json --output json  # full resource
 .EE
 
 

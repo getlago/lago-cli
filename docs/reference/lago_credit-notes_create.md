@@ -14,6 +14,7 @@ lago credit-notes create [flags]
 
 ```
   lago credit-notes create --input @payload.json
+  lago credit-notes create --input @payload.json --output json  # full resource
 ```
 
 ### Options

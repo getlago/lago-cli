@@ -1,5 +1,5 @@
 .nh
-.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
 lago-subscriptions-create-subscription-alert - Create subscription alert(s)
@@ -86,6 +86,7 @@ This endpoint allows you to create alerts for a subscription. Send a single aler
 .SH EXAMPLE
 .EX
   lago subscriptions create-subscription-alert <external_id> --input @payload.json
+  lago subscriptions create-subscription-alert <external_id> --input @payload.json --output json  # full resource
 .EE
 
 

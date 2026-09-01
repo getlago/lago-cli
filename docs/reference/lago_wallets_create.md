@@ -14,6 +14,7 @@ lago wallets create [flags]
 
 ```
   lago wallets create --input @payload.json
+  lago wallets create --input @payload.json --output json  # full resource
 ```
 
 ### Options

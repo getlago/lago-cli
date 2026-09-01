@@ -14,6 +14,7 @@ lago billing-entities create [flags]
 
 ```
   lago billing-entities create --input @payload.json
+  lago billing-entities create --input @payload.json --output json  # full resource
 ```
 
 ### Options
