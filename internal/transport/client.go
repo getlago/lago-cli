@@ -23,9 +23,12 @@ import (
 	"github.com/getlago/lago-cli/internal/redact"
 )
 
+// USAPI and EUAPI are the cloud base URLs behind `--region us` and `--region eu`. They
+// carry no /api/v1: the CLI appends it, so the region shorthand and an explicitly passed
+// base URL normalize to exactly the same host and path.
 const (
-	USAPI = "https://api.getlago.com/api/v1"
-	EUAPI = "https://api.eu.getlago.com/api/v1"
+	USAPI = "https://api.getlago.com"
+	EUAPI = "https://api.eu.getlago.com"
 )
 
 type Config struct {
@@ -37,6 +40,13 @@ type Config struct {
 	Verbose   bool
 	UserAgent string
 	Err       io.Writer
+
+	// DialContext replaces the default dialer. It exists so the CLI's own tests can
+	// exercise the production hostnames -- api.getlago.com, api.eu.getlago.com, a
+	// self-hosted host on a custom port -- against a local server, instead of proving
+	// URL handling only for 127.0.0.1. Nil means the default dialer, which is the only
+	// thing any released code path uses.
+	DialContext func(ctx context.Context, network, address string) (net.Conn, error)
 }
 
 type Client struct {
@@ -54,6 +64,23 @@ type Request struct {
 	Body       []byte
 	Idempotent bool
 	DryRun     bool
+
+	// Subjects are the identifiers this request addressed, used to turn the API's bare
+	// 404 into a message naming what was not found. See Subject.
+	Subjects []Subject
+}
+
+// Subject is one identifier a request addressed: the kind of thing it names, and the
+// value that was passed.
+//
+// Lago answers a wrong identifier with `404 Not Found` and nothing else. QA passed a
+// plan code where a subscription external ID belonged (`ai_plan_...` as
+// `--external-subscription-id`) and got a bare "Not Found" that read as "this
+// subscription has no usage" rather than "this subscription does not exist". Carrying
+// the identifiers into the error is what makes the difference visible.
+type Subject struct {
+	Kind  string
+	Value string
 }
 
 type Response struct {
@@ -92,9 +119,13 @@ func New(cfg Config) (*Client, error) {
 		cfg.Err = io.Discard
 	}
 	dialer := &net.Dialer{Timeout: 5 * time.Second, KeepAlive: 30 * time.Second}
+	dialContext := cfg.DialContext
+	if dialContext == nil {
+		dialContext = dialer.DialContext
+	}
 	transport := &http.Transport{
 		Proxy:                 http.ProxyFromEnvironment,
-		DialContext:           dialer.DialContext,
+		DialContext:           dialContext,
 		ForceAttemptHTTP2:     true,
 		MaxIdleConns:          100,
 		IdleConnTimeout:       90 * time.Second,
@@ -123,26 +154,71 @@ func New(cfg Config) (*Client, error) {
 	return &Client{baseURL: baseURL, http: httpClient, config: cfg, redactor: redact.New(cfg.APIKey)}, nil
 }
 
+// APIPrefix is the path segment every Lago API request lives under. The CLI appends it,
+// so an operator passes a base URL and pasting the full path is equally correct.
+const APIPrefix = "/api/v1"
+
+// NormalizeBaseURL turns anything an operator might paste into the one base URL the
+// client will use, or refuses it with a message naming the correct host.
+//
+// It is the single normalizer for every deployment target: cloud US, cloud EU, and any
+// self-hosted shape including custom ports and sub-paths behind a proxy. QA hit two
+// failures this closes. A pasted `https://api.getlago.com/api/v1` must not become a
+// request to `/api/v1/api/v1`, and pasting the Lago **app** URL must not silently send an
+// authenticated request with a live API key to the dashboard: `app.getlago.com` answers,
+// it just answers with HTML, so the failure reads as a confusing parse error rather than
+// "you used the wrong host".
 func NormalizeBaseURL(raw string, insecure bool) (*url.URL, error) {
 	raw = strings.TrimSpace(raw)
 	if raw == "" {
 		return nil, apperr.New(apperr.ExitAuth, "Lago API URL is not configured", "Run `lago init` or set LAGO_API_URL.")
 	}
+	// A bare host such as `api.getlago.com` parses as a relative path with no scheme.
+	// Naming that is more useful than reporting an unspecific "invalid URL".
 	parsed, err := url.Parse(raw)
 	if err != nil || parsed.Scheme == "" || parsed.Host == "" {
-		return nil, apperr.New(apperr.ExitUsage, "invalid Lago API URL", "Use an absolute URL such as https://api.getlago.com/api/v1.")
+		return nil, apperr.New(apperr.ExitUsage,
+			fmt.Sprintf("invalid Lago API URL %q", raw),
+			"Use an absolute URL with a scheme, such as https://api.getlago.com for cloud US, https://api.eu.getlago.com for cloud EU, or your own base URL when self-hosting.")
 	}
 	if parsed.Scheme != "https" && !(insecure && parsed.Scheme == "http") {
 		return nil, apperr.New(apperr.ExitUsage, "Lago API requires HTTPS", "Use HTTPS or pass --insecure explicitly for a trusted self-hosted HTTP instance.")
 	}
+	if suggestion, isApp := APIHostFor(parsed.Hostname()); isApp {
+		return nil, apperr.New(apperr.ExitUsage,
+			fmt.Sprintf("%s is the Lago dashboard, not the Lago API", parsed.Hostname()),
+			fmt.Sprintf("Use https://%s instead. The API and the app are different hosts, and an API key sent to the app host will not authenticate.", suggestion))
+	}
 	parsed.RawQuery = ""
 	parsed.Fragment = ""
+	// Strip any /api/v1 the operator already pasted, then append exactly one. Stripping
+	// in a loop covers the doubled form a previous version of this function produced and
+	// wrote into people's config files.
 	path := strings.TrimRight(parsed.Path, "/")
-	if !strings.HasSuffix(path, "/api/v1") {
-		path += "/api/v1"
+	for {
+		trimmed, found := strings.CutSuffix(path, APIPrefix)
+		if !found {
+			break
+		}
+		path = strings.TrimRight(trimmed, "/")
 	}
-	parsed.Path = path
+	parsed.Path = path + APIPrefix
 	return parsed, nil
+}
+
+// APIHostFor reports the api.* host to use when hostname is a Lago app host, so the
+// error can name the right one instead of just refusing.
+//
+// Lago's own dashboards are `app.getlago.com` and `app.eu.getlago.com`. Self-hosted
+// deployments overwhelmingly follow the same `app.` / `api.` split, so the rule is the
+// prefix rather than a list of two. A single-domain self-hosted deployment is untouched:
+// its host does not start with `app.`.
+func APIHostFor(hostname string) (string, bool) {
+	lower := strings.ToLower(hostname)
+	if rest, isApp := strings.CutPrefix(lower, "app."); isApp && rest != "" {
+		return "api." + rest, true
+	}
+	return "", false
 }
 
 func (c *Client) Do(ctx context.Context, request Request) (*Response, error) {
@@ -274,7 +350,7 @@ func (c *Client) Do(ctx context.Context, request Request) (*Response, error) {
 		response.Timing.Total = time.Since(started)
 		response.Timing.AttemptCount = attempt
 		if httpResponse.StatusCode >= 400 {
-			return response, responseError(response)
+			return response, responseError(response, request.Subjects)
 		}
 		return response, nil
 	}
@@ -323,9 +399,26 @@ func (c *Client) resolve(path string, query url.Values) (*url.URL, error) {
 	if strings.HasPrefix(cleanPath, "http://") || strings.HasPrefix(cleanPath, "https://") {
 		return nil, apperr.New(apperr.ExitUsage, "absolute API paths are not allowed", "Use a relative path and select the server with --api-url.")
 	}
-	result.Path = strings.TrimRight(c.baseURL.Path, "/") + "/" + strings.TrimLeft(cleanPath, "/")
+	result.Path = strings.TrimRight(c.baseURL.Path, "/") + "/" + strings.TrimLeft(NormalizeRequestPath(cleanPath), "/")
 	result.RawQuery = query.Encode()
 	return &result, nil
+}
+
+// NormalizeRequestPath strips a redundant /api/v1 prefix from a request path.
+//
+// The base URL already ends in /api/v1, so `lago api GET /api/v1/customers` -- the form
+// anyone copying from the API reference will type -- would otherwise request
+// /api/v1/api/v1/customers and 404. No Lago endpoint lives under a second /api/v1, so
+// the prefix is unambiguously a paste artefact.
+func NormalizeRequestPath(path string) string {
+	trimmed := "/" + strings.TrimLeft(path, "/")
+	if trimmed == APIPrefix {
+		return "/"
+	}
+	if rest, found := strings.CutPrefix(trimmed, APIPrefix+"/"); found {
+		return "/" + rest
+	}
+	return path
 }
 
 func DecodeJSON(data []byte) (any, error) {
@@ -341,7 +434,7 @@ func DecodeJSON(data []byte) (any, error) {
 	return value, nil
 }
 
-func responseError(response *Response) error {
+func responseError(response *Response, subjects []Subject) error {
 	var envelope struct {
 		Status  int            `json:"status"`
 		Error   string         `json:"error"`
@@ -357,7 +450,24 @@ func responseError(response *Response) error {
 		message = http.StatusText(response.Status)
 	}
 	exitCode, suggestion := classify(response.Status)
+	if response.Status == http.StatusNotFound && len(subjects) > 0 {
+		message = describeNotFound(subjects)
+		suggestion = "Check that each identifier is the right kind for the flag it was passed to: a plan code is not a subscription external ID, and a Lago ID is not an external ID."
+	}
 	return &apperr.Error{ExitCode: exitCode, Status: response.Status, Code: envelope.Code, Message: message, Details: envelope.Details, RequestID: response.RequestID, Suggestion: suggestion}
+}
+
+// describeNotFound turns the identifiers a request carried into a message naming the
+// resource type and the value, so a 404 never reads as an empty result.
+func describeNotFound(subjects []Subject) string {
+	parts := make([]string, 0, len(subjects))
+	for _, subject := range subjects {
+		parts = append(parts, fmt.Sprintf("%s %q", subject.Kind, subject.Value))
+	}
+	if len(parts) == 1 {
+		return "no " + parts[0] + " exists in this organization"
+	}
+	return "not found: " + strings.Join(parts, ", ") + " (one of these does not exist in this organization)"
 }
 
 func classify(status int) (int, string) {
