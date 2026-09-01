@@ -77,9 +77,12 @@ const operationsJSON = %s
 		fmt.Printf("generated command tree is current: %d operations, spec %s (%s)\n", len(operations), version, sha)
 		return
 	}
-	// #nosec G306 -- generated Go source is a public repository artifact.
+	// The -out and -manifest paths are typed by the maintainer running `make generate`,
+	// so the taint source and the trust boundary are the same person. Nothing an operator
+	// or an API response controls reaches either path.
+	// #nosec G306,G703 -- generated Go source is a public repository artifact written to a maintainer-supplied path.
 	fatalIf(os.WriteFile(filepath.Clean(*outputPath), formatted, 0o644))
-	// #nosec G306 -- the generated parity manifest is a public repository artifact.
+	// #nosec G306,G703 -- the generated parity manifest is a public repository artifact written to a maintainer-supplied path.
 	fatalIf(os.WriteFile(filepath.Clean(*manifestPath), manifest, 0o644))
 	fmt.Printf("generated %d operations from spec %s (%s)\n", len(operations), version, sha)
 }

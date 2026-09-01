@@ -24,3 +24,10 @@ security@getlago.com
 # Listed explicitly so the exposure stays visible instead of going unscanned.
 example: brex@brex.com
 example: billing@acme.com
+
+# --- Git-over-SSH remote in the private-repo install note ---------------------
+# GitHub's SSH remote prefix is user-at-host shaped, so the email rule fires on it.
+# It is not an address and not a credential. It appears once, in the README's
+# `go install` workaround, which exists only while this repository is private and
+# is deleted the day it goes public.
+url."git@github.com:".insteadOf

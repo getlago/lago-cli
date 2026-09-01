@@ -1,6 +1,6 @@
 ## lago upgrade
 
-Upgrade a script-installed Lago CLI
+Print the command that upgrades this Lago CLI installation
 
 ```
 lago upgrade [flags]
@@ -16,7 +16,8 @@ lago upgrade [flags]
 ### Options
 
 ```
-  -h, --help   help for upgrade
+      --channel string   Release channel to check: stable or beta (default "stable")
+  -h, --help             help for upgrade
 ```
 
 ### Options inherited from parent commands

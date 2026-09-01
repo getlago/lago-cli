@@ -159,7 +159,8 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 			}
 			return runWatch(cmd, app, operation, path, query, watchInterval)
 		}
-		value, response, err := app.Request(cmd.Context(), transport.Request{Method: operation.Method, Path: path, Query: query, Headers: headers, Body: body, Idempotent: idempotent})
+		subjects := identifierSubjects(operation, pathParameters, args, cmd, flagValues)
+		value, response, err := app.Request(cmd.Context(), transport.Request{Method: operation.Method, Path: path, Query: query, Headers: headers, Body: body, Idempotent: idempotent, Subjects: subjects})
 		if err != nil {
 			return err
 		}
@@ -375,6 +376,88 @@ func jsonInteger(value any) (int64, bool) {
 		return typed, true
 	default:
 		return 0, false
+	}
+}
+
+// identifierSubjects collects the identifiers a command was given, so a 404 can name
+// what was not found instead of returning a bare "Not Found".
+//
+// QA passed a plan code as --external-subscription-id and read the resulting empty error
+// as "no usage" rather than "no such subscription". Path arguments are always
+// identifiers; among flags only the ones whose names are identifier-shaped are, so a
+// --name or an --amount-cents never ends up in the message.
+func identifierSubjects(operation generated.Operation, pathParameters []generated.Parameter, args []string, cmd *cobra.Command, values map[string]*string) []transport.Subject {
+	subjects := make([]transport.Subject, 0, len(args)+2)
+	for index, parameter := range pathParameters {
+		if index < len(args) && args[index] != "" {
+			subjects = append(subjects, transport.Subject{Kind: subjectKind(parameter.Name, operation.Resource), Value: args[index]})
+		}
+	}
+	for _, parameter := range operation.Parameters {
+		if parameter.In == "path" || !isIdentifierName(parameter.Name) || !cmd.Flags().Changed(parameter.Flag) {
+			continue
+		}
+		if value := *values[parameter.Flag]; value != "" {
+			subjects = append(subjects, transport.Subject{Kind: subjectKind(parameter.Name, operation.Resource), Value: value})
+		}
+	}
+	if operation.Body != nil {
+		for _, field := range operation.Body.Fields {
+			name := field.Path[len(field.Path)-1]
+			if !isIdentifierName(name) || !cmd.Flags().Changed(field.Flag) {
+				continue
+			}
+			if value := *values[field.Flag]; value != "" {
+				subjects = append(subjects, transport.Subject{Kind: subjectKind(name, operation.Resource), Value: value})
+			}
+		}
+	}
+	return subjects
+}
+
+// identifierNames are the field-name shapes that address an existing resource. A create
+// payload's `name` or `amount_cents` is data; `external_subscription_id` is a lookup.
+func isIdentifierName(name string) bool {
+	lower := strings.ToLower(name)
+	switch lower {
+	case "id", "code":
+		return true
+	}
+	return strings.HasSuffix(lower, "_id") || strings.HasSuffix(lower, "_code")
+}
+
+// subjectKind turns an identifier field name into the resource type it addresses:
+// `external_subscription_id` and `subscription_external_id` both become "subscription",
+// `plan_code` becomes "plan", and a bare `id` or `code` falls back to the command's own
+// resource so the message still names something.
+func subjectKind(name, resource string) string {
+	lower := strings.ToLower(name)
+	if lower == "id" || lower == "code" {
+		return singularResource(resource)
+	}
+	lower = strings.TrimSuffix(strings.TrimSuffix(lower, "_id"), "_code")
+	lower = strings.TrimPrefix(lower, "external_")
+	lower = strings.TrimSuffix(lower, "_external")
+	lower = strings.TrimPrefix(lower, "lago_")
+	if lower == "" || lower == "external" || lower == "lago" {
+		lower = singularResource(resource)
+	}
+	return strings.ReplaceAll(lower, "_", " ")
+}
+
+// singularResource turns a plural command group into the noun for one of its members.
+func singularResource(resource string) string {
+	resource = strings.ReplaceAll(resource, "-", " ")
+	switch {
+	case strings.HasSuffix(resource, "ies"):
+		return strings.TrimSuffix(resource, "ies") + "y"
+	// -sses, -xes and -ches take "es", so trimming a bare "s" would leave "taxe".
+	case strings.HasSuffix(resource, "sses"), strings.HasSuffix(resource, "xes"), strings.HasSuffix(resource, "ches"):
+		return strings.TrimSuffix(resource, "es")
+	case strings.HasSuffix(resource, "s"):
+		return strings.TrimSuffix(resource, "s")
+	default:
+		return resource
 	}
 }
 

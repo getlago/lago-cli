@@ -1,13 +1,12 @@
 package update
 
 import (
-	"archive/tar"
-	"bytes"
-	"compress/gzip"
 	"context"
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -32,23 +31,68 @@ func TestLatestStableAndBeta(t *testing.T) {
 	}
 }
 
-func TestExtractTarBinaryAndChecksum(t *testing.T) {
-	t.Parallel()
-	var archive bytes.Buffer
-	gzipWriter := gzip.NewWriter(&archive)
-	tarWriter := tar.NewWriter(gzipWriter)
-	content := []byte("fake-binary")
-	if err := tarWriter.WriteHeader(&tar.Header{Name: "lago", Mode: 0o755, Size: int64(len(content)), Typeflag: tar.TypeReg}); err != nil {
-		t.Fatal(err)
+// `lago upgrade` prints a command; it never replaces the running binary. Detect has to
+// name the channel that owns a given path, because printing `brew upgrade` for a binary
+// Homebrew does not manage produces a brew error rather than an upgrade.
+func TestDetectClassifiesTheInstallingChannel(t *testing.T) {
+	for _, testCase := range []struct {
+		name string
+		path string
+		env  map[string]string
+		want Method
+	}{
+		{name: "homebrew cellar", path: "/opt/homebrew/Cellar/lago/1.0.0/bin/lago", want: Homebrew},
+		{name: "intel homebrew prefix", path: "/usr/local/Homebrew/bin/lago", want: Homebrew},
+		{name: "linuxbrew", path: "/home/linuxbrew/.linuxbrew/Cellar/lago/1.0.0/bin/lago", want: Homebrew},
+		{name: "default gopath bin", path: filepath.Join(mustHome(t), "go", "bin", "lago"), want: GoInstall},
+		{name: "explicit GOBIN", path: "/srv/tools/lago", env: map[string]string{"GOBIN": "/srv/tools"}, want: GoInstall},
+		{name: "explicit GOPATH", path: "/w/gopath/bin/lago", env: map[string]string{"GOPATH": "/w/gopath"}, want: GoInstall},
+		{name: "manual install", path: "/usr/local/bin/lago", want: Unknown},
+		{name: "windows manual install", path: `C:\\Program Files\\lago\\lago.exe`, want: Unknown},
+	} {
+		t.Run(testCase.name, func(t *testing.T) {
+			t.Setenv("GOBIN", "")
+			t.Setenv("GOPATH", "")
+			for name, value := range testCase.env {
+				t.Setenv(name, value)
+			}
+			if got := Detect(testCase.path); got != testCase.want {
+				t.Errorf("Detect(%q) = %q, want %q", testCase.path, got, testCase.want)
+			}
+		})
 	}
-	_, _ = tarWriter.Write(content)
-	_ = tarWriter.Close()
-	_ = gzipWriter.Close()
-	extracted, err := extractBinary(archive.Bytes(), "tar.gz")
-	if err != nil || !bytes.Equal(extracted, content) {
-		t.Fatalf("extracted=%q error=%v", extracted, err)
+}
+
+// Each recognised channel maps to exactly one command, and an unrecognised install
+// yields no command so the caller knows to print both.
+func TestUpgradeCommandNamesOneChannel(t *testing.T) {
+	method, command, err := UpgradeCommand()
+	if err != nil {
+		t.Fatalf("UpgradeCommand failed: %v", err)
 	}
-	if got := checksumFor([]byte("abc  lago_1.0.0_linux_amd64.tar.gz\n"), "lago_1.0.0_linux_amd64.tar.gz"); got != "abc" {
-		t.Fatalf("checksum = %q", got)
+	switch method {
+	case Homebrew:
+		if command != "brew upgrade getlago/tap/lago" {
+			t.Errorf("homebrew command = %q", command)
+		}
+	case GoInstall:
+		if command != "go install github.com/getlago/lago-cli/cmd/lago@latest" {
+			t.Errorf("go install command = %q", command)
+		}
+	case Unknown:
+		if command != "" {
+			t.Errorf("unknown install returned a command: %q", command)
+		}
+	default:
+		t.Fatalf("unexpected method %q", method)
 	}
+}
+
+func mustHome(t *testing.T) string {
+	t.Helper()
+	home, err := os.UserHomeDir()
+	if err != nil {
+		t.Skip("no home directory in this environment")
+	}
+	return home
 }

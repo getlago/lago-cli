@@ -2,46 +2,79 @@
 
 The official command-line interface for [Lago](https://getlago.com), the open-source usage-based billing platform. The CLI is generated from Lago's OpenAPI specification and ships as one static Go binary.
 
-> This repository is under active development. Until the first signed release, build from source and use a Lago test profile.
+> This repository is under active development. Until the first signed release, use a Lago test profile.
 
 ## Install
 
-Until the first signed release, install from source:
+Two supported channels.
+
+```console
+$ brew install getlago/tap/lago
+```
 
 ```console
 $ go install github.com/getlago/lago-cli/cmd/lago@latest
 ```
 
-### Channels at GA
+<!-- TODO(public-repo): delete this subsection the day getlago/lago-cli goes public. -->
+### While the repository is private
 
-These channels are provisioned as part of the release sequence. Each becomes a
-documented install command only after its endpoint is live and smoke-tested, so
-none of them are printed above as if they already work.
+`go install` fetches through the Go module proxy, which cannot read a private repository. Without the two settings below it fails like this:
 
-| Platform | Command | Status |
-| --- | --- | --- |
-| macOS / Linux | `curl -fsSL https://getlago.com/install.sh \| sh` | endpoint not yet published |
-| Homebrew tap | `brew install getlago/tap/lago` | tap not yet provisioned |
-| Docker | `docker run --rm ghcr.io/getlago/lago-cli:latest version` | published on first tag |
-| Windows | `winget install Lago.LagoCLI` or `scoop install lago` | repositories not yet provisioned |
-| Go | `go install github.com/getlago/lago-cli/cmd/lago@latest` | available now |
+```
+go: github.com/getlago/lago-cli/cmd/lago@latest: module github.com/getlago/lago-cli: git ls-remote -q origin in /Users/you/go/pkg/mod/cache/vcs/...: exit status 128:
+	fatal: could not read Username for 'https://github.com': terminal prompts disabled
+```
 
-Publishing order is not a checklist. `curl -fsSL … | sh` on a missing endpoint
-fails silently: curl writes nothing, `sh` reads an empty stream, and the shell
-exits 0 having installed nothing. So each channel is published, then verified,
-then documented, in that order:
+Tell Go to bypass the proxy for this module, and Git to reach GitHub over SSH:
 
-1. Publish `install.sh` at `https://getlago.com/install.sh` and confirm HTTP 200.
-2. Provision the Homebrew tap and the Windows package repositories.
-3. Tag the release; the pipeline signs artifacts and publishes checksums.
-4. Run the post-release smoke job, which installs from the real endpoints.
-5. Only then move a row above into the install table.
+```console
+$ export GOPRIVATE=github.com/getlago/lago-cli
+$ git config --global url."git@github.com:".insteadOf "https://github.com/"
+$ go install github.com/getlago/lago-cli/cmd/lago@latest
+```
 
-The canonical installer is served only from `getlago.com`, a Lago-controlled domain. It verifies the release checksum before installing. Release artifacts include checksums, signatures, provenance, and SBOMs; the installer verifies the checksum, and signature verification is tracked in [DECISIONS.md](DECISIONS.md).
+The Homebrew tap is public and needs neither setting.
 
-## Five-minute billing flow
+### What the two channels do not mean
 
-Initialize a test profile. `init` exits successfully only after a live `GET /api/v1/organizations` validates the URL and key.
+This is a reduction in **channels**, not in platform support:
+
+- Release archives are still built for macOS, Linux, and Windows on amd64 and arm64, and CI compiles and smoke-tests that full matrix on every pull request.
+- `go install` works anywhere Go runs, Windows included.
+
+Removed for 1.0: the shell and PowerShell installers, the container image, Scoop, and Winget. They are parked, with re-enable criteria, in [`dist-channels/parked/`](dist-channels/parked/README.md).
+
+Neither channel self-updates. `lago upgrade` checks for a newer release and prints the command that matches how your binary was installed:
+
+```console
+$ lago upgrade
+Lago CLI 1.1.0 is available (installed: 1.0.0).
+
+    brew upgrade getlago/tap/lago
+```
+
+## Configure
+
+Create an API key in the Lago app under **Developers → API keys**, then point the CLI at the right host.
+
+| Deployment | `--api-url` |
+| --- | --- |
+| Cloud US | `https://api.getlago.com` |
+| Cloud EU | `https://api.eu.getlago.com` |
+| Self-hosted | your Lago API base URL, for example `https://lago.example.com` |
+
+Pass the **base** URL. The CLI appends `/api/v1` itself. Pasting the full path works too: `https://api.getlago.com/api/v1` normalizes to the same host, and so do a trailing slash, a custom port (`https://lago.example.com:8443`), and a sub-path behind a proxy (`https://tools.example.com/lago` keeps the sub-path). `init` saves the normalized URL, so what the profile holds is what the CLI calls.
+
+What does not work is the **app** URL. `https://app.getlago.com` is the dashboard, not the API, and it answers, which is what makes the mistake confusing. The CLI refuses it by name rather than sending your API key to the frontend:
+
+```console
+$ lago init --api-key "$LAGO_API_KEY" --api-url https://app.eu.getlago.com
+Error: app.eu.getlago.com is the Lago dashboard, not the Lago API
+Suggestion: Use https://api.eu.getlago.com instead. The API and the app are different hosts, and an API key sent to the app host will not authenticate.
+```
+
+`init` writes the profile only after a live `GET /api/v1/organizations` accepts the key, so a saved profile is a validated one.
 
 ```console
 $ lago init --api-key "$LAGO_API_KEY" --region us --mode test
@@ -49,7 +82,53 @@ Connected to Lago as Example Organization.
 Saved us profile "default" to ~/.config/lago/config.toml (mode: test).
 ```
 
-Create a metric, plan, customer, and subscription; then send usage and preview the invoice. Every payload and enum below comes from the pinned OpenAPI document.
+```console
+$ lago init --api-key "$LAGO_API_KEY" --region eu --mode test
+```
+
+```console
+$ lago init --api-key "$LAGO_API_KEY" --region self-hosted --api-url https://lago.example.com --mode test
+```
+
+`--region us` and `--region eu` are shorthand for the two URLs in the table above; they resolve to exactly the same normalized host as passing `--api-url` explicitly.
+
+Check which host you are actually hitting, on any deployment. `RESOLVED_API_URL` is the base URL the CLI calls; `API_URL` is what the profile holds:
+
+```console
+$ lago whoami
+API_URL           https://api.eu.getlago.com
+MODE              test
+ORGANIZATION      {"organization":{"lago_id":"org_...","name":"Example Organization"}}
+PROFILE           default
+REGION            eu
+RESOLVED_API_URL  https://api.eu.getlago.com/api/v1
+```
+
+`lago doctor` reports the same resolved URL as its own check, next to the configuration, permission, and authentication checks. It is the first line to paste into a support ticket: it separates "wrong credentials" from "right credentials, wrong host".
+
+```console
+$ lago doctor --output json --query 'checks[].{check: name, detail: detail}'
+```
+
+### Precedence and the live-mode default
+
+Configuration resolves flags → environment → `~/.config/lago/config.toml`. Select a named profile with `--profile staging`.
+
+| Setting | Flag | Environment |
+| --- | --- | --- |
+| API URL | `--api-url` | `LAGO_API_URL` |
+| API key | `--api-key` | `LAGO_API_KEY` |
+| Mode | `--mode` | `LAGO_MODE` |
+| Profile | `--profile` | `LAGO_PROFILE` |
+| Timeout | `--timeout` | `LAGO_TIMEOUT` |
+
+**Mode defaults to live.** A profile declares `mode = "live"` or `mode = "test"`, and a credential override (`--api-key`, `--api-url`, `LAGO_API_KEY`, `LAGO_API_URL`) without an explicit mode deliberately resolves to **live**, not test. Failing toward caution means a script that forgets `--mode` gets the confirmation gates, not a silent write to production. Live commands print `[LIVE]` on stderr, and destructive live operations require the resource identifier via `--confirm` or typed interactive confirmation.
+
+Plain HTTP and disabled TLS verification require the explicit `--insecure` flag and always print a warning. Use it for `http://localhost:3000` during development, not against a deployment that holds real money.
+
+## Quickstart
+
+A metric, a plan, a customer, a subscription, one usage event, and the invoice preview.
 
 ```console
 $ lago billable-metrics create --name Requests --code quickstart_requests --aggregation-type count_agg
@@ -75,13 +154,22 @@ LAGO_ID      3c903c90-3c90-3c90-3c90-3c903c903c90
 EXTERNAL_ID  quickstart_subscription
 
 $ lago events send --external-subscription-id quickstart_subscription --code quickstart_requests
+CODE            quickstart_requests
+LAGO_ID         5e905e90-5e90-5e90-5e90-5e905e905e90
+TRANSACTION_ID  0f3c1d2e-4a5b-6c7d-8e9f-0a1b2c3d4e5f
 
 $ lago invoices preview --input '{"customer":{"external_id":"quickstart_customer"},"subscriptions":{"external_ids":["quickstart_subscription"]}}'
+CURRENCY            USD
+FEES                [{"amount_cents":100,"units":"1.0"}]
+ISSUING_DATE        2026-10-01
+TOTAL_AMOUNT_CENTS  100
 ```
 
-Creates and updates print identifiers, not the full resource: after a create the one
-thing you do not already have is the ID Lago minted. The complete resource is one flag
-away, and that is the form to script against.
+The `billable_metric_id` in the plan payload is the `LAGO_ID` the first command printed. Substitute yours.
+
+### Creates print identifiers
+
+Every `create` and `update` prints a terse identifier block by default, because after a create the one thing you do not already have is the ID Lago minted. `--output json` returns the complete resource, and that is the form to script against:
 
 ```console
 $ lago customers create --external-id quickstart_customer --name "Quickstart Customer" --output json
@@ -91,35 +179,98 @@ $ lago customers create --external-id quickstart_customer --name "Quickstart Cus
     "external_id": "quickstart_customer",
     "name": "Quickstart Customer",
     "currency": "USD",
-    ...
+    "created_at": "2026-09-01T10:00:00Z"
   }
 }
 ```
 
 Reads are unchanged: `lago customers get` and `lago customers list` print every column.
 
-`events send` creates a transaction ID when one is omitted. For bulk ingestion, stream newline-delimited JSON without loading the full file into memory:
+`events send` generates a transaction ID when one is omitted. For bulk ingestion, stream newline-delimited JSON without loading the file into memory:
 
-```sh
-lago events send --file events.ndjson --concurrency 8
-cat events.ndjson | lago events send --file -
+```console
+$ lago events send --file events.ndjson --concurrency 8
+$ cat events.ndjson | lago events send --file -
 ```
 
-## Profiles and safety
+## Querying responses with `--query`
 
-Configuration precedence is flags, then environment, then `~/.config/lago/config.toml`. Select named profiles with `--profile staging`. Profiles declare `mode = "live"` or `mode = "test"`; credential overrides without an explicit mode deliberately resolve to live.
+`--query` takes a [JMESPath](https://jmespath.org) expression. The trap is that **Lago wraps every response**, and the wrapper is part of the path. A query written against the unwrapped resource matches nothing and returns `null`.
 
-Live commands print `[LIVE]`. Destructive live operations require the resource identifier via `--confirm` or typed interactive confirmation. Plain HTTP and disabled TLS verification require the explicit `--insecure` flag and always print a warning.
+| Endpoint | Response shape | Query starts with |
+| --- | --- | --- |
+| `customers get` | `{"customer": {...}}` | `customer.` |
+| `customers list` | `{"customers": [...], "meta": {...}}` | `customers[` |
+| `subscriptions get` | `{"subscription": {...}}` | `subscription.` |
+| `invoices list` | `{"invoices": [...], "meta": {...}}` | `invoices[` |
 
-```sh
-lago whoami
-lago doctor
-lago customers list --all --output json
-lago api GET /customers?page=2
-lago api POST /events --data @event.json --idempotency-key event-42
+Two worked examples. Reach through the wrapper, then select:
+
+```console
+$ lago customers get quickstart_customer --output json --query 'customer.lago_id'
+"1a901a90-1a90-1a90-1a90-1a901a901a90"
+
+$ lago invoices list --output json --query 'invoices[?status==`"finalized"`].{id: lago_id, total: total_amount_cents}'
+[
+  {
+    "id": "4d904d90-4d90-4d90-4d90-4d904d904d90",
+    "total": 150000
+  }
+]
 ```
 
-Global scripting controls include `--output table|json|yaml`, `--query` for JMESPath, `--dry-run`, `--timing`, `--verbose`, `--timeout`, and `--no-retry`. `--timing` separates API round-trip, retry wait, and CLI overhead. The API key is redacted from dry runs, errors, and verbose logs.
+Note the quoting in that filter. A JMESPath backtick literal holds **JSON**, so a string
+comparison needs the inner double quotes: `` `"finalized"` `` works, bare `` `finalized` ``
+is not valid JSON and is rejected as an invalid query. The alternative is the raw-string
+form `'finalized'`, which means double-quoting the whole expression for your shell:
+
+```console
+$ lago invoices list --output json --query "invoices[?status=='finalized'].[lago_id]"
+```
+
+When a query matches nothing, the CLI says so on stderr and still prints `null` on stdout, so a script's parsing does not change:
+
+```console
+$ lago customers list --output json --query 'lago_id'
+query matched nothing; top-level keys: customers, meta
+null
+```
+
+`--query` implies `--output json` when you have not chosen a format, because a JMESPath result is structured data and an empty table is not an answer. The switch is announced, not silent, and an explicit `--output` always wins:
+
+```console
+$ lago customers list --query 'customers[].external_id'
+--query implies --output json; pass --output table explicitly to render the result as a table.
+[
+  "quickstart_customer"
+]
+```
+
+### When an identifier is the wrong kind
+
+Lago answers an unknown identifier with a bare `404 Not Found`, which reads as "no data" rather than "no such thing". The CLI names the resource type and the value instead, and exits 4:
+
+```console
+$ lago events send --external-subscription-id ai_plan_gpt4_tokens --code api_calls
+Error: no subscription "ai_plan_gpt4_tokens" exists in this organization
+Suggestion: Check that each identifier is the right kind for the flag it was passed to: a plan code is not a subscription external ID, and a Lago ID is not an external ID.
+$ echo $?
+4
+```
+
+`--all` and `--query` are mutually exclusive: `--all` streams pages without buffering, so a whole-collection expression has nothing to evaluate against. Use a per-page `--query`, or stream JSON pages into `jq`.
+
+## Everyday commands
+
+```console
+$ lago whoami
+$ lago doctor
+$ lago customers list --all --output json
+$ lago api GET /customers?page=2
+$ lago api POST /events --data @event.json --idempotency-key event-42
+```
+
+Global scripting controls: `--output table|json|yaml`, `--query`, `--dry-run`, `--timing`, `--verbose`, `--timeout`, `--no-retry`. `--timing` separates API round-trip, retry wait, and CLI overhead. The API key is redacted from dry runs, errors, and verbose logs.
 
 ## Stable exit codes
 
@@ -139,7 +290,7 @@ Changing this table is a breaking change.
 
 ## Development
 
-Go 1.25.13 or newer is required; older 1.25 patch releases contain reachable standard-library vulnerabilities and are rejected by the security gate.
+Go 1.27.0 or newer is required. `go.mod` pins the minimum, so `GOTOOLCHAIN=auto` (the default) fetches it for you. Older toolchains are rejected by the security gate.
 
 ```sh
 make generate
@@ -150,7 +301,7 @@ make lint
 make security
 ```
 
-Pull requests validate the checked-in OpenAPI snapshot. A daily trusted workflow fetches `https://swagger.getlago.com/openapi.yaml` and opens a spec-drift PR; `@getlago/developers` owns a one-business-day merge SLA. See [ARCHITECTURE.md](ARCHITECTURE.md), [CONTRIBUTING.md](CONTRIBUTING.md), and [SECURITY.md](SECURITY.md).
+Pull requests validate the checked-in OpenAPI snapshot. A daily trusted workflow fetches `https://swagger.getlago.com/openapi.yaml` and opens a spec-drift PR; `@getlago/developers` owns a one-business-day merge SLA. See [ARCHITECTURE.md](ARCHITECTURE.md), [CONTRIBUTING.md](CONTRIBUTING.md), [DECISIONS.md](DECISIONS.md), and [SECURITY.md](SECURITY.md).
 
 ## Telemetry
 

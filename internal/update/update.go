@@ -1,20 +1,12 @@
 package update
 
 import (
-	"archive/tar"
-	"archive/zip"
-	"bytes"
-	"compress/gzip"
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"time"
 
@@ -102,164 +94,83 @@ func Latest(ctx context.Context, current, channel, userAgent, apiBase string) (C
 	return Check{Current: current, Latest: strings.TrimPrefix(release.TagName, "v"), Channel: channel, UpdateAvailable: available, ReleaseURL: release.HTMLURL, Development: development}, release, nil
 }
 
-func Install(ctx context.Context, release Release, userAgent string) (string, error) {
+// Method is how the running binary was installed, which determines the only correct
+// upgrade command to print.
+type Method string
+
+const (
+	Homebrew  Method = "homebrew"
+	GoInstall Method = "go-install"
+	Unknown   Method = "unknown"
+)
+
+// UpgradeCommand reports how the running binary was installed and the exact command
+// that upgrades it.
+//
+// Lago CLI ships through two channels, Homebrew and `go install`, and neither is
+// self-updating: Homebrew owns its Cellar and `go install` rebuilds from source. So
+// `lago upgrade` prints a command instead of replacing the binary. The download,
+// checksum-verify and atomic-replace path this replaced belonged to the parked script
+// installer; see dist-channels/parked/README.md.
+func UpgradeCommand() (Method, string, error) {
 	executable, err := os.Executable()
 	if err != nil {
-		return "", apperr.Wrap(apperr.ExitGeneral, "locate Lago CLI executable", err)
+		return Unknown, "", apperr.Wrap(apperr.ExitGeneral, "locate Lago CLI executable", err)
 	}
-	executable, err = filepath.EvalSymlinks(executable)
-	if err != nil {
-		return "", apperr.Wrap(apperr.ExitGeneral, "resolve Lago CLI executable", err)
+	if resolved, err := filepath.EvalSymlinks(executable); err == nil {
+		executable = resolved
 	}
-	lowerPath := strings.ToLower(filepath.ToSlash(executable))
-	switch {
-	case strings.Contains(lowerPath, "/cellar/") || strings.Contains(lowerPath, "/homebrew/"):
-		return "", apperr.New(apperr.ExitUsage, "this Lago CLI is managed by Homebrew", "Run `brew upgrade getlago/tap/lago`.")
-	case strings.Contains(lowerPath, "/scoop/"):
-		return "", apperr.New(apperr.ExitUsage, "this Lago CLI is managed by Scoop", "Run `scoop update lago`.")
-	case strings.Contains(lowerPath, "/winget/") || runtime.GOOS == "windows":
-		return "", apperr.New(apperr.ExitUsage, "use the Windows package manager to upgrade Lago CLI", "Run `winget upgrade Lago.LagoCLI` or `scoop update lago`.")
-	case strings.HasSuffix(filepath.ToSlash(filepath.Dir(executable)), "/go/bin"):
-		return "", apperr.New(apperr.ExitUsage, "this Lago CLI appears to be managed by go install", "Run `go install github.com/getlago/lago-cli/cmd/lago@latest`.")
+	method := Detect(executable)
+	switch method {
+	case Homebrew:
+		return method, "brew upgrade getlago/tap/lago", nil
+	case GoInstall:
+		return method, "go install github.com/getlago/lago-cli/cmd/lago@latest", nil
+	default:
+		return method, "", nil
 	}
-	version := strings.TrimPrefix(release.TagName, "v")
-	extension := "tar.gz"
-	if runtime.GOOS == "windows" {
-		extension = "zip"
-	}
-	archiveName := fmt.Sprintf("lago_%s_%s_%s.%s", version, runtime.GOOS, runtime.GOARCH, extension)
-	archiveURL := assetURL(release.Assets, archiveName)
-	checksumsURL := assetURL(release.Assets, "checksums.txt")
-	if archiveURL == "" || checksumsURL == "" {
-		return "", apperr.New(apperr.ExitNotFound, "release assets for this platform are incomplete", "Use the package-manager install command from the release page.")
-	}
-	archive, err := download(ctx, archiveURL, userAgent, 128<<20)
-	if err != nil {
-		return "", err
-	}
-	checksums, err := download(ctx, checksumsURL, userAgent, 4<<20)
-	if err != nil {
-		return "", err
-	}
-	expected := checksumFor(checksums, archiveName)
-	digest := sha256.Sum256(archive)
-	if expected == "" || !strings.EqualFold(expected, hex.EncodeToString(digest[:])) {
-		return "", apperr.New(apperr.ExitValidation, "release checksum verification failed", "Do not install this artifact; retry and report the release through SECURITY.md if it persists.")
-	}
-	binary, err := extractBinary(archive, extension)
-	if err != nil {
-		return "", err
-	}
-	temporary, err := os.CreateTemp(filepath.Dir(executable), ".lago-upgrade-*")
-	if err != nil {
-		return "", apperr.Wrap(apperr.ExitGeneral, "create upgrade file", err)
-	}
-	temporaryPath := temporary.Name()
-	defer os.Remove(temporaryPath)
-	if err := temporary.Chmod(0o755); err != nil {
-		_ = temporary.Close()
-		return "", apperr.Wrap(apperr.ExitGeneral, "make upgraded binary executable", err)
-	}
-	if _, err := temporary.Write(binary); err != nil {
-		_ = temporary.Close()
-		return "", apperr.Wrap(apperr.ExitGeneral, "write upgraded binary", err)
-	}
-	if err := temporary.Sync(); err != nil {
-		_ = temporary.Close()
-		return "", apperr.Wrap(apperr.ExitGeneral, "sync upgraded binary", err)
-	}
-	if err := temporary.Close(); err != nil {
-		return "", apperr.Wrap(apperr.ExitGeneral, "close upgraded binary", err)
-	}
-	if err := os.Rename(temporaryPath, executable); err != nil {
-		return "", apperr.Wrap(apperr.ExitGeneral, "replace Lago CLI executable", err)
-	}
-	return version, nil
 }
 
-func download(ctx context.Context, target, userAgent string, limit int64) ([]byte, error) {
-	request, err := http.NewRequestWithContext(ctx, http.MethodGet, target, nil)
-	if err != nil {
-		return nil, apperr.Wrap(apperr.ExitGeneral, "build release download", err)
+// Detect classifies an executable path into the channel that installed it.
+//
+// Homebrew is identified by its Cellar or its prefix; `go install` by GOBIN, GOPATH/bin,
+// or a path ending in go/bin. Anything else is Unknown, and Unknown prints both commands
+// rather than guessing: telling someone to run `brew upgrade` on a binary Homebrew does
+// not own produces a confusing Homebrew error instead of an upgrade.
+func Detect(executable string) Method {
+	path := filepath.ToSlash(executable)
+	lower := strings.ToLower(path)
+	if strings.Contains(lower, "/cellar/") || strings.Contains(lower, "/homebrew/") {
+		return Homebrew
 	}
-	request.Header.Set("User-Agent", userAgent)
-	client := &http.Client{Timeout: 30 * time.Second}
-	response, err := client.Do(request)
-	if err != nil {
-		return nil, &apperr.Error{ExitCode: apperr.ExitNetwork, Message: "download Lago CLI release: " + err.Error(), Cause: err}
+	directory := filepath.ToSlash(filepath.Dir(path))
+	for _, candidate := range []string{os.Getenv("GOBIN"), goPathBin()} {
+		if candidate == "" {
+			continue
+		}
+		if directory == filepath.ToSlash(filepath.Clean(candidate)) {
+			return GoInstall
+		}
 	}
-	defer response.Body.Close()
-	if response.StatusCode != http.StatusOK {
-		return nil, &apperr.Error{ExitCode: apperr.ExitServer, Status: response.StatusCode, Message: "release download returned " + response.Status}
+	if strings.HasSuffix(directory, "/go/bin") {
+		return GoInstall
 	}
-	reader := &io.LimitedReader{R: response.Body, N: limit + 1}
-	data, err := io.ReadAll(reader)
-	if err != nil {
-		return nil, apperr.Wrap(apperr.ExitNetwork, "read release download", err)
-	}
-	if reader.N == 0 {
-		return nil, apperr.New(apperr.ExitValidation, "release asset exceeds its safety limit", "Install from the signed release page manually.")
-	}
-	return data, nil
+	return Unknown
 }
 
-func extractBinary(archive []byte, format string) ([]byte, error) {
-	if format == "zip" {
-		reader, err := zip.NewReader(bytes.NewReader(archive), int64(len(archive)))
-		if err != nil {
-			return nil, apperr.Wrap(apperr.ExitValidation, "open release ZIP", err)
-		}
-		for _, file := range reader.File {
-			if filepath.Base(file.Name) != "lago.exe" {
-				continue
-			}
-			opened, err := file.Open()
-			if err != nil {
-				return nil, err
-			}
-			defer opened.Close()
-			return io.ReadAll(io.LimitReader(opened, 128<<20))
-		}
-	} else {
-		gzipReader, err := gzip.NewReader(bytes.NewReader(archive))
-		if err != nil {
-			return nil, apperr.Wrap(apperr.ExitValidation, "open release archive", err)
-		}
-		defer gzipReader.Close()
-		tarReader := tar.NewReader(gzipReader)
-		for {
-			header, err := tarReader.Next()
-			if err == io.EOF {
-				break
-			}
-			if err != nil {
-				return nil, apperr.Wrap(apperr.ExitValidation, "read release archive", err)
-			}
-			if filepath.Base(header.Name) == "lago" && header.Typeflag == tar.TypeReg {
-				return io.ReadAll(io.LimitReader(tarReader, 128<<20))
-			}
+func goPathBin() string {
+	if gopath := os.Getenv("GOPATH"); gopath != "" {
+		// GOPATH may be a list; only its first element receives `go install` output.
+		first := strings.Split(gopath, string(os.PathListSeparator))[0]
+		if first != "" {
+			return filepath.Join(first, "bin")
 		}
 	}
-	return nil, apperr.New(apperr.ExitValidation, "release archive contains no Lago binary", "Install from the signed release page manually.")
-}
-
-func assetURL(assets []Asset, name string) string {
-	for _, asset := range assets {
-		if asset.Name == name {
-			return asset.URL
-		}
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return ""
 	}
-	return ""
-}
-
-func checksumFor(data []byte, name string) string {
-	for _, line := range strings.Split(string(data), "\n") {
-		fields := strings.Fields(line)
-		if len(fields) == 2 && strings.TrimPrefix(fields[1], "*") == name {
-			return fields[0]
-		}
-	}
-	return ""
+	return filepath.Join(home, "go", "bin")
 }
 
 func normalizedVersion(version string) string {
