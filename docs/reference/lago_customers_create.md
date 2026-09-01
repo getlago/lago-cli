@@ -14,6 +14,7 @@ lago customers create [flags]
 
 ```
   lago customers create --input @payload.json
+  lago customers create --input @payload.json --output json  # full resource
 ```
 
 ### Options

@@ -14,6 +14,7 @@ lago wallets update <lago_id> [flags]
 
 ```
   lago wallets update <lago_id> --input @payload.json
+  lago wallets update <lago_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options

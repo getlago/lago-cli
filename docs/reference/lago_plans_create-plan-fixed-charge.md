@@ -14,6 +14,7 @@ lago plans create-plan-fixed-charge <code> [flags]
 
 ```
   lago plans create-plan-fixed-charge <code> --input @payload.json
+  lago plans create-plan-fixed-charge <code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

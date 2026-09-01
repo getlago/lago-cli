@@ -1,5 +1,5 @@
 .nh
-.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
 lago-plans-update-plan-charge - Update a charge
@@ -236,6 +236,7 @@ consolidating all charge fees with a succeeded payment status.; one of: , invoic
 .SH EXAMPLE
 .EX
   lago plans update-plan-charge <code> <charge_code> --input @payload.json
+  lago plans update-plan-charge <code> <charge_code> --input @payload.json --output json  # full resource
 .EE
 
 

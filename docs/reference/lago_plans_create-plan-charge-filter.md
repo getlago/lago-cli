@@ -14,6 +14,7 @@ lago plans create-plan-charge-filter <code> <charge_code> [flags]
 
 ```
   lago plans create-plan-charge-filter <code> <charge_code> --input @payload.json
+  lago plans create-plan-charge-filter <code> <charge_code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

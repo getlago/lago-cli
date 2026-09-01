@@ -14,6 +14,7 @@ lago taxes update <code> [flags]
 
 ```
   lago taxes update <code> --input @payload.json
+  lago taxes update <code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

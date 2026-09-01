@@ -14,6 +14,7 @@ lago payment-requests create [flags]
 
 ```
   lago payment-requests create --input @payload.json
+  lago payment-requests create --input @payload.json --output json  # full resource
 ```
 
 ### Options

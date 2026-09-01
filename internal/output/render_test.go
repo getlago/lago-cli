@@ -182,3 +182,204 @@ func TestExactlyRepresentableNumbersAreAccepted(t *testing.T) {
 		t.Error("a non-numeric literal was accepted")
 	}
 }
+
+// The terse identifier block is the default output of every create and update. It must
+// print the identity fields in a fixed order and nothing else, so an operator can pipe
+// the ID straight into the next command.
+func TestIdentifierRendererPrintsOnlyIdentity(t *testing.T) {
+	t.Parallel()
+	for _, testCase := range []struct {
+		name   string
+		value  any
+		want   []string
+		absent []string
+	}{
+		{
+			name: "created resource keeps identity in a fixed order",
+			value: map[string]any{"customer": map[string]any{
+				"name": "Example", "external_id": "cus_1", "lago_id": "1a90",
+				"currency": "USD", "created_at": "2026-09-01T10:00:00Z",
+			}},
+			want:   []string{"LAGO_ID", "1a90", "EXTERNAL_ID", "cus_1", "NAME", "Example"},
+			absent: []string{"CURRENCY", "USD", "CREATED_AT"},
+		},
+		{
+			name:   "code is printed for resources with no external ID",
+			value:  map[string]any{"plan": map[string]any{"lago_id": "2b90", "code": "quickstart", "amount_cents": json.Number("0")}},
+			want:   []string{"LAGO_ID", "CODE", "quickstart"},
+			absent: []string{"AMOUNT_CENTS"},
+		},
+		{
+			name:   "a null or blank identifier is omitted rather than printed empty",
+			value:  map[string]any{"subscription": map[string]any{"lago_id": "3c90", "external_id": "sub_1", "name": nil, "code": "   "}},
+			want:   []string{"LAGO_ID", "EXTERNAL_ID"},
+			absent: []string{"NAME", "CODE"},
+		},
+		{
+			name:   "no identifiers falls back to the full table",
+			value:  map[string]any{"customer": map[string]any{"sequential_id": json.Number("7"), "slug": "EXA-001"}},
+			want:   []string{"SEQUENTIAL_ID", "7", "SLUG", "EXA-001"},
+			absent: []string{},
+		},
+		{
+			name:   "a collection reduces to identity columns",
+			value:  map[string]any{"customers": []any{map[string]any{"lago_id": "1a90", "external_id": "cus_1", "currency": "USD"}}},
+			want:   []string{"LAGO_ID", "EXTERNAL_ID", "cus_1"},
+			absent: []string{"CURRENCY", "USD"},
+		},
+		{
+			name:   "a collection of scalars is passed through, not reduced",
+			value:  map[string]any{"codes": []any{"first", "second"}},
+			want:   []string{"first", "second"},
+			absent: []string{},
+		},
+		{
+			name:   "a collection whose rows carry no identifier keeps every column",
+			value:  map[string]any{"fees": []any{map[string]any{"amount_cents": json.Number("500"), "units": "3"}}},
+			want:   []string{"AMOUNT_CENTS", "500", "UNITS"},
+			absent: []string{},
+		},
+		{
+			name:   "an empty collection still says so",
+			value:  map[string]any{"customers": []any{}},
+			want:   []string{"No results."},
+			absent: []string{},
+		},
+		{
+			name:   "a bare scalar response is passed through",
+			value:  "just-a-string",
+			want:   []string{"just-a-string"},
+			absent: []string{},
+		},
+	} {
+		t.Run(testCase.name, func(t *testing.T) {
+			t.Parallel()
+			var buffer bytes.Buffer
+			err := Renderer{Mode: Table, Out: &buffer, Identifiers: true}.Render(testCase.value)
+			if err != nil {
+				t.Fatalf("render failed: %v", err)
+			}
+			out := buffer.String()
+			for _, want := range testCase.want {
+				if !strings.Contains(out, want) {
+					t.Errorf("output missing %q:\n%s", want, out)
+				}
+			}
+			for _, absent := range testCase.absent {
+				if strings.Contains(out, absent) {
+					t.Errorf("output should not contain %q:\n%s", absent, out)
+				}
+			}
+		})
+	}
+}
+
+// The terse default is a table concern only. JSON and YAML always carry the complete
+// resource, because that is the machine-readable contract scripts depend on.
+func TestIdentifiersNeverReduceStructuredOutput(t *testing.T) {
+	t.Parallel()
+	value := map[string]any{"customer": map[string]any{"lago_id": "1a90", "currency": "USD"}}
+	for _, mode := range []string{JSON, YAML} {
+		var buffer bytes.Buffer
+		if err := (Renderer{Mode: mode, Out: &buffer, Identifiers: true}).Render(value); err != nil {
+			t.Fatalf("%s render failed: %v", mode, err)
+		}
+		if !strings.Contains(buffer.String(), "currency") || !strings.Contains(buffer.String(), "USD") {
+			t.Errorf("%s output was reduced to identifiers:\n%s", mode, buffer.String())
+		}
+	}
+}
+
+// The identifier order is part of the documented contract: lago_id first, so the field
+// an operator most often pipes onward is the first line of output.
+func TestIdentifierOrderIsStable(t *testing.T) {
+	t.Parallel()
+	if got := identifierKeys; len(got) != 4 || got[0] != "lago_id" || got[1] != "external_id" || got[2] != "code" || got[3] != "name" {
+		t.Fatalf("identifier order changed to %v; update the README and snapshots deliberately", got)
+	}
+}
+
+// A query that matches nothing must print a hint naming the keys that were available,
+// keep null on stdout, and stay quiet whenever there is nothing to explain.
+func TestEmptyMatchHint(t *testing.T) {
+	t.Parallel()
+	for _, testCase := range []struct {
+		name      string
+		value     any
+		query     string
+		wantOut   string
+		wantHint  []string
+		quietHint bool
+	}{
+		{
+			name:     "wrapper omitted",
+			value:    map[string]any{"customers": []any{map[string]any{"lago_id": "cus_1"}}, "meta": map[string]any{}},
+			query:    "lago_id",
+			wantOut:  "null",
+			wantHint: []string{"query matched nothing", "customers", "meta"},
+		},
+		{
+			name:      "successful query stays quiet",
+			value:     map[string]any{"customers": []any{map[string]any{"lago_id": "cus_1"}}},
+			query:     "customers[].lago_id",
+			wantOut:   "cus_1",
+			quietHint: true,
+		},
+		{
+			name:      "a null response is an answer, not a missed match",
+			value:     nil,
+			query:     "anything",
+			wantOut:   "null",
+			quietHint: true,
+		},
+		{
+			name:      "an empty list is a match, not a miss",
+			value:     map[string]any{"customers": []any{}},
+			query:     "customers",
+			wantOut:   "[]",
+			quietHint: true,
+		},
+		{
+			name:     "a non-object response still gets the bare hint",
+			value:    []any{"first"},
+			query:    "missing",
+			wantOut:  "null",
+			wantHint: []string{"query matched nothing"},
+		},
+	} {
+		t.Run(testCase.name, func(t *testing.T) {
+			t.Parallel()
+			var out, errOut bytes.Buffer
+			err := Renderer{Mode: JSON, Query: testCase.query, Out: &out, Err: &errOut}.Render(testCase.value)
+			if err != nil {
+				t.Fatalf("render failed: %v", err)
+			}
+			if !strings.Contains(out.String(), testCase.wantOut) {
+				t.Errorf("stdout = %q, want it to contain %q", out.String(), testCase.wantOut)
+			}
+			if testCase.quietHint {
+				if strings.Contains(errOut.String(), "matched nothing") {
+					t.Errorf("hint fired when it should not have: %q", errOut.String())
+				}
+				return
+			}
+			for _, want := range testCase.wantHint {
+				if !strings.Contains(errOut.String(), want) {
+					t.Errorf("hint missing %q: %q", want, errOut.String())
+				}
+			}
+		})
+	}
+}
+
+// A renderer with no Err writer must not panic when a query matches nothing.
+func TestEmptyMatchHintWithNoErrorWriterIsDiscarded(t *testing.T) {
+	t.Parallel()
+	var out bytes.Buffer
+	if err := (Renderer{Mode: JSON, Query: "missing", Out: &out}).Render(map[string]any{"customers": []any{}}); err != nil {
+		t.Fatalf("render failed: %v", err)
+	}
+	if strings.TrimSpace(out.String()) != "null" {
+		t.Errorf("stdout = %q, want null", out.String())
+	}
+}

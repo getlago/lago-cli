@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -34,6 +35,11 @@ type App struct {
 	client     *transport.Client
 	loaded     bool
 
+	// dialContext lets this package's tests point the production hostnames at a local
+	// server, so URL handling is proven against api.getlago.com and api.eu.getlago.com
+	// rather than only against 127.0.0.1. Nil everywhere outside tests.
+	dialContext func(ctx context.Context, network, address string) (net.Conn, error)
+
 	profile  string
 	apiURL   string
 	apiKey   string
@@ -54,7 +60,49 @@ func NewApp(in io.Reader, out, errOut io.Writer, version string) *App {
 }
 
 func (a *App) Renderer() output.Renderer {
-	return output.Renderer{Mode: a.output, Query: a.query, Out: a.Out}
+	return output.Renderer{Mode: a.outputMode(), Query: a.query, Out: a.Out, Err: a.Err}
+}
+
+// outputMode resolves --output, switching an unspecified format to JSON when --query is
+// used.
+//
+// A JMESPath result is structured data: a projection, a filtered list, a scalar. The
+// table renderer has nothing useful to do with most of those, and QA's `--query` returned
+// an empty table that read as "no results" rather than "wrong expression". Choosing JSON
+// makes the default correct and greppable. An explicit --output is always honoured,
+// including --output table, so nothing is taken away.
+//
+// The switch is announced on stderr rather than performed silently: a changed output
+// format is exactly the kind of thing a script author needs to know happened.
+func (a *App) outputMode() string {
+	if a.query == "" || a.flagChanged("output") {
+		return a.output
+	}
+	if a.output == output.Table {
+		return output.JSON
+	}
+	return a.output
+}
+
+// noteQueryOutputSwitch prints the one-line stderr notice for the --query JSON switch.
+// It is separate from outputMode so the resolution stays free of side effects and can be
+// called from anywhere a renderer is built.
+func (a *App) noteQueryOutputSwitch() {
+	if a.query != "" && !a.flagChanged("output") && a.output == output.Table && a.Err != nil {
+		fmt.Fprintln(a.Err, "--query implies --output json; pass --output table explicitly to render the result as a table.")
+	}
+}
+
+// IdentifierRenderer is the renderer for a create or update: terse identifiers in the
+// default table output, the complete resource under --output json|yaml.
+//
+// An explicit --query is honoured as written. The operator has already said which
+// fields they want; silently reducing the response first would drop the very keys
+// their expression addresses.
+func (a *App) IdentifierRenderer() output.Renderer {
+	renderer := a.Renderer()
+	renderer.Identifiers = a.query == ""
+	return renderer
 }
 
 func (a *App) Load(requireAuth bool) error {
@@ -112,12 +160,27 @@ func (a *App) Client(requireAuth bool) (*transport.Client, error) {
 		Verbose:   a.verbose || os.Getenv("LAGO_DEBUG") == "1",
 		UserAgent: "lago-cli/" + a.Version,
 		Err:       a.Err,
+
+		DialContext: a.dialContext,
 	})
 	if err != nil {
 		return nil, err
 	}
 	a.client = client
 	return client, nil
+}
+
+// ResolvedAPIURL is the base URL requests are actually sent to, after normalization.
+//
+// It is what `whoami` and `doctor` report, because the value in the profile is what the
+// operator typed and the resolved value is what the client calls. QA lost time to a
+// profile that displayed one host while requests went to another.
+func (a *App) ResolvedAPIURL() string {
+	normalized, err := transport.NormalizeBaseURL(a.resolved.Profile.APIURL, a.resolved.Profile.Insecure)
+	if err != nil {
+		return a.resolved.Profile.APIURL
+	}
+	return normalized.String()
 }
 
 func (a *App) Request(ctx context.Context, request transport.Request) (any, *transport.Response, error) {
@@ -150,7 +213,23 @@ func (a *App) Request(ctx context.Context, request transport.Request) (any, *tra
 }
 
 func (a *App) Render(value any, response *transport.Response) error {
-	if err := a.Renderer().Render(value); err != nil {
+	return a.render(a.Renderer(), value, response)
+}
+
+// RenderMutation renders a create or update response through the identifier renderer.
+//
+// A --dry-run response is the request envelope, not a resource, so it always renders
+// in full: reducing `{method, url, headers, body}` to an identifier block would print
+// nothing useful and hide the payload the flag exists to show.
+func (a *App) RenderMutation(value any, response *transport.Response) error {
+	if response != nil && response.DryRunData != nil {
+		return a.render(a.Renderer(), value, response)
+	}
+	return a.render(a.IdentifierRenderer(), value, response)
+}
+
+func (a *App) render(renderer output.Renderer, value any, response *transport.Response) error {
+	if err := renderer.Render(value); err != nil {
 		return err
 	}
 	if a.timing && response != nil {

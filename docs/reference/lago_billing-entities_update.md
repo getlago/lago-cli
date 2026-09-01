@@ -14,6 +14,7 @@ lago billing-entities update <code> [flags]
 
 ```
   lago billing-entities update <code> --input @payload.json
+  lago billing-entities update <code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

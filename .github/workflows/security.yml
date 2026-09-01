@@ -25,10 +25,14 @@ jobs:
         run: |
           go run github.com/zricethezav/gitleaks/v8@v8.30.1 git --redact --no-banner .
           go run github.com/zricethezav/gitleaks/v8@v8.30.1 dir --redact --no-banner .
+      # gosec 2.22 cannot read Go 1.27 export data ("package without types was
+      # imported"), so the toolchain bump forced this pin forward. 2.23+ adds G703
+      # taint analysis and G122 WalkDir TOCTOU; both fire only in the maintainer-run
+      # generators, annotated at each site with why.
       - name: Gosec
-        run: go run github.com/securego/gosec/v2/cmd/gosec@v2.22.10 -exclude-generated ./...
+        run: go run github.com/securego/gosec/v2/cmd/gosec@v2.29.0 -exclude-generated ./...
       - name: Vulnerability database
-        run: go run golang.org/x/vuln/cmd/govulncheck@v1.1.4 ./...
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.7.0 ./...
       - run: go run ./internal/moneycheck ./...
       - run: ./scripts/check-fixtures.sh
       - run: ./scripts/check-ci-policy.sh

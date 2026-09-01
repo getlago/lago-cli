@@ -14,6 +14,7 @@ lago coupons update <code> [flags]
 
 ```
   lago coupons update <code> --input @payload.json
+  lago coupons update <code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

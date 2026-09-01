@@ -14,6 +14,7 @@ lago features create [flags]
 
 ```
   lago features create --input @payload.json
+  lago features create --input @payload.json --output json  # full resource
 ```
 
 ### Options

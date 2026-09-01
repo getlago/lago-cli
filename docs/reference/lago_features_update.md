@@ -14,6 +14,7 @@ lago features update <code> [flags]
 
 ```
   lago features update <code> --input @payload.json
+  lago features update <code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

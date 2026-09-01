@@ -51,6 +51,27 @@ jobs:
         shell: bash
         run: ./lago${{ runner.os == 'Windows' && '.exe' || '' }} version --output json
 
+  # Every fix has to work on cloud US, cloud EU, and self-hosted. These run the URL,
+  # profile and lookup tests once per deployment shape, each served locally at its real
+  # hostname through the transport's dial seam, so a fix that quietly assumed the cloud
+  # US shape fails here rather than in somebody's self-hosted install.
+  deployment-targets:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [us, eu, self-hosted]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Deployment-target tests
+        env:
+          LAGO_TEST_TARGET: ${{ matrix.target }}
+        run: go test -race -count=1 ./internal/cli ./internal/transport ./internal/config
+
   startup-budget:
     runs-on: ubuntu-latest
     steps:

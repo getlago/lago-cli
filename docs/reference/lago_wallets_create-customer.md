@@ -14,6 +14,7 @@ lago wallets create-customer <external_customer_id> [flags]
 
 ```
   lago wallets create-customer <external_customer_id> --input @payload.json
+  lago wallets create-customer <external_customer_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options

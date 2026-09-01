@@ -1,5 +1,5 @@
 .nh
-.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
 lago-credit-notes-create - Create a credit note
@@ -115,6 +115,7 @@ Possible values are 'duplicated_charge', 'product_unsatisfactory', 'order_change
 .SH EXAMPLE
 .EX
   lago credit-notes create --input @payload.json
+  lago credit-notes create --input @payload.json --output json  # full resource
 .EE
 
 

@@ -14,6 +14,7 @@ lago subscriptions create [flags]
 
 ```
   lago subscriptions create --input @payload.json
+  lago subscriptions create --input @payload.json --output json  # full resource
 ```
 
 ### Options

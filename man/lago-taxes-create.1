@@ -1,5 +1,5 @@
 .nh
-.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
 lago-taxes-create - Create a tax
@@ -102,6 +102,7 @@ This endpoint creates a new tax representing a customizable tax rate applicable 
 .SH EXAMPLE
 .EX
   lago taxes create --input @payload.json
+  lago taxes create --input @payload.json --output json  # full resource
 .EE
 
 

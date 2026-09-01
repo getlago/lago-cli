@@ -14,6 +14,7 @@ lago billable-metrics update <code> [flags]
 
 ```
   lago billable-metrics update <code> --input @payload.json
+  lago billable-metrics update <code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

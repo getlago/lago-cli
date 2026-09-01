@@ -14,6 +14,7 @@ lago organizations update [flags]
 
 ```
   lago organizations update --input @payload.json
+  lago organizations update --input @payload.json --output json  # full resource
 ```
 
 ### Options

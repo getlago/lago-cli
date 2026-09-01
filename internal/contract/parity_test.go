@@ -117,3 +117,39 @@ func isDestructiveOperation(operation generated.Operation) bool {
 	}
 	return operation.Method == http.MethodDelete
 }
+
+// Every create and update in the manifest must be classified as a mutation, and nothing
+// else may be. The terse identifier block is the default output contract those commands
+// carry; a spec bump that adds a create must not slip through with the full-dump default.
+func TestEveryCreateAndUpdateIsClassifiedAsAMutation(t *testing.T) {
+	t.Parallel()
+	mutations := 0
+	for _, operation := range generated.Operations {
+		writes := operation.Method == http.MethodPost || operation.Method == http.MethodPut || operation.Method == http.MethodPatch
+		action := strings.ToLower(operation.Action)
+		creates := action == "create" || action == "update" ||
+			strings.HasPrefix(action, "create-") || strings.HasPrefix(action, "update-")
+		want := writes && creates
+		if operation.Mutation != want {
+			t.Errorf("%s (%s %s, action %q) mutation = %v, want %v",
+				operation.OperationID, operation.Method, operation.Path, operation.Action, operation.Mutation, want)
+		}
+		if operation.Mutation {
+			mutations++
+		}
+	}
+	if mutations != 48 {
+		t.Fatalf("the mutation set changed to %d commands; review the terse-output contract in DECISIONS.md before updating this count", mutations)
+	}
+}
+
+// A mutation is a write. If a GET were ever classified as one, the terse renderer would
+// silently truncate a read, which is the failure mode the contract exists to prevent.
+func TestNoReadIsClassifiedAsAMutation(t *testing.T) {
+	t.Parallel()
+	for _, operation := range generated.Operations {
+		if operation.Mutation && (operation.Method == http.MethodGet || operation.Method == http.MethodDelete) {
+			t.Errorf("%s (%s %s) is a read or delete but is marked as a mutation", operation.OperationID, operation.Method, operation.Path)
+		}
+	}
+}

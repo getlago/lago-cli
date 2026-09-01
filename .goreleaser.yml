@@ -7,6 +7,8 @@ before:
     - go run ./internal/gen -check
     - go test ./...
 
+# The full os/arch matrix stays. Only the install *channels* were reduced to Homebrew
+# and `go install`; re-adding a channel later is a publish-and-docs change, not a port.
 builds:
   - id: lago
     main: ./cmd/lago
@@ -40,8 +42,10 @@ sboms:
   - artifacts: archive
 
 # Keyless signing over checksums.txt. The certificate is published alongside the
-# signature because scripts/install.sh needs both to run `cosign verify-blob`:
-# a signature with no certificate cannot be verified by an installer.
+# signature so a consumer can run `cosign verify-blob` unaided: a signature with no
+# certificate cannot be verified. Nothing in the two supported channels verifies it
+# automatically today, so this is material for auditors and for anyone installing an
+# archive by hand.
 signs:
   - cmd: cosign
     artifacts: checksum
@@ -70,48 +74,6 @@ homebrew_casks:
       fish: completions/lago.fish
     url:
       verified: github.com/getlago/lago-cli/releases/download
-
-dockers_v2:
-  - id: lago
-    images: [ghcr.io/getlago/lago-cli]
-    tags:
-      - "{{ .Version }}"
-      - "{{ if not .IsPrerelease }}latest{{ end }}"
-    dockerfile: Dockerfile.release
-    platforms: [linux/amd64, linux/arm64]
-    labels:
-      org.opencontainers.image.source: https://github.com/getlago/lago-cli
-      org.opencontainers.image.version: "{{ .Version }}"
-      org.opencontainers.image.licenses: MIT
-
-winget:
-  - name: Lago.LagoCLI
-    publisher: Lago
-    license: MIT
-    homepage: https://getlago.com
-    short_description: Official CLI for the Lago billing platform
-    repository:
-      owner: getlago
-      name: winget-pkgs
-      token: "{{ .Env.WINGET_GITHUB_TOKEN }}"
-      branch: "lago-cli-{{ .Version }}"
-      pull_request:
-        enabled: true
-        base:
-          owner: microsoft
-          name: winget-pkgs
-          branch: master
-
-scoops:
-  - name: lago
-    repository:
-      owner: getlago
-      name: scoop-bucket
-      token: "{{ .Env.SCOOP_BUCKET_GITHUB_TOKEN }}"
-    directory: bucket
-    homepage: https://getlago.com
-    description: Official CLI for the Lago billing platform
-    license: MIT
 
 changelog:
   use: github-native

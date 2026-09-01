@@ -386,7 +386,7 @@ func TestStartupBudget(t *testing.T) {
 
 func setCleanEnvironment(t *testing.T) {
 	t.Helper()
-	for _, name := range []string{"LAGO_API_KEY", "LAGO_API_URL", "LAGO_MODE", "LAGO_PROFILE", "LAGO_TIMEOUT", "LAGO_DEBUG"} {
+	for _, name := range []string{"LAGO_API_KEY", "LAGO_API_URL", "LAGO_MODE", "LAGO_PROFILE", "LAGO_TIMEOUT", "LAGO_DEBUG", "LAGO_UPDATE_API_BASE"} {
 		t.Setenv(name, "")
 	}
 }

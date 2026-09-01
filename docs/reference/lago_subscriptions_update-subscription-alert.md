@@ -14,6 +14,7 @@ lago subscriptions update-subscription-alert <external_id> <code> [flags]
 
 ```
   lago subscriptions update-subscription-alert <external_id> <code> --input @payload.json
+  lago subscriptions update-subscription-alert <external_id> <code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

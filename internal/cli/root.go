@@ -36,6 +36,10 @@ func NewRoot(app *App) *cobra.Command {
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		Args:          cobra.NoArgs,
+		// No subcommand defines its own, so this runs once for every command. It is the
+		// one place a global flag interaction can be announced exactly once, whichever
+		// of the renderer call sites the command happens to use.
+		PersistentPreRun: func(*cobra.Command, []string) { app.noteQueryOutputSwitch() },
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			path, err := configPath()
 			if err == nil {
@@ -107,7 +111,7 @@ func ExecuteArgs(args []string, in io.Reader, out, errOut io.Writer) int {
 		finishPassiveUpdate(passiveUpdate, errOut)
 		return apperr.ExitSuccess
 	}
-	if app.output == "json" {
+	if app.outputMode() == "json" {
 		fmt.Fprintln(errOut, string(apperr.Encode(err)))
 	} else {
 		var appErr *apperr.Error

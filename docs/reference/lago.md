@@ -61,7 +61,7 @@ lago [flags]
 * [lago seed](lago_seed)	 - Populate a test account with reproducible data
 * [lago subscriptions](lago_subscriptions)	 - Manage Lago subscriptions
 * [lago taxes](lago_taxes)	 - Manage Lago taxes
-* [lago upgrade](lago_upgrade)	 - Upgrade a script-installed Lago CLI
+* [lago upgrade](lago_upgrade)	 - Print the command that upgrades this Lago CLI installation
 * [lago version](lago_version)	 - Show the Lago CLI version
 * [lago wallets](lago_wallets)	 - Manage Lago wallets
 * [lago webhook-endpoints](lago_webhook-endpoints)	 - Manage Lago webhook endpoints

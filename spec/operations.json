@@ -22,7 +22,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "activity-logs",
@@ -125,7 +126,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "add-ons",
@@ -353,7 +355,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "add-ons",
@@ -376,7 +379,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "add-ons",
@@ -399,7 +403,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "add-ons",
@@ -430,7 +435,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "add-ons",
@@ -668,7 +674,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "analytics",
@@ -846,7 +853,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "analytics",
@@ -1016,7 +1024,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "analytics",
@@ -1186,7 +1195,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "analytics",
@@ -1356,7 +1366,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "analytics",
@@ -1534,7 +1545,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "analytics",
@@ -2036,7 +2048,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "api-logs",
@@ -2059,7 +2072,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "api-logs",
@@ -2138,7 +2152,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "billable-metrics",
@@ -2283,7 +2298,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "billable-metrics",
@@ -2306,7 +2322,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "billable-metrics",
@@ -2366,7 +2383,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "billable-metrics",
@@ -2389,7 +2407,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "billable-metrics",
@@ -2420,7 +2439,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "billable-metrics",
@@ -2575,7 +2595,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "billing-entities",
@@ -3419,7 +3440,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "billing-entities",
@@ -3442,7 +3464,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "billing-entities",
@@ -3455,7 +3478,8 @@
       "docs_url": "https://getlago.com/docs/api-reference/billing-entities/object",
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "billing-entities",
@@ -4319,7 +4343,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "coupons",
@@ -4553,7 +4578,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "coupons",
@@ -4866,7 +4892,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "coupons",
@@ -4889,7 +4916,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "coupons",
@@ -4920,7 +4948,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "coupons",
@@ -4943,7 +4972,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "coupons",
@@ -4974,7 +5004,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "coupons",
@@ -5033,7 +5064,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "coupons",
@@ -5356,7 +5388,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "credit-notes",
@@ -5463,7 +5496,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "credit-notes",
@@ -5486,7 +5520,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "credit-notes",
@@ -5517,7 +5552,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "credit-notes",
@@ -5540,7 +5576,8 @@
       ],
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "credit-notes",
@@ -5578,7 +5615,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "credit-notes",
@@ -5601,7 +5639,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "credit-notes",
@@ -5762,7 +5801,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "credit-notes",
@@ -5788,7 +5828,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "credit-notes",
@@ -5814,7 +5855,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "credit-notes",
@@ -5867,7 +5909,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "credit-notes",
@@ -5890,7 +5933,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "customers",
@@ -5949,7 +5993,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "customers",
@@ -5972,7 +6017,8 @@
       ],
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "customers",
@@ -7279,7 +7325,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "customers",
@@ -7424,7 +7471,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "customers",
@@ -7535,7 +7583,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "customers",
@@ -7558,7 +7607,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "customers",
@@ -7581,7 +7631,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "customers",
@@ -7741,7 +7792,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "customers",
@@ -7872,7 +7924,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "customers",
@@ -7935,7 +7988,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "customers",
@@ -7995,7 +8049,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "customers",
@@ -8042,7 +8097,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "customers",
@@ -8065,7 +8121,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "customers",
@@ -8104,7 +8161,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "customers",
@@ -8167,7 +8225,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "entitlements",
@@ -8193,7 +8252,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "entitlements",
@@ -8224,7 +8284,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "entitlements",
@@ -8269,7 +8330,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "entitlements",
@@ -8322,7 +8384,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "entitlements",
@@ -8353,7 +8416,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "entitlements",
@@ -8376,7 +8440,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "entitlements",
@@ -8413,7 +8478,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "entitlements",
@@ -8452,7 +8518,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "entitlements",
@@ -8478,7 +8545,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "entitlements",
@@ -8518,7 +8586,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "events",
@@ -8544,7 +8613,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "events",
@@ -8570,7 +8640,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "events",
@@ -8619,7 +8690,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "events",
@@ -8677,7 +8749,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "events",
@@ -8700,7 +8773,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "events",
@@ -8771,7 +8845,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "events",
@@ -8849,7 +8924,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "features",
@@ -8907,7 +8983,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "features",
@@ -8930,7 +9007,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "features",
@@ -8961,7 +9039,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "features",
@@ -8984,7 +9063,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "features",
@@ -9023,7 +9103,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "features",
@@ -9081,7 +9162,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "fees",
@@ -9104,7 +9186,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "fees",
@@ -9127,7 +9210,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "fees",
@@ -9431,7 +9515,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "fees",
@@ -9475,7 +9560,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "invoices",
@@ -9730,7 +9816,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "invoices",
@@ -9753,7 +9840,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "invoices",
@@ -9776,7 +9864,8 @@
       ],
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "invoices",
@@ -9799,7 +9888,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "invoices",
@@ -9822,7 +9912,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "invoices",
@@ -9989,7 +10080,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "invoices",
@@ -10012,7 +10104,8 @@
       ],
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "invoices",
@@ -10035,7 +10128,8 @@
       ],
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "invoices",
@@ -11109,7 +11203,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "invoices",
@@ -11132,7 +11227,8 @@
       ],
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "invoices",
@@ -11155,7 +11251,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "invoices",
@@ -11207,7 +11304,8 @@
       },
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "invoices",
@@ -11259,7 +11357,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "invoices",
@@ -11316,7 +11415,8 @@
       },
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "order-forms",
@@ -11338,7 +11438,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "order-forms",
@@ -11448,7 +11549,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "order-forms",
@@ -11509,7 +11611,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "order-forms",
@@ -11531,7 +11634,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "orders",
@@ -11572,7 +11676,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "orders",
@@ -11594,7 +11699,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "orders",
@@ -11712,7 +11818,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "organizations",
@@ -11725,7 +11832,8 @@
       "docs_url": "https://getlago.com/docs/api-reference/organizations/organization-object",
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "organizations",
@@ -12499,7 +12607,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "payment-methods",
@@ -12530,7 +12639,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "payment-methods",
@@ -12569,7 +12679,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "payment-methods",
@@ -12600,7 +12711,8 @@
       ],
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "payment-receipts",
@@ -12623,7 +12735,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "payment-receipts",
@@ -12662,7 +12775,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "payment-requests",
@@ -12736,7 +12850,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "payment-requests",
@@ -12759,7 +12874,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "payment-requests",
@@ -12827,7 +12943,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "payments",
@@ -12885,7 +13002,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "payments",
@@ -12908,7 +13026,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "payments",
@@ -12955,7 +13074,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -12994,7 +13114,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -13352,7 +13473,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "plans",
@@ -13710,7 +13832,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "plans",
@@ -13930,7 +14053,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "plans",
@@ -14227,7 +14351,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "plans",
@@ -14250,7 +14375,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -14273,7 +14399,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -14304,7 +14431,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -14350,7 +14478,8 @@
       },
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -14404,7 +14533,8 @@
       },
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -14450,7 +14580,8 @@
       },
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -14497,7 +14628,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -14536,7 +14668,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -14559,7 +14692,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -14590,7 +14724,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -14629,7 +14764,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -14660,7 +14796,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -14691,7 +14828,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -14717,7 +14855,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -14743,7 +14882,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "plans",
@@ -15121,7 +15261,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "plans",
@@ -15487,7 +15628,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "plans",
@@ -15715,7 +15857,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "plans",
@@ -16020,7 +16163,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "quotes",
@@ -16056,7 +16200,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "quotes",
@@ -16078,7 +16223,8 @@
       ],
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "quotes",
@@ -16100,7 +16246,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "quotes",
@@ -16122,7 +16269,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "quotes",
@@ -16208,7 +16356,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "quotes",
@@ -16246,7 +16395,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "quotes",
@@ -16268,7 +16418,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -16305,7 +16456,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -16358,7 +16510,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -16907,7 +17060,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "subscriptions",
@@ -16945,7 +17099,8 @@
       "body": {},
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "subscriptions",
@@ -17179,7 +17334,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "subscriptions",
@@ -17216,7 +17372,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -17261,7 +17418,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -17314,7 +17472,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -17375,7 +17534,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -17428,7 +17588,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -17465,7 +17626,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -17510,7 +17672,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -17555,7 +17718,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -17608,7 +17772,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -17653,7 +17818,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -17676,7 +17842,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -17763,7 +17930,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -18040,7 +18208,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -18284,7 +18453,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -18340,7 +18510,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "subscriptions",
@@ -18855,7 +19026,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "subscriptions",
@@ -18945,7 +19117,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "subscriptions",
@@ -19187,7 +19360,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "subscriptions",
@@ -19225,7 +19399,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "taxes",
@@ -19293,7 +19468,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "taxes",
@@ -19316,7 +19492,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "taxes",
@@ -19339,7 +19516,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "taxes",
@@ -19370,7 +19548,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "taxes",
@@ -19448,7 +19627,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -19866,7 +20046,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -20294,7 +20475,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -20326,7 +20508,8 @@
       "body": {},
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -20482,7 +20665,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -20513,7 +20697,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -20544,7 +20729,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -20567,7 +20753,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -20606,7 +20793,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -20645,7 +20833,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -20676,7 +20865,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -20707,7 +20897,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -20730,7 +20921,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -20761,7 +20953,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -20800,7 +20993,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -20831,7 +21025,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -20854,7 +21049,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -20909,7 +21105,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -20956,7 +21153,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -20995,7 +21193,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -21034,7 +21233,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -21068,7 +21268,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -21094,7 +21295,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -21120,7 +21322,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -21154,7 +21357,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -21177,7 +21381,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -21365,7 +21570,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -21561,7 +21767,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -21635,7 +21842,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -21658,7 +21866,8 @@
       ],
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "wallets",
@@ -21721,7 +21930,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "webhook-endpoints",
@@ -21784,7 +21994,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "webhook-endpoints",
@@ -21807,7 +22018,8 @@
       ],
       "idempotent": false,
       "dangerous": true,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "webhook-endpoints",
@@ -21830,7 +22042,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "webhook-endpoints",
@@ -21861,7 +22074,8 @@
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": true
+      "paginated": true,
+      "mutation": false
     },
     {
       "resource": "webhook-endpoints",
@@ -21934,7 +22148,8 @@
       },
       "idempotent": false,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": true
     },
     {
       "resource": "webhooks",
@@ -21947,7 +22162,8 @@
       "docs_url": "https://getlago.com/docs/api-reference/webhooks/format---signature#1-retrieve-the-public-key",
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     },
     {
       "resource": "webhooks",
@@ -21960,7 +22176,8 @@
       "docs_url": "https://getlago.com/docs/api-reference/webhooks/format---signature#1-retrieve-the-public-key",
       "idempotent": true,
       "dangerous": false,
-      "paginated": false
+      "paginated": false,
+      "mutation": false
     }
   ],
   "spec_sha256": "852e7331acfc080d1af9bda9d1663a50a7fa5b4a2aea22a89fb16787ee75b671",

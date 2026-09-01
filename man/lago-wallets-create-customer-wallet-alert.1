@@ -1,5 +1,5 @@
 .nh
-.TH "LAGO" "1" "Aug 2026" "Lago CLI" "Lago CLI Manual"
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
 lago-wallets-create-customer-wallet-alert - Create wallet alert(s)
@@ -82,6 +82,7 @@ This endpoint allows you to create new alerts for a wallet. Send a single alert 
 .SH EXAMPLE
 .EX
   lago wallets create-customer-wallet-alert <external_customer_id> <wallet_code> --input @payload.json
+  lago wallets create-customer-wallet-alert <external_customer_id> <wallet_code> --input @payload.json --output json  # full resource
 .EE
 
 

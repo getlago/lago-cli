@@ -1,0 +1,3 @@
+LAGO_ID      1a901a90-1a90-1a90-1a90-1a901a901a90
+EXTERNAL_ID  quickstart_customer
+NAME         Quickstart Customer

@@ -14,6 +14,7 @@ lago add-ons update <code> [flags]
 
 ```
   lago add-ons update <code> --input @payload.json
+  lago add-ons update <code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

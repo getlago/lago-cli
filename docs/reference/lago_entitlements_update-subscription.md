@@ -14,6 +14,7 @@ lago entitlements update-subscription <external_id> [flags]
 
 ```
   lago entitlements update-subscription <external_id> --input @payload.json
+  lago entitlements update-subscription <external_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options
