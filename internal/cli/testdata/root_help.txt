@@ -40,7 +40,7 @@ Available Commands:
   seed              Populate a test account with reproducible data
   subscriptions     Manage Lago subscriptions
   taxes             Manage Lago taxes
-  upgrade           Upgrade a script-installed Lago CLI
+  upgrade           Print the command that upgrades this Lago CLI installation
   version           Show the Lago CLI version
   wallets           Manage Lago wallets
   webhook-endpoints Manage Lago webhook endpoints

@@ -11,6 +11,19 @@ import (
 	cliupdate "github.com/getlago/lago-cli/internal/update"
 )
 
+// updateAPIBase selects the release-metadata endpoint.
+//
+// LAGO_UPDATE_API_BASE redirects it, which is what the CLI's own tests use instead of
+// reaching GitHub, and what an air-gapped install points at a mirror. It is safe to
+// leave environment-controlled because the endpoint now only supplies a version number:
+// `lago upgrade` prints a command and never downloads or replaces a binary.
+func updateAPIBase() string {
+	if override := os.Getenv("LAGO_UPDATE_API_BASE"); override != "" {
+		return override
+	}
+	return cliupdate.DefaultAPIBase
+}
+
 type passiveUpdateResult struct {
 	check cliupdate.Check
 	cfg   config.File
@@ -38,7 +51,7 @@ func startPassiveUpdate(arguments []string, version string) <-chan passiveUpdate
 	go func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 750*time.Millisecond)
 		defer cancel()
-		check, _, checkErr := cliupdate.Latest(ctx, version, channel, "lago-cli/"+version, cliupdate.DefaultAPIBase)
+		check, _, checkErr := cliupdate.Latest(ctx, version, channel, "lago-cli/"+version, updateAPIBase())
 		result <- passiveUpdateResult{check: check, cfg: cfg, path: path, err: checkErr}
 	}()
 	return result

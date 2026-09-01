@@ -10,7 +10,9 @@ The 1.0 GA gate is install, init, full API parity, golden billing flow, safety, 
 
 ## 2026-08-31 — Controlled distribution surfaces
 
-The GA Homebrew promise is `brew install getlago/tap/lago`. Homebrew Core is a fast-follow because its third-party review queue is outside Lago's control. The canonical shell installer is `https://getlago.com/install.sh`; no artifact or documentation may use `get.lago.com`, which Lago does not control.
+The GA Homebrew promise is `brew install getlago/tap/lago`. Homebrew Core is a fast-follow because its third-party review queue is outside Lago's control. No artifact or documentation may use `get.lago.com`, which Lago does not control.
+
+*Superseded in part on 2026-09-01: the shell installer this originally named was never published and is now parked. See "Two install channels for 1.0" below.*
 
 ## 2026-08-31 — Repository publication sequence
 
@@ -87,6 +89,36 @@ in full.
 
 Decided pre-1.0, while output shapes are not yet frozen. After 1.0 this is a breaking
 change requiring a major version, which is exactly why it is being made now.
+
+## 2026-09-01 — Two install channels for 1.0
+
+QA returned that the CLI should ship through Homebrew and `go install` only. Both are
+now documented, smoke-tested on every release, and the only channels that exist. The
+shell installer, the PowerShell installer, the GHCR image, Scoop and Winget are removed
+from the README, `.goreleaser.yml`, and the release workflow.
+
+The installer scripts and the release Dockerfile are parked under `dist-channels/parked/`
+rather than deleted, with a README recording why each was parked and the four conditions
+that bring one back: demonstrated demand, a live Lago-controlled endpoint, a post-release
+smoke job that fails the release, and documentation only after that job has passed once.
+Publish, verify, document, in that order. Scoop and Winget had no files of their own and
+are recovered from the commit that removed their `.goreleaser.yml` blocks.
+
+The CI jobs went with them rather than being skipped: a skipped job is a muted test that
+reads green. What did **not** change is platform support. The release still builds darwin,
+linux and windows on amd64 and arm64, CI still compiles and smoke-tests that matrix, and
+`go install` works anywhere Go runs. Re-adding a channel is a publish-and-docs change,
+not a port.
+
+`lago upgrade` no longer replaces the running binary. With no script channel there is no
+install the CLI itself owns: Homebrew owns its Cellar and `go install` rebuilds from
+source, so replacing a Homebrew-managed binary in place would leave brew reporting a
+version it no longer has. `upgrade` now checks for a newer release and prints the command
+matching how the binary was installed, or both commands when it cannot tell. The download,
+checksum-verify and atomic-replace path was removed with the channel that needed it.
+
+The guardrail is a docs test: `test/docs` fails if any documented surface names a parked
+channel, or if the README stops documenting either supported one.
 
 ## Deferred beyond 1.x
 

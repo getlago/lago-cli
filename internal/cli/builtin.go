@@ -43,7 +43,7 @@ func newVersionCommand(app *App) *cobra.Command {
 				"spec_sha256":  generated.SpecSHA256,
 			}
 			if check {
-				updateCheck, _, err := cliupdate.Latest(cmd.Context(), app.Version, channel, "lago-cli/"+app.Version, cliupdate.DefaultAPIBase)
+				updateCheck, _, err := cliupdate.Latest(cmd.Context(), app.Version, channel, "lago-cli/"+app.Version, updateAPIBase())
 				if err != nil {
 					return err
 				}
@@ -57,15 +57,25 @@ func newVersionCommand(app *App) *cobra.Command {
 	return cmd
 }
 
+// newUpgradeCommand prints the upgrade command for how this binary was installed.
+//
+// It does not replace the running binary. Lago CLI ships through Homebrew and
+// `go install`, and neither is self-updating: Homebrew owns its Cellar, and `go install`
+// rebuilds from source. Replacing a Homebrew-managed binary in place would leave brew
+// reporting a version it no longer has. See dist-channels/parked/README.md.
 func newUpgradeCommand(app *App) *cobra.Command {
 	var channel string
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:     "upgrade",
-		Short:   "Upgrade a script-installed Lago CLI",
+		Short:   "Print the command that upgrades this Lago CLI installation",
 		Example: "  lago upgrade\n  lago upgrade --channel beta",
 		Args:    cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			check, release, err := cliupdate.Latest(cmd.Context(), app.Version, channel, "lago-cli/"+app.Version, cliupdate.DefaultAPIBase)
+			check, _, err := cliupdate.Latest(cmd.Context(), app.Version, channel, "lago-cli/"+app.Version, updateAPIBase())
+			if err != nil {
+				return err
+			}
+			method, command, err := cliupdate.UpgradeCommand()
 			if err != nil {
 				return err
 			}
@@ -73,14 +83,27 @@ func newUpgradeCommand(app *App) *cobra.Command {
 				fmt.Fprintf(app.Out, "Lago CLI %s is already current on the %s channel.\n", app.Version, channel)
 				return nil
 			}
-			installed, err := cliupdate.Install(cmd.Context(), release, "lago-cli/"+app.Version)
-			if err != nil {
-				return err
+			if check.Development {
+				fmt.Fprintf(app.Out, "This is a development build; the latest %s release is %s.\n", channel, check.Latest)
+			} else {
+				fmt.Fprintf(app.Out, "Lago CLI %s is available (installed: %s).\n", check.Latest, app.Version)
 			}
-			fmt.Fprintf(app.Out, "Upgraded Lago CLI to %s (%s channel).\n", installed, channel)
+			switch method {
+			case cliupdate.Homebrew, cliupdate.GoInstall:
+				fmt.Fprintf(app.Out, "\n    %s\n", command)
+			default:
+				// Neither channel owns this binary, so both commands are printed rather
+				// than guessing one. Sending someone to `brew upgrade` for a binary
+				// Homebrew does not manage produces a brew error, not an upgrade.
+				fmt.Fprintln(app.Out, "\nLago CLI does not self-update. Run whichever command matches how you installed it:")
+				fmt.Fprintln(app.Out, "\n    brew upgrade getlago/tap/lago")
+				fmt.Fprintln(app.Out, "    go install github.com/getlago/lago-cli/cmd/lago@latest")
+			}
 			return nil
 		},
 	}
+	cmd.Flags().StringVar(&channel, "channel", "stable", "Release channel to check: stable or beta")
+	return cmd
 }
 
 func newInitCommand(app *App) *cobra.Command {
