@@ -2,12 +2,16 @@ package update
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
+
+	"github.com/getlago/lago-cli/internal/apperr"
 )
 
 func TestLatestStableAndBeta(t *testing.T) {
@@ -95,4 +99,64 @@ func mustHome(t *testing.T) string {
 		t.Skip("no home directory in this environment")
 	}
 	return home
+}
+
+// The release endpoint is GitHub, not Lago. Its failures must never surface as
+// ExitServer, which the exit-code table documents as a Lago server 5xx: a script would
+// conclude Lago is down when only the update check failed. Every non-200 is a network
+// class error with a suggestion that names the likely cause.
+func TestLatestClassifiesReleaseAPIFailuresAsNetworkErrors(t *testing.T) {
+	t.Parallel()
+	cases := []struct {
+		status  int
+		mention string
+	}{
+		{http.StatusNotFound, "private"},
+		{http.StatusForbidden, "rate-limited"},
+		{http.StatusTooManyRequests, "rate-limited"},
+		{http.StatusInternalServerError, "Retry later"},
+	}
+	for _, testCase := range cases {
+		server := httptest.NewServer(http.HandlerFunc(func(response http.ResponseWriter, _ *http.Request) {
+			response.WriteHeader(testCase.status)
+		}))
+		_, _, err := Latest(context.Background(), "1.0.0", "stable", "test", server.URL)
+		server.Close()
+		if err == nil {
+			t.Fatalf("status %d: Latest succeeded", testCase.status)
+		}
+		var appErr *apperr.Error
+		if !errors.As(err, &appErr) {
+			t.Fatalf("status %d: error is not an apperr.Error: %v", testCase.status, err)
+		}
+		if appErr.ExitCode != apperr.ExitNetwork {
+			t.Errorf("status %d: exit code = %d, want %d", testCase.status, appErr.ExitCode, apperr.ExitNetwork)
+		}
+		if appErr.Status != testCase.status {
+			t.Errorf("status %d: recorded status = %d", testCase.status, appErr.Status)
+		}
+		if !strings.Contains(appErr.Message, "GitHub") {
+			t.Errorf("status %d: message does not name GitHub: %q", testCase.status, appErr.Message)
+		}
+		if !strings.Contains(appErr.Suggestion, testCase.mention) || !strings.Contains(appErr.Suggestion, "go install") {
+			t.Errorf("status %d: suggestion misses %q or the upgrade command: %q", testCase.status, testCase.mention, appErr.Suggestion)
+		}
+	}
+}
+
+// A version that is not a semver tag came from `make build`, `go install` of a commit,
+// or a local VERSION override, never from a release. Such a binary has nothing on
+// GitHub to compare itself with.
+func TestIsDevelopmentRecognizesSourceBuilds(t *testing.T) {
+	t.Parallel()
+	for _, version := range []string{"dev", "qa-local", "9e0eefe", "", "unknown"} {
+		if !IsDevelopment(version) {
+			t.Errorf("IsDevelopment(%q) = false, want true", version)
+		}
+	}
+	for _, version := range []string{"1.0.0", "v1.0.0", "1.2.3-beta.1", "v0.1.0"} {
+		if IsDevelopment(version) {
+			t.Errorf("IsDevelopment(%q) = true, want false", version)
+		}
+	}
 }
