@@ -262,6 +262,20 @@ $ echo $?
 
 `--all` and `--query` are mutually exclusive: `--all` streams pages without buffering, so a whole-collection expression has nothing to evaluate against. Use a per-page `--query`, or stream JSON pages into `jq`.
 
+### Validation errors name the field
+
+A 422 from Lago carries the failing field and reason in `error_details`. Default output prints each one under the summary line, so the fix is visible without switching to `--output json`, which carries the same map under `error.details`.
+
+```console
+$ lago customers create --external-id acme --name Acme
+Error: Unprocessable Entity
+  external_id: value_already_exist
+HTTP status: 422
+Lago code: validation_errors
+Request ID: 3f1c…
+Suggestion: Check the command flags and Lago API validation details.
+```
+
 ## Everyday commands
 
 ```console
@@ -272,7 +286,7 @@ $ lago api GET /customers?page=2
 $ lago api POST /events --data @event.json --idempotency-key event-42
 ```
 
-Global scripting controls: `--output table|json|yaml`, `--query`, `--dry-run`, `--timing`, `--verbose`, `--timeout`, `--no-retry`. `--timing` separates API round-trip, retry wait, and CLI overhead. The API key is redacted from dry runs, errors, and verbose logs.
+Global scripting controls: `--output table|json|yaml`, `--query`, `--dry-run`, `--timing`, `--verbose`, `--timeout`, `--no-retry`. `--timing` separates API round-trip, retry wait, and CLI overhead, and prints on failure too, including network errors, so retry behaviour is visible when it matters. The API key is redacted from dry runs, errors, and verbose logs.
 
 ## Stable exit codes
 
