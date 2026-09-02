@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/getlago/lago-cli/internal/apperr"
 )
 
 // releaseAPI serves a GitHub-shaped release-metadata endpoint.
@@ -28,7 +30,7 @@ func TestUpgradePrintsACommandAndNeverSelfInstalls(t *testing.T) {
 	t.Setenv("LAGO_CONFIG_FILE", filepath.Join(t.TempDir(), "missing.toml"))
 	t.Setenv("LAGO_UPDATE_API_BASE", releaseAPI(t, "9.9.9").URL)
 
-	stdout, _, err := execute(t, "", "upgrade")
+	stdout, err := executeUpgradeAs(t, "1.0.0")
 	if err != nil {
 		t.Fatalf("upgrade failed: %v", err)
 	}
@@ -83,5 +85,75 @@ func TestVersionCheckUsesTheSelectedChannel(t *testing.T) {
 	}
 	if !strings.Contains(stdout, `"latest": "2.0.0"`) {
 		t.Errorf("version --check did not report the latest release: %s", stdout)
+	}
+}
+
+// executeUpgradeAs runs `lago upgrade` for a binary that reports the given version.
+func executeUpgradeAs(t *testing.T, version string) (string, error) {
+	t.Helper()
+	var stdout strings.Builder
+	app := NewApp(strings.NewReader(""), &stdout, io.Discard, version)
+	root := NewRoot(app)
+	root.SetArgs([]string{"upgrade"})
+	root.SetOut(io.Discard)
+	root.SetErr(io.Discard)
+	err := root.Execute()
+	return stdout.String(), err
+}
+
+// A source build (`dev`, a local VERSION override, a commit hash) was not installed
+// from any release, so there is nothing on GitHub to compare it with. `upgrade` must
+// say so and print the rebuild command without touching the network: on a private
+// repository or behind a filtering proxy the network call could only produce a
+// misleading error.
+func TestUpgradeOnADevelopmentBuildNeverCallsGitHub(t *testing.T) {
+	setCleanEnvironment(t)
+	t.Setenv("LAGO_CONFIG_FILE", filepath.Join(t.TempDir(), "missing.toml"))
+	called := false
+	server := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) { called = true }))
+	t.Cleanup(server.Close)
+	t.Setenv("LAGO_UPDATE_API_BASE", server.URL)
+
+	for _, version := range []string{"dev", "qa-local", "9e0eefe"} {
+		stdout, err := executeUpgradeAs(t, version)
+		if err != nil {
+			t.Fatalf("upgrade on %q failed: %v", version, err)
+		}
+		if !strings.Contains(stdout, "development build") || !strings.Contains(stdout, "go install github.com/getlago/lago-cli/cmd/lago@latest") {
+			t.Errorf("upgrade on %q did not explain the source build:\n%s", version, stdout)
+		}
+		if strings.Contains(stdout, "brew upgrade") {
+			t.Errorf("upgrade on %q suggested Homebrew for a source build:\n%s", version, stdout)
+		}
+	}
+	if called {
+		t.Error("upgrade on a development build contacted the release API")
+	}
+}
+
+// GitHub is not Lago. When the release endpoint answers 404 (private repository, no
+// release yet) or 403 (proxy, rate limit), the failure must be reported as a network
+// class error, exit 8, never as exit 7 which the exit-code table defines as a Lago
+// server 5xx. A script reading 7 would conclude Lago is down.
+func TestUpgradeReportsGitHubFailuresAsNetworkErrors(t *testing.T) {
+	for _, status := range []int{http.StatusNotFound, http.StatusForbidden, http.StatusInternalServerError} {
+		setCleanEnvironment(t)
+		t.Setenv("LAGO_CONFIG_FILE", filepath.Join(t.TempDir(), "missing.toml"))
+		server := httptest.NewServer(http.HandlerFunc(func(response http.ResponseWriter, _ *http.Request) {
+			response.WriteHeader(status)
+		}))
+		t.Cleanup(server.Close)
+		t.Setenv("LAGO_UPDATE_API_BASE", server.URL)
+
+		_, err := executeUpgradeAs(t, "1.0.0")
+		if err == nil {
+			t.Fatalf("upgrade succeeded against a %d release API", status)
+		}
+		if code := apperr.ExitCode(err); code != apperr.ExitNetwork {
+			t.Errorf("status %d: exit code = %d, want %d (network); got error %v", status, code, apperr.ExitNetwork, err)
+		}
+		if !strings.Contains(err.Error(), "GitHub") {
+			t.Errorf("status %d: error does not name GitHub: %v", status, err)
+		}
 	}
 }

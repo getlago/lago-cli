@@ -63,7 +63,7 @@ func Latest(ctx context.Context, current, channel, userAgent, apiBase string) (C
 	}
 	defer response.Body.Close()
 	if response.StatusCode != http.StatusOK {
-		return Check{}, Release{}, &apperr.Error{ExitCode: apperr.ExitServer, Status: response.StatusCode, Message: "GitHub release API returned " + response.Status, Suggestion: "Retry later or upgrade with your package manager."}
+		return Check{}, Release{}, releaseAPIError(response.StatusCode, response.Status)
 	}
 	limited := io.LimitReader(response.Body, 4<<20)
 	var release Release
@@ -92,6 +92,30 @@ func Latest(ctx context.Context, current, channel, userAgent, apiBase string) (C
 	development := !semver.IsValid(currentVersion)
 	available := !development && semver.Compare(latestVersion, currentVersion) > 0
 	return Check{Current: current, Latest: strings.TrimPrefix(release.TagName, "v"), Channel: channel, UpdateAvailable: available, ReleaseURL: release.HTMLURL, Development: development}, release, nil
+}
+
+// releaseAPIError classifies a non-200 answer from the release metadata endpoint.
+//
+// The endpoint is GitHub, not Lago, so its failures are never ExitServer: that code is
+// documented as "Lago server 5xx error" and a script reading it would conclude Lago is
+// down when only the update check failed. Every failure to fetch release metadata is a
+// network-class error (ExitNetwork), with a suggestion that names the likely cause.
+func releaseAPIError(statusCode int, status string) *apperr.Error {
+	suggestion := "Retry later, or upgrade with the command that matches your install: `brew upgrade getlago/tap/lago` or `go install github.com/getlago/lago-cli/cmd/lago@latest`."
+	switch statusCode {
+	case http.StatusNotFound:
+		suggestion = "No published release was found. The repository may be private or have no release yet; upgrade with `brew upgrade getlago/tap/lago` or `go install github.com/getlago/lago-cli/cmd/lago@latest`."
+	case http.StatusForbidden, http.StatusTooManyRequests:
+		suggestion = "GitHub refused or rate-limited the request, often because of a proxy or too many unauthenticated calls. Retry later, or upgrade with `brew upgrade getlago/tap/lago` or `go install github.com/getlago/lago-cli/cmd/lago@latest`."
+	}
+	return &apperr.Error{ExitCode: apperr.ExitNetwork, Status: statusCode, Message: "GitHub release API returned " + status, Suggestion: suggestion}
+}
+
+// IsDevelopment reports whether a version string identifies a build that no release
+// channel produced: `dev`, a commit hash, a local `VERSION=` override. Such a binary was
+// built from source, so there is no release to compare it against and nothing to fetch.
+func IsDevelopment(version string) bool {
+	return !semver.IsValid(normalizedVersion(version))
 }
 
 // Method is how the running binary was installed, which determines the only correct
