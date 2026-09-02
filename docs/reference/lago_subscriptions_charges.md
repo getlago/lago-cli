@@ -22,7 +22,7 @@ lago subscriptions charges <external_id> [flags]
 ```
       --all                          Fetch every page
   -h, --help                         help for charges
-      --limit string                 Maximum number of results
+      --limit string                 Results per page (1-1000)
       --page string                  Page number.
       --per-page string              Number of records per page.
       --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled

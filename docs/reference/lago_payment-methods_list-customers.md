@@ -21,7 +21,7 @@ lago payment-methods list-customers <external_customer_id> [flags]
 ```
       --all                       Fetch every page
   -h, --help                      help for list-customers
-      --limit string              Maximum number of results
+      --limit string              Results per page (1-1000)
       --page string               Page number.
       --per-page string           Number of records per page.
       --watch                     Poll and re-render when the response changes

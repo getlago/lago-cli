@@ -22,7 +22,7 @@ lago customers payment-requests <external_customer_id> [flags]
       --all                           Fetch every page
       --billing-entity-codes string   Filter payment requests by billing entity codes.
   -h, --help                          help for payment-requests
-      --limit string                  Maximum number of results
+      --limit string                  Results per page (1-1000)
       --page string                   Page number.
       --payment-status string         Filter by payment status. Possible values are 'pending', 'failed' or 'succeeded'.; one of: pending, failed, succeeded
       --per-page string               Number of records per page.

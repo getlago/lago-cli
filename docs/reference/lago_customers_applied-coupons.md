@@ -22,7 +22,7 @@ lago customers applied-coupons <external_customer_id> [flags]
       --all                       Fetch every page
       --coupon-code string        The code of the coupon applied to the customer. Use it to filter applied coupons by their code.
   -h, --help                      help for applied-coupons
-      --limit string              Maximum number of results
+      --limit string              Results per page (1-1000)
       --page string               Page number.
       --per-page string           Number of records per page.
       --status string             The status of the coupon. Can be either 'active' or 'terminated'.; one of: active, terminated

@@ -26,7 +26,7 @@ lago customers invoices <external_customer_id> [flags]
       --invoice-type string            Filter invoices by invoice type. Possible values are 'subscription', 'add_on', 'credit', 'one_off', 'advance_charges' or 'progressive_billing'.; one of: subscription, add_on, credit, one_off, advance_charges, progressive_billing
       --issuing-date-from string       Filter invoices starting from a specific date.
       --issuing-date-to string         Filter invoices up to a specific date.
-      --limit string                   Maximum number of results
+      --limit string                   Results per page (1-1000)
       --metadata[key] string           Filter invoices by metadata. Replace 'key' with the actual metadata key you want to match, and provide the corresponding value. Providing empty value will search for invoice without given metadata key. For example, 'metadata[color]=blue'.
       --page string                    Page number.
       --payment-dispute-lost string    Filter invoices with a payment dispute lost. Possible values are 'true' or 'false'.

@@ -68,8 +68,8 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 		}
 	}
 	if operation.Paginated {
-		addFlag("limit", "Maximum number of results")
-		addFlag("page", "Page number")
+		addFlag("limit", "Results per page (1-1000)")
+		addFlag("page", "Page number, starting at 1")
 		all := false
 		cmd.Flags().BoolVar(&all, "all", false, "Fetch every page")
 		_ = all
@@ -110,10 +110,18 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 		}
 		if operation.Paginated {
 			if cmd.Flags().Changed("limit") {
-				query.Set("per_page", *flagValues["limit"])
+				limit, err := parseLimit(*flagValues["limit"])
+				if err != nil {
+					return err
+				}
+				query.Set("per_page", limit)
 			}
 			if cmd.Flags().Changed("page") {
-				query.Set("page", *flagValues["page"])
+				page, err := parsePage(*flagValues["page"])
+				if err != nil {
+					return err
+				}
+				query.Set("page", page)
 			}
 			all, _ := cmd.Flags().GetBool("all")
 			if all {
@@ -322,20 +330,51 @@ func queryValues(raw, valueType string) []string {
 	return values
 }
 
+// maxPerPage bounds --limit client-side. QA F-19: `--limit 0` reached the API as
+// per_page=0 and lago-api answered 500, because its paginator hands per_page straight to
+// Kaminari (BaseQuery#paginate: `scope.page(page).per(limit)`) with no max_per_page, and
+// a zero page size divides by zero in total_pages. The spec declares no maximum either,
+// so the upper bound here is a sanity bound, not a server contract: nobody reads a
+// thousand-row table, and --all exists for the rest.
+const maxPerPage = 1000
+
+// defaultAllPageSize is the page size --all requests when --limit is not given.
+const defaultAllPageSize = 100
+
+// parseLimit validates --limit as an integer in 1..maxPerPage and returns it as the
+// query-string value.
+func parseLimit(raw string) (string, error) {
+	value, err := strconv.Atoi(strings.TrimSpace(raw))
+	if err != nil || value < 1 || value > maxPerPage {
+		return "", apperr.New(apperr.ExitUsage, fmt.Sprintf("--limit must be an integer between 1 and %d, got %q", maxPerPage, raw), "Pass --limit 100 for the largest common page, or --all to walk every page.")
+	}
+	return strconv.Itoa(value), nil
+}
+
+// parsePage validates --page as a positive integer and returns it as the query-string
+// value. It guards the single-page path as well as --all, which validated it already.
+func parsePage(raw string) (string, error) {
+	value, err := strconv.Atoi(strings.TrimSpace(raw))
+	if err != nil || value < 1 {
+		return "", apperr.New(apperr.ExitUsage, fmt.Sprintf("--page must be a positive integer, got %q", raw), "Pass --page 1 or omit it.")
+	}
+	return strconv.Itoa(value), nil
+}
+
 func runAllPages(cmd *cobra.Command, app *App, operation generated.Operation, path string, query url.Values) error {
 	if app.query != "" {
 		return apperr.New(apperr.ExitUsage, "--all cannot safely buffer a full-collection JMESPath query", "Use a per-page --query without --all, or stream JSON pages and process them with jq.")
 	}
 	page := 1
 	if raw := query.Get("page"); raw != "" {
-		parsed, err := strconv.Atoi(raw)
-		if err != nil || parsed < 1 {
-			return apperr.New(apperr.ExitUsage, "page must be a positive integer", "Pass --page 1 or omit it.")
+		validated, err := parsePage(raw)
+		if err != nil {
+			return err
 		}
-		page = parsed
+		page, _ = strconv.Atoi(validated)
 	}
 	if query.Get("per_page") == "" {
-		query.Set("per_page", "100")
+		query.Set("per_page", strconv.Itoa(defaultAllPageSize))
 	}
 	for {
 		query.Set("page", strconv.Itoa(page))

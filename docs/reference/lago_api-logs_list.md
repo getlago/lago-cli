@@ -25,7 +25,7 @@ lago api-logs list [flags]
   -h, --help                      help for list
       --http-methods string       Filter results by HTTP methods
       --http-statuses string      Filter results by HTTP status or by generic request status
-      --limit string              Maximum number of results
+      --limit string              Results per page (1-1000)
       --page string               Page number.
       --per-page string           Number of records per page.
       --request-paths string      Filter results by the path of the request

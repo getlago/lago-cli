@@ -23,7 +23,7 @@ lago customers past-usage <external_customer_id> [flags]
       --billable-metric-code string       Billable metric code filter to apply to the charge usage
       --external-subscription-id string   The unique identifier of the subscription within your application.
   -h, --help                              help for past-usage
-      --limit string                      Maximum number of results
+      --limit string                      Results per page (1-1000)
       --page string                       Page number.
       --per-page string                   Number of records per page.
       --periods-count string              Number of past billing period to returns in the result

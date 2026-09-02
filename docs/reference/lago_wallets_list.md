@@ -24,7 +24,7 @@ lago wallets list [flags]
       --currency string               Filter the results by currency, expressed as an ISO 4217 code.
       --external-customer-id string   Filter wallets by customer external unique identifier (provided by your own application). When omitted, all wallets for the organization are returned.
   -h, --help                          help for list
-      --limit string                  Maximum number of results
+      --limit string                  Results per page (1-1000)
       --page string                   Page number.
       --per-page string               Number of records per page.
       --watch                         Poll and re-render when the response changes

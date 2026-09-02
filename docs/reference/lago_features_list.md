@@ -21,7 +21,7 @@ lago features list [flags]
 ```
       --all                       Fetch every page
   -h, --help                      help for list
-      --limit string              Maximum number of results
+      --limit string              Results per page (1-1000)
       --page string               Page number.
       --per-page string           Number of records per page.
       --search-term string        Search in name, code and description.
