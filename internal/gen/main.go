@@ -646,7 +646,7 @@ func dangerousOperation(operation map[string]any, method, path, lowerAction stri
 	if method == http.MethodDelete {
 		return true
 	}
-	return matchesDestructiveVocabulary(path) || matchesDestructiveVocabulary(lowerAction)
+	return generated.MatchesDestructiveVocabulary(path) || generated.MatchesDestructiveVocabulary(lowerAction)
 }
 
 // retryableOperation reports whether the transport may replay an operation on its own,
@@ -679,22 +679,6 @@ func mutationOperation(method, lowerAction string) bool {
 	}
 	for _, prefix := range []string{"create", "update"} {
 		if lowerAction == prefix || strings.HasPrefix(lowerAction, prefix+"-") {
-			return true
-		}
-	}
-	return false
-}
-
-// destructiveVocabulary lists the action segments that mark an irreversible or
-// money-moving Lago operation. Keep it in sync with internal/contract/parity_test.go.
-var destructiveVocabulary = []string{
-	"void", "finalize", "retry", "terminate", "delete", "destroy", "refund",
-}
-
-func matchesDestructiveVocabulary(value string) bool {
-	value = strings.ToLower(value)
-	for _, segment := range destructiveVocabulary {
-		if strings.Contains(value, segment) {
 			return true
 		}
 	}
