@@ -2285,7 +2285,7 @@
               "rounding_precision"
             ],
             "flag": "rounding-precision",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -2590,7 +2590,7 @@
               "rounding_precision"
             ],
             "flag": "rounding-precision",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -4412,7 +4412,7 @@
               "amount_cents"
             ],
             "flag": "amount-cents",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -4611,7 +4611,7 @@
               "frequency_duration"
             ],
             "flag": "frequency-duration",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -4653,7 +4653,7 @@
               "amount_cents"
             ],
             "flag": "amount-cents",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -4914,7 +4914,7 @@
               "frequency_duration"
             ],
             "flag": "frequency-duration",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -5158,7 +5158,7 @@
               "amount_cents"
             ],
             "flag": "amount-cents",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -5419,7 +5419,7 @@
               "frequency_duration"
             ],
             "flag": "frequency-duration",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -5481,7 +5481,7 @@
               "credit_amount_cents"
             ],
             "flag": "credit-amount-cents",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -5532,7 +5532,7 @@
               "offset_amount_cents"
             ],
             "flag": "offset-amount-cents",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -5563,7 +5563,7 @@
               "refund_amount_cents"
             ],
             "flag": "refund-amount-cents",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -6880,7 +6880,7 @@
               "net_payment_term"
             ],
             "flag": "net-payment-term",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -13457,7 +13457,7 @@
               "bill_charges_monthly"
             ],
             "flag": "bill-charges-monthly",
-            "type": "string",
+            "type": "boolean",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -13468,7 +13468,7 @@
               "bill_fixed_charges_monthly"
             ],
             "flag": "bill-fixed-charges-monthly",
-            "type": "string",
+            "type": "boolean",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -13621,7 +13621,7 @@
               "trial_period"
             ],
             "flag": "trial-period",
-            "type": "string",
+            "type": "number",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -13672,7 +13672,7 @@
               "accepts_target_wallet"
             ],
             "flag": "accepts-target-wallet",
-            "type": "string",
+            "type": "boolean",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -13838,7 +13838,7 @@
               "free_units_per_events"
             ],
             "flag": "properties-free-units-per-events",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -14101,7 +14101,7 @@
               "free_units_per_events"
             ],
             "flag": "properties-free-units-per-events",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -14385,7 +14385,7 @@
               "free_units_per_events"
             ],
             "flag": "properties-free-units-per-events",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -15265,7 +15265,7 @@
               "bill_charges_monthly"
             ],
             "flag": "bill-charges-monthly",
-            "type": "string",
+            "type": "boolean",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -15276,7 +15276,7 @@
               "bill_fixed_charges_monthly"
             ],
             "flag": "bill-fixed-charges-monthly",
-            "type": "string",
+            "type": "boolean",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -15439,7 +15439,7 @@
               "trial_period"
             ],
             "flag": "trial-period",
-            "type": "string",
+            "type": "number",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -15498,7 +15498,7 @@
               "accepts_target_wallet"
             ],
             "flag": "accepts-target-wallet",
-            "type": "string",
+            "type": "boolean",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -15664,7 +15664,7 @@
               "free_units_per_events"
             ],
             "flag": "properties-free-units-per-events",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -15935,7 +15935,7 @@
               "free_units_per_events"
             ],
             "flag": "properties-free-units-per-events",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -16227,7 +16227,7 @@
               "free_units_per_events"
             ],
             "flag": "properties-free-units-per-events",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -17429,7 +17429,7 @@
               "free_units_per_events"
             ],
             "flag": "properties-free-units-per-events",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -18297,7 +18297,7 @@
               "free_units_per_events"
             ],
             "flag": "properties-free-units-per-events",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -18549,7 +18549,7 @@
               "free_units_per_events"
             ],
             "flag": "properties-free-units-per-events",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -19479,7 +19479,7 @@
               "free_units_per_events"
             ],
             "flag": "properties-free-units-per-events",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -20132,7 +20132,7 @@
               "ignore_paid_top_up_limits_on_creation"
             ],
             "flag": "ignore-paid-top-up-limits-on-creation",
-            "type": "string",
+            "type": "boolean",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -20207,7 +20207,7 @@
               "paid_top_up_max_amount_cents"
             ],
             "flag": "paid-top-up-max-amount-cents",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -20218,7 +20218,7 @@
               "paid_top_up_min_amount_cents"
             ],
             "flag": "paid-top-up-min-amount-cents",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -20576,7 +20576,7 @@
               "ignore_paid_top_up_limits_on_creation"
             ],
             "flag": "ignore-paid-top-up-limits-on-creation",
-            "type": "string",
+            "type": "boolean",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -20651,7 +20651,7 @@
               "paid_top_up_max_amount_cents"
             ],
             "flag": "paid-top-up-max-amount-cents",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,
@@ -20662,7 +20662,7 @@
               "paid_top_up_min_amount_cents"
             ],
             "flag": "paid-top-up-min-amount-cents",
-            "type": "string",
+            "type": "integer",
             "required": false,
             "nullable": true,
             "complex": false,

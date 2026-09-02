@@ -1,6 +1,7 @@
 package contract
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/getlago/lago-cli/internal/generated"
@@ -85,5 +86,31 @@ func TestQA_MSubscriptionsU_UpdateSubscriptionDoesNotRequireEndingAt(t *testing.
 		if field.Flag == "subscription-ending-at" && !field.Nullable {
 			t.Error("subscription.ending_at is not recorded as nullable")
 		}
+	}
+}
+
+// QA type coercion: every minor-unit amount in a request body is an integer. The one
+// spec exception is `precise_total_amount_cents` on events, a decimal string by design,
+// which is why the check keys off the `precise_` prefix rather than a hand list.
+func TestQA_TypeCoercion_MonetaryFieldsAreIntegers(t *testing.T) {
+	t.Parallel()
+	integers := 0
+	for _, operation := range generated.Operations {
+		if operation.Body == nil {
+			continue
+		}
+		for _, field := range operation.Body.Fields {
+			last := field.Path[len(field.Path)-1]
+			if !strings.HasSuffix(last, "_cents") || strings.HasPrefix(last, "precise_") {
+				continue
+			}
+			if field.Type != "integer" {
+				t.Errorf("%s --%s is %q, want integer", operation.OperationID, field.Flag, field.Type)
+			}
+			integers++
+		}
+	}
+	if integers < 20 {
+		t.Fatalf("only %d *_cents fields found; the walk is not reaching bodies", integers)
 	}
 }

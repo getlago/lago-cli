@@ -229,7 +229,7 @@ func (g generator) parameters(raw any) ([]generated.Parameter, error) {
 			Name:        name,
 			Flag:        normalizeName(strings.TrimSuffix(name, "[]")),
 			In:          location,
-			Type:        schemaType(schema),
+			Type:        g.schemaType(schema),
 			Required:    boolValue(resolved["required"]),
 			Description: stringValue(resolved["description"]),
 			Enum:        stringSlice(schema["enum"]),
@@ -271,7 +271,7 @@ func (g generator) body(raw any) (*generated.Body, error) {
 			if err != nil {
 				return nil, err
 			}
-			if schemaType(child) == "object" {
+			if g.schemaType(child) == "object" {
 				body.Wrapper = name
 				return body, g.collectFields(body, child, nil, required[name], 0)
 			}
@@ -297,7 +297,7 @@ func (g generator) collectFields(body *generated.Body, schema map[string]any, pr
 			return err
 		}
 		path := append(append([]string{}, prefix...), name)
-		valueType := schemaType(child)
+		valueType := g.schemaType(child)
 		_, nullable := nullableType(child)
 		childProperties, _ := child["properties"].(map[string]any)
 		additional := child["additionalProperties"] != nil
@@ -560,12 +560,22 @@ func mergeParameters(path, operation []generated.Parameter) []generated.Paramete
 	return result
 }
 
-func schemaType(schema map[string]any) string {
+// schemaType resolves the JSON type a request field is sent as. It is the source of the
+// runtime coercion: an integer field is sent as a JSON integer, a boolean as a boolean.
+//
+// The spec is OpenAPI 3.1, where a nullable field is written as the union
+// `type: [integer, 'null']`. The old plain-string read of `type` failed on the list and
+// fell through to "string", so `coupons create --amount-cents 1000` sent `"1000"` while
+// `add-ons create` sent `1000`. Unions now resolve to their non-null member. A `oneOf` or
+// `anyOf` whose members share one scalar type resolves to that type; mixed members
+// (`event.timestamp` is `oneOf [integer, string]`) stay "string", which the server
+// accepts for both.
+func (g generator) schemaType(schema map[string]any) string {
 	if schema == nil {
 		return "string"
 	}
-	if value := stringValue(schema["type"]); value != "" {
-		return value
+	if base, _ := nullableType(schema); base != "" && base != "null" {
+		return base
 	}
 	if schema["properties"] != nil || schema["additionalProperties"] != nil {
 		return "object"
@@ -573,8 +583,43 @@ func schemaType(schema map[string]any) string {
 	if schema["items"] != nil {
 		return "array"
 	}
-	if oneOf, ok := schema["oneOf"].([]any); ok && len(oneOf) > 0 {
-		return "string"
+	for _, key := range []string{"oneOf", "anyOf"} {
+		if members, ok := schema[key].([]any); ok && len(members) > 0 {
+			return g.unionScalarType(members)
+		}
+	}
+	return "string"
+}
+
+// unionScalarType returns the single scalar type shared by every non-null member of a
+// oneOf/anyOf, or "string" when the members disagree or are not scalars.
+func (g generator) unionScalarType(members []any) string {
+	types := map[string]bool{}
+	for _, raw := range members {
+		member, ok := raw.(map[string]any)
+		if !ok {
+			return "string"
+		}
+		resolved, err := g.resolveSchema(member)
+		if err != nil {
+			return "string"
+		}
+		base, _ := nullableType(resolved)
+		switch base {
+		case "integer", "number", "boolean", "string":
+			types[base] = true
+		case "", "null":
+			if resolved["properties"] != nil || resolved["items"] != nil {
+				return "string"
+			}
+		default:
+			return "string"
+		}
+	}
+	if len(types) == 1 {
+		for name := range types {
+			return name
+		}
 	}
 	return "string"
 }

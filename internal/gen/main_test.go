@@ -149,3 +149,36 @@ func TestQA_MOptionalBody_BodyRequiredFollowsRequestBodyRequired(t *testing.T) {
 		}
 	}
 }
+
+// QA type coercion: `coupons create --amount-cents 1` sent `"1"` because the field is
+// `type: [integer, 'null']` and the generator only read a plain string type. Unions
+// resolve to their non-null member; a oneOf/anyOf resolves only when its scalar members
+// agree, so `event.timestamp` (`oneOf [integer, string]`) stays a string.
+func TestQA_TypeCoercion_SchemaTypeResolvesUnions(t *testing.T) {
+	t.Parallel()
+	g := generator{document: map[string]any{"components": map[string]any{"schemas": map[string]any{
+		"Cents": map[string]any{"type": "integer"},
+	}}}}
+	for _, test := range []struct {
+		schema map[string]any
+		want   string
+	}{
+		{map[string]any{"type": "integer"}, "integer"},
+		{map[string]any{"type": []any{"integer", "null"}}, "integer"},
+		{map[string]any{"type": []any{"null", "number"}}, "number"},
+		{map[string]any{"type": []any{"boolean", "null"}}, "boolean"},
+		{map[string]any{"type": []any{"object", "null"}, "properties": map[string]any{"a": map[string]any{"type": "string"}}}, "object"},
+		{map[string]any{"type": []any{"array", "null"}, "items": map[string]any{"type": "string"}}, "array"},
+		{map[string]any{"oneOf": []any{map[string]any{"type": "integer"}, map[string]any{"type": "string"}}}, "string"},
+		{map[string]any{"anyOf": []any{map[string]any{"type": "integer"}, map[string]any{"$ref": "#/components/schemas/Cents"}}}, "integer"},
+		{map[string]any{"oneOf": []any{map[string]any{"type": "integer"}, map[string]any{"type": "null"}}}, "integer"},
+		{map[string]any{"oneOf": []any{map[string]any{"type": "object", "properties": map[string]any{}}, map[string]any{"type": "integer"}}}, "string"},
+		{map[string]any{"type": "string", "pattern": "^[0-9]+.?[0-9]*$"}, "string"},
+		{map[string]any{}, "string"},
+		{nil, "string"},
+	} {
+		if got := g.schemaType(test.schema); got != test.want {
+			t.Errorf("schemaType(%v) = %q, want %q", test.schema, got, test.want)
+		}
+	}
+}
