@@ -75,10 +75,10 @@ func TestQA_F13_SecondProfileDoesNotBecomeCurrentWithoutUse(t *testing.T) {
 	}
 }
 
-// QA C-8, S-5: --insecure was persisted silently, and a re-init without the flag
-// silently cleared it. It is announced whenever it ends up true, and kept unless the
-// flag is passed again.
-func TestQA_C8_InsecureIsAnnouncedAndKept(t *testing.T) {
+// QA C-8, S-5: --insecure was persisted silently. It is announced whenever it ends up
+// true, and a re-init without the flag clears it: a setting that disables TLS
+// verification is re-asked on every init, never inherited from the stored profile.
+func TestQA_C8_InsecureIsAnnouncedAndClearedOnReinit(t *testing.T) {
 	setCleanEnvironment(t)
 	path := filepath.Join(t.TempDir(), "config.toml")
 	t.Setenv("LAGO_CONFIG_FILE", path)
@@ -88,23 +88,49 @@ func TestQA_C8_InsecureIsAnnouncedAndKept(t *testing.T) {
 	if err != nil {
 		t.Fatalf("init --insecure failed: %v", err)
 	}
-	if !strings.Contains(stderr, `insecure = true is persisted in profile "dev"`) || !strings.Contains(stderr, "--insecure=false") {
+	if !strings.Contains(stderr, `insecure = true is persisted in profile "dev"`) || !strings.Contains(stderr, "without --insecure to clear it") {
 		t.Errorf("insecure persistence was not announced:\n%s", stderr)
 	}
 	if !loadConfig(t, path).Profiles["dev"].Insecure {
 		t.Fatal("insecure was not persisted")
 	}
 
-	// Re-init without the flag: the stored value is kept, and said so.
-	_, stderr, err = execute(t, "", "--profile", "dev", "--api-url", url, "--api-key", "lago_test_FAKE000000000000000000000000", "--mode", "test", "init", "--region", "self-hosted")
-	if err != nil {
-		t.Fatalf("re-init without --insecure failed: %v", err)
+	// Re-init without the flag: the stored value is not inherited, so the connectivity
+	// check runs with TLS verification on. Against this self-signed server that fails
+	// with a network error, and init writes nothing on failure, so the profile is
+	// untouched. On a host with a valid certificate the same command clears the flag.
+	_, _, err = execute(t, "", "--profile", "dev", "--api-url", url, "--api-key", "lago_test_FAKE000000000000000000000000", "--mode", "test", "init", "--region", "self-hosted")
+	if err == nil {
+		t.Fatal("re-init without --insecure verified a self-signed certificate: the stored insecure flag was inherited")
+	}
+	if apperr.ExitCode(err) != apperr.ExitNetwork || !strings.Contains(err.Error(), "certificate") {
+		t.Errorf("re-init without --insecure failed for another reason: %v", err)
 	}
 	if !loadConfig(t, path).Profiles["dev"].Insecure {
-		t.Error("re-init without the flag cleared insecure")
+		t.Error("a failed init rewrote the profile")
 	}
-	if !strings.Contains(stderr, "was kept from the existing profile") {
-		t.Errorf("kept insecure value was not announced:\n%s", stderr)
+}
+
+// QA S-3: a read-only owner file (0400) is as safe as 0600 and must not warn; only
+// group or other bits are the problem.
+func TestQA_S3_ReadOnlyOwnerConfigDoesNotWarn(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("no POSIX mode bits on Windows")
+	}
+	server := jsonAPI(t, func(response http.ResponseWriter, _ *http.Request) {
+		_, _ = response.Write([]byte(`{"organization":{"lago_id":"org_1","name":"Example"}}`))
+	})
+	path := profileAt(t, server.URL)
+	if err := os.Chmod(path, 0o400); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.Chmod(path, 0o600) })
+	_, stderr, err := execute(t, "", "--output", "json", "whoami")
+	if err != nil {
+		t.Fatalf("whoami refused to run: %v", err)
+	}
+	if strings.Contains(stderr, "has permissions") {
+		t.Errorf("0400 config file warned about permissions:\n%s", stderr)
 	}
 }
 

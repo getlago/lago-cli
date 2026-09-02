@@ -292,11 +292,12 @@ written becomes current, because there is nothing else to point at; after that, 
 is opt-in with `--use`, and stderr names the profile that remains current. Recorded as
 breaking pre-1.0.
 
-**`--insecure` is persisted only when passed, and announced whenever it is true.** The flag
-was written to the profile on every init, so a re-init without it silently re-enabled TLS
-verification and an init with it silently disabled verification for every later command.
-The stored value now changes only when the flag is passed, and the warning names the
-profile and the command that clears it. The per-command `--insecure` warning stays.
+**`--insecure` is persisted only for the init that passes it, and announced whenever it
+is true.** An init with the flag silently disabled TLS verification for every later command
+on the profile. It is now announced on stderr. A re-init without the flag clears it and
+says so, rather than inheriting it from the stored profile: a setting that weakens
+security is re-asked every time, in the fail-safe direction. The per-command `--insecure`
+warning stays.
 
 **Loose config permissions warn on every command.** `doctor` already checked the mode;
 QA asked why only `doctor`, since the file holds API keys and the operator who never runs

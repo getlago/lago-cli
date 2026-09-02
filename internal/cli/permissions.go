@@ -20,7 +20,8 @@ func warnLooseConfigPermissions(errOut io.Writer, path string) {
 		return
 	}
 	mode, err := config.FileMode(path)
-	if err != nil || mode == 0o600 {
+	if err != nil || mode&0o077 == 0 {
+		// Owner-only is fine whatever the owner bits: 0600 and a read-only 0400 both pass.
 		return
 	}
 	fmt.Fprintf(errOut, "WARNING: %s has permissions %04o and holds API keys; run: chmod 600 %s\n", path, mode, path)

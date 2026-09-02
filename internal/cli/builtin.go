@@ -138,15 +138,12 @@ func newInitCommand(app *App) *cobra.Command {
 			}
 			profileName := firstNonBlank(app.profile, os.Getenv("LAGO_PROFILE"), cfg.CurrentProfile, "default")
 			existing := cfg.Profiles[profileName]
-			// QA C-8, S-5: --insecure used to be written to the profile whether or not it
-			// was passed, so a re-init without the flag silently cleared it and an init
-			// with it silently disabled TLS verification for every later command. The
-			// stored value now changes only when the flag is passed, and the result is
-			// announced below whenever it ends up true.
-			insecure := existing.Insecure
-			if app.flagChanged("insecure") {
-				insecure = app.insecure
-			}
+			// QA C-8, S-5: --insecure disables TLS verification for every later command
+			// on the profile, so it is written only when this init passes the flag. A
+			// re-init without it resets the profile to verified TLS: a setting that
+			// weakens security must be re-asked, never inherited. The result is announced
+			// below whenever it ends up true.
+			insecure := app.flagChanged("insecure") && app.insecure
 			apiKey := firstNonBlank(app.apiKey, os.Getenv("LAGO_API_KEY"), existing.APIKey)
 			selectedRegion := firstNonBlank(region, existing.Region)
 			mode := firstNonBlank(app.mode, os.Getenv("LAGO_MODE"), existing.Mode)
@@ -266,11 +263,9 @@ func newInitCommand(app *App) *cobra.Command {
 				fmt.Fprintf(app.Err, "Profile %q saved; %q remains the current profile. Pass --use to switch, or --profile %q per command.\n", profileName, cfg.CurrentProfile, profileName)
 			}
 			if insecure {
-				origin := "is persisted"
-				if !app.flagChanged("insecure") {
-					origin = "was kept from the existing profile and stays persisted"
-				}
-				fmt.Fprintf(app.Err, "WARNING: insecure = true %s in profile %q; TLS verification is disabled for every command that uses it. Run `lago init --profile %q --insecure=false` to clear it.\n", origin, profileName, profileName)
+				fmt.Fprintf(app.Err, "WARNING: insecure = true is persisted in profile %q; TLS verification is disabled for every command that uses it. Re-run `lago init --profile %q` without --insecure to clear it.\n", profileName, profileName)
+			} else if existing.Insecure {
+				fmt.Fprintf(app.Err, "insecure = true was cleared from profile %q; TLS verification is back on.\n", profileName)
 			}
 			return nil
 		},
