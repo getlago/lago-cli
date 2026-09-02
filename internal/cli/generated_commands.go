@@ -120,6 +120,8 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 				return runAllPages(cmd, app, operation, path, query)
 			}
 		}
+		// Read before the generated-ID block below, which sets the flag and marks it changed.
+		callerChoseTransactionID := cmd.Flags().Changed("transaction-id")
 		if operation.Resource == "events" && operation.Action == "send" && operation.Body != nil && !cmd.Flags().Changed("input") {
 			if transactionID, exists := flagValues["transaction-id"]; exists && !cmd.Flags().Changed("transaction-id") {
 				generatedID := defaultIdempotencyKey()
@@ -135,6 +137,9 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 		body, err := generatedBody(app.In, cmd, operation.Body, flagValues)
 		if err != nil {
 			return err
+		}
+		if operation.Resource == "events" && operation.Action == "send" && (callerChoseTransactionID || cmd.Flags().Changed("input")) {
+			warnRetryUnsafeBody(app, body)
 		}
 		if operation.Body != nil && len(body) == 0 && operation.Method != http.MethodGet && operation.Method != http.MethodDelete {
 			return apperr.New(apperr.ExitUsage, "request body is required", "Pass generated field flags or --input @payload.json.")

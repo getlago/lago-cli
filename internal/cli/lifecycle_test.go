@@ -438,3 +438,74 @@ func TestVersionIsNeverEmpty(t *testing.T) {
 		t.Fatal("Version() is empty")
 	}
 }
+
+// A caller-chosen transaction_id promises idempotency, and the CLI must say when the
+// promise does not hold. On the ClickHouse event store the timestamp is part of the
+// deduplication key and a missing one defaults to the time of reception, so resending
+// `events send --transaction-id x` without `--timestamp` bills a second event. The
+// command still succeeds; the warning goes to stderr where a human sees it and a
+// script's stdout parsing is untouched.
+func TestEventSendWarnsWhenATransactionIDHasNoTimestamp(t *testing.T) {
+	server := jsonAPI(t, func(response http.ResponseWriter, _ *http.Request) {
+		_, _ = response.Write([]byte(`{"event":{"lago_id":"evt","transaction_id":"txn_1"}}`))
+	})
+	profileAt(t, server.URL)
+
+	cases := []struct {
+		name string
+		argv []string
+		warn bool
+	}{
+		{"transaction id without timestamp", []string{"--transaction-id", "txn_1"}, true},
+		{"transaction id with timestamp", []string{"--transaction-id", "txn_1", "--timestamp", "1788338088"}, false},
+		{"generated transaction id", nil, false},
+		{"input body without timestamp", []string{"--input", `{"event":{"external_subscription_id":"sub_1","code":"requests","transaction_id":"txn_1"}}`}, true},
+		{"input body with timestamp", []string{"--input", `{"event":{"external_subscription_id":"sub_1","code":"requests","transaction_id":"txn_1","timestamp":1788338088}}`}, false},
+	}
+	for _, testCase := range cases {
+		t.Run(testCase.name, func(t *testing.T) {
+			argv := []string{"--output", "json", "events", "send"}
+			if !strings.Contains(strings.Join(testCase.argv, " "), "--input") {
+				argv = append(argv, "--external-subscription-id", "sub_1", "--code", "requests")
+			}
+			argv = append(argv, testCase.argv...)
+			_, stderr, err := execute(t, "", argv...)
+			if err != nil {
+				t.Fatalf("events send failed: %v", err)
+			}
+			warned := strings.Contains(stderr, "not safe to retry")
+			if warned != testCase.warn {
+				t.Errorf("warning printed = %v, want %v; stderr:\n%s", warned, testCase.warn, stderr)
+			}
+		})
+	}
+}
+
+// The same warning applies to a streamed file, once, with a count: per-line noise on a
+// million-line import would hide the point.
+func TestEventStreamWarnsOnceForTimestamplessTransactionIDs(t *testing.T) {
+	server := jsonAPI(t, func(response http.ResponseWriter, _ *http.Request) {
+		_, _ = response.Write([]byte(`{"event":{"lago_id":"evt"}}`))
+	})
+	profileAt(t, server.URL)
+
+	path := filepath.Join(t.TempDir(), "events.ndjson")
+	contents := `{"transaction_id":"txn_1","external_subscription_id":"sub_1","code":"requests"}
+{"transaction_id":"txn_2","external_subscription_id":"sub_1","code":"requests","timestamp":1788338088}
+{"event":{"transaction_id":"txn_3","external_subscription_id":"sub_1","code":"requests"}}
+{"external_subscription_id":"sub_1","code":"requests"}
+`
+	if err := os.WriteFile(path, []byte(contents), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	_, stderr, err := execute(t, "", "--output", "json", "events", "send", "--file", path)
+	if err != nil {
+		t.Fatalf("event stream failed: %v", err)
+	}
+	if strings.Count(stderr, "not safe to resend") != 1 {
+		t.Errorf("expected exactly one stream warning, stderr:\n%s", stderr)
+	}
+	if !strings.Contains(stderr, "2 event(s)") {
+		t.Errorf("warning did not count the two timestampless events with a transaction_id:\n%s", stderr)
+	}
+}
