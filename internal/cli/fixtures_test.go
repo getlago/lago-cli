@@ -468,3 +468,125 @@ func TestFixtureStepErrorPreservesTheCauseExitCode(t *testing.T) {
 		t.Fatalf("message lost the cause: %v", wrapped)
 	}
 }
+
+// QA F-5: a fixture with a DELETE step ran against a live profile without any gate.
+// `fixtures run` now refuses non-test profiles the same way `seed demo` does, before
+// the file is even read.
+func TestQA_F5_FixturesRunRefusesLiveProfiles(t *testing.T) {
+	var mutex sync.Mutex
+	reached := false
+	server := jsonAPI(t, func(response http.ResponseWriter, _ *http.Request) {
+		mutex.Lock()
+		reached = true
+		mutex.Unlock()
+		_, _ = response.Write([]byte(`{}`))
+	})
+	setCleanEnvironment(t)
+	writeProfile(t, config.ModeLive, server.URL)
+	path := writeFixture(t, destructiveFixture)
+
+	_, _, err := execute(t, "", "fixtures", "run", path, "--confirm", "cleanup")
+	if err == nil {
+		t.Fatal("fixtures run executed against a live profile")
+	}
+	if apperr.ExitCode(err) != apperr.ExitUsage {
+		t.Errorf("exit code = %d, want %d", apperr.ExitCode(err), apperr.ExitUsage)
+	}
+	if !strings.Contains(err.Error(), "test profiles") {
+		t.Errorf("refusal does not explain the restriction: %v", err)
+	}
+	mutex.Lock()
+	defer mutex.Unlock()
+	if reached {
+		t.Fatal("fixtures run reached the API before refusing")
+	}
+}
+
+const destructiveFixture = `
+version: 1
+name: cleanup
+steps:
+  - id: create
+    method: POST
+    path: /customers
+    body:
+      customer:
+        external_id: doomed
+    capture:
+      customer_id: customer.external_id
+  - id: remove
+    method: DELETE
+    path: /customers/${customer_id}
+`
+
+// QA S-21: a destructive step must be confirmed before step one runs, so a refusal
+// never leaves the scenario half-applied. Without a TTY and without --confirm the run
+// is refused at exit 2, exactly like a generated delete.
+func TestQA_S21_DestructiveFixtureStepRequiresConfirmationBeforeStepOne(t *testing.T) {
+	var mutex sync.Mutex
+	var paths []string
+	server := jsonAPI(t, func(response http.ResponseWriter, request *http.Request) {
+		mutex.Lock()
+		paths = append(paths, request.Method+" "+request.URL.Path)
+		mutex.Unlock()
+		_, _ = response.Write([]byte(`{"customer":{"external_id":"doomed"}}`))
+	})
+	profileAt(t, server.URL)
+	path := writeFixture(t, destructiveFixture)
+
+	_, stderr, err := execute(t, "", "fixtures", "run", path)
+	if err == nil {
+		t.Fatal("destructive fixture ran without confirmation")
+	}
+	if apperr.ExitCode(err) != apperr.ExitUsage {
+		t.Errorf("exit code = %d, want %d", apperr.ExitCode(err), apperr.ExitUsage)
+	}
+	if !strings.Contains(err.Error(), `confirmation required for cleanup`) {
+		t.Errorf("refusal does not name the fixture: %v", err)
+	}
+	if !strings.Contains(stderr, "remove (DELETE /customers/${customer_id})") {
+		t.Errorf("stderr does not list the destructive step:\n%s", stderr)
+	}
+	mutex.Lock()
+	defer mutex.Unlock()
+	if len(paths) != 0 {
+		t.Fatalf("steps ran before the gate: %v", paths)
+	}
+}
+
+// --confirm with the fixture name satisfies the gate and every step runs in order.
+func TestQA_S21_DestructiveFixtureRunsWithConfirmName(t *testing.T) {
+	var mutex sync.Mutex
+	var paths []string
+	server := jsonAPI(t, func(response http.ResponseWriter, request *http.Request) {
+		mutex.Lock()
+		paths = append(paths, request.Method+" "+request.URL.Path)
+		mutex.Unlock()
+		_, _ = response.Write([]byte(`{"customer":{"external_id":"doomed"}}`))
+	})
+	profileAt(t, server.URL)
+	path := writeFixture(t, destructiveFixture)
+
+	if _, _, err := execute(t, "", "--output", "json", "fixtures", "run", path, "--confirm", "cleanup"); err != nil {
+		t.Fatalf("confirmed fixture failed: %v", err)
+	}
+	mutex.Lock()
+	defer mutex.Unlock()
+	want := []string{"POST /api/v1/customers", "DELETE /api/v1/customers/doomed"}
+	if fmt.Sprint(paths) != fmt.Sprint(want) {
+		t.Errorf("requests = %v, want %v", paths, want)
+	}
+}
+
+// A dry run sends nothing, so it needs no confirmation, matching generated commands.
+func TestQA_S21_DestructiveFixtureDryRunNeedsNoConfirmation(t *testing.T) {
+	server := jsonAPI(t, func(http.ResponseWriter, *http.Request) {
+		t.Error("dry run reached the API")
+	})
+	profileAt(t, server.URL)
+	path := writeFixture(t, destructiveFixture)
+
+	if _, _, err := execute(t, "", "--dry-run", "--output", "json", "fixtures", "run", path); err != nil {
+		t.Fatalf("dry run failed: %v", err)
+	}
+}

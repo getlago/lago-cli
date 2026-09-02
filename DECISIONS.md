@@ -213,6 +213,29 @@ detail beats a list of identifiers.
 hostnames served locally, rather than proving URL handling only for `127.0.0.1`. CI runs
 the affected packages once per deployment target.
 
+## 2026-09-02 — Raw and scripted requests share the generated danger classification
+
+QA deleted a live customer through a fixture step and through `lago api DELETE` without
+being asked once. Generated commands were gated; the two paths that bypass the command
+tree were not. Both now classify a request by looking up its method and path in the
+generated operation table and reading the `Dangerous` flag the generator derived from
+the spec. That keeps one classification: `POST /invoices/{id}/void` is gated because the
+spec says so, not because a second verb list happened to agree. A path no operation
+claims falls back to the generator's default-deny rule, DELETE or a destructive segment,
+so an unknown endpoint is never silently ungated. The vocabulary moved to
+`internal/generated` so the generator, the runtime, and the contract test read one list.
+
+`fixtures run` and `seed demo` are refused outside test profiles rather than offered a
+live-mode confirmation. A scenario creates and deletes many objects; confirming the
+first destructive step says nothing about the rest, and a refusal midway leaves the
+account half-applied. So the scan runs before step one and the whole fixture is
+confirmed by name, or not run at all.
+
+`lago api` keeps test mode ungated. It exists as the raw escape hatch for endpoints and
+shapes the generated commands do not cover yet, and a test organization is the place to
+use it that way. Live mode goes through `--confirm <path>` or the typed prompt, the same
+gate as a generated delete. Recorded because the asymmetry is deliberate.
+
 ## Deferred beyond 1.x
 
 Plugin/extension system, TUI dashboard, and `lago scaffold` sample-app generation.
