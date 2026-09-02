@@ -282,6 +282,34 @@ confirmed by name, or not run at all.
 shapes the generated commands do not cover yet, and a test organization is the place to
 use it that way. Live mode goes through `--confirm <path>` or the typed prompt, the same
 gate as a generated delete. Recorded because the asymmetry is deliberate.
+## 2026-09-02 — Profiles: explicit switching, announced insecurity, warned permissions
+
+Four QA findings about what the CLI persists and how quietly it does so.
+
+**`init --profile X` no longer switches the current profile.** It did, so configuring a
+staging profile silently pointed every later command at staging. The first profile ever
+written becomes current, because there is nothing else to point at; after that, switching
+is opt-in with `--use`, and stderr names the profile that remains current. Recorded as
+breaking pre-1.0.
+
+**`--insecure` is persisted only when passed, and announced whenever it is true.** The flag
+was written to the profile on every init, so a re-init without it silently re-enabled TLS
+verification and an init with it silently disabled verification for every later command.
+The stored value now changes only when the flag is passed, and the warning names the
+profile and the command that clears it. The per-command `--insecure` warning stays.
+
+**Loose config permissions warn on every command.** `doctor` already checked the mode;
+QA asked why only `doctor`, since the file holds API keys and the operator who never runs
+`doctor` is the one who needs telling. The check runs once per invocation in `App.Load`.
+It warns rather than refuses, unlike ssh: a refusal would break every script on a shared
+CI volume for a condition fixed by the one command the warning prints. Windows has no
+POSIX mode bits and is skipped.
+
+**Aliases may not carry credentials or TLS flags.** An alias with `--api-key` is a second
+place a key lives, outside the 0600 profile table; one with `--insecure` disables TLS
+checks for whoever runs it without seeing the flag. `--api-url`, `--api-key` and
+`--insecure` are refused at `alias set` with the profile alternative named. `--profile` and
+`--mode` stay allowed: a mode is a safety declaration, not a secret.
 
 ## Deferred beyond 1.x
 

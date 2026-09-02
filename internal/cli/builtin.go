@@ -116,6 +116,7 @@ func newInitCommand(app *App) *cobra.Command {
 	var region string
 	var updateCheck bool
 	var updateCheckSet bool
+	var use bool
 	cmd := &cobra.Command{
 		Use:   "init",
 		Short: "Configure a Lago profile and validate its credentials",
@@ -137,6 +138,15 @@ func newInitCommand(app *App) *cobra.Command {
 			}
 			profileName := firstNonBlank(app.profile, os.Getenv("LAGO_PROFILE"), cfg.CurrentProfile, "default")
 			existing := cfg.Profiles[profileName]
+			// QA C-8, S-5: --insecure used to be written to the profile whether or not it
+			// was passed, so a re-init without the flag silently cleared it and an init
+			// with it silently disabled TLS verification for every later command. The
+			// stored value now changes only when the flag is passed, and the result is
+			// announced below whenever it ends up true.
+			insecure := existing.Insecure
+			if app.flagChanged("insecure") {
+				insecure = app.insecure
+			}
 			apiKey := firstNonBlank(app.apiKey, os.Getenv("LAGO_API_KEY"), existing.APIKey)
 			selectedRegion := firstNonBlank(region, existing.Region)
 			mode := firstNonBlank(app.mode, os.Getenv("LAGO_MODE"), existing.Mode)
@@ -176,7 +186,7 @@ func newInitCommand(app *App) *cobra.Command {
 				// writing to the wrong continent. They are only accepted together when
 				// they normalize to the same host.
 				if app.flagChanged("api-url") && apiURL != "" {
-					if conflict := conflictingTarget(apiURL, cloudURL, app.insecure); conflict != nil {
+					if conflict := conflictingTarget(apiURL, cloudURL, insecure); conflict != nil {
 						return conflict
 					}
 				}
@@ -203,7 +213,7 @@ func newInitCommand(app *App) *cobra.Command {
 			// into the config file, so `whoami` reported a URL that was not the one being
 			// called. The profile now records the resolved base URL, and every later read
 			// is the same string the client uses.
-			normalized, err := transport.NormalizeBaseURL(apiURL, app.insecure)
+			normalized, err := transport.NormalizeBaseURL(apiURL, insecure)
 			if err != nil {
 				return err
 			}
@@ -218,7 +228,7 @@ func newInitCommand(app *App) *cobra.Command {
 					timeout = parsed
 				}
 			}
-			client, err := transport.New(transport.Config{BaseURL: apiURL, APIKey: apiKey, Timeout: timeout, Insecure: app.insecure, NoRetry: app.noRetry, Verbose: app.verbose, UserAgent: "lago-cli/" + app.Version, Err: app.Err, DialContext: app.dialContext})
+			client, err := transport.New(transport.Config{BaseURL: apiURL, APIKey: apiKey, Timeout: timeout, Insecure: insecure, NoRetry: app.noRetry, Verbose: app.verbose, UserAgent: "lago-cli/" + app.Version, Err: app.Err, DialContext: app.dialContext})
 			if err != nil {
 				return err
 			}
@@ -231,7 +241,14 @@ func newInitCommand(app *App) *cobra.Command {
 				cfg.Profiles = map[string]config.Profile{}
 			}
 			cfg.Version = config.CurrentVersion
-			cfg.CurrentProfile = profileName
+			// QA F-13: `init --profile staging` switched current_profile, so every later
+			// command silently targeted the profile that was just configured. The first
+			// profile ever written becomes current, because there is nothing else to
+			// point at; after that, switching is opt-in with --use.
+			switched := use || cfg.CurrentProfile == ""
+			if switched {
+				cfg.CurrentProfile = profileName
+			}
 			if cfg.Channel == "" {
 				cfg.Channel = "stable"
 			}
@@ -239,17 +256,28 @@ func newInitCommand(app *App) *cobra.Command {
 				cfg.UpdateCheck = updateCheck
 				cfg.UpdateConsent = true
 			}
-			cfg.Profiles[profileName] = config.Profile{Region: selectedRegion, APIURL: apiURL, APIKey: apiKey, Mode: mode, Timeout: timeout.String(), Insecure: app.insecure, OrganizationID: organizationID, Organization: organizationName}
+			cfg.Profiles[profileName] = config.Profile{Region: selectedRegion, APIURL: apiURL, APIKey: apiKey, Mode: mode, Timeout: timeout.String(), Insecure: insecure, OrganizationID: organizationID, Organization: organizationName}
 			if err := config.Save(path, cfg); err != nil {
 				return apperr.Wrap(apperr.ExitGeneral, "save configuration", err)
 			}
 			fmt.Fprintf(app.Out, "Connected to Lago as %s.\n", firstNonBlank(organizationName, organizationID, "your organization"))
 			fmt.Fprintf(app.Out, "Saved %s profile %q to %s (mode: %s).\n", selectedRegion, profileName, path, mode)
+			if !switched && cfg.CurrentProfile != profileName {
+				fmt.Fprintf(app.Err, "Profile %q saved; %q remains the current profile. Pass --use to switch, or --profile %q per command.\n", profileName, cfg.CurrentProfile, profileName)
+			}
+			if insecure {
+				origin := "is persisted"
+				if !app.flagChanged("insecure") {
+					origin = "was kept from the existing profile and stays persisted"
+				}
+				fmt.Fprintf(app.Err, "WARNING: insecure = true %s in profile %q; TLS verification is disabled for every command that uses it. Run `lago init --profile %q --insecure=false` to clear it.\n", origin, profileName, profileName)
+			}
 			return nil
 		},
 	}
 	cmd.Flags().StringVar(&region, "region", "", "Lago region: us, eu, or self-hosted")
 	cmd.Flags().BoolVar(&updateCheck, "update-check", false, "Allow a once-daily anonymous release check")
+	cmd.Flags().BoolVar(&use, "use", false, "Make this profile the current profile (the first profile is current by default)")
 	return cmd
 }
 

@@ -127,6 +127,11 @@ Configuration resolves flags → environment → `~/.config/lago/config.toml`. S
 The gate follows the spec, not the command surface. `lago api` classifies a raw request by the operation its method and path address: in a live profile, `lago api DELETE /customers/x` or `lago api POST /invoices/x/void` requires `--confirm <path>` or typed confirmation, while a test profile keeps `lago api` as an ungated escape hatch. `lago fixtures run` and `lago seed demo` run only against test profiles, and a fixture containing a destructive step must be confirmed with `--confirm <fixture name>` before its first step runs.
 
 Plain HTTP and disabled TLS verification require the explicit `--insecure` flag and always print a warning. Use it for `http://localhost:3000` during development, not against a deployment that holds real money.
+Plain HTTP and disabled TLS verification require the explicit `--insecure` flag and always print a warning. Use it for `http://localhost:3000` during development, not against a deployment that holds real money. `lago init --insecure` persists `insecure = true` into the profile and says so on stderr; it stays until you run `lago init --profile <name> --insecure=false`.
+
+`lago init --profile <name>` writes that profile without switching `current_profile`. The first profile you create is current by default; after that, pass `--use` to switch, or `--profile <name>` per command. An alias (`lago alias set`) may name a profile but may not carry `--api-key`, `--api-url`, or `--insecure`: credentials and TLS choices live in the 0600 config file, not in an alias someone runs without reading it.
+
+The config file is checked on every command. If it is readable by anyone but you, stderr says so and prints the `chmod 600` to run; `lago doctor` reports the same check.
 
 ## Quickstart
 

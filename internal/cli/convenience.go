@@ -81,6 +81,15 @@ func newAliasCommand(app *App) *cobra.Command {
 			if name == "" || strings.HasPrefix(name, "-") || strings.ContainsAny(name, " \t\r\n") || len(expansion) == 0 {
 				return apperr.New(apperr.ExitUsage, "invalid alias", "Use a single command word and a non-empty expansion.")
 			}
+			// QA F-2, S-20: an alias that bakes in --api-key or --api-url is a second
+			// place credentials live, outside the 0600 config file's profile table, and
+			// --insecure in an alias disables TLS checks for whoever runs it without
+			// seeing the flag. Profiles are the one place for those; the alias may name
+			// the profile instead. --mode is a safety declaration, not a credential, and
+			// stays allowed.
+			if flag := reservedAliasFlag(expansion); flag != "" {
+				return apperr.New(apperr.ExitUsage, fmt.Sprintf("alias expansion may not set %s", flag), "Credentials and TLS choices belong in profiles: run `lago init --profile <name>` and put --profile <name> in the alias instead.")
+			}
 			for _, reserved := range append(generatedResources(), "alias", "api", "completion", "docs", "doctor", "fixtures", "help", "init", "logs", "seed", "upgrade", "version", "whoami") {
 				if name == reserved {
 					return apperr.New(apperr.ExitUsage, fmt.Sprintf("%q is a built-in command", name), "Choose an alias name that does not shadow the command tree.")
@@ -128,6 +137,19 @@ func newAliasCommand(app *App) *cobra.Command {
 		},
 	})
 	return alias
+}
+
+// reservedAliasFlag returns the first token that sets a credential or TLS flag, in
+// either `--flag value` or `--flag=value` form, or "" when the expansion is clean.
+func reservedAliasFlag(tokens []string) string {
+	for _, token := range tokens {
+		name, _, _ := strings.Cut(token, "=")
+		switch name {
+		case "--api-url", "--api-key", "--insecure":
+			return name
+		}
+	}
+	return ""
 }
 
 func expandAliasArguments(arguments []string) ([]string, error) {

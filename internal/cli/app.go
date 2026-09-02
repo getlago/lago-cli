@@ -120,6 +120,7 @@ func (a *App) Load(requireAuth bool) error {
 	if err != nil {
 		return apperr.Wrap(apperr.ExitGeneral, "load configuration", err)
 	}
+	warnLooseConfigPermissions(a.Err, path)
 	overrides := config.Overrides{
 		Profile:     a.profile,
 		APIURL:      a.apiURL,
