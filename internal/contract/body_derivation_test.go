@@ -83,7 +83,7 @@ func TestQA_MSubscriptionsU_UpdateSubscriptionDoesNotRequireEndingAt(t *testing.
 		if field.Required {
 			t.Errorf("subscriptions update still requires --%s", field.Flag)
 		}
-		if field.Flag == "subscription-ending-at" && !field.Nullable {
+		if field.Flag == "ending-at" && !field.Nullable {
 			t.Error("subscription.ending_at is not recorded as nullable")
 		}
 	}

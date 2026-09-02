@@ -156,9 +156,9 @@ EXTERNAL_ID  quickstart_customer
 NAME         Quickstart Customer
 
 $ lago subscriptions create \
-    --subscription-external-customer-id quickstart_customer \
-    --subscription-external-id quickstart_subscription \
-    --subscription-plan-code quickstart
+    --external-customer-id quickstart_customer \
+    --external-id quickstart_subscription \
+    --plan-code quickstart
 LAGO_ID      3c903c90-3c90-3c90-3c90-3c903c903c90
 EXTERNAL_ID  quickstart_subscription
 STATUS       active

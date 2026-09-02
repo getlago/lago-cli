@@ -135,7 +135,7 @@ func (g generator) operations() ([]generated.Operation, error) {
 			command := resource + " " + action
 			if owner, exists := commandOwners[command]; exists {
 				if explicitAction == "" {
-					action = qualifiedAction(operationID, resource)
+					action = qualifiedAction(operationID, resource, true)
 					command = resource + " " + action
 				}
 				if fallbackOwner, stillExists := commandOwners[command]; stillExists {
@@ -273,17 +273,69 @@ func (g generator) body(raw any) (*generated.Body, error) {
 			}
 			if g.schemaType(child) == "object" {
 				body.Wrapper = name
-				return body, g.collectFields(body, child, nil, required[name], 0)
+				return body, g.collectFields(body, child, nil, required[name], "", 0)
 			}
 		}
 	}
-	if err := g.collectFields(body, schema, nil, true, 0); err != nil {
+	// A multi-key envelope with one required object is a wrapped resource plus
+	// side-channels: `{subscription: {...}, authorization: {...}}`. The required object
+	// is the primary key, so its fields keep their own names (`--external-id`) and only
+	// the siblings carry a prefix (`--authorization-amount-cents`). Paths are unchanged;
+	// only the flag spelling is.
+	primary, err := g.primaryKey(properties, required)
+	if err != nil {
+		return nil, err
+	}
+	if err := g.collectFields(body, schema, nil, true, primary, 0); err != nil {
+		return nil, err
+	}
+	if err := uniqueFlags(body); err != nil {
 		return nil, err
 	}
 	return body, nil
 }
 
-func (g generator) collectFields(body *generated.Body, schema map[string]any, prefix []string, parentRequired bool, depth int) error {
+// primaryKey returns the single required object property of a multi-key envelope, or
+// "" when there is no such property or more than one.
+func (g generator) primaryKey(properties map[string]any, required map[string]bool) (string, error) {
+	if len(properties) < 2 {
+		return "", nil
+	}
+	primary := ""
+	for _, name := range sortedKeys(properties) {
+		if !required[name] {
+			continue
+		}
+		child, _ := properties[name].(map[string]any)
+		child, err := g.resolveSchema(child)
+		if err != nil {
+			return "", err
+		}
+		if g.schemaType(child) != "object" {
+			continue
+		}
+		if primary != "" {
+			return "", nil
+		}
+		primary = name
+	}
+	return primary, nil
+}
+
+// uniqueFlags fails generation when two body fields would share a flag, which the
+// primary-key unwrapping could otherwise produce silently.
+func uniqueFlags(body *generated.Body) error {
+	seen := map[string][]string{}
+	for _, field := range body.Fields {
+		if previous, exists := seen[field.Flag]; exists {
+			return fmt.Errorf("body fields %v and %v both map to --%s; add x-lago-cli-action or rename upstream", previous, field.Path, field.Flag)
+		}
+		seen[field.Flag] = field.Path
+	}
+	return nil
+}
+
+func (g generator) collectFields(body *generated.Body, schema map[string]any, prefix []string, parentRequired bool, primary string, depth int) error {
 	if depth > 8 {
 		return fmt.Errorf("request schema nesting exceeds eight levels")
 	}
@@ -302,14 +354,18 @@ func (g generator) collectFields(body *generated.Body, schema map[string]any, pr
 		childProperties, _ := child["properties"].(map[string]any)
 		additional := child["additionalProperties"] != nil
 		if valueType == "object" && len(childProperties) > 0 && !additional {
-			if err := g.collectFields(body, child, path, parentRequired && required[name], depth+1); err != nil {
+			if err := g.collectFields(body, child, path, parentRequired && required[name], primary, depth+1); err != nil {
 				return err
 			}
 			continue
 		}
+		flagPath := path
+		if primary != "" && len(path) > 1 && path[0] == primary {
+			flagPath = path[1:]
+		}
 		body.Fields = append(body.Fields, generated.Field{
 			Path: path,
-			Flag: normalizeName(strings.Join(path, "-")),
+			Flag: normalizeName(strings.Join(flagPath, "-")),
 			Type: valueType,
 			// A nullable field listed under `required` means the key must be present, and
 			// null satisfies that. `subscriptions update` lists `ending_at` that way and
@@ -420,7 +476,10 @@ func (g generator) reference(reference string) (map[string]any, error) {
 func derivedAction(operationID, resource, path, summary string) string {
 	pathParts := strings.Split(strings.Trim(path, "/"), "/")
 	if len(pathParts) > 0 && normalizeName(pathParts[0]) != resource {
-		return qualifiedAction(operationID, resource)
+		// The path is scoped under another resource (`/customers/{id}/wallets` under
+		// `wallets`). Stripping the resource noun here produced `wallets create-customer`
+		// for an operation that creates a wallet, so the noun stays: `create-customer-wallet`.
+		return qualifiedAction(operationID, resource, true)
 	}
 	if len(pathParts) > 1 {
 		last := pathParts[len(pathParts)-1]
@@ -428,7 +487,7 @@ func derivedAction(operationID, resource, path, summary string) string {
 			return normalizeName(last)
 		}
 		if len(pathParts) > 2 {
-			return qualifiedAction(operationID, resource)
+			return qualifiedAction(operationID, resource, false)
 		}
 	}
 	if fields := strings.Fields(summary); len(fields) > 0 {
@@ -473,16 +532,37 @@ func derivedAction(operationID, resource, path, summary string) string {
 	return normalizeName(operationID)
 }
 
-func qualifiedAction(operationID, resource string) string {
+// qualifiedAction derives an action from an operation ID that does not fit the plain
+// verb table: the resource noun is stripped from the end of the ID and the verb prefixes
+// are mapped (`findAll` to `list`, `find` to `get`).
+//
+// keepQualifiedNoun is set for operations whose path is scoped under another resource
+// (`/customers/{id}/wallets` under `wallets`). There, stripping the noun from
+// `createCustomerWallet` left `create-customer`, a name that says the opposite of what
+// the command does. When the stripped remainder still carries a qualifier (more than one
+// segment), the noun is kept: `create-customer-wallet`, `list-applied-coupons`,
+// `destroy-subscription-entitlement`. A bare verb (`applyCoupon` under
+// `/applied_coupons`) is unambiguous and keeps its short name.
+func qualifiedAction(operationID, resource string, keepQualifiedNoun bool) string {
+	stripped := stripResourceNoun(operationID, resource)
+	action := mapVerbPrefixes(normalizeName(stripped))
+	if keepQualifiedNoun && stripped != operationID && strings.Contains(action, "-") {
+		return mapVerbPrefixes(normalizeName(operationID))
+	}
+	return action
+}
+
+func stripResourceNoun(operationID, resource string) string {
 	compactResource := strings.ReplaceAll(resource, "-", "")
-	action := operationID
 	for _, candidate := range []string{compactResource, singular(compactResource)} {
-		if strings.HasSuffix(strings.ToLower(action), strings.ToLower(candidate)) {
-			action = action[:len(action)-len(candidate)]
-			break
+		if candidate != "" && strings.HasSuffix(strings.ToLower(operationID), strings.ToLower(candidate)) {
+			return operationID[:len(operationID)-len(candidate)]
 		}
 	}
-	normalized := normalizeName(action)
+	return operationID
+}
+
+func mapVerbPrefixes(normalized string) string {
 	switch {
 	case normalized == "find-all":
 		return "list"

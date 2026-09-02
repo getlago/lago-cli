@@ -2,11 +2,11 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-wallets-update-customer - Update a wallet
+lago-wallets-update-customer-wallet - Update a wallet
 
 
 .SH SYNOPSIS
-\fBlago wallets update-customer   [flags]\fP
+\fBlago wallets update-customer-wallet   [flags]\fP
 
 
 .SH DESCRIPTION
@@ -35,7 +35,7 @@ This endpoint is used to update an existing wallet with prepaid credits. A termi
 
 .PP
 \fB-h\fP, \fB--help\fP[=false]
-	help for update-customer
+	help for update-customer-wallet
 
 .PP
 \fB--input\fP=""
@@ -137,8 +137,8 @@ This endpoint is used to update an existing wallet with prepaid credits. A termi
 
 .SH EXAMPLE
 .EX
-  lago wallets update-customer <external_customer_id> <code> --input @payload.json
-  lago wallets update-customer <external_customer_id> <code> --input @payload.json --output json  # full resource
+  lago wallets update-customer-wallet <external_customer_id> <code> --input @payload.json
+  lago wallets update-customer-wallet <external_customer_id> <code> --input @payload.json --output json  # full resource
 .EE
 
 

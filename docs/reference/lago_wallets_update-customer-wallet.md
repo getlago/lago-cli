@@ -1,4 +1,4 @@
-## lago wallets update-customer
+## lago wallets update-customer-wallet
 
 Update a wallet
 
@@ -7,14 +7,14 @@ Update a wallet
 This endpoint is used to update an existing wallet with prepaid credits. A terminated wallet cannot be updated and returns a `422` error.
 
 ```
-lago wallets update-customer <external_customer_id> <code> [flags]
+lago wallets update-customer-wallet <external_customer_id> <code> [flags]
 ```
 
 ### Examples
 
 ```
-  lago wallets update-customer <external_customer_id> <code> --input @payload.json
-  lago wallets update-customer <external_customer_id> <code> --input @payload.json --output json  # full resource
+  lago wallets update-customer-wallet <external_customer_id> <code> --input @payload.json
+  lago wallets update-customer-wallet <external_customer_id> <code> --input @payload.json --output json  # full resource
 ```
 
 ### Options
@@ -25,7 +25,7 @@ lago wallets update-customer <external_customer_id> <code> [flags]
       --billing-entity-code string                                   The code of the billing entity associated with the wallet.
       --code string                                                  The code of the wallet.
       --expiration-at string                                         The date and time that determines when the wallet will expire. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC).
-  -h, --help                                                         help for update-customer
+  -h, --help                                                         help for update-customer-wallet
       --input string                                                 Complete JSON request body or @file.json
       --invoice-custom-section-invoice-custom-section-codes string   List of unique codes identifying the invoice custom sections to apply. These override the default invoice custom sections configured at the customer or billing entity level.
       --invoice-custom-section-skip-invoice-custom-sections string   Set to 'true' to exclude all invoice custom sections from PDF generation for invoices related to this resource. When 'true', 'invoice_custom_section_codes' is ignored.

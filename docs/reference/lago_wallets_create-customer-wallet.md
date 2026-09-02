@@ -1,4 +1,4 @@
-## lago wallets create-customer
+## lago wallets create-customer-wallet
 
 Create a wallet
 
@@ -7,14 +7,14 @@ Create a wallet
 This endpoint is used to create a wallet with prepaid credits.
 
 ```
-lago wallets create-customer <external_customer_id> [flags]
+lago wallets create-customer-wallet <external_customer_id> [flags]
 ```
 
 ### Examples
 
 ```
-  lago wallets create-customer <external_customer_id> --input @payload.json
-  lago wallets create-customer <external_customer_id> --input @payload.json --output json  # full resource
+  lago wallets create-customer-wallet <external_customer_id> --input @payload.json
+  lago wallets create-customer-wallet <external_customer_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options
@@ -28,7 +28,7 @@ lago wallets create-customer <external_customer_id> [flags]
       --expiration-at string                                         The date and time that determines when the wallet will expire. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC).
       --external-customer-id string                                  The customer external unique identifier (provided by your own application)
       --granted-credits string                                       The number of free granted credits. Required only if there is no paid credits.
-  -h, --help                                                         help for create-customer
+  -h, --help                                                         help for create-customer-wallet
       --ignore-paid-top-up-limits-on-creation string                 If set to true, the wallet will ignore paid top-up limits on creation.
       --input string                                                 Complete JSON request body or @file.json
       --invoice-custom-section-invoice-custom-section-codes string   List of unique codes identifying the invoice custom sections to apply. These override the default invoice custom sections configured at the customer or billing entity level.

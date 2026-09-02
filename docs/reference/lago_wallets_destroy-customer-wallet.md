@@ -1,11 +1,26 @@
-## lago payment-methods
+## lago wallets destroy-customer-wallet
 
-Manage Lago payment methods
+Terminate a wallet
+
+### Synopsis
+
+This endpoint is used to terminate an existing wallet with prepaid credits.
+
+```
+lago wallets destroy-customer-wallet <external_customer_id> <code> [flags]
+```
+
+### Examples
+
+```
+  lago wallets destroy-customer-wallet <external_customer_id> <code>
+  lago wallets destroy-customer-wallet <external_customer_id> <code> --output json  # full resource
+```
 
 ### Options
 
 ```
-  -h, --help   help for payment-methods
+  -h, --help   help for destroy-customer-wallet
 ```
 
 ### Options inherited from parent commands
@@ -28,7 +43,4 @@ Manage Lago payment methods
 
 ### SEE ALSO
 
-* [lago](lago)	 - The official CLI for Lago billing
-* [lago payment-methods destroy](lago_payment-methods_destroy)	 - Delete a payment method
-* [lago payment-methods list-customers-payment-methods](lago_payment-methods_list-customers-payment-methods)	 - List all customer payment methods
-* [lago payment-methods payment-method-set-as-default](lago_payment-methods_payment-method-set-as-default)	 - Set the payment method as default
+* [lago wallets](lago_wallets)	 - Manage Lago wallets

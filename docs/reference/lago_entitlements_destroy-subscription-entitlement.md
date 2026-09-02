@@ -1,26 +1,27 @@
-## lago wallets destroy-customer
+## lago entitlements destroy-subscription-entitlement
 
-Terminate a wallet
+Remove an entitlement from a subscription
 
 ### Synopsis
 
-This endpoint is used to terminate an existing wallet with prepaid credits.
+This endpoint removes a specific feature entitlement from a subscription. The entitlement remains available from the plan.
 
 ```
-lago wallets destroy-customer <external_customer_id> <code> [flags]
+lago entitlements destroy-subscription-entitlement <external_id> <feature_code> [flags]
 ```
 
 ### Examples
 
 ```
-  lago wallets destroy-customer <external_customer_id> <code>
-  lago wallets destroy-customer <external_customer_id> <code> --output json  # full resource
+  lago entitlements destroy-subscription-entitlement <external_id> <feature_code>
+  lago entitlements destroy-subscription-entitlement <external_id> <feature_code> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help   help for destroy-customer
+  -h, --help                         help for destroy-subscription-entitlement
+      --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
 ```
 
 ### Options inherited from parent commands
@@ -43,4 +44,4 @@ lago wallets destroy-customer <external_customer_id> <code> [flags]
 
 ### SEE ALSO
 
-* [lago wallets](lago_wallets)	 - Manage Lago wallets
+* [lago entitlements](lago_entitlements)	 - Manage Lago entitlements

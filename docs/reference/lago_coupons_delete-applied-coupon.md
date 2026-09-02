@@ -1,28 +1,26 @@
-## lago entitlements list-subscription
+## lago coupons delete-applied-coupon
 
-List all subscription entitlements
+Delete an applied coupon
 
 ### Synopsis
 
-This endpoint retrieves all entitlements for a specific subscription, including both plan entitlements and any subscription-specific overrides.
+This endpoint is used to delete a specific coupon that has been applied to a customer.
 
 ```
-lago entitlements list-subscription <external_id> [flags]
+lago coupons delete-applied-coupon <external_customer_id> <applied_coupon_id> [flags]
 ```
 
 ### Examples
 
 ```
-  lago entitlements list-subscription <external_id>
+  lago coupons delete-applied-coupon <external_customer_id> <applied_coupon_id>
+  lago coupons delete-applied-coupon <external_customer_id> <applied_coupon_id> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                         help for list-subscription
-      --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
-      --watch                        Poll and re-render when the response changes
-      --watch-interval duration      Polling interval used with --watch (default 2s)
+  -h, --help   help for delete-applied-coupon
 ```
 
 ### Options inherited from parent commands
@@ -45,4 +43,4 @@ lago entitlements list-subscription <external_id> [flags]
 
 ### SEE ALSO
 
-* [lago entitlements](lago_entitlements)	 - Manage Lago entitlements
+* [lago coupons](lago_coupons)	 - Manage Lago coupons

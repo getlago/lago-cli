@@ -2,56 +2,24 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-coupons-list-applied - List all applied coupons
+lago-entitlements-destroy-subscription-entitlement - Remove an entitlement from a subscription
 
 
 .SH SYNOPSIS
-\fBlago coupons list-applied [flags]\fP
+\fBlago entitlements destroy-subscription-entitlement   [flags]\fP
 
 
 .SH DESCRIPTION
-This endpoint is used to list all applied coupons. You can filter by coupon status and by customer.
+This endpoint removes a specific feature entitlement from a subscription. The entitlement remains available from the plan.
 
 
 .SH OPTIONS
-\fB--all\fP[=false]
-	Fetch every page
-
-.PP
-\fB--coupon-code\fP=""
-	The code of the coupon applied to the customer. Use it to filter applied coupons by their code.
-
-.PP
-\fB--external-customer-id\fP=""
-	The customer external unique identifier (provided by your own application)
-
-.PP
 \fB-h\fP, \fB--help\fP[=false]
-	help for list-applied
+	help for destroy-subscription-entitlement
 
 .PP
-\fB--limit\fP=""
-	Results per page (1-1000)
-
-.PP
-\fB--page\fP=""
-	Page number.
-
-.PP
-\fB--per-page\fP=""
-	Number of records per page.
-
-.PP
-\fB--status\fP=""
-	The status of the coupon. Can be either 'active' or 'terminated'.; one of: active, terminated
-
-.PP
-\fB--watch\fP[=false]
-	Poll and re-render when the response changes
-
-.PP
-\fB--watch-interval\fP=2s
-	Polling interval used with --watch
+\fB--subscription-status\fP=""
+	Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
@@ -109,9 +77,10 @@ This endpoint is used to list all applied coupons. You can filter by coupon stat
 
 .SH EXAMPLE
 .EX
-  lago coupons list-applied
+  lago entitlements destroy-subscription-entitlement <external_id> <feature_code>
+  lago entitlements destroy-subscription-entitlement <external_id> <feature_code> --output json  # full resource
 .EE
 
 
 .SH SEE ALSO
-\fBlago-coupons(1)\fP
+\fBlago-entitlements(1)\fP

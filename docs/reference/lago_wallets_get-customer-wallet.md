@@ -1,29 +1,25 @@
-## lago payment-methods list-customers
+## lago wallets get-customer-wallet
 
-List all customer payment methods
+Retrieve a wallet
 
 ### Synopsis
 
-This endpoint retrieves all payment methods of a Customer.
+This endpoint is used to retrieve an existing wallet with prepaid credits.
 
 ```
-lago payment-methods list-customers <external_customer_id> [flags]
+lago wallets get-customer-wallet <external_customer_id> <code> [flags]
 ```
 
 ### Examples
 
 ```
-  lago payment-methods list-customers <external_customer_id>
+  lago wallets get-customer-wallet <external_customer_id> <code>
 ```
 
 ### Options
 
 ```
-      --all                       Fetch every page
-  -h, --help                      help for list-customers
-      --limit string              Results per page (1-1000)
-      --page string               Page number.
-      --per-page string           Number of records per page.
+  -h, --help                      help for get-customer-wallet
       --watch                     Poll and re-render when the response changes
       --watch-interval duration   Polling interval used with --watch (default 2s)
 ```
@@ -48,4 +44,4 @@ lago payment-methods list-customers <external_customer_id> [flags]
 
 ### SEE ALSO
 
-* [lago payment-methods](lago_payment-methods)	 - Manage Lago payment methods
+* [lago wallets](lago_wallets)	 - Manage Lago wallets

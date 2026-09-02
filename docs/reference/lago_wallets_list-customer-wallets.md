@@ -1,32 +1,30 @@
-## lago coupons list-applied
+## lago wallets list-customer-wallets
 
-List all applied coupons
+List all customer's wallets
 
 ### Synopsis
 
-This endpoint is used to list all applied coupons. You can filter by coupon status and by customer.
+This endpoint is used to list all wallets with prepaid credits of a customer
 
 ```
-lago coupons list-applied [flags]
+lago wallets list-customer-wallets <external_customer_id> [flags]
 ```
 
 ### Examples
 
 ```
-  lago coupons list-applied
+  lago wallets list-customer-wallets <external_customer_id>
 ```
 
 ### Options
 
 ```
       --all                           Fetch every page
-      --coupon-code string            The code of the coupon applied to the customer. Use it to filter applied coupons by their code.
-      --external-customer-id string   The customer external unique identifier (provided by your own application)
-  -h, --help                          help for list-applied
+      --billing-entity-codes string   Filter wallets by billing entity codes.
+  -h, --help                          help for list-customer-wallets
       --limit string                  Results per page (1-1000)
       --page string                   Page number.
       --per-page string               Number of records per page.
-      --status string                 The status of the coupon. Can be either 'active' or 'terminated'.; one of: active, terminated
       --watch                         Poll and re-render when the response changes
       --watch-interval duration       Polling interval used with --watch (default 2s)
 ```
@@ -51,4 +49,4 @@ lago coupons list-applied [flags]
 
 ### SEE ALSO
 
-* [lago coupons](lago_coupons)	 - Manage Lago coupons
+* [lago wallets](lago_wallets)	 - Manage Lago wallets

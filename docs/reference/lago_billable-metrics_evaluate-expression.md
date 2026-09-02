@@ -19,15 +19,15 @@ lago billable-metrics evaluate-expression [flags]
 ### Options
 
 ```
-      --event-code string         The code that identifies a targeted billable metric.
-      --event-properties string   This field represents additional properties associated with the event. They can be used when evaluating the expression.
-      --event-timestamp string    This field captures the Unix timestamp in seconds indicating the occurrence of the event in Coordinated Universal Time (UTC).
-                                  If this timestamp is not provided, the API will automatically set it to the time of event reception.
-      --expression string         Expression used to calculate the event units. The expression is evalutated for each event and the result is then used to calculate the total aggregated units.
-                                  Accepted function are 'ceil', 'concat' and 'round' as well as '+', '-', '\' and '*' operations.
-                                  Round is accepting an optional second parameter to specify the number of decimal.
-  -h, --help                      help for evaluate-expression
-      --input string              Complete JSON request body or @file.json
+      --code string         The code that identifies a targeted billable metric.
+      --expression string   Expression used to calculate the event units. The expression is evalutated for each event and the result is then used to calculate the total aggregated units.
+                            Accepted function are 'ceil', 'concat' and 'round' as well as '+', '-', '\' and '*' operations.
+                            Round is accepting an optional second parameter to specify the number of decimal.
+  -h, --help                help for evaluate-expression
+      --input string        Complete JSON request body or @file.json
+      --properties string   This field represents additional properties associated with the event. They can be used when evaluating the expression.
+      --timestamp string    This field captures the Unix timestamp in seconds indicating the occurrence of the event in Coordinated Universal Time (UTC).
+                            If this timestamp is not provided, the API will automatically set it to the time of event reception.
 ```
 
 ### Options inherited from parent commands

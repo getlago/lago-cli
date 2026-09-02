@@ -2,11 +2,11 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-entitlements-update-subscription - Update subscription entitlements
+lago-entitlements-update-subscription-entitlements - Update subscription entitlements
 
 
 .SH SYNOPSIS
-\fBlago entitlements update-subscription  [flags]\fP
+\fBlago entitlements update-subscription-entitlements  [flags]\fP
 
 
 .SH DESCRIPTION
@@ -15,7 +15,7 @@ This accepts a list of entitlements to update. If the feature isn't part of the 
 
 .SH OPTIONS
 \fB-h\fP, \fB--help\fP[=false]
-	help for update-subscription
+	help for update-subscription-entitlements
 
 .PP
 \fB--input\fP=""
@@ -81,8 +81,8 @@ This accepts a list of entitlements to update. If the feature isn't part of the 
 
 .SH EXAMPLE
 .EX
-  lago entitlements update-subscription <external_id> --input @payload.json
-  lago entitlements update-subscription <external_id> --input @payload.json --output json  # full resource
+  lago entitlements update-subscription-entitlements <external_id> --input @payload.json
+  lago entitlements update-subscription-entitlements <external_id> --input @payload.json --output json  # full resource
 .EE
 
 

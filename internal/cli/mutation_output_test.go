@@ -69,9 +69,9 @@ func TestMutationDefaultOutputSnapshots(t *testing.T) {
 			snapshot: "subscriptions_create_table.txt",
 			response: fullSubscription,
 			argv: []string{"subscriptions", "create",
-				"--subscription-external-customer-id", "quickstart_customer",
-				"--subscription-external-id", "quickstart_subscription",
-				"--subscription-plan-code", "quickstart"},
+				"--external-customer-id", "quickstart_customer",
+				"--external-id", "quickstart_subscription",
+				"--plan-code", "quickstart"},
 		},
 	} {
 		t.Run(testCase.snapshot, func(t *testing.T) {

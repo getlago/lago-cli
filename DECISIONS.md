@@ -406,6 +406,35 @@ identity block in reading order, name first and the resolved host last, because 
 organization and which host" is the whole question. The JSON form drops the double
 nesting (`organization` holds the object directly), recorded as breaking pre-1.0.
 
+## 2026-09-02 — Flag and action names: primary key unwrapped, scoped nouns kept, clean break
+
+Two naming rules in the generator, both breaking pre-1.0 and taken now because the
+command surface is not yet frozen.
+
+**The required object of a multi-key envelope is the primary key, and its fields are
+not prefixed.** `SubscriptionCreateInput` is `{subscription: {...}, authorization: {...}}`,
+so the single-property unwrap did not fire and every flag carried the envelope key:
+`--subscription-external-id`, `--subscription-plan-code`. When a multi-key envelope has
+exactly one required object property, that property is the resource being created and
+its children keep their own names; the siblings keep their prefix
+(`--authorization-amount-cents`, and `--status` on update, which is a scalar). Paths are
+unchanged, only flag spelling is, and generation fails if two fields would share a flag.
+Only the two subscription operations qualify in the current spec.
+
+**A path-scoped operation keeps the noun of what it acts on.** `wallets create-customer`
+created a wallet; `entitlements destroy-subscription` deleted an entitlement. Both came
+from stripping the resource noun off the operation ID. For operations whose path is
+scoped under another resource, the noun is kept whenever the stripped remainder still
+carries a qualifier: `create-customer-wallet`, `destroy-subscription-entitlement`,
+`list-applied-coupons`. A bare verb (`applyCoupon` under `/applied_coupons`) is unambiguous
+and stays short. Eleven commands rename. Nesting under the parent
+(`customers wallets create`) was rejected: it moves forty operations into a three-level
+tree and breaks the one-operation-one-command parity the contract test guards.
+
+**Clean break, no aliases.** The repository is internal and the output shapes are
+already changing in this release. A hidden alias table would preserve the misleading
+names in the code for the life of 1.x to spare a rename nobody has scripted yet.
+
 ## Deferred beyond 1.x
 
 Plugin/extension system, TUI dashboard, and `lago scaffold` sample-app generation.

@@ -12,7 +12,13 @@ func TestCommandNamingHelpers(t *testing.T) {
 		{"plural", singular("customers"), "customer"},
 		{"summary", derivedAction("createEvent", "events", "/events", "Send usage events"), "send"},
 		{"custom path", derivedAction("invoicePreview", "invoices", "/invoices/preview", "Create an invoice preview"), "preview"},
-		{"qualified", qualifiedAction("findAllAppliedCoupons", "coupons"), "list-applied"},
+		{"qualified", qualifiedAction("findAllAppliedCoupons", "coupons", false), "list-applied"},
+		{"qualified keeps the noun behind a qualifier", qualifiedAction("findAllAppliedCoupons", "coupons", true), "list-applied-coupons"},
+		{"qualified bare verb keeps its short name", qualifiedAction("applyCoupon", "coupons", true), "apply"},
+		{"scoped create names what it creates", derivedAction("createCustomerWallet", "wallets", "/customers/{external_customer_id}/wallets", "Create a customer wallet"), "create-customer-wallet"},
+		{"scoped destroy names what it destroys", derivedAction("destroySubscriptionEntitlement", "entitlements", "/subscriptions/{external_id}/entitlements/{feature_code}", "Remove"), "destroy-subscription-entitlement"},
+		{"scoped bare verb", derivedAction("createEntitlement", "entitlements", "/plans/{code}/entitlements", "Create"), "create"},
+		{"scoped apply", derivedAction("applyCoupon", "coupons", "/applied_coupons", "Apply a coupon"), "apply"},
 	}
 	for _, test := range tests {
 		if test.got != test.want {

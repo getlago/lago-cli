@@ -2,20 +2,56 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-coupons-delete-applied - Delete an applied coupon
+lago-coupons-list-applied-coupons - List all applied coupons
 
 
 .SH SYNOPSIS
-\fBlago coupons delete-applied   [flags]\fP
+\fBlago coupons list-applied-coupons [flags]\fP
 
 
 .SH DESCRIPTION
-This endpoint is used to delete a specific coupon that has been applied to a customer.
+This endpoint is used to list all applied coupons. You can filter by coupon status and by customer.
 
 
 .SH OPTIONS
+\fB--all\fP[=false]
+	Fetch every page
+
+.PP
+\fB--coupon-code\fP=""
+	The code of the coupon applied to the customer. Use it to filter applied coupons by their code.
+
+.PP
+\fB--external-customer-id\fP=""
+	The customer external unique identifier (provided by your own application)
+
+.PP
 \fB-h\fP, \fB--help\fP[=false]
-	help for delete-applied
+	help for list-applied-coupons
+
+.PP
+\fB--limit\fP=""
+	Results per page (1-1000)
+
+.PP
+\fB--page\fP=""
+	Page number.
+
+.PP
+\fB--per-page\fP=""
+	Number of records per page.
+
+.PP
+\fB--status\fP=""
+	The status of the coupon. Can be either 'active' or 'terminated'.; one of: active, terminated
+
+.PP
+\fB--watch\fP[=false]
+	Poll and re-render when the response changes
+
+.PP
+\fB--watch-interval\fP=2s
+	Polling interval used with --watch
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
@@ -73,8 +109,7 @@ This endpoint is used to delete a specific coupon that has been applied to a cus
 
 .SH EXAMPLE
 .EX
-  lago coupons delete-applied <external_customer_id> <applied_coupon_id>
-  lago coupons delete-applied <external_customer_id> <applied_coupon_id> --output json  # full resource
+  lago coupons list-applied-coupons
 .EE
 
 

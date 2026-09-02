@@ -2,11 +2,11 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-wallets-create-customer - Create a wallet
+lago-wallets-create-customer-wallet - Create a wallet
 
 
 .SH SYNOPSIS
-\fBlago wallets create-customer  [flags]\fP
+\fBlago wallets create-customer-wallet  [flags]\fP
 
 
 .SH DESCRIPTION
@@ -47,7 +47,7 @@ This endpoint is used to create a wallet with prepaid credits.
 
 .PP
 \fB-h\fP, \fB--help\fP[=false]
-	help for create-customer
+	help for create-customer-wallet
 
 .PP
 \fB--ignore-paid-top-up-limits-on-creation\fP=""
@@ -177,8 +177,8 @@ This endpoint is used to create a wallet with prepaid credits.
 
 .SH EXAMPLE
 .EX
-  lago wallets create-customer <external_customer_id> --input @payload.json
-  lago wallets create-customer <external_customer_id> --input @payload.json --output json  # full resource
+  lago wallets create-customer-wallet <external_customer_id> --input @payload.json
+  lago wallets create-customer-wallet <external_customer_id> --input @payload.json --output json  # full resource
 .EE
 
 
