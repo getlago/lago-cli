@@ -52,6 +52,9 @@ func newFixturesCommand(app *App) *cobra.Command {
 		Example: "  lago fixtures run scenario.yaml\n  lago fixtures run scenario.yaml --var customer_code=example --dry-run",
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			if err := requireTestProfile(app, "fixture execution"); err != nil {
+				return err
+			}
 			data, err := os.ReadFile(filepath.Clean(args[0]))
 			if err != nil {
 				return apperr.Wrap(apperr.ExitGeneral, "read fixture", err)
@@ -77,11 +80,8 @@ func newSeedCommand(app *App) *cobra.Command {
 		Example: "  lago seed demo\n  lago seed demo --prefix local-demo --output json",
 		Args:    cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			if err := app.Load(true); err != nil {
+			if err := requireTestProfile(app, "demo seeding"); err != nil {
 				return err
-			}
-			if app.resolved.Profile.Mode != config.ModeTest {
-				return apperr.New(apperr.ExitUsage, "demo seeding is restricted to test profiles", "Select an explicit test profile with --profile or pass --mode test with test credentials.")
 			}
 			data, err := fixtureAssets.ReadFile("fixtures/demo.yaml")
 			if err != nil {
@@ -114,6 +114,9 @@ func runFixture(cmd *cobra.Command, app *App, data []byte, overrides map[string]
 	}
 	for name, value := range overrides {
 		variables[name] = value
+	}
+	if err := confirmDestructiveSteps(app, scenario); err != nil {
+		return err
 	}
 	seen := map[string]bool{}
 	results := make([]any, 0, len(scenario.Steps))
@@ -180,6 +183,41 @@ func runFixture(cmd *cobra.Command, app *App, data []byte, overrides map[string]
 		}
 	}
 	return app.Renderer().Render(map[string]any{"fixture": scenario.Name, "steps": results, "variables": variables, "dry_run": app.dryRun})
+}
+
+// requireTestProfile refuses to run scripted writes against anything but a test
+// profile. Fixtures and the bundled demo create and delete real billing objects, so
+// unlike a single generated command they are not offered a live-mode confirmation:
+// the whole scenario is out of bounds. Dry runs are refused too, matching seed demo.
+func requireTestProfile(app *App, what string) error {
+	if err := app.Load(true); err != nil {
+		return err
+	}
+	if app.resolved.Profile.Mode != config.ModeTest {
+		return apperr.New(apperr.ExitUsage, what+" is restricted to test profiles", "Select an explicit test profile with --profile or pass --mode test with test credentials.")
+	}
+	return nil
+}
+
+// confirmDestructiveSteps gates a fixture the way a generated delete is gated, before
+// any step runs. The scan happens up front so a refusal never leaves a scenario
+// half-applied. Variables are not resolved yet, so a `${var}` path segment is treated
+// as an opaque value when matching the step against the operation table.
+func confirmDestructiveSteps(app *App, scenario fixture) error {
+	var destructive []string
+	for _, step := range scenario.Steps {
+		method := strings.ToUpper(firstNonBlank(step.Method, http.MethodPost))
+		pathTemplate := fixtureVariable.ReplaceAllString(step.Path, "_")
+		if dangerous, _ := classifyRequest(method, pathTemplate); dangerous {
+			destructive = append(destructive, fmt.Sprintf("%s (%s %s)", step.ID, method, step.Path))
+		}
+	}
+	if len(destructive) == 0 {
+		return nil
+	}
+	name := firstNonBlank(scenario.Name, "fixture")
+	fmt.Fprintf(app.Err, "fixture %q contains %d destructive step(s): %s\n", name, len(destructive), strings.Join(destructive, ", "))
+	return app.Confirm(name)
 }
 
 func interpolateFixtureValue(value any, variables map[string]any) (any, error) {

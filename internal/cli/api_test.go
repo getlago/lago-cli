@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/getlago/lago-cli/internal/apperr"
+	"github.com/getlago/lago-cli/internal/config"
 	"github.com/getlago/lago-cli/internal/generated"
 	"github.com/spf13/cobra"
 )
@@ -414,4 +415,85 @@ func TestJSONErrorEnvelopeIsStable(t *testing.T) {
 		t.Errorf("error envelope lost the request ID: %s", encoded)
 	}
 	_ = stderr
+}
+
+// QA S-28: `lago api DELETE /customers/x` bypassed the confirmation gate entirely. In
+// live mode a raw destructive request now needs the same --confirm as a generated
+// delete, with the request path as the identifier.
+func TestQA_S28_APIDeleteInLiveModeRequiresConfirmation(t *testing.T) {
+	var mutex sync.Mutex
+	reached := 0
+	server := jsonAPI(t, func(response http.ResponseWriter, _ *http.Request) {
+		mutex.Lock()
+		reached++
+		mutex.Unlock()
+		_, _ = response.Write([]byte(`{"customer":{"lago_id":"cus_1"}}`))
+	})
+	setCleanEnvironment(t)
+	writeProfile(t, config.ModeLive, server.URL)
+
+	_, _, err := execute(t, "", "api", "DELETE", "/customers/cus_1")
+	if err == nil {
+		t.Fatal("live DELETE ran without confirmation")
+	}
+	if apperr.ExitCode(err) != apperr.ExitUsage {
+		t.Errorf("exit code = %d, want %d", apperr.ExitCode(err), apperr.ExitUsage)
+	}
+	if !strings.Contains(err.Error(), "confirmation required for /customers/cus_1") {
+		t.Errorf("refusal does not name the path: %v", err)
+	}
+	mutex.Lock()
+	if reached != 0 {
+		t.Fatalf("request reached the API %d time(s) before confirmation", reached)
+	}
+	mutex.Unlock()
+
+	if _, _, err := execute(t, "", "--output", "json", "api", "DELETE", "/customers/cus_1", "--confirm", "/customers/cus_1"); err != nil {
+		t.Fatalf("confirmed DELETE failed: %v", err)
+	}
+	mutex.Lock()
+	defer mutex.Unlock()
+	if reached != 1 {
+		t.Errorf("confirmed request reached the API %d time(s), want 1", reached)
+	}
+}
+
+// The gate follows the spec classification, so a POST to a destructive path is gated
+// even though the verb is not DELETE.
+func TestQA_S28_APIDestructivePathInLiveModeRequiresConfirmation(t *testing.T) {
+	server := jsonAPI(t, func(http.ResponseWriter, *http.Request) {
+		t.Error("unconfirmed void reached the API")
+	})
+	setCleanEnvironment(t)
+	writeProfile(t, config.ModeLive, server.URL)
+
+	_, _, err := execute(t, "", "api", "POST", "/invoices/inv_1/void")
+	if err == nil {
+		t.Fatal("live void ran without confirmation")
+	}
+	if apperr.ExitCode(err) != apperr.ExitUsage {
+		t.Errorf("exit code = %d, want %d", apperr.ExitCode(err), apperr.ExitUsage)
+	}
+}
+
+// Test mode keeps `lago api` as the raw escape hatch it exists to be: no gate.
+func TestQA_S28_APIInTestModeStaysUngated(t *testing.T) {
+	var mutex sync.Mutex
+	var method string
+	server := jsonAPI(t, func(response http.ResponseWriter, request *http.Request) {
+		mutex.Lock()
+		method = request.Method
+		mutex.Unlock()
+		_, _ = response.Write([]byte(`{"customer":{"lago_id":"cus_1"}}`))
+	})
+	profileAt(t, server.URL)
+
+	if _, _, err := execute(t, "", "--output", "json", "api", "DELETE", "/customers/cus_1"); err != nil {
+		t.Fatalf("test-mode DELETE was gated: %v", err)
+	}
+	mutex.Lock()
+	defer mutex.Unlock()
+	if method != http.MethodDelete {
+		t.Errorf("method reached = %q, want DELETE", method)
+	}
 }

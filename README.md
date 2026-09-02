@@ -124,6 +124,8 @@ Configuration resolves flags → environment → `~/.config/lago/config.toml`. S
 
 **Mode defaults to live.** A profile declares `mode = "live"` or `mode = "test"`, and a credential override (`--api-key`, `--api-url`, `LAGO_API_KEY`, `LAGO_API_URL`) without an explicit mode deliberately resolves to **live**, not test. Failing toward caution means a script that forgets `--mode` gets the confirmation gates, not a silent write to production. Live commands print `[LIVE]` on stderr, and destructive live operations require the resource identifier via `--confirm` or typed interactive confirmation.
 
+The gate follows the spec, not the command surface. `lago api` classifies a raw request by the operation its method and path address: in a live profile, `lago api DELETE /customers/x` or `lago api POST /invoices/x/void` requires `--confirm <path>` or typed confirmation, while a test profile keeps `lago api` as an ungated escape hatch. `lago fixtures run` and `lago seed demo` run only against test profiles, and a fixture containing a destructive step must be confirmed with `--confirm <fixture name>` before its first step runs.
+
 Plain HTTP and disabled TLS verification require the explicit `--insecure` flag and always print a warning. Use it for `http://localhost:3000` during development, not against a deployment that holds real money.
 
 ## Quickstart
