@@ -14,6 +14,7 @@ lago wallets delete-customer-wallet-alert <external_customer_id> <wallet_code> <
 
 ```
   lago wallets delete-customer-wallet-alert <external_customer_id> <wallet_code> <code>
+  lago wallets delete-customer-wallet-alert <external_customer_id> <wallet_code> <code> --output json  # full resource
 ```
 
 ### Options

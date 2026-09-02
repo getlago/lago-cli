@@ -14,6 +14,7 @@ lago plans delete <code> [flags]
 
 ```
   lago plans delete <code>
+  lago plans delete <code> --output json  # full resource
 ```
 
 ### Options

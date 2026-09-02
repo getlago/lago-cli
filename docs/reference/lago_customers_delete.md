@@ -14,6 +14,7 @@ lago customers delete <external_customer_id> [flags]
 
 ```
   lago customers delete <external_customer_id>
+  lago customers delete <external_customer_id> --output json  # full resource
 ```
 
 ### Options

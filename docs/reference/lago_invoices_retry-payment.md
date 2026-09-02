@@ -14,6 +14,7 @@ lago invoices retry-payment <lago_id> [flags]
 
 ```
   lago invoices retry-payment <lago_id> --input @payload.json
+  lago invoices retry-payment <lago_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options

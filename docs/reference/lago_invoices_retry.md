@@ -14,6 +14,7 @@ lago invoices retry <lago_id> [flags]
 
 ```
   lago invoices retry <lago_id>
+  lago invoices retry <lago_id> --output json  # full resource
 ```
 
 ### Options

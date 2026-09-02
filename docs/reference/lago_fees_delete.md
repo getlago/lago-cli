@@ -14,6 +14,7 @@ lago fees delete <lago_id> [flags]
 
 ```
   lago fees delete <lago_id>
+  lago fees delete <lago_id> --output json  # full resource
 ```
 
 ### Options

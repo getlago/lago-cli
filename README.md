@@ -96,13 +96,16 @@ Check which host you are actually hitting, on any deployment. `RESOLVED_API_URL`
 
 ```console
 $ lago whoami
-API_URL           https://api.eu.getlago.com
-MODE              test
-ORGANIZATION      {"organization":{"lago_id":"org_...","name":"Example Organization"}}
+NAME              Example Organization
+LAGO_ID           org_...
+DEFAULT_CURRENCY  EUR
+TIMEZONE          Europe/Paris
 PROFILE           default
-REGION            eu
+MODE              test
 RESOLVED_API_URL  https://api.eu.getlago.com/api/v1
 ```
+
+`lago whoami --output json` carries the full organization object under `organization`, plus `profile`, `region`, `mode`, `api_url`, and `resolved_api_url`. `lago organizations get` is the same object without the profile fields.
 
 `lago doctor` reports the same resolved URL as its own check, next to the configuration, permission, and authentication checks. It is the first line to paste into a support ticket: it separates "wrong credentials" from "right credentials, wrong host".
 
@@ -158,6 +161,7 @@ $ lago subscriptions create \
     --subscription-plan-code quickstart
 LAGO_ID      3c903c90-3c90-3c90-3c90-3c903c903c90
 EXTERNAL_ID  quickstart_subscription
+STATUS       active
 
 $ lago events send --external-subscription-id quickstart_subscription --code quickstart_requests
 CODE            quickstart_requests
@@ -173,9 +177,9 @@ TOTAL_AMOUNT_CENTS  100
 
 The `billable_metric_id` in the plan payload is the `LAGO_ID` the first command printed. Substitute yours.
 
-### Creates print identifiers
+### Writes print identifiers
 
-Every `create` and `update` prints a terse identifier block by default, because after a create the one thing you do not already have is the ID Lago minted. `--output json` returns the complete resource, and that is the form to script against:
+Every write (`create`, `update`, `delete`, `terminate`, `apply`, `finalize`, `void`, metadata operations) prints a terse identifier block by default: `LAGO_ID`, `EXTERNAL_ID`, `CODE`, `NAME`, and `STATUS`, whichever the resource carries. After a create the one thing you do not already have is the ID Lago minted; after a state transition it is the new status. The exceptions are read-shaped writes whose body is the answer (`invoices preview`, `credit-notes estimate`, downloads, payment URLs) and bulk `events send`/`events batch`, which print in full. `--output json` returns the complete resource, and that is the form to script against:
 
 ```console
 $ lago customers create --external-id quickstart_customer --name "Quickstart Customer" --output json

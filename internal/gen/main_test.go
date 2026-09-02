@@ -29,8 +29,9 @@ func TestGeneratorRejectsMissingPaths(t *testing.T) {
 }
 
 // The terse-output classification is a generator rule, so it is tested here rather than
-// re-asserted at 48 call sites. The excluded cases are the ones that would be wrong to
-// reduce: read-shaped mutations, state transitions, and bulk ingestion summaries.
+// re-asserted at 109 call sites. Every write is terse; the excluded cases are the ones
+// that would be wrong to reduce: read-shaped POSTs whose body is the answer, and bulk
+// ingestion whose output is a summary.
 func TestMutationClassification(t *testing.T) {
 	t.Parallel()
 	for _, test := range []struct {
@@ -43,21 +44,32 @@ func TestMutationClassification(t *testing.T) {
 		{"POST", "create-plan-charge", true},
 		{"PUT", "update-subscription-alert", true},
 		{"PATCH", "update-subscription", true},
+		{"DELETE", "delete", true}, // QA X-3: deletes print identifiers plus status
+		{"DELETE", "terminate", true},
+		{"DELETE", "destroy-plan-charge", true},
+		{"POST", "apply", true},
+		{"PUT", "finalize", true}, // the new state is the status column
+		{"POST", "void", true},
+		{"POST", "execute", true},
+		{"PUT", "refresh", true},
+		{"PATCH", "merge-plan-metadata", true},
+		{"POST", "created", true}, // any write not excluded is terse
+		{"POST", "updates", true},
 
 		{"GET", "create", false}, // a read is never terse, whatever it is called
-		{"DELETE", "delete", false},
+		{"HEAD", "create", false},
 		{"POST", "preview", false}, // invoices preview: the body is the answer
 		{"POST", "estimate", false},
 		{"POST", "estimate-fees", false},
-		{"POST", "send", false},    // events send: the summary is the answer
-		{"PUT", "finalize", false}, // the new state is the answer
-		{"POST", "void", false},
-		{"POST", "execute", false},
+		{"POST", "estimate-instant-fees", false},
+		{"POST", "batch-estimate-instant-fees", false},
+		{"POST", "evaluate-expression", false},
+		{"POST", "send", false}, // events send: the summary is the answer
+		{"POST", "batch", false},
 		{"POST", "download", false},
 		{"POST", "checkout-url", false},
-		{"PUT", "refresh", false},
-		{"POST", "created", false}, // prefix match must be on a segment boundary
-		{"POST", "updates", false},
+		{"POST", "payment-url", false},
+		{"POST", "wallet-transaction-payment-url", false},
 	} {
 		if got := mutationOperation(test.method, test.action); got != test.want {
 			t.Errorf("mutationOperation(%q, %q) = %v, want %v", test.method, test.action, got, test.want)

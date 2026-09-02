@@ -15,6 +15,7 @@ lago wallets metadata <lago_id> [flags]
 
 ```
   lago wallets metadata <lago_id> --input @payload.json
+  lago wallets metadata <lago_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options

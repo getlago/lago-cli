@@ -14,6 +14,7 @@ lago taxes delete <code> [flags]
 
 ```
   lago taxes delete <code>
+  lago taxes delete <code> --output json  # full resource
 ```
 
 ### Options

@@ -14,6 +14,7 @@ lago webhook-endpoints delete <lago_id> [flags]
 
 ```
   lago webhook-endpoints delete <lago_id>
+  lago webhook-endpoints delete <lago_id> --output json  # full resource
 ```
 
 ### Options

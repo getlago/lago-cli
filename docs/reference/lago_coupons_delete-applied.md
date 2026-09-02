@@ -14,6 +14,7 @@ lago coupons delete-applied <external_customer_id> <applied_coupon_id> [flags]
 
 ```
   lago coupons delete-applied <external_customer_id> <applied_coupon_id>
+  lago coupons delete-applied <external_customer_id> <applied_coupon_id> --output json  # full resource
 ```
 
 ### Options

@@ -20,6 +20,7 @@ lago orders execute <lago_id> [flags]
 
 ```
   lago orders execute <lago_id> --input @payload.json
+  lago orders execute <lago_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options

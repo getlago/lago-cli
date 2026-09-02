@@ -14,6 +14,7 @@ lago payment-methods payment-method-set-as-default <lago_id> <external_customer_
 
 ```
   lago payment-methods payment-method-set-as-default <lago_id> <external_customer_id>
+  lago payment-methods payment-method-set-as-default <lago_id> <external_customer_id> --output json  # full resource
 ```
 
 ### Options

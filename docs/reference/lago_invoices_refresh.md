@@ -14,6 +14,7 @@ lago invoices refresh <lago_id> [flags]
 
 ```
   lago invoices refresh <lago_id>
+  lago invoices refresh <lago_id> --output json  # full resource
 ```
 
 ### Options

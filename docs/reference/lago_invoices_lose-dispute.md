@@ -14,6 +14,7 @@ lago invoices lose-dispute <lago_id> [flags]
 
 ```
   lago invoices lose-dispute <lago_id>
+  lago invoices lose-dispute <lago_id> --output json  # full resource
 ```
 
 ### Options

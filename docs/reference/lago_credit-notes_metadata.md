@@ -15,6 +15,7 @@ lago credit-notes metadata <lago_id> [flags]
 
 ```
   lago credit-notes metadata <lago_id> --input @payload.json
+  lago credit-notes metadata <lago_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options

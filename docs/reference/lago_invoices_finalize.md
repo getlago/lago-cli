@@ -14,6 +14,7 @@ lago invoices finalize <lago_id> [flags]
 
 ```
   lago invoices finalize <lago_id>
+  lago invoices finalize <lago_id> --output json  # full resource
 ```
 
 ### Options

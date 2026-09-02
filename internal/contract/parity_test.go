@@ -118,18 +118,25 @@ func isDestructiveOperation(operation generated.Operation) bool {
 	return operation.Method == http.MethodDelete
 }
 
-// Every create and update in the manifest must be classified as a mutation, and nothing
-// else may be. The terse identifier block is the default output contract those commands
-// carry; a spec bump that adds a create must not slip through with the full-dump default.
-func TestEveryCreateAndUpdateIsClassifiedAsAMutation(t *testing.T) {
+// readShapedWrites are the non-GET operations whose response is the answer rather than
+// a resource, and bulk ingestion whose output is a summary. An independent copy of the
+// generator's list: if the two drift, this test says so.
+var readShapedWrites = map[string]bool{
+	"preview": true, "estimate": true, "estimate-fees": true, "estimate-instant-fees": true,
+	"batch-estimate-instant-fees": true, "evaluate-expression": true, "download": true,
+	"checkout-url": true, "payment-url": true, "wallet-transaction-payment-url": true,
+	"send": true, "batch": true,
+}
+
+// Every write in the manifest must be classified as a mutation, and nothing else may be.
+// The terse identifier block is the default output contract those commands carry; a spec
+// bump that adds a write must not slip through with the full-dump default.
+func TestEveryWriteIsClassifiedAsAMutation(t *testing.T) {
 	t.Parallel()
 	mutations := 0
 	for _, operation := range generated.Operations {
-		writes := operation.Method == http.MethodPost || operation.Method == http.MethodPut || operation.Method == http.MethodPatch
-		action := strings.ToLower(operation.Action)
-		creates := action == "create" || action == "update" ||
-			strings.HasPrefix(action, "create-") || strings.HasPrefix(action, "update-")
-		want := writes && creates
+		write := operation.Method != http.MethodGet && operation.Method != http.MethodHead && operation.Method != http.MethodOptions
+		want := write && !readShapedWrites[strings.ToLower(operation.Action)]
 		if operation.Mutation != want {
 			t.Errorf("%s (%s %s, action %q) mutation = %v, want %v",
 				operation.OperationID, operation.Method, operation.Path, operation.Action, operation.Mutation, want)
@@ -138,7 +145,7 @@ func TestEveryCreateAndUpdateIsClassifiedAsAMutation(t *testing.T) {
 			mutations++
 		}
 	}
-	if mutations != 48 {
+	if mutations != 109 {
 		t.Fatalf("the mutation set changed to %d commands; review the terse-output contract in DECISIONS.md before updating this count", mutations)
 	}
 }
@@ -148,8 +155,8 @@ func TestEveryCreateAndUpdateIsClassifiedAsAMutation(t *testing.T) {
 func TestNoReadIsClassifiedAsAMutation(t *testing.T) {
 	t.Parallel()
 	for _, operation := range generated.Operations {
-		if operation.Mutation && (operation.Method == http.MethodGet || operation.Method == http.MethodDelete) {
-			t.Errorf("%s (%s %s) is a read or delete but is marked as a mutation", operation.OperationID, operation.Method, operation.Path)
+		if operation.Mutation && operation.Method == http.MethodGet {
+			t.Errorf("%s (%s %s) is a read but is marked as a mutation", operation.OperationID, operation.Method, operation.Path)
 		}
 	}
 }

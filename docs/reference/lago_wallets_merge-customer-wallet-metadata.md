@@ -15,6 +15,7 @@ lago wallets merge-customer-wallet-metadata <external_customer_id> <wallet_code>
 
 ```
   lago wallets merge-customer-wallet-metadata <external_customer_id> <wallet_code> --input @payload.json
+  lago wallets merge-customer-wallet-metadata <external_customer_id> <wallet_code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

@@ -149,7 +149,7 @@ func TestEveryMutationRendersOnlyIdentifiers(t *testing.T) {
 			}
 		})
 	}
-	if mutations < 40 {
+	if mutations < 100 {
 		t.Fatalf("only %d operations are classified as mutations; the generator rule regressed", mutations)
 	}
 }
@@ -225,8 +225,16 @@ func TestMutationDryRunStillPrintsTheRequest(t *testing.T) {
 // syntheticArguments builds the minimum flag set that satisfies a generated command.
 func syntheticArguments(operation generated.Operation) []string {
 	arguments := make([]string, 0)
-	for _, parameter := range filterParameters(operation.Parameters, "path") {
+	pathParameters := filterParameters(operation.Parameters, "path")
+	for _, parameter := range pathParameters {
 		arguments = append(arguments, "fake_"+parameter.Name)
+	}
+	if operation.Dangerous {
+		identifier := operation.Resource
+		if len(pathParameters) > 0 {
+			identifier = "fake_" + pathParameters[len(pathParameters)-1].Name
+		}
+		arguments = append(arguments, "--confirm", identifier)
 	}
 	for _, parameter := range operation.Parameters {
 		if parameter.In == "query" && parameter.Required {

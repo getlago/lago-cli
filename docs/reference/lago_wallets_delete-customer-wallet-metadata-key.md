@@ -14,6 +14,7 @@ lago wallets delete-customer-wallet-metadata-key <external_customer_id> <wallet_
 
 ```
   lago wallets delete-customer-wallet-metadata-key <external_customer_id> <wallet_code> <key>
+  lago wallets delete-customer-wallet-metadata-key <external_customer_id> <wallet_code> <key> --output json  # full resource
 ```
 
 ### Options

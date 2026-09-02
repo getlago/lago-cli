@@ -14,6 +14,7 @@ lago coupons apply [flags]
 
 ```
   lago coupons apply --input @payload.json
+  lago coupons apply --input @payload.json --output json  # full resource
 ```
 
 ### Options

@@ -17,6 +17,7 @@ lago order-forms void <lago_id> [flags]
 
 ```
   lago order-forms void <lago_id>
+  lago order-forms void <lago_id> --output json  # full resource
 ```
 
 ### Options

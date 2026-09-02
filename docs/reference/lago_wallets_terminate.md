@@ -14,6 +14,7 @@ lago wallets terminate <lago_id> [flags]
 
 ```
   lago wallets terminate <lago_id>
+  lago wallets terminate <lago_id> --output json  # full resource
 ```
 
 ### Options

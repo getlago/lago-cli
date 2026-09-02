@@ -17,6 +17,7 @@ lago quotes void-quote-version <lago_id> [flags]
 
 ```
   lago quotes void-quote-version <lago_id>
+  lago quotes void-quote-version <lago_id> --output json  # full resource
 ```
 
 ### Options

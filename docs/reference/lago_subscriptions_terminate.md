@@ -14,6 +14,7 @@ lago subscriptions terminate <external_id> [flags]
 
 ```
   lago subscriptions terminate <external_id>
+  lago subscriptions terminate <external_id> --output json  # full resource
 ```
 
 ### Options

@@ -14,6 +14,7 @@ lago coupons delete <code> [flags]
 
 ```
   lago coupons delete <code>
+  lago coupons delete <code> --output json  # full resource
 ```
 
 ### Options

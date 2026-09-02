@@ -109,15 +109,40 @@ func (r Renderer) renderTable(value any) error {
 	case []any:
 		return r.renderRows("", typed)
 	case map[string]any:
-		w := tabwriter.NewWriter(r.Out, 0, 4, 2, ' ', 0)
-		for _, key := range sortedKeys(typed) {
-			fmt.Fprintf(w, "%s\t%s\n", header(key), cell(typed[key]))
-		}
-		return w.Flush()
+		return r.renderPairs(typed)
 	default:
 		_, err := fmt.Fprintln(r.Out, cell(typed))
 		return err
 	}
+}
+
+// renderPairs prints a single resource as key/value rows. Null and blank values are
+// omitted: an async endpoint such as `events send` answers with most fields unset, and
+// five rows of nothing tell the operator less than the three that carry a value. When
+// every value is empty the keys still print, so the output is never blank.
+func (r Renderer) renderPairs(object map[string]any) error {
+	keys := make([]string, 0, len(object))
+	for _, key := range sortedKeys(object) {
+		if !isBlank(object[key]) {
+			keys = append(keys, key)
+		}
+	}
+	if len(keys) == 0 {
+		keys = sortedKeys(object)
+	}
+	w := tabwriter.NewWriter(r.Out, 0, 4, 2, ' ', 0)
+	for _, key := range keys {
+		fmt.Fprintf(w, "%s\t%s\n", header(key), cell(object[key]))
+	}
+	return w.Flush()
+}
+
+func isBlank(value any) bool {
+	if value == nil {
+		return true
+	}
+	text, isText := value.(string)
+	return isText && strings.TrimSpace(text) == ""
 }
 
 // renderRows prints one table row per item. key is the response wrapper the rows came
@@ -231,10 +256,11 @@ func metaInt(value any) (int64, bool) {
 	}
 }
 
-// identifierKeys are the fields an operator needs back from a create or update: the
-// Lago ID to address the resource by, the external ID they chose, and the human name
-// or code they will recognise it by. Order is the render order, not a preference list.
-var identifierKeys = []string{"lago_id", "external_id", "code", "name"}
+// identifierKeys are the fields an operator needs back from a write: the Lago ID to
+// address the resource by, the external ID they chose, the human name or code they will
+// recognise it by, and the status a state transition produced. Order is the render
+// order, not a preference list.
+var identifierKeys = []string{"lago_id", "external_id", "code", "name", "status"}
 
 // renderIdentifiers prints only the identity of a created or updated resource.
 //
