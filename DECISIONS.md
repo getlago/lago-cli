@@ -213,6 +213,36 @@ detail beats a list of identifiers.
 hostnames served locally, rather than proving URL handling only for `127.0.0.1`. CI runs
 the affected packages once per deployment target.
 
+## 2026-09-02 — Required means required and non-nullable; types come from the spec
+
+Three generator findings from QA, one derivation pass.
+
+**A body is required only when the spec says so.** The generator never read
+`requestBody.required`, and the runtime demanded a body whenever one was declared. So
+`invoices void`, which the spec documents as callable without a body, refused the call.
+`Body.Required` now mirrors the spec, whose default is false. Ten operations become
+bodiless-capable; two of them, `credit-notes estimate` and `fees update`, merely omit
+`required` upstream and the server still validates them. That is a lago-openapi fix, not
+a CLI workaround, and it is handed off rather than patched here.
+
+**A nullable field is never a required flag.** `SubscriptionUpdateInput.subscription`
+lists `ending_at` under `required` and types it `[string, 'null']`. In JSON Schema that
+means the key must be present and null satisfies it; the CLI read it as "a value must be
+given" and blocked every `subscriptions update` that did not set an end date. Required is
+now `required && !nullable`, `Field.Nullable` records the union, and a contract test walks
+every body so the trap cannot return through another endpoint. It was the only
+flag-producing case in the spec; 82 others are in response schemas, which never become
+flags.
+
+**Types resolve through unions.** OpenAPI 3.1 writes nullability as `type: [integer,
+'null']`. The generator read `type` as a plain string, failed on the list, and fell
+through to "string", so `coupons create --amount-cents 1000` sent `"1000"` while
+`add-ons create` sent `1000`. Unions resolve to their non-null member; a `oneOf`/`anyOf`
+resolves when its scalar members agree and stays a string otherwise (`event.timestamp`
+is `oneOf [integer, string]`, and the server accepts both). 26 integer, 8 boolean and 2
+decimal fields change shape. A contract test runs every write with synthetic values and
+asserts the JSON kind on the wire matches the spec type: the request-body counterpart of
+`internal/moneycheck`, which only inspects Go source.
 ## 2026-09-02 — Raw and scripted requests share the generated danger classification
 
 QA deleted a live customer through a fixture step and through `lago api DELETE` without
