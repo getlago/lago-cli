@@ -197,6 +197,9 @@ func (a *App) Request(ctx context.Context, request transport.Request) (any, *tra
 	request.DryRun = request.DryRun || a.dryRun
 	response, err := client.Do(ctx, request)
 	if err != nil {
+		// The success path reports timing after rendering; a failure never renders, so
+		// report here. F-10/F-11: retry behaviour is only observable through this line.
+		a.reportTiming(response)
 		return nil, response, err
 	}
 	if response.DryRunData != nil {
@@ -232,14 +235,21 @@ func (a *App) render(renderer output.Renderer, value any, response *transport.Re
 	if err := renderer.Render(value); err != nil {
 		return err
 	}
-	if a.timing && response != nil {
-		if elapsed := time.Since(a.Start) - response.Timing.Total; elapsed > 0 {
-			response.Timing.CLIOverhead = elapsed
-		}
-		encoded, _ := json.Marshal(response.Timing)
-		fmt.Fprintf(a.Err, "timing: %s\n", encoded)
-	}
+	a.reportTiming(response)
 	return nil
+}
+
+// reportTiming prints the `timing:` line for one request when --timing is set. It is
+// called once per request, from render on success and from Request on failure.
+func (a *App) reportTiming(response *transport.Response) {
+	if !a.timing || response == nil {
+		return
+	}
+	if elapsed := time.Since(a.Start) - response.Timing.Total; elapsed > 0 {
+		response.Timing.CLIOverhead = elapsed
+	}
+	encoded, _ := json.Marshal(response.Timing)
+	fmt.Fprintf(a.Err, "timing: %s\n", encoded)
 }
 
 func (a *App) Confirm(identifier string) error {

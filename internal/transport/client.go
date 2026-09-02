@@ -282,15 +282,16 @@ func (c *Client) Do(ctx context.Context, request Request) (*Response, error) {
 		httpResponse, doErr := c.http.Do(httpRequest)
 		attemptTiming.RoundTrip = time.Since(attemptStart)
 		if doErr != nil {
+			mergeTiming(&totalTiming, attemptTiming)
 			if attempt < maxAttempts && retryableNetwork(doErr) {
 				wait := backoff(attempt)
 				totalTiming.RetryWait += wait
 				if err := waitContext(ctx, wait); err != nil {
-					return nil, networkError(err)
+					return failedResponse(started, totalTiming, attempt), networkError(err)
 				}
 				continue
 			}
-			return nil, networkError(doErr)
+			return failedResponse(started, totalTiming, attempt), networkError(doErr)
 		}
 		downloadStart := time.Now()
 		limitedBody := &io.LimitedReader{R: httpResponse.Body, N: (64 << 20) + 1}
@@ -309,17 +310,17 @@ func (c *Client) Do(ctx context.Context, request Request) (*Response, error) {
 				wait := backoff(attempt)
 				totalTiming.RetryWait += wait
 				if err := waitContext(ctx, wait); err != nil {
-					return nil, networkError(err)
+					return failedResponse(started, totalTiming, attempt), networkError(err)
 				}
 				continue
 			}
-			return nil, networkError(fmt.Errorf("read response: %w", readErr))
+			return failedResponse(started, totalTiming, attempt), networkError(fmt.Errorf("read response: %w", readErr))
 		}
 		if limitedBody.N == 0 {
-			return nil, apperr.New(apperr.ExitGeneral, "response exceeds the 64 MiB safety limit", "Use a paginated or streaming endpoint instead of buffering this response.")
+			return failedResponse(started, totalTiming, attempt), apperr.New(apperr.ExitGeneral, "response exceeds the 64 MiB safety limit", "Use a paginated or streaming endpoint instead of buffering this response.")
 		}
 		if closeErr != nil {
-			return nil, networkError(fmt.Errorf("close response: %w", closeErr))
+			return failedResponse(started, totalTiming, attempt), networkError(fmt.Errorf("close response: %w", closeErr))
 		}
 		if c.config.Verbose {
 			fmt.Fprintf(c.config.Err, "< %d %s\n", httpResponse.StatusCode, httpResponse.Status)
@@ -335,7 +336,7 @@ func (c *Client) Do(ctx context.Context, request Request) (*Response, error) {
 			}
 			totalTiming.RetryWait += wait
 			if err := waitContext(ctx, wait); err != nil {
-				return nil, networkError(err)
+				return failedResponse(started, totalTiming, attempt), networkError(err)
 			}
 			continue
 		}
@@ -354,7 +355,17 @@ func (c *Client) Do(ctx context.Context, request Request) (*Response, error) {
 		}
 		return response, nil
 	}
-	return nil, apperr.New(apperr.ExitGeneral, "request failed without a response", "Retry the command with --verbose.")
+	return failedResponse(started, totalTiming, maxAttempts), apperr.New(apperr.ExitGeneral, "request failed without a response", "Retry the command with --verbose.")
+}
+
+// failedResponse is the partial response returned alongside a terminal network error.
+// It carries no status or body, only the attempt count and the timing measured so far,
+// so a caller can still print `--timing` for the request that failed: that is when the
+// latency breakdown is worth having.
+func failedResponse(started time.Time, timing Timing, attempt int) *Response {
+	timing.Total = time.Since(started)
+	timing.AttemptCount = attempt
+	return &Response{Attempts: attempt, Timing: timing}
 }
 
 func (c *Client) redactedHeaders(headers http.Header) http.Header {

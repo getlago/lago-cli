@@ -114,21 +114,7 @@ func ExecuteArgs(args []string, in io.Reader, out, errOut io.Writer) int {
 	if app.outputMode() == "json" {
 		fmt.Fprintln(errOut, string(apperr.Encode(err)))
 	} else {
-		var appErr *apperr.Error
-		if errors.As(err, &appErr) {
-			fmt.Fprintf(errOut, "Error: %s\n", appErr.Message)
-			if appErr.Code != "" {
-				fmt.Fprintf(errOut, "Lago code: %s\n", appErr.Code)
-			}
-			if appErr.RequestID != "" {
-				fmt.Fprintf(errOut, "Request ID: %s\n", appErr.RequestID)
-			}
-			if appErr.Suggestion != "" {
-				fmt.Fprintf(errOut, "Suggestion: %s\n", appErr.Suggestion)
-			}
-		} else {
-			fmt.Fprintf(errOut, "Error: %s\n", err)
-		}
+		writeTextError(errOut, err)
 	}
 	return apperr.ExitCode(err)
 }

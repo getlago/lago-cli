@@ -379,6 +379,17 @@ func newAPICommand(app *App) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			if err := app.Load(true); err != nil {
+				return err
+			}
+			// A raw request inherits the spec's danger classification. Live mode goes
+			// through the same gate as a generated delete; test mode stays the ungated
+			// escape hatch the command exists for. See DECISIONS.md.
+			if dangerous, _ := classifyRequest(method, path); dangerous && app.resolved.Profile.Mode == config.ModeLive {
+				if err := app.Confirm(path); err != nil {
+					return err
+				}
+			}
 			body, err := readData(app.In, data)
 			if err != nil {
 				return err
