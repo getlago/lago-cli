@@ -27,7 +27,7 @@ lago order-forms list [flags]
       --expires-at-from string    Filter order forms expiring from a specific date and time, in UTC (ISO 8601). Order forms that never expire are excluded.
       --expires-at-to string      Filter order forms expiring up to a specific date and time, in UTC (ISO 8601). Order forms that never expire are excluded.
   -h, --help                      help for list
-      --limit string              Maximum number of results
+      --limit string              Results per page (1-1000)
       --number string             Filter order forms by their number, as assigned by Lago.
       --owner-id string           Filter order forms by the Lago identifiers of the users owning the quote they come from.
       --page string               Page number.

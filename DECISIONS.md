@@ -213,6 +213,24 @@ detail beats a list of identifiers.
 hostnames served locally, rather than proving URL handling only for `127.0.0.1`. CI runs
 the affected packages once per deployment target.
 
+## 2026-09-02 — Reject what the API would mishandle: userinfo URLs and out-of-range pages
+
+**Userinfo is refused, not stripped.** `https://api.getlago.com@evil.example` is a valid
+URL whose host is `evil.example`; the part before `@` is a username. QA S-16 and N-9 showed
+the CLI printing one host and dialling another. The normalizer now refuses any URL with
+userinfo, at exit 2, with `url.URL.Redacted()` so a pasted password never lands in a
+terminal or a log. Stripping the userinfo and continuing would be guessing which half the
+operator meant.
+
+**`--limit` is bounded at 1..1000 client-side.** `--limit 0` reached lago-api as
+`per_page=0` and came back as a 500: `BaseQuery#paginate` hands `per_page` straight to
+Kaminari (`scope.page(page).per(limit)`) with no `max_per_page`, and a zero page size
+divides by zero in `total_pages`. The spec declares no `maximum` on `per_page` either. So
+the lower bound is a server bug shield until lago-api validates the parameter, and the
+upper bound is a sanity limit, not a contract: nobody reads a thousand-row table, and
+`--all` exists for the rest. `--page` gets the same check on the single-page path that
+`--all` already had. Both are handed to lago-api and lago-openapi as fixes to make.
+
 ## Deferred beyond 1.x
 
 Plugin/extension system, TUI dashboard, and `lago scaffold` sample-app generation.

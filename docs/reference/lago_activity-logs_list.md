@@ -26,7 +26,7 @@ lago activity-logs list [flags]
       --external-subscription-id string   External subscription ID
       --from-date string                  Filter activity logs from a specific date.
   -h, --help                              help for list
-      --limit string                      Maximum number of results
+      --limit string                      Results per page (1-1000)
       --page string                       Page number.
       --per-page string                   Number of records per page.
       --resource-ids string               Filter results by resources unique identifiers

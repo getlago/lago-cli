@@ -26,7 +26,7 @@ lago orders list [flags]
       --executed-at-to string      Filter orders executed up to a specific date and time, in UTC (ISO 8601). Orders that have not been executed are excluded.
       --execution-mode string      Filter orders by execution mode. Possible values are 'execute_in_lago' and 'order_only'.
   -h, --help                       help for list
-      --limit string               Maximum number of results
+      --limit string               Results per page (1-1000)
       --number string              Filter orders by their number, as assigned by Lago.
       --order-form-number string   Filter orders by the number of the order form they come from.
       --order-type string          Filter orders by the order type of the quote they come from. Possible values are 'subscription_creation', 'subscription_amendment' and 'one_off'.

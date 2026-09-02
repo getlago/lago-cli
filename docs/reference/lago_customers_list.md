@@ -29,7 +29,7 @@ lago customers list [flags]
       --has-customer-type string               Filter customers by whether they have a customer type or not.
       --has-tax-identification-number string   Filter customers by whether they have a tax identification number or not.
   -h, --help                                   help for list
-      --limit string                           Maximum number of results
+      --limit string                           Results per page (1-1000)
       --metadata[key] string                   Filter customers by metadata. Replace 'key' with the actual metadata key you want to match, and provide the corresponding value. Providing empty value will search for customers without given metadata key. For example, 'metadata[is_synced]=true&metadata[last_synced_at]='.
       --page string                            Page number.
       --per-page string                        Number of records per page.
