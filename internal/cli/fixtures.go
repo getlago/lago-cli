@@ -161,6 +161,9 @@ func runFixture(cmd *cobra.Command, app *App, data []byte, overrides map[string]
 		fmt.Fprintf(app.Err, "fixture: %s (%s %s)\n", step.ID, method, pathValue)
 		value, response, err := app.Request(cmd.Context(), transport.Request{Method: method, Path: pathValue, Query: query, Headers: headers, Body: body, Idempotent: isIdempotentMethod(method) || key != ""})
 		if err != nil {
+			if app.timing && response != nil {
+				fmt.Fprintf(app.Err, "fixture: %s attempts=%d total=%s (failed)\n", step.ID, response.Attempts, response.Timing.Total)
+			}
 			return fixtureStepError(step.ID, err)
 		}
 		results = append(results, map[string]any{"id": step.ID, "response": value})
