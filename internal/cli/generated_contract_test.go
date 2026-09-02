@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -35,15 +36,23 @@ func TestEveryGeneratedCommandRoundTripsMethodPathAndJSONTypes(t *testing.T) {
 			t.Error("generated command omitted authentication")
 		}
 		if expected.body != nil {
-			var body map[string]any
-			decoder := json.NewDecoder(request.Body)
-			decoder.UseNumber()
-			if err := decoder.Decode(&body); err != nil {
-				t.Errorf("request body is not JSON: %v", err)
-			}
-			if expected.body.Wrapper != "" {
-				if _, ok := body[expected.body.Wrapper].(map[string]any); !ok {
-					t.Errorf("request body lacks object wrapper %q: %#v", expected.body.Wrapper, body)
+			raw, _ := io.ReadAll(request.Body)
+			switch {
+			case len(raw) == 0 && !expected.body.Required:
+				// An optional body sent as nothing is the shape the spec allows.
+			case len(raw) == 0:
+				t.Errorf("required body was sent empty")
+			default:
+				var body map[string]any
+				decoder := json.NewDecoder(bytes.NewReader(raw))
+				decoder.UseNumber()
+				if err := decoder.Decode(&body); err != nil {
+					t.Errorf("request body is not JSON: %v", err)
+				}
+				if expected.body.Wrapper != "" {
+					if _, ok := body[expected.body.Wrapper].(map[string]any); !ok {
+						t.Errorf("request body lacks object wrapper %q: %#v", expected.body.Wrapper, body)
+					}
 				}
 			}
 		}
@@ -79,7 +88,7 @@ func TestEveryGeneratedCommandRoundTripsMethodPathAndJSONTypes(t *testing.T) {
 						added = true
 					}
 				}
-				if !added {
+				if !added && operation.Body.Required {
 					input := map[string]any{}
 					if operation.Body.Wrapper != "" {
 						input[operation.Body.Wrapper] = map[string]any{}

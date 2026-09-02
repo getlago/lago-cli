@@ -64,3 +64,88 @@ func TestMutationClassification(t *testing.T) {
 		}
 	}
 }
+
+// QA M-subscriptions-u: `ending_at` is `type: [string, 'null']` and listed under
+// `required`. The union must split into its base type and a nullable flag.
+func TestQA_L2f_NullableTypeSplitsUnions(t *testing.T) {
+	t.Parallel()
+	for _, test := range []struct {
+		schema   map[string]any
+		wantType string
+		wantNull bool
+	}{
+		{map[string]any{"type": "integer"}, "integer", false},
+		{map[string]any{"type": []any{"integer", "null"}}, "integer", true},
+		{map[string]any{"type": []any{"null", "string"}}, "string", true},
+		{map[string]any{"type": []any{"boolean"}}, "boolean", false},
+		{map[string]any{"type": []any{"integer", "string"}}, "", false},
+		{map[string]any{"type": []any{"integer", "string", "null"}}, "", true},
+		{map[string]any{"type": "null"}, "null", true},
+		{map[string]any{"properties": map[string]any{}}, "", false},
+		{nil, "", false},
+	} {
+		gotType, gotNull := nullableType(test.schema)
+		if gotType != test.wantType || gotNull != test.wantNull {
+			t.Errorf("nullableType(%v) = (%q, %v), want (%q, %v)", test.schema, gotType, gotNull, test.wantType, test.wantNull)
+		}
+	}
+}
+
+// QA L-2f, M-optional-body: Body.Required follows requestBody.required, whose OpenAPI
+// default is false. A nullable field listed under `required` is not a required flag.
+func TestQA_MOptionalBody_BodyRequiredFollowsRequestBodyRequired(t *testing.T) {
+	t.Parallel()
+	schema := map[string]any{
+		"type":     "object",
+		"required": []any{"thing"},
+		"properties": map[string]any{
+			"thing": map[string]any{
+				"type":     "object",
+				"required": []any{"code", "ending_at"},
+				"properties": map[string]any{
+					"code":      map[string]any{"type": "string"},
+					"ending_at": map[string]any{"type": []any{"string", "null"}},
+				},
+			},
+		},
+	}
+	document := map[string]any{
+		"openapi": "3.1.0",
+		"info":    map[string]any{"version": "test"},
+		"paths": map[string]any{
+			"/things": map[string]any{
+				"post": map[string]any{"operationId": "createThing", "tags": []any{"things"}, "summary": "Create", "requestBody": map[string]any{"required": true, "content": map[string]any{"application/json": map[string]any{"schema": schema}}}},
+				"put":  map[string]any{"operationId": "updateThing", "tags": []any{"things"}, "summary": "Update", "requestBody": map[string]any{"required": false, "content": map[string]any{"application/json": map[string]any{"schema": schema}}}},
+			},
+			"/things/{code}/void": map[string]any{
+				"post": map[string]any{"operationId": "voidThing", "tags": []any{"things"}, "summary": "Void", "parameters": []any{map[string]any{"name": "code", "in": "path", "required": true, "schema": map[string]any{"type": "string"}}}, "requestBody": map[string]any{"content": map[string]any{"application/json": map[string]any{"schema": schema}}}},
+			},
+		},
+	}
+	operations, err := (generator{document: document}).operations()
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]bool{"createThing": true, "updateThing": false, "voidThing": false}
+	for _, operation := range operations {
+		wantRequired, known := want[operation.OperationID]
+		if !known {
+			t.Fatalf("unexpected operation %s", operation.OperationID)
+		}
+		if operation.Body == nil || operation.Body.Required != wantRequired {
+			t.Errorf("%s body required = %v, want %v", operation.OperationID, operation.Body != nil && operation.Body.Required, wantRequired)
+		}
+		for _, field := range operation.Body.Fields {
+			switch field.Flag {
+			case "code":
+				if !field.Required || field.Nullable {
+					t.Errorf("%s --code required=%v nullable=%v", operation.OperationID, field.Required, field.Nullable)
+				}
+			case "ending-at":
+				if field.Required || !field.Nullable {
+					t.Errorf("%s --ending-at must be optional and nullable, got required=%v nullable=%v", operation.OperationID, field.Required, field.Nullable)
+				}
+			}
+		}
+	}
+}

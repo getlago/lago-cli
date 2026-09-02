@@ -318,6 +318,7 @@
             "flag": "description",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The description of the add-on."
           },
@@ -328,6 +329,7 @@
             "flag": "invoice-display-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name."
           },
@@ -351,7 +353,8 @@
             "complex": true,
             "description": "List of unique code used to identify the taxes."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -637,6 +640,7 @@
             "flag": "description",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The description of the add-on."
           },
@@ -647,6 +651,7 @@
             "flag": "invoice-display-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name."
           },
@@ -670,7 +675,8 @@
             "complex": true,
             "description": "List of unique code used to identify the taxes."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -2202,6 +2208,7 @@
             "flag": "description",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Internal description of the billable metric."
           },
@@ -2212,6 +2219,7 @@
             "flag": "expression",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Expression used to calculate the event units. The expression is evalutated for each event and the result is then used to calculate the total aggregated units.\nAccepted function are `ceil`, `concat` and `round` as well as `+`, `-`, `\\` and `*` operations.\nRound is accepting an optional second parameter to specify the number of decimal.\n"
           },
@@ -2222,6 +2230,7 @@
             "flag": "field-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Property of the billable metric used for aggregating usage data. This field is not required for `count_agg`."
           },
@@ -2261,6 +2270,7 @@
             "flag": "rounding-function",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Refers to the numeric value or mathematical expression that will be rounded based on the calculated number of billing units. Possible values are `round`, `ceil` and `floor`.",
             "enum": [
@@ -2277,6 +2287,7 @@
             "flag": "rounding-precision",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the number of decimal places to which the `rounding_function` will be rounded. It can be a positive or negative value."
           },
@@ -2287,6 +2298,7 @@
             "flag": "weighted-interval",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Parameter exclusively utilized in conjunction with the `weighted_sum` aggregation type. It serves to adjust the aggregation result by assigning weights and proration to the result based on time intervals. When this field is not provided, the default time interval is assumed to be in `seconds`.",
             "enum": [
@@ -2294,7 +2306,8 @@
               ""
             ]
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -2379,7 +2392,8 @@
             "complex": false,
             "description": "Expression used to calculate the event units. The expression is evalutated for each event and the result is then used to calculate the total aggregated units.\nAccepted function are `ceil`, `concat` and `round` as well as `+`, `-`, `\\` and `*` operations.\nRound is accepting an optional second parameter to specify the number of decimal.\n"
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -2499,6 +2513,7 @@
             "flag": "description",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Internal description of the billable metric."
           },
@@ -2509,6 +2524,7 @@
             "flag": "expression",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Expression used to calculate the event units. The expression is evalutated for each event and the result is then used to calculate the total aggregated units.\nAccepted function are `ceil`, `concat` and `round` as well as `+`, `-`, `\\` and `*` operations.\nRound is accepting an optional second parameter to specify the number of decimal.\n"
           },
@@ -2519,6 +2535,7 @@
             "flag": "field-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Property of the billable metric used for aggregating usage data. This field is not required for `count_agg`."
           },
@@ -2558,6 +2575,7 @@
             "flag": "rounding-function",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Refers to the numeric value or mathematical expression that will be rounded based on the calculated number of billing units. Possible values are `round`, `ceil` and `floor`.",
             "enum": [
@@ -2574,6 +2592,7 @@
             "flag": "rounding-precision",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the number of decimal places to which the `rounding_function` will be rounded. It can be a positive or negative value."
           },
@@ -2584,6 +2603,7 @@
             "flag": "weighted-interval",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Parameter exclusively utilized in conjunction with the `weighted_sum` aggregation type. It serves to adjust the aggregation result by assigning weights and proration to the result based on time intervals. When this field is not provided, the default time interval is assumed to be in `seconds`.",
             "enum": [
@@ -2591,7 +2611,8 @@
               ""
             ]
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -2617,6 +2638,7 @@
             "flag": "address-line1",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The first line of the billing address"
           },
@@ -2627,6 +2649,7 @@
             "flag": "address-line2",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The second line of the billing address"
           },
@@ -2700,6 +2723,7 @@
             "flag": "city",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The city of the billing address"
           },
@@ -2720,6 +2744,7 @@
             "flag": "country",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The country code of the billing address",
             "enum": [
@@ -3132,6 +3157,7 @@
             "flag": "document-number-prefix",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The prefix used in document numbers for this billing entity"
           },
@@ -3166,6 +3192,7 @@
             "flag": "email",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The email address of the billing entity"
           },
@@ -3206,6 +3233,7 @@
             "flag": "legal-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The legal name of the billing entity"
           },
@@ -3216,6 +3244,7 @@
             "flag": "legal-number",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The legal registration number of the billing entity"
           },
@@ -3226,6 +3255,7 @@
             "flag": "logo",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The base64 encoded logo image for the billing entity"
           },
@@ -3256,6 +3286,7 @@
             "flag": "phone",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The phone number of the billing entity"
           },
@@ -3266,6 +3297,7 @@
             "flag": "state",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The state of the billing address"
           },
@@ -3276,6 +3308,7 @@
             "flag": "tax-identification-number",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The tax identification number of the billing entity"
           },
@@ -3433,10 +3466,12 @@
             "flag": "zipcode",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The zipcode of the billing address"
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -3510,6 +3545,7 @@
             "flag": "address-line1",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The first line of the billing address"
           },
@@ -3520,6 +3556,7 @@
             "flag": "address-line2",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The second line of the billing address"
           },
@@ -3593,6 +3630,7 @@
             "flag": "city",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The city of the billing address"
           },
@@ -3603,6 +3641,7 @@
             "flag": "country",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The country code of the billing address",
             "enum": [
@@ -4015,6 +4054,7 @@
             "flag": "document-number-prefix",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The prefix used in document numbers for this billing entity"
           },
@@ -4049,6 +4089,7 @@
             "flag": "email",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The email address of the billing entity"
           },
@@ -4099,6 +4140,7 @@
             "flag": "legal-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The legal name of the billing entity"
           },
@@ -4109,6 +4151,7 @@
             "flag": "legal-number",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The legal registration number of the billing entity"
           },
@@ -4119,6 +4162,7 @@
             "flag": "logo",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The base64 encoded logo image for the billing entity. Sending \"null\" will remove the logo, if any exist."
           },
@@ -4149,6 +4193,7 @@
             "flag": "phone",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The phone number of the billing entity"
           },
@@ -4159,6 +4204,7 @@
             "flag": "state",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The state of the billing address"
           },
@@ -4179,6 +4225,7 @@
             "flag": "tax-identification-number",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The tax identification number of the billing entity"
           },
@@ -4336,10 +4383,12 @@
             "flag": "zipcode",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The zipcode of the billing address"
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -4365,6 +4414,7 @@
             "flag": "amount-cents",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The amount of the coupon in cents. This field is required only for coupon with `fixed_amount` type."
           },
@@ -4375,6 +4425,7 @@
             "flag": "amount-currency",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The currency of the coupon. This field is required only for coupon with `fixed_amount` type.",
             "enum": [
@@ -4545,6 +4596,7 @@
             "flag": "frequency",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The type of frequency for the coupon. It can have three possible values: `once`, `recurring` or `forever`.\n\n- If set to `once`, the coupon is applicable only for a single use.\n- If set to `recurring`, the coupon can be used multiple times for recurring billing periods.\n- If set to `forever`, the coupon has unlimited usage and can be applied indefinitely.",
             "enum": [
@@ -4561,6 +4613,7 @@
             "flag": "frequency-duration",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the number of billing periods to which the coupon applies. This field is required only for coupons with a `recurring` frequency type"
           },
@@ -4571,10 +4624,12 @@
             "flag": "percentage-rate",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The percentage rate of the coupon. This field is required only for coupons with a `percentage` coupon type."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -4600,6 +4655,7 @@
             "flag": "amount-cents",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The amount of the coupon in cents. This field is required only for coupon with `fixed_amount` type."
           },
@@ -4610,6 +4666,7 @@
             "flag": "amount-currency",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The currency of the coupon. This field is required only for coupon with `fixed_amount` type.",
             "enum": [
@@ -4761,6 +4818,7 @@
             "flag": "applies-to-billable-metric-codes",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "An array of billable metric codes to which the coupon is applicable. By specifying the billable metric codes in this field, you can restrict the coupon's usage to specific metrics only."
           },
@@ -4772,6 +4830,7 @@
             "flag": "applies-to-plan-codes",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "An array of plan codes to which the coupon is applicable. By specifying the plan codes in this field, you can restrict the coupon's usage to specific plans only."
           },
@@ -4806,6 +4865,7 @@
             "flag": "description",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Description of the coupon."
           },
@@ -4830,6 +4890,7 @@
             "flag": "expiration-at",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The expiration date and time of the coupon. This field is required only for coupons with `expiration` set to `time_limit`. The expiration date and time should be specified in UTC format according to the ISO 8601 datetime standard. It indicates the exact moment when the coupon will expire and is no longer valid."
           },
@@ -4855,6 +4916,7 @@
             "flag": "frequency-duration",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the number of billing periods to which the coupon applies. This field is required only for coupons with a `recurring` frequency type"
           },
@@ -4875,6 +4937,7 @@
             "flag": "percentage-rate",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The percentage rate of the coupon. This field is required only for coupons with a `percentage` coupon type."
           },
@@ -4888,7 +4951,8 @@
             "complex": false,
             "description": "Indicates whether the coupon can be reused or not. If set to `true`, the coupon is reusable, meaning it can be applied multiple times to the same customer. If set to `false`, the coupon can only be used once and is not reusable. If not specified, this field is set to `true` by default."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -5096,6 +5160,7 @@
             "flag": "amount-cents",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The amount of the coupon in cents. This field is required only for coupon with `fixed_amount` type."
           },
@@ -5106,6 +5171,7 @@
             "flag": "amount-currency",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The currency of the coupon. This field is required only for coupon with `fixed_amount` type.",
             "enum": [
@@ -5257,6 +5323,7 @@
             "flag": "applies-to-billable-metric-codes",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "An array of billable metric codes to which the coupon is applicable. By specifying the billable metric codes in this field, you can restrict the coupon's usage to specific metrics only."
           },
@@ -5268,6 +5335,7 @@
             "flag": "applies-to-plan-codes",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "An array of plan codes to which the coupon is applicable. By specifying the plan codes in this field, you can restrict the coupon's usage to specific plans only."
           },
@@ -5302,6 +5370,7 @@
             "flag": "description",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Description of the coupon."
           },
@@ -5326,6 +5395,7 @@
             "flag": "expiration-at",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The expiration date and time of the coupon. This field is required only for coupons with `expiration` set to `time_limit`. The expiration date and time should be specified in UTC format according to the ISO 8601 datetime standard. It indicates the exact moment when the coupon will expire and is no longer valid."
           },
@@ -5351,6 +5421,7 @@
             "flag": "frequency-duration",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the number of billing periods to which the coupon applies. This field is required only for coupons with a `recurring` frequency type"
           },
@@ -5371,6 +5442,7 @@
             "flag": "percentage-rate",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The percentage rate of the coupon. This field is required only for coupons with a `percentage` coupon type."
           },
@@ -5384,7 +5456,8 @@
             "complex": false,
             "description": "Indicates whether the coupon can be reused or not. If set to `true`, the coupon is reusable, meaning it can be applied multiple times to the same customer. If set to `false`, the coupon can only be used once and is not reusable. If not specified, this field is set to `true` by default."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -5410,6 +5483,7 @@
             "flag": "credit-amount-cents",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The total amount to be credited to the customer balance for discounts on future invoices. For a total or partial refund, credit or offset, the amount in cents must include both the item amount and the applicable tax. The refunded, credited and offsetted amounts should always balance. The total, including taxes, cannot exceed the invoice's total fees."
           },
@@ -5460,6 +5534,7 @@
             "flag": "offset-amount-cents",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The total amount to be immediately deducted from the invoice balance. For a total or partial refund, credit or offset, the amount in cents must include both the item amount and the applicable tax. The refunded, credited and offsetted amounts should always balance. The total, including taxes, cannot exceed the invoice's total fees."
           },
@@ -5470,6 +5545,7 @@
             "flag": "reason",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The reason of the credit note creation.\nPossible values are `duplicated_charge`, `product_unsatisfactory`, `order_change`, `order_cancellation`, `fraudulent_charge` or `other`.",
             "enum": [
@@ -5489,10 +5565,12 @@
             "flag": "refund-amount-cents",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The total amount to be refunded immediately to the payment method used by the customer. For a total or partial refund, credit or offset, the amount in cents must include both the item amount and the applicable tax. The refunded, credited and offsetted amounts should always balance. The total, including taxes, cannot exceed the invoice's total fees."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -5611,7 +5689,8 @@
             "complex": true,
             "description": "The list of credit note's items."
           }
-        ]
+        ],
+        "required": false
       },
       "idempotent": false,
       "dangerous": false,
@@ -5824,7 +5903,8 @@
         }
       ],
       "body": {
-        "wrapper": "metadata"
+        "wrapper": "metadata",
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -5851,7 +5931,8 @@
         }
       ],
       "body": {
-        "wrapper": "metadata"
+        "wrapper": "metadata",
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -5905,7 +5986,8 @@
               "failed"
             ]
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -6053,6 +6135,7 @@
             "flag": "address-line1",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The first line of the billing address"
           },
@@ -6063,6 +6146,7 @@
             "flag": "address-line2",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The second line of the billing address"
           },
@@ -6137,6 +6221,7 @@
             "flag": "billing-configuration-provider-payment-methods",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "Specifies the available payment methods that can be used for this customer when `payment_provider` is set to `stripe`. The `provider_payment_methods` field is an array that allows multiple payment options to be defined. If this field is not explicitly set, the payment methods will be set to `card`. For now, possible values are `card`, `sepa_debit`, `us_bank_account`, `bacs_debit`, `boleto`, `link`, `crypto` and `customer_balance`. Note that when `link` is selected, `card` should also be provided in the array. When `customer_balance` is selected, no other payment can be selected."
           },
@@ -6148,6 +6233,7 @@
             "flag": "billing-configuration-subscription-invoice-issuing-date-adjustment",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The logic applied on top of the subscription_invoice_issuing_date_anchor rule. You can opt to use the invoice finalization date, that includes any configured grace period.",
             "enum": [
@@ -6164,6 +6250,7 @@
             "flag": "billing-configuration-subscription-invoice-issuing-date-anchor",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Defines whether the issuing date follows the current billing period's end date or the next period starting date.",
             "enum": [
@@ -6201,6 +6288,7 @@
             "flag": "billing-entity-code",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The unique code of the billing entity to associate with the customer. If not provided, the default billing entity will be used."
           },
@@ -6211,6 +6299,7 @@
             "flag": "city",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The city of the customer's billing address"
           },
@@ -6221,6 +6310,7 @@
             "flag": "country",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Country code of the customer's billing address. Format must be ISO 3166 (alpha-2)",
             "enum": [
@@ -6483,6 +6573,7 @@
             "flag": "currency",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Currency of the customer. Format must be ISO 4217",
             "enum": [
@@ -6633,6 +6724,7 @@
             "flag": "customer-type",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The type of the customer. It can have one of the following values:\n- `company`: the customer is a company.\n- `individual`: the customer is an individual.",
             "enum": [
@@ -6648,6 +6740,7 @@
             "flag": "email",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The email of the customer"
           },
@@ -6668,6 +6761,7 @@
             "flag": "external-salesforce-id",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The customer ID within the Salesforce system"
           },
@@ -6693,6 +6787,7 @@
             "flag": "firstname",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "First name of the customer"
           },
@@ -6722,6 +6817,7 @@
             "flag": "lastname",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Last name of the customer"
           },
@@ -6732,6 +6828,7 @@
             "flag": "legal-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The legal company name of the customer"
           },
@@ -6742,6 +6839,7 @@
             "flag": "legal-number",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The legal company number of the customer"
           },
@@ -6752,6 +6850,7 @@
             "flag": "logo-url",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The logo URL of the customer"
           },
@@ -6772,6 +6871,7 @@
             "flag": "name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The full name of the customer (255 characters max)."
           },
@@ -6782,6 +6882,7 @@
             "flag": "net-payment-term",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The net payment term, expressed in days, specifies the duration within which a customer is expected to remit payment after the invoice is finalized."
           },
@@ -6792,6 +6893,7 @@
             "flag": "phone",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The phone number of the customer"
           },
@@ -6803,6 +6905,7 @@
             "flag": "shipping-address-address-line1",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The first line of the billing address"
           },
@@ -6814,6 +6917,7 @@
             "flag": "shipping-address-address-line2",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The second line of the billing address"
           },
@@ -6825,6 +6929,7 @@
             "flag": "shipping-address-city",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The city of the customer's billing address"
           },
@@ -6836,6 +6941,7 @@
             "flag": "shipping-address-country",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Country code of the customer's billing address. Format must be ISO 3166 (alpha-2)",
             "enum": [
@@ -7099,6 +7205,7 @@
             "flag": "shipping-address-state",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The state of the customer's billing address"
           },
@@ -7110,6 +7217,7 @@
             "flag": "shipping-address-zipcode",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The zipcode of the customer's billing address"
           },
@@ -7130,6 +7238,7 @@
             "flag": "state",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The state of the customer's billing address"
           },
@@ -7150,6 +7259,7 @@
             "flag": "tax-identification-number",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The tax identification number of the customer"
           },
@@ -7160,6 +7270,7 @@
             "flag": "timezone",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The customer's timezone, used for billing purposes in their local time. Overrides the organization's timezone",
             "enum": [
@@ -7308,6 +7419,7 @@
             "flag": "url",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The custom website URL of the customer"
           },
@@ -7318,10 +7430,12 @@
             "flag": "zipcode",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The zipcode of the customer's billing address"
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -8248,7 +8362,8 @@
         }
       ],
       "body": {
-        "wrapper": "entitlements"
+        "wrapper": "entitlements",
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -8541,7 +8656,8 @@
         }
       ],
       "body": {
-        "wrapper": "entitlements"
+        "wrapper": "entitlements",
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -8582,7 +8698,8 @@
         }
       ],
       "body": {
-        "wrapper": "entitlements"
+        "wrapper": "entitlements",
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -8609,7 +8726,8 @@
             "required": true,
             "complex": true
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -8636,7 +8754,8 @@
             "required": true,
             "complex": true
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -8683,10 +8802,12 @@
             "flag": "properties-target-wallet-code",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The code of the wallet targeted by this event for prepaid credits deduction.\nWhen provided, credits are drawn from this specific wallet instead of following the standard wallet selection logic.\nIf the code does not match an existing wallet, no credits will be applied for the event.\nThis field is only taken into account when the targeted charge has `accepts_target_wallet` set to `true`.\nThis field requires a premium integration."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -8742,10 +8863,12 @@
             "flag": "transaction-id",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "This field represents a unique identifier for the event."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -8887,6 +9010,7 @@
             "flag": "precise-total-amount-cents",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The precise total amount in cents with precision used by the `dynamic` pricing model to compute the usage amount."
           },
@@ -8897,6 +9021,7 @@
             "flag": "properties",
             "type": "object",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "This field represents additional properties associated with the event, which are utilized in the calculation of the final fee. This object becomes mandatory when the targeted billable metric employs a `sum_agg`, `max_agg`, or `unique_count_agg` aggregation method. However, when using a simple `count_agg`, this object is not required."
           },
@@ -8920,7 +9045,8 @@
             "complex": false,
             "description": "This field represents a unique identifier for the event.\nIt is crucial for ensuring idempotency, meaning that each event can be uniquely identified and processed without causing any unintended side effects.\n\nWARNING: If the Lago organization is configured to use the new Clickhouse-based event pipeline (designed for high-volume processing), the idempotency logic is handled differently.\nEvent uniqueness is maintained with both `transaction_id` and `timestamp` fields.\nIf a new event arrives with identical values for these two fields as an existing event, the new one will overwrite the previous event rather than being rejected.\n"
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -8956,6 +9082,7 @@
             "flag": "description",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Internal description of the feature."
           },
@@ -8966,6 +9093,7 @@
             "flag": "name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Name of the feature."
           },
@@ -8979,7 +9107,8 @@
             "complex": true,
             "description": "Privileges associated with this feature. Can be empty."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -9135,6 +9264,7 @@
             "flag": "description",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Internal description of the feature."
           },
@@ -9145,6 +9275,7 @@
             "flag": "name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Name of the feature."
           },
@@ -9158,7 +9289,8 @@
             "complex": true,
             "description": "Privileges associated with this feature. Can be empty."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -9556,7 +9688,8 @@
               "refunded"
             ]
           }
-        ]
+        ],
+        "required": false
       },
       "idempotent": false,
       "dangerous": false,
@@ -9809,10 +9942,12 @@
             "flag": "purchase-order-number",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The purchase order number to associate with the invoice."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -10194,6 +10329,7 @@
             "flag": "customer-address-line2",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The second line of the billing address"
           },
@@ -10662,6 +10798,7 @@
             "flag": "customer-shipping-address-address-line1",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The first line of the billing address"
           },
@@ -10674,6 +10811,7 @@
             "flag": "customer-shipping-address-address-line2",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The second line of the billing address"
           },
@@ -10686,6 +10824,7 @@
             "flag": "customer-shipping-address-city",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The city of the customer's billing address"
           },
@@ -10698,6 +10837,7 @@
             "flag": "customer-shipping-address-country",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Country code of the customer's billing address. Format must be ISO 3166 (alpha-2)",
             "enum": [
@@ -10962,6 +11102,7 @@
             "flag": "customer-shipping-address-state",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The state of the customer's billing address"
           },
@@ -10974,6 +11115,7 @@
             "flag": "customer-shipping-address-zipcode",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The zipcode of the customer's billing address"
           },
@@ -11199,7 +11341,8 @@
             "complex": false,
             "description": "The date and time when the subscription is terminated. It should defined in the future."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -11300,7 +11443,8 @@
               "manual"
             ]
           }
-        ]
+        ],
+        "required": false
       },
       "idempotent": false,
       "dangerous": true,
@@ -11353,7 +11497,8 @@
               "failed"
             ]
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -11411,7 +11556,8 @@
             "complex": false,
             "description": "Portion of the invoice amount (in cents) to be refunded to the customer in the generated credit note."
           }
-        ]
+        ],
+        "required": false
       },
       "idempotent": false,
       "dangerous": true,
@@ -11607,7 +11753,8 @@
             "complex": false,
             "description": "The document signed by the customer, as a base64 data URI (`data:\u003ccontent_type\u003e;base64,\u003cdata\u003e`). Accepted content types are `application/pdf`, `image/jpeg` and `image/png`, for a maximum of 10 MB. Once attached, it is exposed as `signed_document_url` on the order form."
           }
-        ]
+        ],
+        "required": false
       },
       "idempotent": false,
       "dangerous": false,
@@ -11672,7 +11819,8 @@
               "order_only"
             ]
           }
-        ]
+        ],
+        "required": false
       },
       "idempotent": false,
       "dangerous": false,
@@ -11854,6 +12002,7 @@
             "flag": "address-line1",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The first line of your organization's billing address."
           },
@@ -11864,6 +12013,7 @@
             "flag": "address-line2",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The second line of your organization's billing address."
           },
@@ -11886,6 +12036,7 @@
             "flag": "billing-configuration-invoice-footer",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The customer invoice message that appears at the bottom of each billing documents."
           },
@@ -11907,6 +12058,7 @@
             "flag": "city",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The city of your organization's billing address."
           },
@@ -11917,6 +12069,7 @@
             "flag": "country",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The country of your organization.",
             "enum": [
@@ -12353,6 +12506,7 @@
             "flag": "email",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The email address of your organization used to bill your customers."
           },
@@ -12383,6 +12537,7 @@
             "flag": "legal-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The legal name of your organization."
           },
@@ -12393,6 +12548,7 @@
             "flag": "legal-number",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The legal number of your organization."
           },
@@ -12423,6 +12579,7 @@
             "flag": "state",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The state of your organization's billing address."
           },
@@ -12433,6 +12590,7 @@
             "flag": "tax-identification-number",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The tax identification number of your organization."
           },
@@ -12590,6 +12748,7 @@
             "flag": "webhook-url",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The URL of your newest updated webhook endpoint. This URL allows your organization to receive important messages, notifications, or data from the Lago system. By configuring your webhook endpoint to this URL, you can ensure that your organization stays informed and receives relevant information in a timely manner."
           },
@@ -12600,10 +12759,12 @@
             "flag": "zipcode",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The zipcode of your organization's billing address."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -12846,7 +13007,8 @@
               "manual"
             ]
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -12998,7 +13160,8 @@
             "complex": false,
             "description": "Reference for the payment"
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -13296,6 +13459,7 @@
             "flag": "bill-charges-monthly",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "This field, when set to `true`, enables to invoice usage-based charges on monthly basis, even if the cadence of the plan is `yearly` or `semiannual`. This allows customers to pay charges overage on a monthly basis. This can be set to true only if the plan's interval is `yearly` or `semiannual`."
           },
@@ -13306,6 +13470,7 @@
             "flag": "bill-fixed-charges-monthly",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "This field, when set to `true`, enables to invoice fixed charges on monthly basis, even if the cadence of the plan is `yearly` or `semiannual`. This allows customers to pay fixed charges on a monthly basis. This can be set to true only if the plan's interval is `yearly` or `semiannual`."
           },
@@ -13336,6 +13501,7 @@
             "flag": "description",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The description on the plan."
           },
@@ -13373,6 +13539,7 @@
             "flag": "invoice-display-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the plan will be used as the default display name."
           },
@@ -13456,6 +13623,7 @@
             "flag": "trial-period",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The duration in days during which the base cost of the plan is offered for free."
           },
@@ -13469,7 +13637,8 @@
             "complex": true,
             "description": "List of usage thresholds to apply to the plan."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -13505,6 +13674,7 @@
             "flag": "accepts-target-wallet",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies whether the charge accepts a target wallet for prepaid credits deduction.\nWhen set to `true`, events may include a `target_wallet_code` in their `properties` to direct credit deduction to a specific wallet.\nIf no `target_wallet_code` is provided on the event, the standard wallet selection logic is applied.\nIf the `target_wallet_code` does not match an existing wallet, no credits will be applied for that event.\n\nThis field requires a premium integration."
           },
@@ -13670,6 +13840,7 @@
             "flag": "properties-free-units-per-events",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The count of transactions that are not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the number of transactions that are exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -13681,6 +13852,7 @@
             "flag": "properties-free-units-per-total-aggregation",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The transaction amount that is not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the portion of the transaction amount that is exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -13736,6 +13908,7 @@
             "flag": "properties-per-transaction-max-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the maximum allowable spending for a single transaction. Working as a transaction cap."
           },
@@ -13747,6 +13920,7 @@
             "flag": "properties-per-transaction-min-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the minimum allowable spending for a single transaction. Working as a transaction floor."
           },
@@ -13811,6 +13985,7 @@
             "flag": "regroup-paid-fees",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "This setting can only be configured if `pay_in_advance` is `true` and `invoiceable` is `false`.\nThis field determines whether and when the charge fee should be included in\nthe invoice. If `null`, no invoice will be issued for this charge fee.\nIf `invoice`, an invoice will be generated at the end of the period,\nconsolidating all charge fees with a succeeded payment status.",
             "enum": [
@@ -13828,7 +14003,8 @@
             "complex": true,
             "description": "List of unique code used to identify the taxes."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -13882,6 +14058,7 @@
             "flag": "invoice-display-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the name that will be displayed on an invoice. If no value is set for this field, the values of the filter will be used as the default display name."
           },
@@ -13926,6 +14103,7 @@
             "flag": "properties-free-units-per-events",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The count of transactions that are not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the number of transactions that are exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -13937,6 +14115,7 @@
             "flag": "properties-free-units-per-total-aggregation",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The transaction amount that is not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the portion of the transaction amount that is exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -13992,6 +14171,7 @@
             "flag": "properties-per-transaction-max-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the maximum allowable spending for a single transaction. Working as a transaction cap."
           },
@@ -14003,6 +14183,7 @@
             "flag": "properties-per-transaction-min-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the minimum allowable spending for a single transaction. Working as a transaction floor."
           },
@@ -14049,7 +14230,8 @@
             "complex": true,
             "description": "List of possible filter values. The key and values must match one of the billable metric filters."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -14150,6 +14332,7 @@
             "flag": "invoice-display-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the add-on will be used as the default display name."
           },
@@ -14204,6 +14387,7 @@
             "flag": "properties-free-units-per-events",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The count of transactions that are not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the number of transactions that are exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -14215,6 +14399,7 @@
             "flag": "properties-free-units-per-total-aggregation",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The transaction amount that is not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the portion of the transaction amount that is exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -14270,6 +14455,7 @@
             "flag": "properties-per-transaction-max-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the maximum allowable spending for a single transaction. Working as a transaction cap."
           },
@@ -14281,6 +14467,7 @@
             "flag": "properties-per-transaction-min-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the minimum allowable spending for a single transaction. Working as a transaction floor."
           },
@@ -14347,7 +14534,8 @@
             "complex": false,
             "description": "The quantity of units for the fixed charge."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -14474,7 +14662,8 @@
             "complex": false,
             "description": "When set to `true`, the deletion will be cascaded to the children plans."
           }
-        ]
+        ],
+        "required": false
       },
       "idempotent": false,
       "dangerous": true,
@@ -14529,7 +14718,8 @@
             "complex": false,
             "description": "When set to `true`, the deletion will be cascaded to the children plans."
           }
-        ]
+        ],
+        "required": false
       },
       "idempotent": false,
       "dangerous": true,
@@ -14576,7 +14766,8 @@
             "complex": false,
             "description": "When set to `true`, the deletion will be cascaded to the children plans."
           }
-        ]
+        ],
+        "required": false
       },
       "idempotent": false,
       "dangerous": true,
@@ -14851,7 +15042,8 @@
         }
       ],
       "body": {
-        "wrapper": "metadata"
+        "wrapper": "metadata",
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -14878,7 +15070,8 @@
         }
       ],
       "body": {
-        "wrapper": "metadata"
+        "wrapper": "metadata",
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -15074,6 +15267,7 @@
             "flag": "bill-charges-monthly",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "This field, when set to `true`, enables to invoice usage-based charges on monthly basis, even if the cadence of the plan is yearly or semiannual. This allows customers to pay charges overage on a monthly basis. This can be set to true only if the plan's interval is `yearly` or `semiannual`."
           },
@@ -15084,6 +15278,7 @@
             "flag": "bill-fixed-charges-monthly",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "This field, when set to `true`, enables to invoice fixed charges on monthly basis, even if the cadence of the plan is `yearly` or `semiannual`. This allows customers to pay fixed charges on a monthly basis. This can be set to true only if the plan's interval is `yearly` or `semiannual`."
           },
@@ -15124,6 +15319,7 @@
             "flag": "description",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The description on the plan."
           },
@@ -15161,6 +15357,7 @@
             "flag": "invoice-display-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the plan will be used as the default display name."
           },
@@ -15244,6 +15441,7 @@
             "flag": "trial-period",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The duration in days during which the base cost of the plan is offered for free."
           },
@@ -15257,7 +15455,8 @@
             "complex": true,
             "description": "List of usage thresholds to apply to the plan."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -15301,6 +15500,7 @@
             "flag": "accepts-target-wallet",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies whether the charge accepts a target wallet for prepaid credits deduction.\nWhen set to `true`, events may include a `target_wallet_code` in their `properties` to direct credit deduction to a specific wallet.\nIf no `target_wallet_code` is provided on the event, the standard wallet selection logic is applied.\nIf the `target_wallet_code` does not match an existing wallet, no credits will be applied for that event.\n\nThis field requires a premium integration."
           },
@@ -15466,6 +15666,7 @@
             "flag": "properties-free-units-per-events",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The count of transactions that are not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the number of transactions that are exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -15477,6 +15678,7 @@
             "flag": "properties-free-units-per-total-aggregation",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The transaction amount that is not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the portion of the transaction amount that is exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -15532,6 +15734,7 @@
             "flag": "properties-per-transaction-max-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the maximum allowable spending for a single transaction. Working as a transaction cap."
           },
@@ -15543,6 +15746,7 @@
             "flag": "properties-per-transaction-min-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the minimum allowable spending for a single transaction. Working as a transaction floor."
           },
@@ -15607,6 +15811,7 @@
             "flag": "regroup-paid-fees",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "This setting can only be configured if `pay_in_advance` is `true` and `invoiceable` is `false`.\nThis field determines whether and when the charge fee should be included in\nthe invoice. If `null`, no invoice will be issued for this charge fee.\nIf `invoice`, an invoice will be generated at the end of the period,\nconsolidating all charge fees with a succeeded payment status.",
             "enum": [
@@ -15624,7 +15829,8 @@
             "complex": true,
             "description": "List of unique code used to identify the taxes."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -15686,6 +15892,7 @@
             "flag": "invoice-display-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the name that will be displayed on an invoice. If no value is set for this field, the values of the filter will be used as the default display name."
           },
@@ -15730,6 +15937,7 @@
             "flag": "properties-free-units-per-events",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The count of transactions that are not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the number of transactions that are exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -15741,6 +15949,7 @@
             "flag": "properties-free-units-per-total-aggregation",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The transaction amount that is not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the portion of the transaction amount that is exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -15796,6 +16005,7 @@
             "flag": "properties-per-transaction-max-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the maximum allowable spending for a single transaction. Working as a transaction cap."
           },
@@ -15807,6 +16017,7 @@
             "flag": "properties-per-transaction-min-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the minimum allowable spending for a single transaction. Working as a transaction floor."
           },
@@ -15853,7 +16064,8 @@
             "complex": true,
             "description": "List of possible filter values. The key and values must match one of the billable metric filters."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -15962,6 +16174,7 @@
             "flag": "invoice-display-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the add-on will be used as the default display name."
           },
@@ -16016,6 +16229,7 @@
             "flag": "properties-free-units-per-events",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The count of transactions that are not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the number of transactions that are exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -16027,6 +16241,7 @@
             "flag": "properties-free-units-per-total-aggregation",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The transaction amount that is not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the portion of the transaction amount that is exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -16082,6 +16297,7 @@
             "flag": "properties-per-transaction-max-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the maximum allowable spending for a single transaction. Working as a transaction cap."
           },
@@ -16093,6 +16309,7 @@
             "flag": "properties-per-transaction-min-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the minimum allowable spending for a single transaction. Working as a transaction floor."
           },
@@ -16159,7 +16376,8 @@
             "complex": false,
             "description": "The quantity of units for the fixed charge."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -16196,7 +16414,8 @@
             "complex": false,
             "description": "The date and time in UTC (ISO 8601) when the order form generated by the approval expires. It must be in the future, and must fall strictly before the day the quoted deal stops being executable, otherwise the approval is rejected with a `422`. That boundary is the earliest of the `endDate` of any quoted plan and the `expirationAt` of any quoted wallet credit or recurring top-up rule. A `one_off` quote carries none of them, so its signing window is never bounded. When `expires_at` is omitted, the order form never expires."
           }
-        ]
+        ],
+        "required": false
       },
       "idempotent": false,
       "dangerous": false,
@@ -17031,6 +17250,7 @@
             "flag": "subscription-purchase-order-number",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The purchase order number associated with the subscription. It will be added to invoices generated for this subscription."
           },
@@ -17056,7 +17276,8 @@
             "complex": true,
             "description": "Usage thresholds managed directly on the subscription. This is the recommended way to set progressive billing thresholds per subscription; when present, they take precedence over the thresholds defined on the plan.\n\nThis field cannot be combined with `plan_overrides.usage_thresholds` in the same request.\n"
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -17096,7 +17317,9 @@
           ]
         }
       ],
-      "body": {},
+      "body": {
+        "required": true
+      },
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
@@ -17163,6 +17386,7 @@
             "flag": "invoice-display-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the name that will be displayed on an invoice. If no value is set for this field, the values of the filter will be used as the default display name."
           },
@@ -17207,6 +17431,7 @@
             "flag": "properties-free-units-per-events",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The count of transactions that are not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the number of transactions that are exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -17218,6 +17443,7 @@
             "flag": "properties-free-units-per-total-aggregation",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The transaction amount that is not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the portion of the transaction amount that is exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -17273,6 +17499,7 @@
             "flag": "properties-per-transaction-max-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the maximum allowable spending for a single transaction. Working as a transaction cap."
           },
@@ -17284,6 +17511,7 @@
             "flag": "properties-per-transaction-min-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the minimum allowable spending for a single transaction. Working as a transaction floor."
           },
@@ -17330,7 +17558,8 @@
             "complex": true,
             "description": "List of possible filter values. The key and values must match one of the billable metric filters."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -18070,6 +18299,7 @@
             "flag": "properties-free-units-per-events",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The count of transactions that are not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the number of transactions that are exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -18081,6 +18311,7 @@
             "flag": "properties-free-units-per-total-aggregation",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The transaction amount that is not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the portion of the transaction amount that is exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -18136,6 +18367,7 @@
             "flag": "properties-per-transaction-max-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the maximum allowable spending for a single transaction. Working as a transaction cap."
           },
@@ -18147,6 +18379,7 @@
             "flag": "properties-per-transaction-min-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the minimum allowable spending for a single transaction. Working as a transaction floor."
           },
@@ -18204,7 +18437,8 @@
             "complex": true,
             "description": "List of unique code used to identify the taxes."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -18272,6 +18506,7 @@
             "flag": "invoice-display-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the add-on will be used as the default display name."
           },
@@ -18316,6 +18551,7 @@
             "flag": "properties-free-units-per-events",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The count of transactions that are not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the number of transactions that are exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -18327,6 +18563,7 @@
             "flag": "properties-free-units-per-total-aggregation",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The transaction amount that is not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the portion of the transaction amount that is exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -18382,6 +18619,7 @@
             "flag": "properties-per-transaction-max-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the maximum allowable spending for a single transaction. Working as a transaction cap."
           },
@@ -18393,6 +18631,7 @@
             "flag": "properties-per-transaction-min-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the minimum allowable spending for a single transaction. Working as a transaction floor."
           },
@@ -18449,7 +18688,8 @@
             "complex": false,
             "description": "The quantity of units for the fixed charge."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -18600,7 +18840,8 @@
             ],
             "flag": "subscription-ending-at",
             "type": "string",
-            "required": true,
+            "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The effective end date of the subscription. If this field is set to null, the subscription will automatically renew. This date should be provided in ISO 8601 datetime format, and use Coordinated Universal Time (UTC)."
           },
@@ -18636,6 +18877,7 @@
             "flag": "subscription-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The display name of the subscription on an invoice. This field allows for customization of the subscription's name for billing purposes, especially useful when a single customer has multiple subscriptions using the same plan."
           },
@@ -18997,6 +19239,7 @@
             "flag": "subscription-purchase-order-number",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The purchase order number associated with the subscription. It will be added to invoices generated for this subscription."
           },
@@ -19022,7 +19265,8 @@
             "complex": true,
             "description": "Usage thresholds managed directly on the subscription. This is the recommended way to set progressive billing thresholds per subscription; when present, they take precedence over the thresholds defined on the plan.\n\nSending an empty array removes all subscription-level thresholds. This field cannot be combined with `plan_overrides.usage_thresholds` in the same request. To fully disable progressive billing on a subscription that inherits thresholds from its plan, use `progressive_billing_disabled` instead.\n"
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -19080,6 +19324,7 @@
             "flag": "billable-metric-code",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The code of the billable metric associated with the alert. Only for alerts based on a billable metric."
           },
@@ -19100,6 +19345,7 @@
             "flag": "name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The name of the alert."
           },
@@ -19113,7 +19359,8 @@
             "complex": true,
             "description": "Array of thresholds associated with the alert."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -19189,6 +19436,7 @@
             "flag": "invoice-display-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the name that will be displayed on an invoice. If no value is set for this field, the values of the filter will be used as the default display name."
           },
@@ -19233,6 +19481,7 @@
             "flag": "properties-free-units-per-events",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The count of transactions that are not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the number of transactions that are exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -19244,6 +19493,7 @@
             "flag": "properties-free-units-per-total-aggregation",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The transaction amount that is not impacted by the `percentage` rate and fixed fee in a percentage charge model. This field indicates the portion of the transaction amount that is exempt from the calculation of charges based on the specified percentage rate and fixed fee."
           },
@@ -19299,6 +19549,7 @@
             "flag": "properties-per-transaction-max-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the maximum allowable spending for a single transaction. Working as a transaction cap."
           },
@@ -19310,6 +19561,7 @@
             "flag": "properties-per-transaction-min-amount",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Specifies the minimum allowable spending for a single transaction. Working as a transaction floor."
           },
@@ -19356,7 +19608,8 @@
             "complex": true,
             "description": "List of possible filter values. The key and values must match one of the billable metric filters."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -19395,7 +19648,8 @@
             "complex": false,
             "description": "The historical usage amount in cents for the subscription (provided by your own application)."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -19441,6 +19695,7 @@
             "flag": "description",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Internal description of the taxe"
           },
@@ -19464,7 +19719,8 @@
             "complex": false,
             "description": "The percentage rate of the tax"
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -19600,6 +19856,7 @@
             "flag": "description",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Internal description of the taxe"
           },
@@ -19623,7 +19880,8 @@
             "complex": false,
             "description": "The percentage rate of the tax"
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -19650,6 +19908,7 @@
             "flag": "applies-to-billable-metric-codes",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "An array of billable metric codes to which the wallet is applicable. By specifying the billable metric codes in this field, you can restrict the wallet's usage to specific metrics only."
           },
@@ -19661,6 +19920,7 @@
             "flag": "applies-to-fee-types",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "An array of fee types to which the wallet is applicable. By specifying the fee types in this field, you can restrict the wallet's usage to specific fee types only."
           },
@@ -19681,6 +19941,7 @@
             "flag": "code",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The code of the wallet."
           },
@@ -19841,6 +20102,7 @@
             "flag": "expiration-at",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The date and time that determines when the wallet will expire. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC)."
           },
@@ -19861,6 +20123,7 @@
             "flag": "granted-credits",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The number of free granted credits. Required only if there is no paid credits."
           },
@@ -19871,6 +20134,7 @@
             "flag": "ignore-paid-top-up-limits-on-creation",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "If set to true, the wallet will ignore paid top-up limits on creation."
           },
@@ -19923,6 +20187,7 @@
             "flag": "name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The name of the wallet."
           },
@@ -19933,6 +20198,7 @@
             "flag": "paid-credits",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The number of paid credits. Required only if there is no granted credits."
           },
@@ -19943,6 +20209,7 @@
             "flag": "paid-top-up-max-amount-cents",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Maximum amount of cents that can be top-up with a single paid transaction."
           },
@@ -19953,6 +20220,7 @@
             "flag": "paid-top-up-min-amount-cents",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Minimum amount of cents that can be top-up with a single paid transaction."
           },
@@ -19999,6 +20267,7 @@
             "flag": "purchase-order-number",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The purchase order number associated with the wallet. It will be added to invoices generated for wallet top-ups, unless a more specific purchase order number is set on the wallet transaction or recurring transaction rule that triggered the top-up."
           },
@@ -20019,6 +20288,7 @@
             "flag": "recurring-transaction-rules",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "List of recurring transaction rules. Currently, we only allow one recurring rule per wallet."
           },
@@ -20029,6 +20299,7 @@
             "flag": "transaction-metadata",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "This optional field allows you to store a list of key-value pairs that provide additional information or custom attributes. These key-value pairs will be included in the metadata of wallet transactions generated during the wallet creation process."
           },
@@ -20039,10 +20310,12 @@
             "flag": "transaction-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The name of the wallet transactions triggered when creating the wallet. It will appear on the invoice as the label for the fee. If not set, the label on the invoice will fallback to either `Prepaid credits - {{wallet_name}}` if the wallet name is set, or `Prepaid credits`."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -20079,6 +20352,7 @@
             "flag": "applies-to-billable-metric-codes",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "An array of billable metric codes to which the wallet is applicable. By specifying the billable metric codes in this field, you can restrict the wallet's usage to specific metrics only."
           },
@@ -20090,6 +20364,7 @@
             "flag": "applies-to-fee-types",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "An array of fee types to which the wallet is applicable. By specifying the fee types in this field, you can restrict the wallet's usage to specific fee types only."
           },
@@ -20110,6 +20385,7 @@
             "flag": "code",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The code of the wallet."
           },
@@ -20270,6 +20546,7 @@
             "flag": "expiration-at",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The date and time that determines when the wallet will expire. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC)."
           },
@@ -20290,6 +20567,7 @@
             "flag": "granted-credits",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The number of free granted credits. Required only if there is no paid credits."
           },
@@ -20300,6 +20578,7 @@
             "flag": "ignore-paid-top-up-limits-on-creation",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "If set to true, the wallet will ignore paid top-up limits on creation."
           },
@@ -20352,6 +20631,7 @@
             "flag": "name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The name of the wallet."
           },
@@ -20362,6 +20642,7 @@
             "flag": "paid-credits",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The number of paid credits. Required only if there is no granted credits."
           },
@@ -20372,6 +20653,7 @@
             "flag": "paid-top-up-max-amount-cents",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Maximum amount of cents that can be top-up with a single paid transaction."
           },
@@ -20382,6 +20664,7 @@
             "flag": "paid-top-up-min-amount-cents",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Minimum amount of cents that can be top-up with a single paid transaction."
           },
@@ -20428,6 +20711,7 @@
             "flag": "purchase-order-number",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The purchase order number associated with the wallet. It will be added to invoices generated for wallet top-ups, unless a more specific purchase order number is set on the wallet transaction or recurring transaction rule that triggered the top-up."
           },
@@ -20448,6 +20732,7 @@
             "flag": "recurring-transaction-rules",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "List of recurring transaction rules. Currently, we only allow one recurring rule per wallet."
           },
@@ -20458,6 +20743,7 @@
             "flag": "transaction-metadata",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "This optional field allows you to store a list of key-value pairs that provide additional information or custom attributes. These key-value pairs will be included in the metadata of wallet transactions generated during the wallet creation process."
           },
@@ -20468,10 +20754,12 @@
             "flag": "transaction-name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The name of the wallet transactions triggered when creating the wallet. It will appear on the invoice as the label for the fee. If not set, the label on the invoice will fallback to either `Prepaid credits - {{wallet_name}}` if the wallet name is set, or `Prepaid credits`."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -20505,7 +20793,9 @@
           "description": "A unique wallet identifier within a customer. It is either set by the user at creation or auto-generated by Lago if not provided."
         }
       ],
-      "body": {},
+      "body": {
+        "required": true
+      },
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
@@ -20530,6 +20820,7 @@
             "flag": "granted-credits",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The number of free granted credits."
           },
@@ -20582,6 +20873,7 @@
             "flag": "metadata",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "This optional field allows you to store a list of key-value pairs that hold additional information or custom attributes related to the data."
           },
@@ -20592,6 +20884,7 @@
             "flag": "name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The name of the wallet transaction. It will appear on the invoice as the label for the fee. If not set, the label on the invoice will fallback to either `Prepaid credits - {{wallet_name}}` if the wallet name is set, or `Prepaid credits`.\n\nNote that this name will apply to all transactions (`paid_credits`, `granted_credits` and `voided_credits`) created by this action.\n"
           },
@@ -20602,6 +20895,7 @@
             "flag": "paid-credits",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The number of paid credits."
           },
@@ -20638,6 +20932,7 @@
             "flag": "purchase-order-number",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The purchase order number associated with this wallet transaction. It will be added to invoices generated for the resulting wallet top-up. If not set, falls back to the wallet's `purchase_order_number`."
           },
@@ -20648,6 +20943,7 @@
             "flag": "voided-credits",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The number of voided credits."
           },
@@ -20661,7 +20957,8 @@
             "complex": false,
             "description": "Unique identifier assigned to the wallet within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the wallet's record within the Lago system."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -21264,7 +21561,8 @@
         }
       ],
       "body": {
-        "wrapper": "metadata"
+        "wrapper": "metadata",
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -21291,7 +21589,8 @@
         }
       ],
       "body": {
-        "wrapper": "metadata"
+        "wrapper": "metadata",
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -21318,7 +21617,8 @@
         }
       ],
       "body": {
-        "wrapper": "metadata"
+        "wrapper": "metadata",
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -21353,7 +21653,8 @@
         }
       ],
       "body": {
-        "wrapper": "metadata"
+        "wrapper": "metadata",
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -21414,6 +21715,7 @@
             "flag": "applies-to-billable-metric-codes",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "An array of billable metric codes to which the wallet is applicable. By specifying the billable metric codes in this field, you can restrict the wallet's usage to specific metrics only."
           },
@@ -21425,6 +21727,7 @@
             "flag": "applies-to-fee-types",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "An array of fee types to which the wallet is applicable. By specifying the fee types in this field, you can restrict the wallet's usage to specific fee types only."
           },
@@ -21445,6 +21748,7 @@
             "flag": "code",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The code of the wallet."
           },
@@ -21455,6 +21759,7 @@
             "flag": "expiration-at",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The date and time that determines when the wallet will expire. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC)."
           },
@@ -21507,6 +21812,7 @@
             "flag": "name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The name of the wallet."
           },
@@ -21553,6 +21859,7 @@
             "flag": "purchase-order-number",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The purchase order number associated with the wallet. It will be added to invoices generated for wallet top-ups, unless a more specific purchase order number is set on the wallet transaction or recurring transaction rule that triggered the top-up."
           },
@@ -21566,7 +21873,8 @@
             "complex": true,
             "description": "List of recurring transaction rules. Currently, we only allow one recurring rule per wallet."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -21611,6 +21919,7 @@
             "flag": "applies-to-billable-metric-codes",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "An array of billable metric codes to which the wallet is applicable. By specifying the billable metric codes in this field, you can restrict the wallet's usage to specific metrics only."
           },
@@ -21622,6 +21931,7 @@
             "flag": "applies-to-fee-types",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "An array of fee types to which the wallet is applicable. By specifying the fee types in this field, you can restrict the wallet's usage to specific fee types only."
           },
@@ -21642,6 +21952,7 @@
             "flag": "code",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The code of the wallet."
           },
@@ -21652,6 +21963,7 @@
             "flag": "expiration-at",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The date and time that determines when the wallet will expire. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC)."
           },
@@ -21704,6 +22016,7 @@
             "flag": "name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The name of the wallet."
           },
@@ -21750,6 +22063,7 @@
             "flag": "purchase-order-number",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The purchase order number associated with the wallet. It will be added to invoices generated for wallet top-ups, unless a more specific purchase order number is set on the wallet transaction or recurring transaction rule that triggered the top-up."
           },
@@ -21763,7 +22077,8 @@
             "complex": true,
             "description": "List of recurring transaction rules. Currently, we only allow one recurring rule per wallet."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -21825,6 +22140,7 @@
             "flag": "name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The name of the alert."
           },
@@ -21838,7 +22154,8 @@
             "complex": true,
             "description": "Array of thresholds associated with the alert."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -21952,6 +22269,7 @@
             "flag": "event-types",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "A list of event types that will trigger the webhook. Passing null means that all event types will be sent."
           },
@@ -21962,6 +22280,7 @@
             "flag": "name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The name of the webhook."
           },
@@ -21972,6 +22291,7 @@
             "flag": "signature-algo",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The signature used for the webhook. If no value is passed,",
             "enum": [
@@ -21990,7 +22310,8 @@
             "complex": false,
             "description": "The URL of the webhook endpoint."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -22106,6 +22427,7 @@
             "flag": "event-types",
             "type": "array",
             "required": false,
+            "nullable": true,
             "complex": true,
             "description": "A list of event types that will trigger the webhook. Passing null means that all event types will be sent."
           },
@@ -22116,6 +22438,7 @@
             "flag": "name",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The name of the webhook."
           },
@@ -22126,6 +22449,7 @@
             "flag": "signature-algo",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The signature used for the webhook. If no value is passed,",
             "enum": [
@@ -22144,7 +22468,8 @@
             "complex": false,
             "description": "The URL of the webhook endpoint."
           }
-        ]
+        ],
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,

@@ -247,17 +247,21 @@ func (g generator) body(raw any) (*generated.Body, error) {
 	if err != nil {
 		return nil, err
 	}
+	// OpenAPI defaults requestBody.required to false. The runtime used to demand a body
+	// whenever one was declared, which made `invoices void` refuse the very call the spec
+	// documents ("when no body parameters are provided, the invoice can be voided").
+	bodyRequired := boolValue(resolved["required"])
 	content, _ := resolved["content"].(map[string]any)
 	jsonContent, _ := content["application/json"].(map[string]any)
 	schema, _ := jsonContent["schema"].(map[string]any)
 	if schema == nil {
-		return &generated.Body{}, nil
+		return &generated.Body{Required: bodyRequired}, nil
 	}
 	schema, err = g.resolveSchema(schema)
 	if err != nil {
 		return nil, err
 	}
-	body := &generated.Body{}
+	body := &generated.Body{Required: bodyRequired}
 	properties, _ := schema["properties"].(map[string]any)
 	required := requiredSet(schema)
 	if len(properties) == 1 {
@@ -294,6 +298,7 @@ func (g generator) collectFields(body *generated.Body, schema map[string]any, pr
 		}
 		path := append(append([]string{}, prefix...), name)
 		valueType := schemaType(child)
+		_, nullable := nullableType(child)
 		childProperties, _ := child["properties"].(map[string]any)
 		additional := child["additionalProperties"] != nil
 		if valueType == "object" && len(childProperties) > 0 && !additional {
@@ -303,10 +308,14 @@ func (g generator) collectFields(body *generated.Body, schema map[string]any, pr
 			continue
 		}
 		body.Fields = append(body.Fields, generated.Field{
-			Path:        path,
-			Flag:        normalizeName(strings.Join(path, "-")),
-			Type:        valueType,
-			Required:    parentRequired && required[name],
+			Path: path,
+			Flag: normalizeName(strings.Join(path, "-")),
+			Type: valueType,
+			// A nullable field listed under `required` means the key must be present, and
+			// null satisfies that. `subscriptions update` lists `ending_at` that way and
+			// the CLI demanded a value the API does not need. See DECISIONS.md.
+			Required:    parentRequired && required[name] && !nullable,
+			Nullable:    nullable,
 			Complex:     valueType == "object" || valueType == "array" || additional,
 			Description: stringValue(child["description"]),
 			Enum:        stringSlice(child["enum"]),
@@ -568,6 +577,36 @@ func schemaType(schema map[string]any) string {
 		return "string"
 	}
 	return "string"
+}
+
+// nullableType splits an OpenAPI 3.1 type union. `type: [integer, 'null']` yields
+// ("integer", true); a plain `type: integer` yields ("integer", false); a union with more
+// than one non-null member, or no type at all, yields ("", nullable) and the caller falls
+// back to the structural checks in schemaType.
+func nullableType(schema map[string]any) (string, bool) {
+	if schema == nil {
+		return "", false
+	}
+	switch typed := schema["type"].(type) {
+	case string:
+		return typed, typed == "null"
+	case []any:
+		var members []string
+		nullable := false
+		for _, member := range typed {
+			if name := stringValue(member); name == "null" {
+				nullable = true
+			} else if name != "" {
+				members = append(members, name)
+			}
+		}
+		if len(members) == 1 {
+			return members[0], nullable
+		}
+		return "", nullable
+	default:
+		return "", false
+	}
 }
 
 func requiredSet(schema map[string]any) map[string]bool {

@@ -32,13 +32,20 @@ type Parameter struct {
 type Body struct {
 	Wrapper string  `json:"wrapper,omitempty"`
 	Fields  []Field `json:"fields,omitempty"`
+	// Required mirrors requestBody.required from the spec. When false the command may be
+	// run with no body flags at all: `invoices void` voids without a body, for instance.
+	Required bool `json:"required"`
 }
 
 type Field struct {
-	Path        []string `json:"path"`
-	Flag        string   `json:"flag"`
-	Type        string   `json:"type"`
-	Required    bool     `json:"required"`
+	Path     []string `json:"path"`
+	Flag     string   `json:"flag"`
+	Type     string   `json:"type"`
+	Required bool     `json:"required"`
+	// Nullable records a `type: [T, 'null']` union. A nullable field is never Required:
+	// the spec listing it under `required` means the key must be present, and null
+	// satisfies that, so the CLI must not demand a value.
+	Nullable    bool     `json:"nullable,omitempty"`
 	Complex     bool     `json:"complex"`
 	Description string   `json:"description,omitempty"`
 	Enum        []string `json:"enum,omitempty"`
