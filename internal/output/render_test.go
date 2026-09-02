@@ -25,8 +25,8 @@ func TestTableRendersEveryValueShape(t *testing.T) {
 	}{
 		{
 			name:  "collection puts identity and amount first",
-			value: map[string]any{"invoices": []any{map[string]any{"created_at": "2026-01-01", "amount_cents": json.Number("100"), "lago_id": "inv_1", "currency": "EUR"}}},
-			want:  []string{"LAGO_ID", "AMOUNT_CENTS", "inv_1", "100", "EUR"},
+			value: map[string]any{"invoices": []any{map[string]any{"created_at": "2026-01-01", "total_amount_cents": json.Number("100"), "lago_id": "inv_1", "currency": "EUR"}}},
+			want:  []string{"LAGO_ID", "TOTAL_AMOUNT_CENTS", "inv_1", "100", "EUR"},
 		},
 		{
 			name:  "single object renders as key/value rows",
@@ -49,9 +49,9 @@ func TestTableRendersEveryValueShape(t *testing.T) {
 			want:  []string{"just-a-string"},
 		},
 		{
-			name:  "nested objects are serialised, not dropped",
+			name:  "nested objects are summarised, not dropped",
 			value: map[string]any{"fee": map[string]any{"item": map[string]any{"type": "charge"}}},
-			want:  []string{"charge"},
+			want:  []string{"ITEM", "type=charge"},
 		},
 		{
 			name:  "booleans and nulls render without panicking",
@@ -75,7 +75,8 @@ func TestTableRendersEveryValueShape(t *testing.T) {
 }
 
 // An unwrapped single-key envelope is the Lago API's response shape. Objects with
-// more than one key must not be unwrapped, or fields would silently disappear.
+// more than one key must not be unwrapped, or fields would silently disappear. The one
+// exception is the list envelope, one array beside `meta`, handled by unwrapList.
 func TestOnlySingleKeyEnvelopesAreUnwrapped(t *testing.T) {
 	t.Parallel()
 	out, err := render(t, Table, "", map[string]any{"invoice": map[string]any{"lago_id": "inv_1"}, "meta": map[string]any{"page": json.Number("1")}})
@@ -83,7 +84,14 @@ func TestOnlySingleKeyEnvelopesAreUnwrapped(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !strings.Contains(out, "META") || !strings.Contains(out, "INVOICE") {
-		t.Errorf("a two-key response was unwrapped and lost a field:\n%s", out)
+		t.Errorf("an object beside meta was unwrapped and lost a field:\n%s", out)
+	}
+	out, err = render(t, Table, "", map[string]any{"a": []any{"x"}, "b": []any{"y"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(out, "A") || !strings.Contains(out, "B") {
+		t.Errorf("two arrays were unwrapped and one was lost:\n%s", out)
 	}
 }
 

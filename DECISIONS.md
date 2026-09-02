@@ -338,6 +338,43 @@ says.
 The removal is a single commit so it can be reverted the day lago-api implements the
 header. Until then the request to lago-api is: read `Idempotency-Key` on every write, or
 document that it never will, so no client offers the flag again.
+## 2026-09-02 — Table cells are display-safe, list envelopes unwrap, columns are declared
+
+Four QA findings, one renderer, four rules.
+
+**Every cell is escaped, never stripped.** A customer name holding `\e[31m` and a newline
+recoloured the terminal and injected a fake row. All C0 and C1 control characters and
+invalid UTF-8 bytes now print as visible escapes (`\x1b`, `\n`, `\r`, `\t`, `\xNN`) on the one
+path every value takes to the terminal, `output.Sanitize`, and the text error printer uses
+the same function. Replacing keeps the evidence: an operator sees the name contains an
+escape instead of a silently shortened string. JSON output is untouched; `encoding/json`
+escapes on its own.
+
+**The list envelope unwraps; `meta` goes to stderr.** `{"customers": [...], "meta": {...}}`
+has two keys, so the single-key unwrap left it as two key/value rows with the page JSON
+in one cell. Exactly one array beside an optional `meta` object is now recognised as a
+list and rendered one row per item. `meta` is omitted from stdout: a pagination object as
+a table row is noise for a reader and useless to a script, which reads `--output json`
+where `meta` is intact. When `total_pages > 1` a one-line stderr hint names the page and
+the two ways to get the rest, the same channel the empty-query hint already uses. `--all`
+renders page by page without buffering, so its header repeats per page and the hint is
+suppressed; buffering rows to print one header would contradict the streaming rule.
+
+**Columns are declared per resource, in one file.** Customers, invoices, subscriptions and
+plans carry a fixed column list in `internal/output/columns.go`, verified against the
+pinned spec by a contract test so a rename fails the build rather than printing an empty
+column. Every other resource takes the heuristic: identifiers, then status, then each
+money amount followed by its currency, then dates, then the rest, drawn from the union of
+keys across all rows on the page (the old renderer read the first row only) and capped at
+eight. The map is data, not command code, so adding a resource is one line.
+
+**A cell never contains JSON.** A nested list summarises as `2 items: requests, storage`
+(labels from code, external ID, name or Lago ID, capped at five), a nested object as its
+identifier pairs, as `k=v` pairs when it is four scalars or fewer, or as `{12 fields}`.
+The structured form is one flag away. The exception is `--dry-run`: its envelope carries
+the request payload under `body`, which the summary would reduce to `{2 fields}`, so the
+envelope prints as JSON in table mode. It is a request, not a resource, and JSON is the
+form it will be sent in.
 
 ## Deferred beyond 1.x
 
