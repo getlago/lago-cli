@@ -139,6 +139,12 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 		if err != nil {
 			return err
 		}
+		if operation.Resource == "events" && operation.Action == "send" && cmd.Flags().Changed("input") {
+			body, err = normalizeEventBodyTimestamp(body)
+			if err != nil {
+				return err
+			}
+		}
 		if operation.Resource == "events" && operation.Action == "send" && (callerChoseTransactionID || cmd.Flags().Changed("input")) {
 			warnRetryUnsafeBody(app, body)
 		}
@@ -239,7 +245,15 @@ func generatedBody(in interface{ Read([]byte) (int, error) }, cmd *cobra.Command
 			}
 			continue
 		}
-		value, err := parseGeneratedValue(*values[field.Flag], field.Type, field.Complex)
+		raw := *values[field.Flag]
+		if isEventTimestamp(body.Wrapper, field.Path) {
+			normalized, err := normalizeEventTimestamp(raw)
+			if err != nil {
+				return nil, apperr.New(apperr.ExitUsage, fmt.Sprintf("invalid --%s value: %v", field.Flag, err), "Pass Unix seconds (1788338088, optionally with decimals) or an RFC 3339 instant (2026-09-02T09:30:00Z).")
+			}
+			raw = normalized
+		}
+		value, err := parseGeneratedValue(raw, field.Type, field.Complex)
 		if err != nil {
 			return nil, apperr.New(apperr.ExitUsage, fmt.Sprintf("invalid --%s value: %v", field.Flag, err), "Check the field type in `--help`; objects and arrays use JSON syntax.")
 		}

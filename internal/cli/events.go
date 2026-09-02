@@ -9,7 +9,10 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"sync"
+	"time"
 
 	"github.com/getlago/lago-cli/internal/apperr"
 	"github.com/getlago/lago-cli/internal/config"
@@ -168,6 +171,13 @@ func prepareEvent(raw []byte) (body []byte, retryable bool, retryUnsafe bool, er
 	} else {
 		payload = map[string]any{"event": event}
 	}
+	if timestamp, isText := event["timestamp"].(string); isText {
+		normalized, err := normalizeEventTimestamp(timestamp)
+		if err != nil {
+			return nil, false, false, fmt.Errorf("timestamp: %w", err)
+		}
+		event["timestamp"] = normalized
+	}
 	if transactionID, _ := event["transaction_id"].(string); transactionID == "" {
 		event["transaction_id"] = uuid.NewString()
 	} else {
@@ -182,6 +192,67 @@ func prepareEvent(raw []byte) (body []byte, retryable bool, retryUnsafe bool, er
 func eventHasTimestamp(event map[string]any) bool {
 	timestamp, present := event["timestamp"]
 	return present && timestamp != nil && timestamp != ""
+}
+
+// isEventTimestamp reports whether a generated body field is the event timestamp, the
+// one field whose spec type (`oneOf [integer, string]`, Unix seconds) the CLI knows well
+// enough to accept a calendar instant for.
+func isEventTimestamp(wrapper string, path []string) bool {
+	return wrapper == "event" && len(path) == 1 && path[0] == "timestamp"
+}
+
+// normalizeEventTimestamp accepts Unix seconds (with optional decimals) unchanged, and
+// converts an RFC 3339 instant to Unix seconds, keeping sub-second precision as decimals.
+// Lago stores the timestamp in UTC; a zone offset in the input is honoured, not dropped.
+func normalizeEventTimestamp(raw string) (string, error) {
+	trimmed := strings.TrimSpace(raw)
+	if trimmed == "" {
+		return raw, nil
+	}
+	if _, err := strconv.ParseFloat(trimmed, 64); err == nil && !strings.ContainsAny(trimmed, "eE") {
+		return trimmed, nil
+	}
+	instant, err := time.Parse(time.RFC3339Nano, trimmed)
+	if err != nil {
+		return "", fmt.Errorf("%q is neither Unix seconds nor an RFC 3339 instant", raw)
+	}
+	seconds := strconv.FormatInt(instant.Unix(), 10)
+	if nanos := instant.Nanosecond(); nanos > 0 {
+		fraction := strings.TrimRight(fmt.Sprintf("%09d", nanos), "0")
+		return seconds + "." + fraction, nil
+	}
+	return seconds, nil
+}
+
+// normalizeEventBodyTimestamp applies normalizeEventTimestamp to a complete --input
+// body for a single `events send`, so the two ways of passing an event agree.
+func normalizeEventBodyTimestamp(body []byte) ([]byte, error) {
+	if len(body) == 0 {
+		return body, nil
+	}
+	var payload map[string]any
+	decoder := json.NewDecoder(bytes.NewReader(body))
+	decoder.UseNumber()
+	if err := decoder.Decode(&payload); err != nil {
+		return body, nil // the API reports a malformed body with its own message
+	}
+	event, ok := payload["event"].(map[string]any)
+	if !ok {
+		return body, nil
+	}
+	timestamp, isText := event["timestamp"].(string)
+	if !isText {
+		return body, nil
+	}
+	normalized, err := normalizeEventTimestamp(timestamp)
+	if err != nil {
+		return nil, apperr.New(apperr.ExitUsage, "invalid event timestamp: "+err.Error(), "Pass Unix seconds (1788338088, optionally with decimals) or an RFC 3339 instant (2026-09-02T09:30:00Z).")
+	}
+	if normalized == timestamp {
+		return body, nil
+	}
+	event["timestamp"] = normalized
+	return json.Marshal(payload)
 }
 
 // eventIsRetryUnsafe reports whether an event names its own transaction_id but leaves

@@ -215,7 +215,7 @@ A column absent from every row on the page is dropped. When the page is one of s
 
 Table cells escape terminal control characters. A name containing an ANSI sequence or a newline prints as `\x1b[31m...` and `\n`, so a hostile value cannot recolour your terminal or inject a fake row. JSON output escapes on its own.
 
-`events send` generates a transaction ID when one is omitted. When you pass your own `--transaction-id`, pass `--timestamp` (unix seconds) with it and resend both unchanged on retry. Lago deduplicates on `transaction_id`, but on the ClickHouse event store the timestamp is part of the key and a missing one defaults to the time of reception, so a retry without a timestamp is a second billable event. The CLI warns on stderr when a command is not safe to retry for that reason.
+`events send` generates a transaction ID when one is omitted. When you pass your own `--transaction-id`, pass `--timestamp` with it and resend both unchanged on retry. `--timestamp` takes Unix seconds (`1788273288`, decimals allowed) or an RFC 3339 instant (`2026-09-01T14:34:48Z`, converted to Unix seconds before sending); the same conversion applies to a `timestamp` string in `--input` and `--file` events. Lago deduplicates on `transaction_id`, but on the ClickHouse event store the timestamp is part of the key and a missing one defaults to the time of reception, so a retry without a timestamp is a second billable event. The CLI warns on stderr when a command is not safe to retry for that reason.
 
 For bulk ingestion, stream newline-delimited JSON without loading the file into memory:
 
