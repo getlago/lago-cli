@@ -37,5 +37,5 @@ pkg/api                 90.0
 internal/diagnostics    56.0
 internal/docgen         58.0
 internal/gen             9.5   # re-measured on Go 1.27, 2026-09-01 (was 10.0 on Go 1.25)
-internal/generated      50.0
+internal/generated      80.0
 internal/moneycheck     15.0  # re-measured on Go 1.27, 2026-09-01 (was 16.0 on Go 1.25)

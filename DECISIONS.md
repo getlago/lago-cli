@@ -230,6 +230,58 @@ the lower bound is a server bug shield until lago-api validates the parameter, a
 upper bound is a sanity limit, not a contract: nobody reads a thousand-row table, and
 `--all` exists for the rest. `--page` gets the same check on the single-page path that
 `--all` already had. Both are handed to lago-api and lago-openapi as fixes to make.
+## 2026-09-02 — Required means required and non-nullable; types come from the spec
+
+Three generator findings from QA, one derivation pass.
+
+**A body is required only when the spec says so.** The generator never read
+`requestBody.required`, and the runtime demanded a body whenever one was declared. So
+`invoices void`, which the spec documents as callable without a body, refused the call.
+`Body.Required` now mirrors the spec, whose default is false. Ten operations become
+bodiless-capable; two of them, `credit-notes estimate` and `fees update`, merely omit
+`required` upstream and the server still validates them. That is a lago-openapi fix, not
+a CLI workaround, and it is handed off rather than patched here.
+
+**A nullable field is never a required flag.** `SubscriptionUpdateInput.subscription`
+lists `ending_at` under `required` and types it `[string, 'null']`. In JSON Schema that
+means the key must be present and null satisfies it; the CLI read it as "a value must be
+given" and blocked every `subscriptions update` that did not set an end date. Required is
+now `required && !nullable`, `Field.Nullable` records the union, and a contract test walks
+every body so the trap cannot return through another endpoint. It was the only
+flag-producing case in the spec; 82 others are in response schemas, which never become
+flags.
+
+**Types resolve through unions.** OpenAPI 3.1 writes nullability as `type: [integer,
+'null']`. The generator read `type` as a plain string, failed on the list, and fell
+through to "string", so `coupons create --amount-cents 1000` sent `"1000"` while
+`add-ons create` sent `1000`. Unions resolve to their non-null member; a `oneOf`/`anyOf`
+resolves when its scalar members agree and stays a string otherwise (`event.timestamp`
+is `oneOf [integer, string]`, and the server accepts both). 26 integer, 8 boolean and 2
+decimal fields change shape. A contract test runs every write with synthetic values and
+asserts the JSON kind on the wire matches the spec type: the request-body counterpart of
+`internal/moneycheck`, which only inspects Go source.
+## 2026-09-02 — Raw and scripted requests share the generated danger classification
+
+QA deleted a live customer through a fixture step and through `lago api DELETE` without
+being asked once. Generated commands were gated; the two paths that bypass the command
+tree were not. Both now classify a request by looking up its method and path in the
+generated operation table and reading the `Dangerous` flag the generator derived from
+the spec. That keeps one classification: `POST /invoices/{id}/void` is gated because the
+spec says so, not because a second verb list happened to agree. A path no operation
+claims falls back to the generator's default-deny rule, DELETE or a destructive segment,
+so an unknown endpoint is never silently ungated. The vocabulary moved to
+`internal/generated` so the generator, the runtime, and the contract test read one list.
+
+`fixtures run` and `seed demo` are refused outside test profiles rather than offered a
+live-mode confirmation. A scenario creates and deletes many objects; confirming the
+first destructive step says nothing about the rest, and a refusal midway leaves the
+account half-applied. So the scan runs before step one and the whole fixture is
+confirmed by name, or not run at all.
+
+`lago api` keeps test mode ungated. It exists as the raw escape hatch for endpoints and
+shapes the generated commands do not cover yet, and a test organization is the place to
+use it that way. Live mode goes through `--confirm <path>` or the typed prompt, the same
+gate as a generated delete. Recorded because the asymmetry is deliberate.
 
 ## Deferred beyond 1.x
 

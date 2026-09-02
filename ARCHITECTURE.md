@@ -24,7 +24,7 @@ PR CI never fetches a mutable network resource. It validates the pinned snapshot
 
 ## Request lifecycle
 
-Flags override `LAGO_*` environment variables, which override the selected TOML profile. A request then passes through live-mode guardrails, body generation, exact-value encoding, authorization injection, redacted diagnostics, bounded retries, response classification, optional JMESPath, and output rendering.
+Flags override `LAGO_*` environment variables, which override the selected TOML profile. A request then passes through live-mode guardrails, body generation, exact-value encoding (field types, nullability, and whether a body is required at all come from the pinned spec), authorization injection, redacted diagnostics, bounded retries, response classification, optional JMESPath, and output rendering.
 
 Retries are limited to network errors, 429, and 5xx. They occur only for an idempotent method or when an idempotency key exists. `Retry-After` takes precedence over exponential full-jitter backoff. The HTTP client has a five-second connect/TLS budget and a 30-second total default.
 

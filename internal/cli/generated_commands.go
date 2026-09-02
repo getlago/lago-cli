@@ -149,7 +149,7 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 		if operation.Resource == "events" && operation.Action == "send" && (callerChoseTransactionID || cmd.Flags().Changed("input")) {
 			warnRetryUnsafeBody(app, body)
 		}
-		if operation.Body != nil && len(body) == 0 && operation.Method != http.MethodGet && operation.Method != http.MethodDelete {
+		if operation.Body != nil && operation.Body.Required && len(body) == 0 && operation.Method != http.MethodGet && operation.Method != http.MethodDelete {
 			return apperr.New(apperr.ExitUsage, "request body is required", "Pass generated field flags or --input @payload.json.")
 		}
 		if operation.Dangerous {

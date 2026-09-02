@@ -124,6 +124,8 @@ Configuration resolves flags → environment → `~/.config/lago/config.toml`. S
 
 **Mode defaults to live.** A profile declares `mode = "live"` or `mode = "test"`, and a credential override (`--api-key`, `--api-url`, `LAGO_API_KEY`, `LAGO_API_URL`) without an explicit mode deliberately resolves to **live**, not test. Failing toward caution means a script that forgets `--mode` gets the confirmation gates, not a silent write to production. Live commands print `[LIVE]` on stderr, and destructive live operations require the resource identifier via `--confirm` or typed interactive confirmation.
 
+The gate follows the spec, not the command surface. `lago api` classifies a raw request by the operation its method and path address: in a live profile, `lago api DELETE /customers/x` or `lago api POST /invoices/x/void` requires `--confirm <path>` or typed confirmation, while a test profile keeps `lago api` as an ungated escape hatch. `lago fixtures run` and `lago seed demo` run only against test profiles, and a fixture containing a destructive step must be confirmed with `--confirm <fixture name>` before its first step runs.
+
 Plain HTTP and disabled TLS verification require the explicit `--insecure` flag and always print a warning. Use it for `http://localhost:3000` during development, not against a deployment that holds real money.
 
 ## Quickstart
@@ -262,6 +264,20 @@ $ echo $?
 
 `--all` and `--query` are mutually exclusive: `--all` streams pages without buffering, so a whole-collection expression has nothing to evaluate against. Use a per-page `--query`, or stream JSON pages into `jq`.
 
+### Validation errors name the field
+
+A 422 from Lago carries the failing field and reason in `error_details`. Default output prints each one under the summary line, so the fix is visible without switching to `--output json`, which carries the same map under `error.details`.
+
+```console
+$ lago customers create --external-id acme --name Acme
+Error: Unprocessable Entity
+  external_id: value_already_exist
+HTTP status: 422
+Lago code: validation_errors
+Request ID: 3f1c…
+Suggestion: Check the command flags and Lago API validation details.
+```
+
 ## Everyday commands
 
 ```console
@@ -272,7 +288,7 @@ $ lago api GET /customers?page=2
 $ lago api POST /events --data @event.json --idempotency-key event-42
 ```
 
-Global scripting controls: `--output table|json|yaml`, `--query`, `--dry-run`, `--timing`, `--verbose`, `--timeout`, `--no-retry`. `--timing` separates API round-trip, retry wait, and CLI overhead. The API key is redacted from dry runs, errors, and verbose logs.
+Global scripting controls: `--output table|json|yaml`, `--query`, `--dry-run`, `--timing`, `--verbose`, `--timeout`, `--no-retry`. `--timing` separates API round-trip, retry wait, and CLI overhead, and prints on failure too, including network errors, so retry behaviour is visible when it matters. The API key is redacted from dry runs, errors, and verbose logs.
 
 ## Stable exit codes
 
