@@ -20,6 +20,7 @@ lago init [flags]
   -h, --help            help for init
       --region string   Lago region: us, eu, or self-hosted
       --update-check    Allow a once-daily anonymous release check
+      --use             Make this profile the current profile (the first profile is current by default)
 ```
 
 ### Options inherited from parent commands
