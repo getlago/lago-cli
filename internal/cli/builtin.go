@@ -71,6 +71,16 @@ func newUpgradeCommand(app *App) *cobra.Command {
 		Example: "  lago upgrade\n  lago upgrade --channel beta",
 		Args:    cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
+			if cliupdate.IsDevelopment(app.Version) {
+				// A source build has no release to compare against, so asking GitHub
+				// can only produce a misleading answer (or a misleading failure when
+				// the repository is private or the network is filtered). Say what the
+				// binary is and how to rebuild it, without any network call.
+				fmt.Fprintf(app.Out, "Lago CLI %s is a development build, not a release. Rebuild from source to update it:\n", app.Version)
+				fmt.Fprintln(app.Out, "\n    go install github.com/getlago/lago-cli/cmd/lago@latest")
+				fmt.Fprintln(app.Out, "\nOr run `make build` in a checkout of github.com/getlago/lago-cli.")
+				return nil
+			}
 			check, _, err := cliupdate.Latest(cmd.Context(), app.Version, channel, "lago-cli/"+app.Version, updateAPIBase())
 			if err != nil {
 				return err
@@ -79,15 +89,11 @@ func newUpgradeCommand(app *App) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			if !check.Development && !check.UpdateAvailable {
+			if !check.UpdateAvailable {
 				fmt.Fprintf(app.Out, "Lago CLI %s is already current on the %s channel.\n", app.Version, channel)
 				return nil
 			}
-			if check.Development {
-				fmt.Fprintf(app.Out, "This is a development build; the latest %s release is %s.\n", channel, check.Latest)
-			} else {
-				fmt.Fprintf(app.Out, "Lago CLI %s is available (installed: %s).\n", check.Latest, app.Version)
-			}
+			fmt.Fprintf(app.Out, "Lago CLI %s is available (installed: %s).\n", check.Latest, app.Version)
 			switch method {
 			case cliupdate.Homebrew, cliupdate.GoInstall:
 				fmt.Fprintf(app.Out, "\n    %s\n", command)
