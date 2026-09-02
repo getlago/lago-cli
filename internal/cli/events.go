@@ -72,6 +72,7 @@ func runEventStream(cmd *cobra.Command, app *App, source string, concurrency int
 	}()
 
 	queued := 0
+	retryUnsafe := 0
 	scanner := bufio.NewScanner(reader)
 	scanner.Buffer(make([]byte, 64<<10), 10<<20)
 	for line := 1; scanner.Scan(); line++ {
@@ -79,7 +80,10 @@ func runEventStream(cmd *cobra.Command, app *App, source string, concurrency int
 		if len(raw) == 0 {
 			continue
 		}
-		body, key, encodeErr := prepareEvent(raw)
+		body, key, unsafe, encodeErr := prepareEvent(raw)
+		if unsafe {
+			retryUnsafe++
+		}
 		if encodeErr != nil {
 			close(jobs)
 			for range results {
@@ -98,6 +102,9 @@ func runEventStream(cmd *cobra.Command, app *App, source string, concurrency int
 	}
 	scanErr := scanner.Err()
 	close(jobs)
+	if retryUnsafe > 0 {
+		fmt.Fprintf(app.Err, "WARNING: %d event(s) carry a transaction_id but no timestamp and are not safe to resend: on the ClickHouse event store a missing timestamp defaults to the time of reception and is part of the deduplication key, so a retry bills them again. Add a timestamp (unix seconds) to every event.\n", retryUnsafe)
+	}
 
 	sent, failed, retried := 0, 0, 0
 	failures := make([]map[string]any, 0, 5)
@@ -143,12 +150,15 @@ func eventReader(stdin io.Reader, source string) (io.Reader, func(), error) {
 	return file, func() { _ = file.Close() }, nil
 }
 
-func prepareEvent(raw []byte) ([]byte, string, error) {
+// prepareEvent wraps a raw NDJSON line into the API envelope and assigns a transaction
+// ID when the line has none. retryUnsafe reports whether the line carried its own
+// transaction ID but no timestamp; see retryUnsafeWarning for why that matters.
+func prepareEvent(raw []byte) (body []byte, key string, retryUnsafe bool, err error) {
 	var payload map[string]any
 	decoder := json.NewDecoder(bytes.NewReader(raw))
 	decoder.UseNumber()
 	if err := decoder.Decode(&payload); err != nil {
-		return nil, "", err
+		return nil, "", false, err
 	}
 	event := payload
 	if wrapped, ok := payload["event"].(map[string]any); ok {
@@ -156,11 +166,49 @@ func prepareEvent(raw []byte) ([]byte, string, error) {
 	} else {
 		payload = map[string]any{"event": event}
 	}
-	key, _ := event["transaction_id"].(string)
+	key, _ = event["transaction_id"].(string)
 	if key == "" {
 		key = uuid.NewString()
 		event["transaction_id"] = key
+	} else {
+		retryUnsafe = eventIsRetryUnsafe(event)
 	}
 	encoded, err := json.Marshal(payload)
-	return encoded, key, err
+	return encoded, key, retryUnsafe, err
+}
+
+// eventIsRetryUnsafe reports whether an event names its own transaction_id but leaves
+// timestamp to the server.
+//
+// Lago deduplicates events on transaction_id, but on the ClickHouse event store the
+// timestamp is part of the deduplication key, and a missing timestamp defaults to the
+// time of reception. So two sends of the same command are two distinct events and both
+// are billed. Only a caller-chosen transaction_id is a promise of idempotency the CLI
+// can break; a generated one is unique per run and a resend is a new event by design.
+func eventIsRetryUnsafe(event map[string]any) bool {
+	transactionID, _ := event["transaction_id"].(string)
+	if transactionID == "" {
+		return false
+	}
+	timestamp, present := event["timestamp"]
+	return !present || timestamp == nil || timestamp == ""
+}
+
+const retryUnsafeWarning = "WARNING: --transaction-id without --timestamp is not safe to retry. Lago sets a missing timestamp to the time of reception, and on the ClickHouse event store the timestamp is part of the deduplication key, so resending this command bills a second event. Pass --timestamp <unix seconds> and resend the same value on retry."
+
+// warnRetryUnsafeBody inspects a single-event request body and prints
+// retryUnsafeWarning on stderr when it applies. It never fails the command: the
+// request is valid, only the retry story is not.
+func warnRetryUnsafeBody(app *App, body []byte) {
+	var payload map[string]any
+	if err := json.Unmarshal(body, &payload); err != nil {
+		return
+	}
+	event, ok := payload["event"].(map[string]any)
+	if !ok {
+		event = payload
+	}
+	if eventIsRetryUnsafe(event) {
+		fmt.Fprintln(app.Err, retryUnsafeWarning)
+	}
 }
