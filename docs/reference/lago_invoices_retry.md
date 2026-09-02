@@ -19,8 +19,7 @@ lago invoices retry <lago_id> [flags]
 ### Options
 
 ```
-  -h, --help                     help for retry
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for retry
 ```
 
 ### Options inherited from parent commands

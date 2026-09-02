@@ -19,8 +19,7 @@ lago entitlements remove-entitlement-privilege <code> <feature_code> <privilege_
 ### Options
 
 ```
-  -h, --help                     help for remove-entitlement-privilege
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for remove-entitlement-privilege
 ```
 
 ### Options inherited from parent commands

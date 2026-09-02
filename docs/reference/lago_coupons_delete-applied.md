@@ -19,8 +19,7 @@ lago coupons delete-applied <external_customer_id> <applied_coupon_id> [flags]
 ### Options
 
 ```
-  -h, --help                     help for delete-applied
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for delete-applied
 ```
 
 ### Options inherited from parent commands

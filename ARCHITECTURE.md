@@ -26,9 +26,9 @@ PR CI never fetches a mutable network resource. It validates the pinned snapshot
 
 Flags override `LAGO_*` environment variables, which override the selected TOML profile. A request then passes through live-mode guardrails, body generation, exact-value encoding (field types, nullability, and whether a body is required at all come from the pinned spec), authorization injection, redacted diagnostics, bounded retries, response classification, optional JMESPath, and output rendering.
 
-Retries are limited to network errors, 429, and 5xx. They occur only for an idempotent method or when an idempotency key exists. `Retry-After` takes precedence over exponential full-jitter backoff. The HTTP client has a five-second connect/TLS budget and a 30-second total default.
+Retries are limited to network errors, 429, and 5xx. They occur only for reads (GET, HEAD, OPTIONS, or an operation the spec marks `x-lago-cli-retryable`) and for usage events that carry a `timestamp`. Mutations are never replayed: the Lago API does not read an `Idempotency-Key` header, so the CLI sends none. `Retry-After` takes precedence over exponential full-jitter backoff. The HTTP client has a five-second connect/TLS budget and a 30-second total default.
 
-Bulk events use a bounded worker queue. NDJSON lines are decoded independently, receive a transaction ID if missing, and are sent with matching idempotency keys. The full input is never retained in memory.
+Bulk events use a bounded worker queue. NDJSON lines are decoded independently, receive a transaction ID if missing, and are retried only when they carry a timestamp, because transaction ID plus timestamp is the server-side deduplication key. The full input is never retained in memory.
 
 ## Trust boundaries
 

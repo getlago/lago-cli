@@ -289,7 +289,7 @@ $ lago whoami
 $ lago doctor
 $ lago customers list --all --output json
 $ lago api GET /customers?page=2
-$ lago api POST /events --data @event.json --idempotency-key event-42
+$ lago api POST /events --data @event.json
 ```
 
 Global scripting controls: `--output table|json|yaml`, `--query`, `--dry-run`, `--timing`, `--verbose`, `--timeout`, `--no-retry`. `--timing` separates API round-trip, retry wait, and CLI overhead, and prints on failure too, including network errors, so retry behaviour is visible when it matters. The API key is redacted from dry runs, errors, and verbose logs.

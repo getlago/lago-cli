@@ -315,12 +315,14 @@ func parsePathQuery(raw string) (string, url.Values, error) {
 	return parsed.Path, parsed.Query(), nil
 }
 
-// isIdempotentMethod reports whether the transport may replay a request on its own,
-// without an operator-supplied idempotency key. Only side-effect-free reads qualify.
+// isIdempotentMethod reports whether the transport may replay a request on its own.
+// Only side-effect-free reads qualify.
 //
 // PUT and DELETE are idempotent in the RFC 9110 sense and still move money in Lago:
 // PUT /invoices/{id}/finalize issues an invoice and can trigger a payment attempt.
-// Mutations become replayable only by carrying an Idempotency-Key, never by verb.
+// Mutations are never replayed by verb, and lago-api does not read an Idempotency-Key
+// header, so the CLI offers none; the one exception is a usage event that carries a
+// timestamp, whose transaction_id plus timestamp the server deduplicates.
 func isIdempotentMethod(method string) bool {
 	switch strings.ToUpper(method) {
 	case http.MethodGet, http.MethodHead, http.MethodOptions:

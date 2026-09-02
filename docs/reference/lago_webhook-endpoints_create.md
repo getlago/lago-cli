@@ -20,13 +20,12 @@ lago webhook-endpoints create [flags]
 ### Options
 
 ```
-      --event-types string       A list of event types that will trigger the webhook. Passing null means that all event types will be sent.
-  -h, --help                     help for create
-      --idempotency-key string   Idempotency key for safe mutation retries
-      --input string             Complete JSON request body or @file.json
-      --name string              The name of the webhook.
-      --signature-algo string    The signature used for the webhook. If no value is passed,; one of: jwt, hmac,
-      --webhook-url string       The URL of the webhook endpoint.
+      --event-types string      A list of event types that will trigger the webhook. Passing null means that all event types will be sent.
+  -h, --help                    help for create
+      --input string            Complete JSON request body or @file.json
+      --name string             The name of the webhook.
+      --signature-algo string   The signature used for the webhook. If no value is passed,; one of: jwt, hmac,
+      --webhook-url string      The URL of the webhook endpoint.
 ```
 
 ### Options inherited from parent commands

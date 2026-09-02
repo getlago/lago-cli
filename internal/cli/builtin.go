@@ -388,12 +388,11 @@ func writeDoctorBundle(app *App, path string, checks map[string]bool) error {
 func newAPICommand(app *App) *cobra.Command {
 	var data string
 	var headers []string
-	var idempotencyKey string
 	cmd := &cobra.Command{
 		Use:   "api METHOD PATH",
 		Short: "Make an authenticated request to any Lago API endpoint",
 		Example: "  lago api GET /customers?page=2\n" +
-			"  lago api POST /events --data @event.json --idempotency-key event-42\n" +
+			"  lago api POST /events --data @event.json\n" +
 			"  printf '{\"event\":{}}' | lago api POST /events --data -",
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -428,11 +427,7 @@ func newAPICommand(app *App) *cobra.Command {
 				}
 				httpHeaders.Add(strings.TrimSpace(name), strings.TrimSpace(value))
 			}
-			if idempotencyKey != "" {
-				httpHeaders.Set("Idempotency-Key", idempotencyKey)
-			}
-			idempotent := isIdempotentMethod(method) || idempotencyKey != ""
-			value, response, err := app.Request(cmd.Context(), transport.Request{Method: method, Path: path, Query: query, Headers: httpHeaders, Body: body, Idempotent: idempotent})
+			value, response, err := app.Request(cmd.Context(), transport.Request{Method: method, Path: path, Query: query, Headers: httpHeaders, Body: body, Idempotent: isIdempotentMethod(method)})
 			if err != nil {
 				return err
 			}
@@ -441,7 +436,6 @@ func newAPICommand(app *App) *cobra.Command {
 	}
 	cmd.Flags().StringVarP(&data, "data", "d", "", "Request body JSON, @file, or - for stdin")
 	cmd.Flags().StringSliceVarP(&headers, "header", "H", nil, "Additional request header (repeatable)")
-	cmd.Flags().StringVar(&idempotencyKey, "idempotency-key", "", "Idempotency key for safe mutation retries")
 	return cmd
 }
 

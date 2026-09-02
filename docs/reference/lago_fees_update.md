@@ -20,10 +20,9 @@ lago fees update <lago_id> [flags]
 ### Options
 
 ```
-  -h, --help                     help for update
-      --idempotency-key string   Idempotency key for safe mutation retries
-      --input string             Complete JSON request body or @file.json
-      --payment-status string    The payment status of the fee. Possible values are 'pending', 'succeeded', 'failed' or 'refunded'.; one of: pending, succeeded, failed, refunded
+  -h, --help                    help for update
+      --input string            Complete JSON request body or @file.json
+      --payment-status string   The payment status of the fee. Possible values are 'pending', 'succeeded', 'failed' or 'refunded'.; one of: pending, succeeded, failed, refunded
 ```
 
 ### Options inherited from parent commands

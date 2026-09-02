@@ -24,7 +24,6 @@ lago invoices void <lago_id> [flags]
       --credit-amount string          Portion of the invoice amount (in cents) to be credited to the customer's balance in the generated credit note.
       --generate-credit-note string   Set to 'true' to force voiding the invoice and generate a credit note.
   -h, --help                          help for void
-      --idempotency-key string        Idempotency key for safe mutation retries
       --input string                  Complete JSON request body or @file.json
       --refund-amount string          Portion of the invoice amount (in cents) to be refunded to the customer in the generated credit note.
 ```

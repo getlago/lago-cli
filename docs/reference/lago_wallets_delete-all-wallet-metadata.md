@@ -19,8 +19,7 @@ lago wallets delete-all-wallet-metadata <lago_id> [flags]
 ### Options
 
 ```
-  -h, --help                     help for delete-all-wallet-metadata
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for delete-all-wallet-metadata
 ```
 
 ### Options inherited from parent commands

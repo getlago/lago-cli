@@ -57,11 +57,14 @@ type Client struct {
 }
 
 type Request struct {
-	Method     string
-	Path       string
-	Query      url.Values
-	Headers    http.Header
-	Body       []byte
+	Method  string
+	Path    string
+	Query   url.Values
+	Headers http.Header
+	Body    []byte
+	// Idempotent allows bounded retries on network errors, 429, and 5xx. Callers set it
+	// only for reads and for usage events that carry a timestamp: lago-api does not read
+	// an Idempotency-Key header, so no other mutation is safe to replay.
 	Idempotent bool
 	DryRun     bool
 

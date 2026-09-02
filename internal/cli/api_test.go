@@ -3,6 +3,8 @@ package cli
 import (
 	"context"
 	"encoding/json"
+	"io"
+	"io/fs"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -115,7 +117,7 @@ func TestAPICommandForwardsHeadersAndQuery(t *testing.T) {
 	profileAt(t, server.URL)
 
 	if _, _, err := execute(t, "", "--output", "json", "api", "GET", "/customers?page=2&per_page=5",
-		"--header", "X-Trace: abc", "--idempotency-key", "key-1"); err != nil {
+		"--header", "X-Trace: abc"); err != nil {
 		t.Fatal(err)
 	}
 	mutex.Lock()
@@ -126,8 +128,8 @@ func TestAPICommandForwardsHeadersAndQuery(t *testing.T) {
 	if !strings.Contains(query, "page=2") || !strings.Contains(query, "per_page=5") {
 		t.Errorf("query lost: %q", query)
 	}
-	if idempotency != "key-1" {
-		t.Errorf("idempotency key = %q", idempotency)
+	if idempotency != "" {
+		t.Errorf("Idempotency-Key header = %q, want none: lago-api does not read it", idempotency)
 	}
 }
 
@@ -334,16 +336,16 @@ func TestLogsTailBuildsItsFilterQuery(t *testing.T) {
 	}
 }
 
-func TestDefaultIdempotencyKeyIsUniqueAndWellFormed(t *testing.T) {
+func TestDefaultTransactionIDIsUniqueAndWellFormed(t *testing.T) {
 	t.Parallel()
 	seen := map[string]bool{}
 	for index := 0; index < 200; index++ {
-		key := defaultIdempotencyKey()
+		key := defaultTransactionID()
 		if len(key) != 36 || strings.Count(key, "-") != 4 {
-			t.Fatalf("generated key %q is not a UUID", key)
+			t.Fatalf("generated transaction ID %q is not a UUID", key)
 		}
 		if seen[key] {
-			t.Fatalf("generated a duplicate idempotency key: %s", key)
+			t.Fatalf("generated a duplicate transaction ID: %s", key)
 		}
 		seen[key] = true
 	}
@@ -495,5 +497,59 @@ func TestQA_S28_APIInTestModeStaysUngated(t *testing.T) {
 	defer mutex.Unlock()
 	if method != http.MethodDelete {
 		t.Errorf("method reached = %q, want DELETE", method)
+	}
+}
+
+// QA F-12: the flag is gone from every command, so a script still passing it fails at
+// parse time instead of sending a header nothing reads.
+func TestQA_F12_NoCommandOffersIdempotencyKeyFlag(t *testing.T) {
+	t.Parallel()
+	root := NewRoot(NewApp(strings.NewReader(""), io.Discard, io.Discard, "test"))
+	var walk func(cmd *cobra.Command)
+	count := 0
+	walk = func(cmd *cobra.Command) {
+		count++
+		if cmd.Flags().Lookup("idempotency-key") != nil || cmd.PersistentFlags().Lookup("idempotency-key") != nil {
+			t.Errorf("%s still offers --idempotency-key", cmd.CommandPath())
+		}
+		for _, child := range cmd.Commands() {
+			walk(child)
+		}
+	}
+	walk(root)
+	if count < 200 {
+		t.Fatalf("walked only %d commands", count)
+	}
+}
+
+// The header must not come back through any code path. Comments may mention it; a
+// string literal that would be handed to http.Header may not.
+func TestQA_F12_IdempotencyKeyHeaderIsAbsentFromSource(t *testing.T) {
+	t.Parallel()
+	root := filepath.Join("..", "..")
+	err := filepath.WalkDir(root, func(path string, entry fs.DirEntry, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
+		if entry.IsDir() {
+			if name := entry.Name(); name == ".git" || name == "dist-channels" || name == "man" || name == "docs" || name == "completions" {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+		if !strings.HasSuffix(path, ".go") || strings.HasSuffix(path, "_test.go") {
+			return nil
+		}
+		content, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		if strings.Contains(string(content), `"Idempotency-Key"`) {
+			t.Errorf("%s still names the Idempotency-Key header as a string literal", path)
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
 	}
 }

@@ -163,18 +163,27 @@ func TestZeroDecimalAndHighPrecisionAmountsSurviveUnchanged(t *testing.T) {
 	}
 }
 
-// A retried event must carry the same Idempotency-Key, so the server can collapse
-// the duplicate. A replay that mints a new key produces a double charge.
-func TestEventReplayReusesTheSameIdempotencyKey(t *testing.T) {
+// A retried event must carry the same transaction_id and timestamp, so the server can
+// collapse the duplicate. A replay that mints a new transaction_id produces a double
+// charge, and no Idempotency-Key header is sent because lago-api does not read one.
+func TestEventReplayReusesTheSameTransactionID(t *testing.T) {
 	var mutex sync.Mutex
 	keys := map[string]int{}
 	attempts := 0
 
 	server := jsonServer(t, func(response http.ResponseWriter, request *http.Request) {
+		if header := request.Header.Get("Idempotency-Key"); header != "" {
+			t.Errorf("unexpected Idempotency-Key header %q", header)
+		}
+		var payload map[string]map[string]any
+		if err := json.NewDecoder(request.Body).Decode(&payload); err != nil {
+			t.Error(err)
+		}
+		transactionID, _ := payload["event"]["transaction_id"].(string)
 		mutex.Lock()
 		attempts++
 		current := attempts
-		keys[request.Header.Get("Idempotency-Key")]++
+		keys[transactionID]++
 		mutex.Unlock()
 		if current == 1 {
 			response.WriteHeader(http.StatusInternalServerError)
@@ -185,7 +194,7 @@ func TestEventReplayReusesTheSameIdempotencyKey(t *testing.T) {
 	})
 
 	path := filepath.Join(t.TempDir(), "events.ndjson")
-	if err := os.WriteFile(path, []byte(`{"transaction_id":"txn_1","external_subscription_id":"sub_1","code":"requests"}`+"\n"), 0o600); err != nil {
+	if err := os.WriteFile(path, []byte(`{"transaction_id":"txn_1","external_subscription_id":"sub_1","code":"requests","timestamp":1700000000}`+"\n"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	run := newCLI(t, server.URL)
@@ -199,11 +208,11 @@ func TestEventReplayReusesTheSameIdempotencyKey(t *testing.T) {
 		t.Fatalf("server saw %d attempts; the retry never happened", attempts)
 	}
 	if len(keys) != 1 {
-		t.Fatalf("retry used %d distinct idempotency keys, want 1: %v", len(keys), keys)
+		t.Fatalf("retry used %d distinct transaction IDs, want 1: %v", len(keys), keys)
 	}
 	for key, count := range keys {
-		if key == "" {
-			t.Fatal("event was sent with no Idempotency-Key")
+		if key != "txn_1" {
+			t.Fatalf("event was sent with transaction_id %q, want txn_1", key)
 		}
 		if count != attempts {
 			t.Fatalf("key %s seen %d times across %d attempts", key, count, attempts)

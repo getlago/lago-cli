@@ -20,9 +20,8 @@ lago wallets merge-customer-wallet-metadata <external_customer_id> <wallet_code>
 ### Options
 
 ```
-  -h, --help                     help for merge-customer-wallet-metadata
-      --idempotency-key string   Idempotency key for safe mutation retries
-      --input string             Complete JSON request body or @file.json
+  -h, --help           help for merge-customer-wallet-metadata
+      --input string   Complete JSON request body or @file.json
 ```
 
 ### Options inherited from parent commands

@@ -19,8 +19,7 @@ lago plans delete-all-plan-metadata <code> [flags]
 ### Options
 
 ```
-  -h, --help                     help for delete-all-plan-metadata
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for delete-all-plan-metadata
 ```
 
 ### Options inherited from parent commands

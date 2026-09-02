@@ -24,7 +24,6 @@ lago subscriptions override-subscription-fixed-charge <external_id> <fixed_charg
 ```
       --apply-units-immediately string                       When set to 'true', the fixed charge units are applied immediately for active subscriptions. When set to 'false', the units are applied at the next billing period.
   -h, --help                                                 help for override-subscription-fixed-charge
-      --idempotency-key string                               Idempotency key for safe mutation retries
       --input string                                         Complete JSON request body or @file.json
       --invoice-display-name string                          Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the add-on will be used as the default display name.
       --properties-amount string                             - The unit price, excluding tax, for a 'standard' charge model. It is expressed as a decimal value.

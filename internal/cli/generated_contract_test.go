@@ -35,6 +35,9 @@ func TestEveryGeneratedCommandRoundTripsMethodPathAndJSONTypes(t *testing.T) {
 		if request.Header.Get("Authorization") != "Bearer fake-key" {
 			t.Error("generated command omitted authentication")
 		}
+		if header := request.Header.Get("Idempotency-Key"); header != "" {
+			t.Errorf("generated command sent Idempotency-Key %q; lago-api does not read it", header)
+		}
 		if expected.body != nil {
 			raw, _ := io.ReadAll(request.Body)
 			switch {

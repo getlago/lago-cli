@@ -20,11 +20,10 @@ lago invoices update <lago_id> [flags]
 ### Options
 
 ```
-  -h, --help                     help for update
-      --idempotency-key string   Idempotency key for safe mutation retries
-      --input string             Complete JSON request body or @file.json
-      --metadata string          API field (array)
-      --payment-status string    The payment status of the invoice. Possible values are 'pending', 'failed' or 'succeeded'.; one of: pending, succeeded, failed
+  -h, --help                    help for update
+      --input string            Complete JSON request body or @file.json
+      --metadata string         API field (array)
+      --payment-status string   The payment status of the invoice. Possible values are 'pending', 'failed' or 'succeeded'.; one of: pending, succeeded, failed
 ```
 
 ### Options inherited from parent commands

@@ -21,7 +21,9 @@ import (
 type eventJob struct {
 	line int
 	body []byte
-	key  string
+	// retryable is true when the event carries a timestamp, so a replay with the same
+	// transaction_id and timestamp is collapsed by the server rather than billed twice.
+	retryable bool
 }
 
 type eventResult struct {
@@ -55,9 +57,7 @@ func runEventStream(cmd *cobra.Command, app *App, source string, concurrency int
 		go func() {
 			defer workers.Done()
 			for job := range jobs {
-				headers := make(http.Header)
-				headers.Set("Idempotency-Key", job.key)
-				response, requestErr := client.Do(cmd.Context(), transport.Request{Method: http.MethodPost, Path: "/events", Headers: headers, Body: job.body, Idempotent: true, DryRun: app.dryRun})
+				response, requestErr := client.Do(cmd.Context(), transport.Request{Method: http.MethodPost, Path: "/events", Body: job.body, Idempotent: job.retryable, DryRun: app.dryRun})
 				retried := 0
 				if response != nil && response.Attempts > 1 {
 					retried = response.Attempts - 1
@@ -80,7 +80,7 @@ func runEventStream(cmd *cobra.Command, app *App, source string, concurrency int
 		if len(raw) == 0 {
 			continue
 		}
-		body, key, unsafe, encodeErr := prepareEvent(raw)
+		body, retryable, unsafe, encodeErr := prepareEvent(raw)
 		if unsafe {
 			retryUnsafe++
 		}
@@ -91,7 +91,7 @@ func runEventStream(cmd *cobra.Command, app *App, source string, concurrency int
 			return apperr.New(apperr.ExitUsage, fmt.Sprintf("invalid event on line %d: %v", line, encodeErr), "Use one JSON event object per line; an optional top-level event wrapper is accepted.")
 		}
 		select {
-		case jobs <- eventJob{line: line, body: body, key: key}:
+		case jobs <- eventJob{line: line, body: body, retryable: retryable}:
 			queued++
 		case <-cmd.Context().Done():
 			close(jobs)
@@ -151,14 +151,16 @@ func eventReader(stdin io.Reader, source string) (io.Reader, func(), error) {
 }
 
 // prepareEvent wraps a raw NDJSON line into the API envelope and assigns a transaction
-// ID when the line has none. retryUnsafe reports whether the line carried its own
-// transaction ID but no timestamp; see retryUnsafeWarning for why that matters.
-func prepareEvent(raw []byte) (body []byte, key string, retryUnsafe bool, err error) {
+// ID when the line has none. retryable reports whether the transport may replay the
+// event on 429/5xx: only when it carries a timestamp, because transaction_id plus
+// timestamp is the server-side deduplication key. retryUnsafe reports whether the line
+// carried its own transaction ID but no timestamp; see retryUnsafeWarning.
+func prepareEvent(raw []byte) (body []byte, retryable bool, retryUnsafe bool, err error) {
 	var payload map[string]any
 	decoder := json.NewDecoder(bytes.NewReader(raw))
 	decoder.UseNumber()
 	if err := decoder.Decode(&payload); err != nil {
-		return nil, "", false, err
+		return nil, false, false, err
 	}
 	event := payload
 	if wrapped, ok := payload["event"].(map[string]any); ok {
@@ -166,15 +168,20 @@ func prepareEvent(raw []byte) (body []byte, key string, retryUnsafe bool, err er
 	} else {
 		payload = map[string]any{"event": event}
 	}
-	key, _ = event["transaction_id"].(string)
-	if key == "" {
-		key = uuid.NewString()
-		event["transaction_id"] = key
+	if transactionID, _ := event["transaction_id"].(string); transactionID == "" {
+		event["transaction_id"] = uuid.NewString()
 	} else {
 		retryUnsafe = eventIsRetryUnsafe(event)
 	}
 	encoded, err := json.Marshal(payload)
-	return encoded, key, retryUnsafe, err
+	return encoded, eventHasTimestamp(event), retryUnsafe, err
+}
+
+// eventHasTimestamp reports whether an event pins its own timestamp instead of leaving
+// it to the time of reception.
+func eventHasTimestamp(event map[string]any) bool {
+	timestamp, present := event["timestamp"]
+	return present && timestamp != nil && timestamp != ""
 }
 
 // eventIsRetryUnsafe reports whether an event names its own transaction_id but leaves
@@ -187,11 +194,7 @@ func prepareEvent(raw []byte) (body []byte, key string, retryUnsafe bool, err er
 // can break; a generated one is unique per run and a resend is a new event by design.
 func eventIsRetryUnsafe(event map[string]any) bool {
 	transactionID, _ := event["transaction_id"].(string)
-	if transactionID == "" {
-		return false
-	}
-	timestamp, present := event["timestamp"]
-	return !present || timestamp == nil || timestamp == ""
+	return transactionID != "" && !eventHasTimestamp(event)
 }
 
 const retryUnsafeWarning = "WARNING: --transaction-id without --timestamp is not safe to retry. Lago sets a missing timestamp to the time of reception, and on the ClickHouse event store the timestamp is part of the deduplication key, so resending this command bills a second event. Pass --timestamp <unix seconds> and resend the same value on retry."

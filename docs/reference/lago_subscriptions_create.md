@@ -23,7 +23,6 @@ lago subscriptions create [flags]
       --authorization-amount-cents string                                            The amount of the authorization in cents.
       --authorization-amount-currency string                                         The currency of the authorization.
   -h, --help                                                                         help for create
-      --idempotency-key string                                                       Idempotency key for safe mutation retries
       --input string                                                                 Complete JSON request body or @file.json
       --subscription-activation-rules string                                         Optional list of activation rules that gate the subscription activation. When a 'payment' rule is provided and the plan is paid in advance (and the subscription is not in a trial), the subscription is created in the 'incomplete' state and is only activated once the gating payment succeeds. If the payment fails or the rule's 'timeout_hours' elapses, the subscription is canceled.
       --subscription-billing-entity-code string                                      The code of the billing entity to be used for the subscription. If not provided, the default billing entity will be used.

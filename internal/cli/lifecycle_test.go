@@ -2,6 +2,7 @@ package cli
 
 import (
 	"bufio"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"os"
@@ -118,14 +119,23 @@ func TestUpgradeReportsWhenAlreadyCurrent(t *testing.T) {
 	_, _, _ = execute(t, "", "upgrade")
 }
 
-// Events stream from a file or stdin. Every line gets a stable transaction ID so a
-// resend collapses server-side instead of double-charging.
+// Events stream from a file or stdin. Every line gets a transaction ID in its body so
+// the server can deduplicate it; no Idempotency-Key header is sent because lago-api
+// does not read one.
 func TestEventStreamAssignsStableTransactionIDs(t *testing.T) {
 	var mutex sync.Mutex
 	keys := map[string]int{}
 	server := jsonAPI(t, func(response http.ResponseWriter, request *http.Request) {
+		if header := request.Header.Get("Idempotency-Key"); header != "" {
+			t.Errorf("unexpected Idempotency-Key header %q", header)
+		}
+		var payload map[string]map[string]any
+		if err := json.NewDecoder(request.Body).Decode(&payload); err != nil {
+			t.Error(err)
+		}
+		transactionID, _ := payload["event"]["transaction_id"].(string)
 		mutex.Lock()
-		keys[request.Header.Get("Idempotency-Key")]++
+		keys[transactionID]++
 		mutex.Unlock()
 		_, _ = response.Write([]byte(`{"event":{"lago_id":"evt"}}`))
 	})
@@ -146,11 +156,11 @@ func TestEventStreamAssignsStableTransactionIDs(t *testing.T) {
 	mutex.Lock()
 	defer mutex.Unlock()
 	if len(keys) != 3 {
-		t.Fatalf("three events produced %d distinct idempotency keys: %v", len(keys), keys)
+		t.Fatalf("three events produced %d distinct transaction IDs: %v", len(keys), keys)
 	}
 	for key, count := range keys {
 		if key == "" {
-			t.Error("an event was sent with no Idempotency-Key")
+			t.Error("an event was sent with no transaction_id")
 		}
 		if count != 1 {
 			t.Errorf("key %s was sent %d times", key, count)

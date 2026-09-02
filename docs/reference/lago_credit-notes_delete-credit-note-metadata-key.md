@@ -19,8 +19,7 @@ lago credit-notes delete-credit-note-metadata-key <lago_id> <key> [flags]
 ### Options
 
 ```
-  -h, --help                     help for delete-credit-note-metadata-key
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for delete-credit-note-metadata-key
 ```
 
 ### Options inherited from parent commands

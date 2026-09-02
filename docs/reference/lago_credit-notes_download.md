@@ -19,8 +19,7 @@ lago credit-notes download <lago_id> [flags]
 ### Options
 
 ```
-  -h, --help                     help for download
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for download
 ```
 
 ### Options inherited from parent commands

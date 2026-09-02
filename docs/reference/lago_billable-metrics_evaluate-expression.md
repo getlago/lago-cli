@@ -27,7 +27,6 @@ lago billable-metrics evaluate-expression [flags]
                                   Accepted function are 'ceil', 'concat' and 'round' as well as '+', '-', '\' and '*' operations.
                                   Round is accepting an optional second parameter to specify the number of decimal.
   -h, --help                      help for evaluate-expression
-      --idempotency-key string    Idempotency key for safe mutation retries
       --input string              Complete JSON request body or @file.json
 ```
 

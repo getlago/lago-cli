@@ -19,8 +19,7 @@ lago customers checkout-url <external_customer_id> [flags]
 ### Options
 
 ```
-  -h, --help                     help for checkout-url
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for checkout-url
 ```
 
 ### Options inherited from parent commands

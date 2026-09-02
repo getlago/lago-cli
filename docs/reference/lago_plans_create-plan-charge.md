@@ -43,7 +43,6 @@ lago plans create-plan-charge <code> [flags]
       --code string                                          Unique code identifying the charge within the plan.
       --filters string                                       List of filters used to apply differentiated pricing based on additional event properties.
   -h, --help                                                 help for create-plan-charge
-      --idempotency-key string                               Idempotency key for safe mutation retries
       --input string                                         Complete JSON request body or @file.json
       --invoice-display-name string                          Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name.
       --invoiceable string                                   This field specifies whether the charge should be included in a proper invoice. If set to false, no invoice will be issued for this charge. You can only set it to 'false' when 'pay_in_advance' is 'true'.

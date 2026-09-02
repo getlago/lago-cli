@@ -26,7 +26,6 @@ lago order-forms mark-as-signed <lago_id> [flags]
       --execute-at string        The date and time in UTC (ISO 8601) when Lago executes the order created from the order form. It must be in the future, requires 'execution_mode' to be set, and must fall strictly before the day the quoted deal stops being executable, otherwise signing is rejected with a '422'. When it is omitted, the order is created but not scheduled, and waits to be executed on demand.
       --execution-mode string    How the order created from the order form is carried out. It becomes mandatory as soon as 'execute_at' is provided.; one of: execute_in_lago, order_only
   -h, --help                     help for mark-as-signed
-      --idempotency-key string   Idempotency key for safe mutation retries
       --input string             Complete JSON request body or @file.json
       --signed-document string   The document signed by the customer, as a base64 data URI ('data:<content_type>;base64,<data>'). Accepted content types are 'application/pdf', 'image/jpeg' and 'image/png', for a maximum of 10 MB. Once attached, it is exposed as 'signed_document_url' on the order form.
 ```

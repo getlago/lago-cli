@@ -88,7 +88,7 @@ func TestGeneratedManifestEmbedsPinnedSpecIdentity(t *testing.T) {
 // or money-moving Lago operation. HTTP method semantics do not describe billing
 // semantics: PUT /invoices/{id}/finalize is idempotent by RFC and irreversible by
 // accounting. Every operation matching this vocabulary must be confirmation-gated
-// and must never be retried without an explicit idempotency key.
+// and must never be auto-retried: lago-api reads no Idempotency-Key header.
 var destructiveSegments = []string{
 	"void", "finalize", "retry", "retry_payment", "terminate", "delete", "destroy",
 }

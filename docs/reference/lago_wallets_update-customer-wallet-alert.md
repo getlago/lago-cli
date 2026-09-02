@@ -20,12 +20,11 @@ lago wallets update-customer-wallet-alert <external_customer_id> <wallet_code> <
 ### Options
 
 ```
-      --code string              Unique code used to identify the alert.
-  -h, --help                     help for update-customer-wallet-alert
-      --idempotency-key string   Idempotency key for safe mutation retries
-      --input string             Complete JSON request body or @file.json
-      --name string              The name of the alert.
-      --thresholds string        Array of thresholds associated with the alert.
+      --code string         Unique code used to identify the alert.
+  -h, --help                help for update-customer-wallet-alert
+      --input string        Complete JSON request body or @file.json
+      --name string         The name of the alert.
+      --thresholds string   Array of thresholds associated with the alert.
 ```
 
 ### Options inherited from parent commands

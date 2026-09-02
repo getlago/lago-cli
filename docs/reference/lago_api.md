@@ -10,17 +10,16 @@ lago api METHOD PATH [flags]
 
 ```
   lago api GET /customers?page=2
-  lago api POST /events --data @event.json --idempotency-key event-42
+  lago api POST /events --data @event.json
   printf '{"event":{}}' | lago api POST /events --data -
 ```
 
 ### Options
 
 ```
-  -d, --data string              Request body JSON, @file, or - for stdin
-  -H, --header strings           Additional request header (repeatable)
-  -h, --help                     help for api
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -d, --data string      Request body JSON, @file, or - for stdin
+  -H, --header strings   Additional request header (repeatable)
+  -h, --help             help for api
 ```
 
 ### Options inherited from parent commands

@@ -24,7 +24,6 @@ lago events send [flags]
       --external-subscription-id string     The unique identifier of the subscription in your application. This field is mandatory in order to link events to the correct customer subscription.
       --file string                         Stream newline-delimited JSON events from a file, or - for stdin
   -h, --help                                help for send
-      --idempotency-key string              Idempotency key for safe mutation retries
       --input string                        Complete JSON request body or @file.json
       --precise-total-amount-cents string   The precise total amount in cents with precision used by the 'dynamic' pricing model to compute the usage amount.
       --properties string                   This field represents additional properties associated with the event, which are utilized in the calculation of the final fee. This object becomes mandatory when the targeted billable metric employs a 'sum_agg', 'max_agg', or 'unique_count_agg' aggregation method. However, when using a simple 'count_agg', this object is not required.
