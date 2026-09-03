@@ -209,8 +209,7 @@ LAGO_ID  CODE  NAME  INTERVAL  AMOUNT_CENTS  AMOUNT_CURRENCY
 
 A column absent from every row on the page is dropped. When the page is one of several, stderr says so: `page 1 of 3 (250 total); use --page N or --all`. The pagination `meta` object stays in `--output json`.
 
-Table cells escape terminal control characters. A name containing an ANSI sequence or a newline prints as `[31m…` and `
-`, so a hostile value cannot recolour your terminal or inject a fake row. JSON output escapes on its own.
+Table cells escape terminal control characters. A name containing an ANSI sequence or a newline prints as `\x1b[31m...` and `\n`, so a hostile value cannot recolour your terminal or inject a fake row. JSON output escapes on its own.
 
 `events send` generates a transaction ID when one is omitted. When you pass your own `--transaction-id`, pass `--timestamp` (unix seconds) with it and resend both unchanged on retry. Lago deduplicates on `transaction_id`, but on the ClickHouse event store the timestamp is part of the key and a missing one defaults to the time of reception, so a retry without a timestamp is a second billable event. The CLI warns on stderr when a command is not safe to retry for that reason.
 
