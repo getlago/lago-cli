@@ -421,3 +421,17 @@ func TestQA_S16_UserinfoInBaseURLIsRejected(t *testing.T) {
 		}
 	}
 }
+
+// QA run 4: voiding an already voided invoice answers 405, which Lago uses for "the
+// resource's state forbids this", not for a wrong HTTP verb. The suggestion says so
+// instead of sending the operator to check command flags.
+func TestQA_L2g_MethodNotAllowedExplainsResourceState(t *testing.T) {
+	t.Parallel()
+	code, suggestion := classify(405)
+	if code != apperr.ExitValidation {
+		t.Errorf("405 exit code = %d, want %d", code, apperr.ExitValidation)
+	}
+	if !strings.Contains(suggestion, "state") || strings.Contains(suggestion, "command flags") {
+		t.Errorf("405 suggestion does not explain resource state: %q", suggestion)
+	}
+}

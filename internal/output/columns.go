@@ -54,10 +54,14 @@ func columnsFor(key string, rows []map[string]any) []string {
 // everything else alphabetically. The union matters: the old renderer read the first
 // row only, so a column that happened to be absent there vanished for the whole page.
 func heuristicColumns(rows []map[string]any) []string {
+	// A column earns its place only when some row has a value in it. Async endpoints
+	// such as `events batch` answer with every server-side field null (lago_id,
+	// created_at, the customer and subscription IDs); printing them yields a table that
+	// is mostly headers over blank cells.
 	candidates := map[string]bool{}
 	for _, row := range rows {
 		for key, value := range row {
-			if isScalar(value) {
+			if isScalar(value) && !isBlank(value) {
 				candidates[key] = true
 			}
 		}
@@ -116,9 +120,11 @@ func sortedCandidates(candidates map[string]bool) []string {
 	return keys
 }
 
+// anyRowHas reports whether at least one row carries a non-blank value for column, so a
+// declared column that the API left null on every row of this page is not printed.
 func anyRowHas(rows []map[string]any, column string) bool {
 	for _, row := range rows {
-		if _, ok := row[column]; ok {
+		if value, ok := row[column]; ok && !isBlank(value) {
 			return true
 		}
 	}
