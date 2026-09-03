@@ -48,10 +48,6 @@ If set to 'forever', the coupon has unlimited usage and can be applied indefinit
 	help for apply
 
 .PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
-.PP
 \fB--input\fP=""
 	Complete JSON request body or @file.json
 
@@ -116,6 +112,7 @@ If set to 'forever', the coupon has unlimited usage and can be applied indefinit
 .SH EXAMPLE
 .EX
   lago coupons apply --input @payload.json
+  lago coupons apply --input @payload.json --output json  # full resource
 .EE
 
 

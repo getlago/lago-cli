@@ -14,13 +14,13 @@ lago credit-notes delete-all-credit-note-metadata <lago_id> [flags]
 
 ```
   lago credit-notes delete-all-credit-note-metadata <lago_id>
+  lago credit-notes delete-all-credit-note-metadata <lago_id> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for delete-all-credit-note-metadata
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for delete-all-credit-note-metadata
 ```
 
 ### Options inherited from parent commands

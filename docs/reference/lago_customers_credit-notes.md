@@ -27,7 +27,7 @@ lago customers credit-notes <external_customer_id> [flags]
       --invoice-number string          Filter credit notes by their related invoice number.
       --issuing-date-from string       Filter credit notes starting from a specific date.
       --issuing-date-to string         Filter credit notes up to a specific date.
-      --limit string                   Maximum number of results
+      --limit string                   Results per page (1-1000)
       --page string                    Page number.
       --per-page string                Number of records per page.
       --purchase-order-number string   Filter by the invoice purchase order number. The match is exact but case-insensitive.

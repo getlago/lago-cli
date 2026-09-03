@@ -35,10 +35,6 @@ For example, if the plan uses USD and the conversion rate is 0.5, then 1 pricing
 	help for override-subscription-charge
 
 .PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
-.PP
 \fB--input\fP=""
 	Complete JSON request body or @file.json
 
@@ -177,6 +173,7 @@ The list of event properties that are used to group the events on the invoice fo
 .SH EXAMPLE
 .EX
   lago subscriptions override-subscription-charge <external_id> <charge_code> --input @payload.json
+  lago subscriptions override-subscription-charge <external_id> <charge_code> --input @payload.json --output json  # full resource
 .EE
 
 

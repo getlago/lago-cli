@@ -17,10 +17,6 @@ This endpoint removes a single metadata key from a credit note.
 \fB-h\fP, \fB--help\fP[=false]
 	help for delete-credit-note-metadata-key
 
-.PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
 \fB--api-key\fP=""
@@ -78,6 +74,7 @@ This endpoint removes a single metadata key from a credit note.
 .SH EXAMPLE
 .EX
   lago credit-notes delete-credit-note-metadata-key <lago_id> <key>
+  lago credit-notes delete-credit-note-metadata-key <lago_id> <key> --output json  # full resource
 .EE
 
 

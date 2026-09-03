@@ -19,10 +19,6 @@ Existing keys not in the request are preserved. New keys are added, existing key
 	help for merge-credit-note-metadata
 
 .PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
-.PP
 \fB--input\fP=""
 	Complete JSON request body or @file.json
 
@@ -83,6 +79,7 @@ Existing keys not in the request are preserved. New keys are added, existing key
 .SH EXAMPLE
 .EX
   lago credit-notes merge-credit-note-metadata <lago_id> --input @payload.json
+  lago credit-notes merge-credit-note-metadata <lago_id> --input @payload.json --output json  # full resource
 .EE
 
 

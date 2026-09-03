@@ -14,13 +14,13 @@ lago invoices retry-payment <lago_id> [flags]
 
 ```
   lago invoices retry-payment <lago_id> --input @payload.json
+  lago invoices retry-payment <lago_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options
 
 ```
   -h, --help                         help for retry-payment
-      --idempotency-key string       Idempotency key for safe mutation retries
       --input string                 Complete JSON request body or @file.json
       --payment-method-id string     The unique identifier of the payment method (required when using a specific provider payment method).
       --payment-method-type string   The type of payment method to use.; one of: provider, manual

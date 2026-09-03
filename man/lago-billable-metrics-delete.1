@@ -17,10 +17,6 @@ This endpoint deletes an existing billable metric representing a pricing compone
 \fB-h\fP, \fB--help\fP[=false]
 	help for delete
 
-.PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
 \fB--api-key\fP=""
@@ -78,6 +74,7 @@ This endpoint deletes an existing billable metric representing a pricing compone
 .SH EXAMPLE
 .EX
   lago billable-metrics delete <code>
+  lago billable-metrics delete <code> --output json  # full resource
 .EE
 
 

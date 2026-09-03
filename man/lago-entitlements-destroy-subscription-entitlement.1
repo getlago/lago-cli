@@ -2,24 +2,24 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-wallets-destroy-customer - Terminate a wallet
+lago-entitlements-destroy-subscription-entitlement - Remove an entitlement from a subscription
 
 
 .SH SYNOPSIS
-\fBlago wallets destroy-customer   [flags]\fP
+\fBlago entitlements destroy-subscription-entitlement   [flags]\fP
 
 
 .SH DESCRIPTION
-This endpoint is used to terminate an existing wallet with prepaid credits.
+This endpoint removes a specific feature entitlement from a subscription. The entitlement remains available from the plan.
 
 
 .SH OPTIONS
 \fB-h\fP, \fB--help\fP[=false]
-	help for destroy-customer
+	help for destroy-subscription-entitlement
 
 .PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
+\fB--subscription-status\fP=""
+	Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
@@ -77,9 +77,10 @@ This endpoint is used to terminate an existing wallet with prepaid credits.
 
 .SH EXAMPLE
 .EX
-  lago wallets destroy-customer <external_customer_id> <code>
+  lago entitlements destroy-subscription-entitlement <external_id> <feature_code>
+  lago entitlements destroy-subscription-entitlement <external_id> <feature_code> --output json  # full resource
 .EE
 
 
 .SH SEE ALSO
-\fBlago-wallets(1)\fP
+\fBlago-entitlements(1)\fP

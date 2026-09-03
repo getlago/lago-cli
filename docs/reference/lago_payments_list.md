@@ -23,7 +23,7 @@ lago payments list [flags]
       --external-customer-id string   Unique identifier assigned to the customer in your application.
   -h, --help                          help for list
       --invoice-id string             Unique identifier assigned to the invoice within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the invoice's record within the Lago system.
-      --limit string                  Maximum number of results
+      --limit string                  Results per page (1-1000)
       --page string                   Page number.
       --per-page string               Number of records per page.
       --watch                         Poll and re-render when the response changes

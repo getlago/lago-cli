@@ -2,15 +2,15 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-wallets-list-customer - List all customer's wallets
+lago-payment-methods-list-customers-payment-methods - List all customer payment methods
 
 
 .SH SYNOPSIS
-\fBlago wallets list-customer  [flags]\fP
+\fBlago payment-methods list-customers-payment-methods  [flags]\fP
 
 
 .SH DESCRIPTION
-This endpoint is used to list all wallets with prepaid credits of a customer
+This endpoint retrieves all payment methods of a Customer.
 
 
 .SH OPTIONS
@@ -18,16 +18,12 @@ This endpoint is used to list all wallets with prepaid credits of a customer
 	Fetch every page
 
 .PP
-\fB--billing-entity-codes\fP=""
-	Filter wallets by billing entity codes.
-
-.PP
 \fB-h\fP, \fB--help\fP[=false]
-	help for list-customer
+	help for list-customers-payment-methods
 
 .PP
 \fB--limit\fP=""
-	Maximum number of results
+	Results per page (1-1000)
 
 .PP
 \fB--page\fP=""
@@ -101,9 +97,9 @@ This endpoint is used to list all wallets with prepaid credits of a customer
 
 .SH EXAMPLE
 .EX
-  lago wallets list-customer <external_customer_id>
+  lago payment-methods list-customers-payment-methods <external_customer_id>
 .EE
 
 
 .SH SEE ALSO
-\fBlago-wallets(1)\fP
+\fBlago-payment-methods(1)\fP

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"sort"
 	"strings"
 	"text/tabwriter"
 
@@ -24,14 +23,19 @@ type Renderer struct {
 	Query string
 	Out   io.Writer
 
-	// Err receives diagnostics that must not pollute stdout, currently the hint printed
-	// when a query matches nothing. Leaving it nil discards them.
+	// Err receives diagnostics that must not pollute stdout: the hint printed when a
+	// query matches nothing, and the paging hint under a partial list. Leaving it nil
+	// discards them.
 	Err io.Writer
 
 	// Identifiers restricts default table output to the terse identifier block.
 	// It applies to table output only: --output json and --output yaml always
 	// carry the complete resource. See DECISIONS.md.
 	Identifiers bool
+
+	// AllPages is set by --all, which renders every page itself, so the per-page
+	// "page N of M" hint would only be noise.
+	AllPages bool
 }
 
 func (r Renderer) Render(value any) error {
@@ -53,9 +57,9 @@ func (r Renderer) Render(value any) error {
 	switch r.Mode {
 	case "", Table:
 		if r.Identifiers {
-			return renderIdentifiers(r.Out, value)
+			return r.renderIdentifiers(value)
 		}
-		return renderTable(r.Out, value)
+		return r.renderTable(value)
 	case JSON:
 		encoder := json.NewEncoder(r.Out)
 		encoder.SetIndent("", "  ")
@@ -86,64 +90,177 @@ func (r Renderer) hintOnEmptyMatch(original, queried any) {
 	}
 	message := "query matched nothing"
 	if object, ok := original.(map[string]any); ok && len(object) > 0 {
-		message += "; top-level keys: " + strings.Join(sortedKeys(object), ", ")
+		message += "; top-level keys: " + Sanitize(strings.Join(sortedKeys(object), ", "))
 	}
 	fmt.Fprintln(r.Err, message)
 }
 
-func renderTable(out io.Writer, value any) error {
-	value = unwrapSingle(value)
-	rows, ok := value.([]any)
-	if !ok {
-		if object, objectOK := value.(map[string]any); objectOK {
-			w := tabwriter.NewWriter(out, 0, 4, 2, ' ', 0)
-			for _, key := range sortedKeys(object) {
-				fmt.Fprintf(w, "%s\t%s\n", strings.ToUpper(key), scalar(object[key]))
-			}
-			return w.Flush()
+// renderTable is the default output. A list response renders one row per item, a single
+// resource renders as key/value rows, and a scalar prints alone.
+func (r Renderer) renderTable(value any) error {
+	if key, rows, meta, isList := unwrapList(value); isList {
+		if err := r.renderRows(key, rows); err != nil {
+			return err
 		}
-		_, err := fmt.Fprintln(out, scalar(value))
-		return err
-	}
-	if len(rows) == 0 {
-		_, err := fmt.Fprintln(out, "No results.")
-		return err
-	}
-	first, ok := rows[0].(map[string]any)
-	if !ok {
-		for _, row := range rows {
-			if _, err := fmt.Fprintln(out, scalar(row)); err != nil {
-				return err
-			}
-		}
+		r.hintPagination(meta)
 		return nil
 	}
-	columns := preferredColumns(first)
-	w := tabwriter.NewWriter(out, 0, 4, 2, ' ', 0)
+	switch typed := unwrapSingle(value).(type) {
+	case []any:
+		return r.renderRows("", typed)
+	case map[string]any:
+		return r.renderPairs(typed)
+	default:
+		_, err := fmt.Fprintln(r.Out, cell(typed))
+		return err
+	}
+}
+
+// renderPairs prints a single resource as key/value rows. Null and blank values are
+// omitted: an async endpoint such as `events send` answers with most fields unset, and
+// five rows of nothing tell the operator less than the three that carry a value. When
+// every value is empty the keys still print, so the output is never blank.
+func (r Renderer) renderPairs(object map[string]any) error {
+	keys := make([]string, 0, len(object))
+	for _, key := range sortedKeys(object) {
+		if !isBlank(object[key]) {
+			keys = append(keys, key)
+		}
+	}
+	if len(keys) == 0 {
+		keys = sortedKeys(object)
+	}
+	w := tabwriter.NewWriter(r.Out, 0, 4, 2, ' ', 0)
+	for _, key := range keys {
+		fmt.Fprintf(w, "%s\t%s\n", header(key), cell(object[key]))
+	}
+	return w.Flush()
+}
+
+func isBlank(value any) bool {
+	if value == nil {
+		return true
+	}
+	text, isText := value.(string)
+	return isText && strings.TrimSpace(text) == ""
+}
+
+// renderRows prints one table row per item. key is the response wrapper the rows came
+// from, which selects a declared column set when one exists.
+func (r Renderer) renderRows(key string, rows []any) error {
+	if len(rows) == 0 {
+		_, err := fmt.Fprintln(r.Out, "No results.")
+		return err
+	}
+	objects := make([]map[string]any, 0, len(rows))
+	for _, rowValue := range rows {
+		row, ok := rowValue.(map[string]any)
+		if !ok {
+			for _, item := range rows {
+				if _, err := fmt.Fprintln(r.Out, cell(item)); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+		objects = append(objects, row)
+	}
+	columns := columnsFor(key, objects)
+	w := tabwriter.NewWriter(r.Out, 0, 4, 2, ' ', 0)
 	for index, column := range columns {
 		if index > 0 {
 			fmt.Fprint(w, "\t")
 		}
-		fmt.Fprint(w, strings.ToUpper(column))
+		fmt.Fprint(w, header(column))
 	}
 	fmt.Fprintln(w)
-	for _, rowValue := range rows {
-		row, _ := rowValue.(map[string]any)
+	for _, row := range objects {
 		for index, column := range columns {
 			if index > 0 {
 				fmt.Fprint(w, "\t")
 			}
-			fmt.Fprint(w, scalar(row[column]))
+			fmt.Fprint(w, cell(row[column]))
 		}
 		fmt.Fprintln(w)
 	}
 	return w.Flush()
 }
 
-// identifierKeys are the fields an operator needs back from a create or update: the
-// Lago ID to address the resource by, the external ID they chose, and the human name
-// or code they will recognise it by. Order is the render order, not a preference list.
-var identifierKeys = []string{"lago_id", "external_id", "code", "name"}
+// unwrapList recognises the Lago list envelope: exactly one array-valued key, alone or
+// beside a `meta` object. `{"customers": [...], "meta": {...}}` is a list of customers;
+// `{"invoice": {...}, "meta": {...}}` is not, and `{"a": [...], "b": [...]}` is not either,
+// because unwrapping would drop a field.
+func unwrapList(value any) (key string, rows []any, meta map[string]any, ok bool) {
+	object, isObject := value.(map[string]any)
+	if !isObject || len(object) == 0 || len(object) > 2 {
+		return "", nil, nil, false
+	}
+	for candidate, nested := range object {
+		if candidate == "meta" {
+			if len(object) == 1 {
+				return "", nil, nil, false
+			}
+			meta, _ = nested.(map[string]any)
+			if meta == nil {
+				return "", nil, nil, false
+			}
+			continue
+		}
+		if key != "" {
+			return "", nil, nil, false
+		}
+		rows, ok = nested.([]any)
+		if !ok {
+			return "", nil, nil, false
+		}
+		key = candidate
+	}
+	return key, rows, meta, key != ""
+}
+
+// hintPagination tells the operator, on stderr, that the table is one page of more.
+// Table mode omits `meta` from stdout: a pagination object rendered as a row is noise for
+// a reader and useless to a script, which reads --output json where meta is intact.
+func (r Renderer) hintPagination(meta map[string]any) {
+	if r.Err == nil || r.AllPages || meta == nil {
+		return
+	}
+	totalPages, ok := metaInt(meta["total_pages"])
+	if !ok || totalPages <= 1 {
+		return
+	}
+	current, ok := metaInt(meta["current_page"])
+	if !ok {
+		current = 1
+	}
+	message := fmt.Sprintf("page %d of %d", current, totalPages)
+	if total, ok := metaInt(meta["total_count"]); ok {
+		message += fmt.Sprintf(" (%d total)", total)
+	}
+	fmt.Fprintf(r.Err, "%s; use --page N or --all\n", message)
+}
+
+func metaInt(value any) (int64, bool) {
+	switch typed := value.(type) {
+	case json.Number:
+		parsed, err := typed.Int64()
+		return parsed, err == nil
+	case float64:
+		return int64(typed), true
+	case int:
+		return int64(typed), true
+	case int64:
+		return typed, true
+	default:
+		return 0, false
+	}
+}
+
+// identifierKeys are the fields an operator needs back from a write: the Lago ID to
+// address the resource by, the external ID they chose, the human name or code they will
+// recognise it by, and the status a state transition produced. Order is the render
+// order, not a preference list.
+var identifierKeys = []string{"lago_id", "external_id", "code", "name", "status"}
 
 // renderIdentifiers prints only the identity of a created or updated resource.
 //
@@ -153,43 +270,64 @@ var identifierKeys = []string{"lago_id", "external_id", "code", "name"}
 //
 // It never prints nothing: a response that carries no recognisable identifier falls
 // back to the full table, because a blank terminal is worse than a verbose one.
-func renderIdentifiers(out io.Writer, value any) error {
-	unwrapped := unwrapSingle(value)
-	switch typed := unwrapped.(type) {
+func (r Renderer) renderIdentifiers(value any) error {
+	if _, rows, meta, isList := unwrapList(value); isList {
+		reduced, ok := reduceToIdentifiers(rows)
+		if !ok {
+			return r.renderTable(value)
+		}
+		if err := r.renderRows("", reduced); err != nil {
+			return err
+		}
+		r.hintPagination(meta)
+		return nil
+	}
+	switch typed := unwrapSingle(value).(type) {
 	case map[string]any:
 		fields := identifiersOf(typed)
 		if len(fields) == 0 {
-			return renderTable(out, value)
+			return r.renderTable(value)
 		}
-		w := tabwriter.NewWriter(out, 0, 4, 2, ' ', 0)
+		w := tabwriter.NewWriter(r.Out, 0, 4, 2, ' ', 0)
 		for _, key := range fields {
-			fmt.Fprintf(w, "%s\t%s\n", strings.ToUpper(key), scalar(typed[key]))
+			fmt.Fprintf(w, "%s\t%s\n", header(key), cell(typed[key]))
 		}
 		return w.Flush()
 	case []any:
-		if len(typed) == 0 {
-			return renderTable(out, value)
+		reduced, ok := reduceToIdentifiers(typed)
+		if !ok {
+			return r.renderTable(value)
 		}
-		rows := make([]any, 0, len(typed))
-		for _, rowValue := range typed {
-			row, ok := rowValue.(map[string]any)
-			if !ok {
-				return renderTable(out, value)
-			}
-			fields := identifiersOf(row)
-			if len(fields) == 0 {
-				return renderTable(out, value)
-			}
-			reduced := make(map[string]any, len(fields))
-			for _, key := range fields {
-				reduced[key] = row[key]
-			}
-			rows = append(rows, reduced)
-		}
-		return renderTable(out, rows)
+		return r.renderRows("", reduced)
 	default:
-		return renderTable(out, value)
+		return r.renderTable(value)
 	}
+}
+
+// reduceToIdentifiers keeps only the identifier keys of every row. It reports false, so
+// the caller falls back to the full table, when the list is empty, holds a non-object,
+// or holds a row with no identifier at all.
+func reduceToIdentifiers(rows []any) ([]any, bool) {
+	if len(rows) == 0 {
+		return nil, false
+	}
+	reduced := make([]any, 0, len(rows))
+	for _, rowValue := range rows {
+		row, ok := rowValue.(map[string]any)
+		if !ok {
+			return nil, false
+		}
+		fields := identifiersOf(row)
+		if len(fields) == 0 {
+			return nil, false
+		}
+		item := make(map[string]any, len(fields))
+		for _, key := range fields {
+			item[key] = row[key]
+		}
+		reduced = append(reduced, item)
+	}
+	return reduced, true
 }
 
 // identifiersOf returns the identifier fields present on object, in render order.
@@ -219,57 +357,4 @@ func unwrapSingle(value any) any {
 		return nested
 	}
 	return value
-}
-
-func preferredColumns(object map[string]any) []string {
-	preferred := []string{"lago_id", "id", "code", "external_id", "name", "status", "amount_cents", "currency", "created_at"}
-	columns := make([]string, 0, len(object))
-	seen := map[string]bool{}
-	for _, key := range preferred {
-		if _, ok := object[key]; ok {
-			columns = append(columns, key)
-			seen[key] = true
-		}
-	}
-	for _, key := range sortedKeys(object) {
-		if !seen[key] && isScalar(object[key]) && len(columns) < 8 {
-			columns = append(columns, key)
-		}
-	}
-	return columns
-}
-
-func sortedKeys(object map[string]any) []string {
-	keys := make([]string, 0, len(object))
-	for key := range object {
-		keys = append(keys, key)
-	}
-	sort.Strings(keys)
-	return keys
-}
-
-func isScalar(value any) bool {
-	switch value.(type) {
-	case nil, string, bool, float64, json.Number, int, int64:
-		return true
-	default:
-		return false
-	}
-}
-
-func scalar(value any) string {
-	if value == nil {
-		return ""
-	}
-	if stringValue, ok := value.(string); ok {
-		return stringValue
-	}
-	if isScalar(value) {
-		return fmt.Sprint(value)
-	}
-	encoded, err := json.Marshal(value)
-	if err != nil {
-		return fmt.Sprint(value)
-	}
-	return string(encoded)
 }

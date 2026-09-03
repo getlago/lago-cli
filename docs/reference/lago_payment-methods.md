@@ -30,5 +30,5 @@ Manage Lago payment methods
 
 * [lago](lago)	 - The official CLI for Lago billing
 * [lago payment-methods destroy](lago_payment-methods_destroy)	 - Delete a payment method
-* [lago payment-methods list-customers](lago_payment-methods_list-customers)	 - List all customer payment methods
+* [lago payment-methods list-customers-payment-methods](lago_payment-methods_list-customers-payment-methods)	 - List all customer payment methods
 * [lago payment-methods payment-method-set-as-default](lago_payment-methods_payment-method-set-as-default)	 - Set the payment method as default

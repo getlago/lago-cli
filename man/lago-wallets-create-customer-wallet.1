@@ -2,15 +2,15 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-wallets-update-customer - Update a wallet
+lago-wallets-create-customer-wallet - Create a wallet
 
 
 .SH SYNOPSIS
-\fBlago wallets update-customer   [flags]\fP
+\fBlago wallets create-customer-wallet  [flags]\fP
 
 
 .SH DESCRIPTION
-This endpoint is used to update an existing wallet with prepaid credits. A terminated wallet cannot be updated and returns a \fB422\fR error.
+This endpoint is used to create a wallet with prepaid credits.
 
 
 .SH OPTIONS
@@ -23,23 +23,35 @@ This endpoint is used to update an existing wallet with prepaid credits. A termi
 
 .PP
 \fB--billing-entity-code\fP=""
-	The code of the billing entity associated with the wallet.
+	The code of the billing entity associated with the wallet. If not provided, the customer's billing entity is used.
 
 .PP
 \fB--code\fP=""
 	The code of the wallet.
 
 .PP
+\fB--currency\fP=""
+	The currency of the wallet.; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SZL, THB, TJS, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
+
+.PP
 \fB--expiration-at\fP=""
 	The date and time that determines when the wallet will expire. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC).
 
 .PP
-\fB-h\fP, \fB--help\fP[=false]
-	help for update-customer
+\fB--external-customer-id\fP=""
+	The customer external unique identifier (provided by your own application)
 
 .PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
+\fB--granted-credits\fP=""
+	The number of free granted credits. Required only if there is no paid credits.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for create-customer-wallet
+
+.PP
+\fB--ignore-paid-top-up-limits-on-creation\fP=""
+	If set to true, the wallet will ignore paid top-up limits on creation.
 
 .PP
 \fB--input\fP=""
@@ -66,6 +78,18 @@ This endpoint is used to update an existing wallet with prepaid credits. A termi
 	The name of the wallet.
 
 .PP
+\fB--paid-credits\fP=""
+	The number of paid credits. Required only if there is no granted credits.
+
+.PP
+\fB--paid-top-up-max-amount-cents\fP=""
+	Maximum amount of cents that can be top-up with a single paid transaction.
+
+.PP
+\fB--paid-top-up-min-amount-cents\fP=""
+	Minimum amount of cents that can be top-up with a single paid transaction.
+
+.PP
 \fB--payment-method-payment-method-id\fP=""
 	The unique identifier of the payment method (required when using a specific provider payment method).
 
@@ -82,8 +106,20 @@ This endpoint is used to update an existing wallet with prepaid credits. A termi
 	The purchase order number associated with the wallet. It will be added to invoices generated for wallet top-ups, unless a more specific purchase order number is set on the wallet transaction or recurring transaction rule that triggered the top-up.
 
 .PP
+\fB--rate-amount\fP=""
+	The rate of conversion between credits and the amount in the specified currency. It indicates the ratio or factor used to convert credits into the corresponding monetary value in the currency of the transaction.
+
+.PP
 \fB--recurring-transaction-rules\fP=""
 	List of recurring transaction rules. Currently, we only allow one recurring rule per wallet.
+
+.PP
+\fB--transaction-metadata\fP=""
+	This optional field allows you to store a list of key-value pairs that provide additional information or custom attributes. These key-value pairs will be included in the metadata of wallet transactions generated during the wallet creation process.
+
+.PP
+\fB--transaction-name\fP=""
+	The name of the wallet transactions triggered when creating the wallet. It will appear on the invoice as the label for the fee. If not set, the label on the invoice will fallback to either 'Prepaid credits - {{wallet_name}}' if the wallet name is set, or 'Prepaid credits'.
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
@@ -141,8 +177,8 @@ This endpoint is used to update an existing wallet with prepaid credits. A termi
 
 .SH EXAMPLE
 .EX
-  lago wallets update-customer <external_customer_id> <code> --input @payload.json
-  lago wallets update-customer <external_customer_id> <code> --input @payload.json --output json  # full resource
+  lago wallets create-customer-wallet <external_customer_id> --input @payload.json
+  lago wallets create-customer-wallet <external_customer_id> --input @payload.json --output json  # full resource
 .EE
 
 

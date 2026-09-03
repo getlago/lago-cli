@@ -17,10 +17,6 @@ This endpoint deletes an existing entitlement by removing the feature from the p
 \fB-h\fP, \fB--help\fP[=false]
 	help for destroy
 
-.PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
 \fB--api-key\fP=""
@@ -78,6 +74,7 @@ This endpoint deletes an existing entitlement by removing the feature from the p
 .SH EXAMPLE
 .EX
   lago entitlements destroy <code> <feature_code>
+  lago entitlements destroy <code> <feature_code> --output json  # full resource
 .EE
 
 

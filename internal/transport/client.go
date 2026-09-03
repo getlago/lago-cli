@@ -57,11 +57,14 @@ type Client struct {
 }
 
 type Request struct {
-	Method     string
-	Path       string
-	Query      url.Values
-	Headers    http.Header
-	Body       []byte
+	Method  string
+	Path    string
+	Query   url.Values
+	Headers http.Header
+	Body    []byte
+	// Idempotent allows bounded retries on network errors, 429, and 5xx. Callers set it
+	// only for reads and for usage events that carry a timestamp: lago-api does not read
+	// an Idempotency-Key header, so no other mutation is safe to replay.
 	Idempotent bool
 	DryRun     bool
 
@@ -180,6 +183,15 @@ func NormalizeBaseURL(raw string, insecure bool) (*url.URL, error) {
 		return nil, apperr.New(apperr.ExitUsage,
 			fmt.Sprintf("invalid Lago API URL %q", raw),
 			"Use an absolute URL with a scheme, such as https://api.getlago.com for cloud US, https://api.eu.getlago.com for cloud EU, or your own base URL when self-hosting.")
+	}
+	// QA S-16, N-9: `https://api.getlago.com@evil.example` parses with a host of
+	// evil.example and a userinfo of api.getlago.com. Whatever the CLI printed as the
+	// host had to be the host it dialled, so userinfo is refused outright rather than
+	// stripped. Redacted() keeps a pasted password out of the error text.
+	if parsed.User != nil {
+		return nil, apperr.New(apperr.ExitUsage,
+			fmt.Sprintf("Lago API URL %q embeds credentials before the host", parsed.Redacted()),
+			"Remove the user:password@ part. The API key is sent as a Bearer token from the profile or --api-key, never in the URL.")
 	}
 	if parsed.Scheme != "https" && !(insecure && parsed.Scheme == "http") {
 		return nil, apperr.New(apperr.ExitUsage, "Lago API requires HTTPS", "Use HTTPS or pass --insecure explicitly for a trusted self-hosted HTTP instance.")

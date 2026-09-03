@@ -318,3 +318,31 @@ func TestResponseErrorOnlyRewritesAKnownNotFound(t *testing.T) {
 		t.Errorf("a 422 was rewritten as not-found: %v", err)
 	}
 }
+
+// QA S-16, N-9: `https://api.getlago.com@evil.example` parses with a host of
+// evil.example and userinfo of api.getlago.com, so the printed host and the dialled host
+// disagreed. Userinfo is refused outright, and a pasted password never reaches the error.
+func TestQA_S16_UserinfoInBaseURLIsRejected(t *testing.T) {
+	t.Parallel()
+	for _, raw := range []string{
+		"https://api.getlago.com@evil.example",
+		"https://user:lago_test_FAKEpassword@api.getlago.com",
+		"https://token@billing.acme.test/api/v1",
+		"https://:lago_test_FAKEpassword@api.eu.getlago.com",
+	} {
+		_, err := NormalizeBaseURL(raw, false)
+		if err == nil {
+			t.Errorf("%s was accepted", raw)
+			continue
+		}
+		if apperr.ExitCode(err) != apperr.ExitUsage {
+			t.Errorf("%s: exit code = %d, want %d", raw, apperr.ExitCode(err), apperr.ExitUsage)
+		}
+		if !strings.Contains(err.Error(), "embeds credentials") {
+			t.Errorf("%s: error does not name the problem: %v", raw, err)
+		}
+		if strings.Contains(err.Error(), "FAKEpassword") {
+			t.Errorf("%s: the password was echoed: %v", raw, err)
+		}
+	}
+}

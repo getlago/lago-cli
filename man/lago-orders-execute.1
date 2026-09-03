@@ -28,10 +28,6 @@ This is a premium feature.
 	help for execute
 
 .PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
-.PP
 \fB--input\fP=""
 	Complete JSON request body or @file.json
 
@@ -92,6 +88,7 @@ This is a premium feature.
 .SH EXAMPLE
 .EX
   lago orders execute <lago_id> --input @payload.json
+  lago orders execute <lago_id> --input @payload.json --output json  # full resource
 .EE
 
 

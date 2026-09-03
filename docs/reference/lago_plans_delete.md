@@ -14,13 +14,13 @@ lago plans delete <code> [flags]
 
 ```
   lago plans delete <code>
+  lago plans delete <code> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for delete
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for delete
 ```
 
 ### Options inherited from parent commands

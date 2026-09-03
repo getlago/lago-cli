@@ -18,10 +18,6 @@ This endpoint allows you to delete all alerts for a subscription.
 	help for delete-all-subscription-alerts
 
 .PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
-.PP
 \fB--subscription-status\fP=""
 	Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
 
@@ -82,6 +78,7 @@ This endpoint allows you to delete all alerts for a subscription.
 .SH EXAMPLE
 .EX
   lago subscriptions delete-all-subscription-alerts <external_id>
+  lago subscriptions delete-all-subscription-alerts <external_id> --output json  # full resource
 .EE
 
 

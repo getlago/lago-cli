@@ -14,13 +14,13 @@ lago features delete-feature-privilege <code> <privilege_code> [flags]
 
 ```
   lago features delete-feature-privilege <code> <privilege_code>
+  lago features delete-feature-privilege <code> <privilege_code> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for delete-feature-privilege
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for delete-feature-privilege
 ```
 
 ### Options inherited from parent commands

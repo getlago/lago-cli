@@ -19,10 +19,6 @@ Any existing metadata keys not included in the request will be removed.
 	help for metadata
 
 .PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
-.PP
 \fB--input\fP=""
 	Complete JSON request body or @file.json
 
@@ -83,6 +79,7 @@ Any existing metadata keys not included in the request will be removed.
 .SH EXAMPLE
 .EX
   lago plans metadata <code> --input @payload.json
+  lago plans metadata <code> --input @payload.json --output json  # full resource
 .EE
 
 

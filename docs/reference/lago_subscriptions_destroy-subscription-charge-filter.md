@@ -14,13 +14,13 @@ lago subscriptions destroy-subscription-charge-filter <external_id> <charge_code
 
 ```
   lago subscriptions destroy-subscription-charge-filter <external_id> <charge_code> <filter_id>
+  lago subscriptions destroy-subscription-charge-filter <external_id> <charge_code> <filter_id> --output json  # full resource
 ```
 
 ### Options
 
 ```
   -h, --help                         help for destroy-subscription-charge-filter
-      --idempotency-key string       Idempotency key for safe mutation retries
       --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
 ```
 

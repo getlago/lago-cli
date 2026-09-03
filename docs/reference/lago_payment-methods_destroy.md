@@ -14,13 +14,13 @@ lago payment-methods destroy <lago_id> <external_customer_id> [flags]
 
 ```
   lago payment-methods destroy <lago_id> <external_customer_id>
+  lago payment-methods destroy <lago_id> <external_customer_id> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for destroy
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for destroy
 ```
 
 ### Options inherited from parent commands

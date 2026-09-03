@@ -120,6 +120,7 @@ func (a *App) Load(requireAuth bool) error {
 	if err != nil {
 		return apperr.Wrap(apperr.ExitGeneral, "load configuration", err)
 	}
+	warnLooseConfigPermissions(a.Err, path)
 	overrides := config.Overrides{
 		Profile:     a.profile,
 		APIURL:      a.apiURL,
@@ -221,9 +222,8 @@ func (a *App) Render(value any, response *transport.Response) error {
 
 // RenderMutation renders a create or update response through the identifier renderer.
 //
-// A --dry-run response is the request envelope, not a resource, so it always renders
-// in full: reducing `{method, url, headers, body}` to an identifier block would print
-// nothing useful and hide the payload the flag exists to show.
+// A --dry-run response is the request envelope, not a resource, so it never goes
+// through the identifier reduction; see render for how the envelope is printed.
 func (a *App) RenderMutation(value any, response *transport.Response) error {
 	if response != nil && response.DryRunData != nil {
 		return a.render(a.Renderer(), value, response)
@@ -232,7 +232,24 @@ func (a *App) RenderMutation(value any, response *transport.Response) error {
 }
 
 func (a *App) render(renderer output.Renderer, value any, response *transport.Response) error {
+	// A --dry-run envelope is `{method, url, headers, body}` with the payload nested
+	// under body. Table cells summarise nested values, which would reduce the payload
+	// the flag exists to show to `{2 fields}`, so the envelope prints as JSON instead:
+	// it is a request, not a resource, and JSON is the form it will be sent in.
+	if response != nil && response.DryRunData != nil && (renderer.Mode == "" || renderer.Mode == output.Table) {
+		renderer.Mode = output.JSON
+	}
 	if err := renderer.Render(value); err != nil {
+		return err
+	}
+	a.reportTiming(response)
+	return nil
+}
+
+// renderPairs prints a hand-ordered identity block and the timing line, for built-in
+// commands whose table output is not a resource dump.
+func (a *App) renderPairs(pairs []output.Pair, response *transport.Response) error {
+	if err := output.WritePairs(a.Out, pairs); err != nil {
 		return err
 	}
 	a.reportTiming(response)
@@ -314,12 +331,14 @@ func parsePathQuery(raw string) (string, url.Values, error) {
 	return parsed.Path, parsed.Query(), nil
 }
 
-// isIdempotentMethod reports whether the transport may replay a request on its own,
-// without an operator-supplied idempotency key. Only side-effect-free reads qualify.
+// isIdempotentMethod reports whether the transport may replay a request on its own.
+// Only side-effect-free reads qualify.
 //
 // PUT and DELETE are idempotent in the RFC 9110 sense and still move money in Lago:
 // PUT /invoices/{id}/finalize issues an invoice and can trigger a payment attempt.
-// Mutations become replayable only by carrying an Idempotency-Key, never by verb.
+// Mutations are never replayed by verb, and lago-api does not read an Idempotency-Key
+// header, so the CLI offers none; the one exception is a usage event that carries a
+// timestamp, whose transaction_id plus timestamp the server deduplicates.
 func isIdempotentMethod(method string) bool {
 	switch strings.ToUpper(method) {
 	case http.MethodGet, http.MethodHead, http.MethodOptions:

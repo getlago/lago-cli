@@ -29,7 +29,6 @@ lago billable-metrics create [flags]
       --field-name string           Property of the billable metric used for aggregating usage data. This field is not required for 'count_agg'.
       --filters string              API field (array)
   -h, --help                        help for create
-      --idempotency-key string      Idempotency key for safe mutation retries
       --input string                Complete JSON request body or @file.json
       --name string                 Name of the billable metric.
       --recurring string            Defines if the billable metric is persisted billing period over billing period.

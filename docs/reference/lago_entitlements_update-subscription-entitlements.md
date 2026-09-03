@@ -1,4 +1,4 @@
-## lago entitlements update-subscription
+## lago entitlements update-subscription-entitlements
 
 Update subscription entitlements
 
@@ -7,21 +7,20 @@ Update subscription entitlements
 This accepts a list of entitlements to update. If the feature isn't part of the subscription yet, it's added with all the privileges from the payload. If the feature is already part of the subscription (via plan or via override), the privilege and values are updated or added. All privileges must be valid for the feature. All features  and privileges not part of the payload are left untouched. To remove privileges or features, use the DELETE endpoints.
 
 ```
-lago entitlements update-subscription <external_id> [flags]
+lago entitlements update-subscription-entitlements <external_id> [flags]
 ```
 
 ### Examples
 
 ```
-  lago entitlements update-subscription <external_id> --input @payload.json
-  lago entitlements update-subscription <external_id> --input @payload.json --output json  # full resource
+  lago entitlements update-subscription-entitlements <external_id> --input @payload.json
+  lago entitlements update-subscription-entitlements <external_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                         help for update-subscription
-      --idempotency-key string       Idempotency key for safe mutation retries
+  -h, --help                         help for update-subscription-entitlements
       --input string                 Complete JSON request body or @file.json
       --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
 ```

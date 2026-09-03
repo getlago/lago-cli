@@ -19,10 +19,9 @@ lago events batch [flags]
 ### Options
 
 ```
-      --events string            API field (array)
-  -h, --help                     help for batch
-      --idempotency-key string   Idempotency key for safe mutation retries
-      --input string             Complete JSON request body or @file.json
+      --events string   API field (array)
+  -h, --help            help for batch
+      --input string    Complete JSON request body or @file.json
 ```
 
 ### Options inherited from parent commands

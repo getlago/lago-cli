@@ -32,13 +32,12 @@ type fixture struct {
 }
 
 type fixtureStep struct {
-	ID             string            `yaml:"id"`
-	Method         string            `yaml:"method"`
-	Path           string            `yaml:"path"`
-	Query          map[string]string `yaml:"query"`
-	Body           any               `yaml:"body"`
-	Capture        map[string]string `yaml:"capture"`
-	IdempotencyKey string            `yaml:"idempotency_key"`
+	ID      string            `yaml:"id"`
+	Method  string            `yaml:"method"`
+	Path    string            `yaml:"path"`
+	Query   map[string]string `yaml:"query"`
+	Body    any               `yaml:"body"`
+	Capture map[string]string `yaml:"capture"`
 }
 
 var fixtureVariable = regexp.MustCompile(`\$\{([A-Za-z_][A-Za-z0-9_]*)\}`)
@@ -99,6 +98,9 @@ func newSeedCommand(app *App) *cobra.Command {
 }
 
 func runFixture(cmd *cobra.Command, app *App, data []byte, overrides map[string]any) error {
+	if err := rejectRemovedFixtureKeys(data); err != nil {
+		return err
+	}
 	var scenario fixture
 	decoder := yaml.NewDecoder(bytes.NewReader(data))
 	decoder.KnownFields(true)
@@ -149,17 +151,8 @@ func runFixture(cmd *cobra.Command, app *App, data []byte, overrides map[string]
 				return fixtureStepError(step.ID, err)
 			}
 		}
-		headers := make(http.Header)
-		key := step.IdempotencyKey
-		if key != "" {
-			key, err = interpolateString(key, variables)
-			if err != nil {
-				return fixtureStepError(step.ID, err)
-			}
-			headers.Set("Idempotency-Key", key)
-		}
 		fmt.Fprintf(app.Err, "fixture: %s (%s %s)\n", step.ID, method, pathValue)
-		value, response, err := app.Request(cmd.Context(), transport.Request{Method: method, Path: pathValue, Query: query, Headers: headers, Body: body, Idempotent: isIdempotentMethod(method) || key != ""})
+		value, response, err := app.Request(cmd.Context(), transport.Request{Method: method, Path: pathValue, Query: query, Body: body, Idempotent: isIdempotentMethod(method)})
 		if err != nil {
 			if app.timing && response != nil {
 				fmt.Fprintf(app.Err, "fixture: %s attempts=%d total=%s (failed)\n", step.ID, response.Attempts, response.Timing.Total)
@@ -218,6 +211,29 @@ func confirmDestructiveSteps(app *App, scenario fixture) error {
 	name := firstNonBlank(scenario.Name, "fixture")
 	fmt.Fprintf(app.Err, "fixture %q contains %d destructive step(s): %s\n", name, len(destructive), strings.Join(destructive, ", "))
 	return app.Confirm(name)
+}
+
+// rejectRemovedFixtureKeys names the removal of `idempotency_key` instead of letting the
+// strict decoder report an anonymous unknown field. The header it set was never read by
+// lago-api, so a fixture relying on it was relying on a safety that did not exist.
+func rejectRemovedFixtureKeys(data []byte) error {
+	var loose struct {
+		Steps []map[string]any `yaml:"steps"`
+	}
+	if err := yaml.Unmarshal(data, &loose); err != nil {
+		return nil // the strict decoder reports the shape error with its own message
+	}
+	for index, step := range loose.Steps {
+		if _, present := step["idempotency_key"]; !present {
+			continue
+		}
+		id, _ := step["id"].(string)
+		if id == "" {
+			id = fmt.Sprintf("#%d", index+1)
+		}
+		return apperr.New(apperr.ExitUsage, fmt.Sprintf("fixture step %q uses idempotency_key, which Lago CLI no longer supports", id), "Remove the idempotency_key lines. Lago CLI never sends an Idempotency-Key header because the Lago API does not read it; give events a transaction_id and timestamp instead.")
+	}
+	return nil
 }
 
 func interpolateFixtureValue(value any, variables map[string]any) (any, error) {

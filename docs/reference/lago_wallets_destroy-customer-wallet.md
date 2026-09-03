@@ -1,31 +1,26 @@
-## lago payment-methods list-customers
+## lago wallets destroy-customer-wallet
 
-List all customer payment methods
+Terminate a wallet
 
 ### Synopsis
 
-This endpoint retrieves all payment methods of a Customer.
+This endpoint is used to terminate an existing wallet with prepaid credits.
 
 ```
-lago payment-methods list-customers <external_customer_id> [flags]
+lago wallets destroy-customer-wallet <external_customer_id> <code> [flags]
 ```
 
 ### Examples
 
 ```
-  lago payment-methods list-customers <external_customer_id>
+  lago wallets destroy-customer-wallet <external_customer_id> <code>
+  lago wallets destroy-customer-wallet <external_customer_id> <code> --output json  # full resource
 ```
 
 ### Options
 
 ```
-      --all                       Fetch every page
-  -h, --help                      help for list-customers
-      --limit string              Maximum number of results
-      --page string               Page number.
-      --per-page string           Number of records per page.
-      --watch                     Poll and re-render when the response changes
-      --watch-interval duration   Polling interval used with --watch (default 2s)
+  -h, --help   help for destroy-customer-wallet
 ```
 
 ### Options inherited from parent commands
@@ -48,4 +43,4 @@ lago payment-methods list-customers <external_customer_id> [flags]
 
 ### SEE ALSO
 
-* [lago payment-methods](lago_payment-methods)	 - Manage Lago payment methods
+* [lago wallets](lago_wallets)	 - Manage Lago wallets

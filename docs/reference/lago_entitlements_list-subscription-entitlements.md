@@ -1,27 +1,28 @@
-## lago entitlements destroy-subscription
+## lago entitlements list-subscription-entitlements
 
-Remove an entitlement from a subscription
+List all subscription entitlements
 
 ### Synopsis
 
-This endpoint removes a specific feature entitlement from a subscription. The entitlement remains available from the plan.
+This endpoint retrieves all entitlements for a specific subscription, including both plan entitlements and any subscription-specific overrides.
 
 ```
-lago entitlements destroy-subscription <external_id> <feature_code> [flags]
+lago entitlements list-subscription-entitlements <external_id> [flags]
 ```
 
 ### Examples
 
 ```
-  lago entitlements destroy-subscription <external_id> <feature_code>
+  lago entitlements list-subscription-entitlements <external_id>
 ```
 
 ### Options
 
 ```
-  -h, --help                         help for destroy-subscription
-      --idempotency-key string       Idempotency key for safe mutation retries
+  -h, --help                         help for list-subscription-entitlements
       --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
+      --watch                        Poll and re-render when the response changes
+      --watch-interval duration      Polling interval used with --watch (default 2s)
 ```
 
 ### Options inherited from parent commands

@@ -31,7 +31,7 @@ lago fees list [flags]
       --failed-at-to string               Filter results with payment failure after creation date and time in UTC.
       --fee-type string                   The fee type. Possible values are 'add-on', 'charge', 'credit', 'subscription' or "commitment".; one of: charge, add_on, subscription, credit, commitment
   -h, --help                              help for list
-      --limit string                      Maximum number of results
+      --limit string                      Results per page (1-1000)
       --page string                       Page number.
       --payment-status string             Indicates the payment status of the fee. It represents the current status of the payment associated with the fee. The possible values for this field are 'pending', 'succeeded', 'failed' and refunded'.; one of: pending, succeeded, failed, refunded
       --per-page string                   Number of records per page.

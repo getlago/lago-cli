@@ -96,13 +96,16 @@ Check which host you are actually hitting, on any deployment. `RESOLVED_API_URL`
 
 ```console
 $ lago whoami
-API_URL           https://api.eu.getlago.com
-MODE              test
-ORGANIZATION      {"organization":{"lago_id":"org_...","name":"Example Organization"}}
+NAME              Example Organization
+LAGO_ID           org_...
+DEFAULT_CURRENCY  EUR
+TIMEZONE          Europe/Paris
 PROFILE           default
-REGION            eu
+MODE              test
 RESOLVED_API_URL  https://api.eu.getlago.com/api/v1
 ```
+
+`lago whoami --output json` carries the full organization object under `organization`, plus `profile`, `region`, `mode`, `api_url`, and `resolved_api_url`. `lago organizations get` is the same object without the profile fields.
 
 `lago doctor` reports the same resolved URL as its own check, next to the configuration, permission, and authentication checks. It is the first line to paste into a support ticket: it separates "wrong credentials" from "right credentials, wrong host".
 
@@ -126,7 +129,11 @@ Configuration resolves flags → environment → `~/.config/lago/config.toml`. S
 
 The gate follows the spec, not the command surface. `lago api` classifies a raw request by the operation its method and path address: in a live profile, `lago api DELETE /customers/x` or `lago api POST /invoices/x/void` requires `--confirm <path>` or typed confirmation, while a test profile keeps `lago api` as an ungated escape hatch. `lago fixtures run` and `lago seed demo` run only against test profiles, and a fixture containing a destructive step must be confirmed with `--confirm <fixture name>` before its first step runs.
 
-Plain HTTP and disabled TLS verification require the explicit `--insecure` flag and always print a warning. Use it for `http://localhost:3000` during development, not against a deployment that holds real money.
+Plain HTTP and disabled TLS verification require the explicit `--insecure` flag and always print a warning. Use it for `http://localhost:3000` during development, not against a deployment that holds real money. `lago init --insecure` persists `insecure = true` into the profile and says so on stderr; the next `lago init` for that profile without the flag clears it.
+
+`lago init --profile <name>` writes that profile without switching `current_profile`. The first profile you create is current by default; after that, pass `--use` to switch, or `--profile <name>` per command. An alias (`lago alias set`) may name a profile but may not carry `--api-key`, `--api-url`, or `--insecure`: credentials and TLS choices live in the 0600 config file, not in an alias someone runs without reading it.
+
+The config file is checked on every command. If it is readable by anyone but you, stderr says so and prints the `chmod 600` to run; `lago doctor` reports the same check.
 
 ## Quickstart
 
@@ -149,11 +156,12 @@ EXTERNAL_ID  quickstart_customer
 NAME         Quickstart Customer
 
 $ lago subscriptions create \
-    --subscription-external-customer-id quickstart_customer \
-    --subscription-external-id quickstart_subscription \
-    --subscription-plan-code quickstart
+    --external-customer-id quickstart_customer \
+    --external-id quickstart_subscription \
+    --plan-code quickstart
 LAGO_ID      3c903c90-3c90-3c90-3c90-3c903c903c90
 EXTERNAL_ID  quickstart_subscription
+STATUS       active
 
 $ lago events send --external-subscription-id quickstart_subscription --code quickstart_requests
 CODE            quickstart_requests
@@ -162,16 +170,16 @@ TRANSACTION_ID  0f3c1d2e-4a5b-6c7d-8e9f-0a1b2c3d4e5f
 
 $ lago invoices preview --input '{"customer":{"external_id":"quickstart_customer"},"subscriptions":{"external_ids":["quickstart_subscription"]}}'
 CURRENCY            USD
-FEES                [{"amount_cents":100,"units":"1.0"}]
+FEES                1 item
 ISSUING_DATE        2026-10-01
 TOTAL_AMOUNT_CENTS  100
 ```
 
 The `billable_metric_id` in the plan payload is the `LAGO_ID` the first command printed. Substitute yours.
 
-### Creates print identifiers
+### Writes print identifiers
 
-Every `create` and `update` prints a terse identifier block by default, because after a create the one thing you do not already have is the ID Lago minted. `--output json` returns the complete resource, and that is the form to script against:
+Every write (`create`, `update`, `delete`, `terminate`, `apply`, `finalize`, `void`, metadata operations) prints a terse identifier block by default: `LAGO_ID`, `EXTERNAL_ID`, `CODE`, `NAME`, and `STATUS`, whichever the resource carries. After a create the one thing you do not already have is the ID Lago minted; after a state transition it is the new status. The exceptions are read-shaped writes whose body is the answer (`invoices preview`, `credit-notes estimate`, downloads, payment URLs) and bulk `events send`/`events batch`, which print in full. `--output json` returns the complete resource, and that is the form to script against:
 
 ```console
 $ lago customers create --external-id quickstart_customer --name "Quickstart Customer" --output json
@@ -186,7 +194,26 @@ $ lago customers create --external-id quickstart_customer --name "Quickstart Cus
 }
 ```
 
-Reads are unchanged: `lago customers get` and `lago customers list` print every column.
+Reads print in full. `lago customers get` prints every field as key/value rows, with nested lists and objects summarised (`CHARGES  2 items: requests, storage`) rather than dumped as JSON. `--output json` is the structured form.
+
+### List columns
+
+`list` commands print one row per item. Four resources have a fixed, documented column set; every other resource picks identifiers, status, money amounts with their currency, and dates first, across all rows on the page, up to eight columns.
+
+```console
+$ lago customers list
+LAGO_ID  EXTERNAL_ID  NAME  EMAIL  CURRENCY  CREATED_AT
+$ lago invoices list
+LAGO_ID  NUMBER  STATUS  PAYMENT_STATUS  CURRENCY  TOTAL_AMOUNT_CENTS  ISSUING_DATE
+$ lago subscriptions list
+LAGO_ID  EXTERNAL_ID  PLAN_CODE  STATUS  STARTED_AT  ENDING_AT
+$ lago plans list
+LAGO_ID  CODE  NAME  INTERVAL  AMOUNT_CENTS  AMOUNT_CURRENCY
+```
+
+A column absent from every row on the page is dropped. When the page is one of several, stderr says so: `page 1 of 3 (250 total); use --page N or --all`. The pagination `meta` object stays in `--output json`.
+
+Table cells escape terminal control characters. A name containing an ANSI sequence or a newline prints as `\x1b[31m...` and `\n`, so a hostile value cannot recolour your terminal or inject a fake row. JSON output escapes on its own.
 
 `events send` generates a transaction ID when one is omitted. When you pass your own `--transaction-id`, pass `--timestamp` (unix seconds) with it and resend both unchanged on retry. Lago deduplicates on `transaction_id`, but on the ClickHouse event store the timestamp is part of the key and a missing one defaults to the time of reception, so a retry without a timestamp is a second billable event. The CLI warns on stderr when a command is not safe to retry for that reason.
 
@@ -199,7 +226,7 @@ $ cat events.ndjson | lago events send --file -
 
 ## Querying responses with `--query`
 
-`--query` takes a [JMESPath](https://jmespath.org) expression. The trap is that **Lago wraps every response**, and the wrapper is part of the path. A query written against the unwrapped resource matches nothing and returns `null`.
+`--query` takes a [JMESPath](https://jmespath.org) expression. The trap is that **Lago wraps every response**, and the wrapper is part of the path. A query written against the unwrapped resource matches nothing and returns `null`. Table mode unwraps `{"customers": [...], "meta": {...}}` for display; `--query` and `--output json` see the envelope as sent.
 
 | Endpoint | Response shape | Query starts with |
 | --- | --- | --- |
@@ -285,7 +312,7 @@ $ lago whoami
 $ lago doctor
 $ lago customers list --all --output json
 $ lago api GET /customers?page=2
-$ lago api POST /events --data @event.json --idempotency-key event-42
+$ lago api POST /events --data @event.json
 ```
 
 Global scripting controls: `--output table|json|yaml`, `--query`, `--dry-run`, `--timing`, `--verbose`, `--timeout`, `--no-retry`. `--timing` separates API round-trip, retry wait, and CLI overhead, and prints on failure too, including network errors, so retry behaviour is visible when it matters. The API key is redacted from dry runs, errors, and verbose logs.

@@ -14,13 +14,13 @@ lago invoices lose-dispute <lago_id> [flags]
 
 ```
   lago invoices lose-dispute <lago_id>
+  lago invoices lose-dispute <lago_id> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for lose-dispute
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for lose-dispute
 ```
 
 ### Options inherited from parent commands

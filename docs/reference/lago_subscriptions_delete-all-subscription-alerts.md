@@ -14,13 +14,13 @@ lago subscriptions delete-all-subscription-alerts <external_id> [flags]
 
 ```
   lago subscriptions delete-all-subscription-alerts <external_id>
+  lago subscriptions delete-all-subscription-alerts <external_id> --output json  # full resource
 ```
 
 ### Options
 
 ```
   -h, --help                         help for delete-all-subscription-alerts
-      --idempotency-key string       Idempotency key for safe mutation retries
       --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
 ```
 

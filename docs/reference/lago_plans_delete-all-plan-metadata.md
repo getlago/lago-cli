@@ -14,13 +14,13 @@ lago plans delete-all-plan-metadata <code> [flags]
 
 ```
   lago plans delete-all-plan-metadata <code>
+  lago plans delete-all-plan-metadata <code> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for delete-all-plan-metadata
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for delete-all-plan-metadata
 ```
 
 ### Options inherited from parent commands

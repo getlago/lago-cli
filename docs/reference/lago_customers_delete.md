@@ -14,13 +14,13 @@ lago customers delete <external_customer_id> [flags]
 
 ```
   lago customers delete <external_customer_id>
+  lago customers delete <external_customer_id> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for delete
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for delete
 ```
 
 ### Options inherited from parent commands

@@ -14,13 +14,13 @@ lago wallets terminate <lago_id> [flags]
 
 ```
   lago wallets terminate <lago_id>
+  lago wallets terminate <lago_id> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for terminate
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for terminate
 ```
 
 ### Options inherited from parent commands

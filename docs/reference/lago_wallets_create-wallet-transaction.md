@@ -22,7 +22,6 @@ lago wallets create-wallet-transaction [flags]
 ```
       --granted-credits string                                       The number of free granted credits.
   -h, --help                                                         help for create-wallet-transaction
-      --idempotency-key string                                       Idempotency key for safe mutation retries
       --ignore-paid-top-up-limits string                             When true, allows topping up the wallet with transactions that exceed the paid top-up limits. Defaults to false.
       --input string                                                 Complete JSON request body or @file.json
       --invoice-custom-section-invoice-custom-section-codes string   List of unique codes identifying the invoice custom sections to apply. These override the default invoice custom sections configured at the customer or billing entity level.

@@ -20,6 +20,7 @@ import (
 	"github.com/getlago/lago-cli/internal/config"
 	"github.com/getlago/lago-cli/internal/diagnostics"
 	"github.com/getlago/lago-cli/internal/generated"
+	"github.com/getlago/lago-cli/internal/output"
 	"github.com/getlago/lago-cli/internal/transport"
 	cliupdate "github.com/getlago/lago-cli/internal/update"
 	"github.com/spf13/cobra"
@@ -116,6 +117,7 @@ func newInitCommand(app *App) *cobra.Command {
 	var region string
 	var updateCheck bool
 	var updateCheckSet bool
+	var use bool
 	cmd := &cobra.Command{
 		Use:   "init",
 		Short: "Configure a Lago profile and validate its credentials",
@@ -137,6 +139,12 @@ func newInitCommand(app *App) *cobra.Command {
 			}
 			profileName := firstNonBlank(app.profile, os.Getenv("LAGO_PROFILE"), cfg.CurrentProfile, "default")
 			existing := cfg.Profiles[profileName]
+			// QA C-8, S-5: --insecure disables TLS verification for every later command
+			// on the profile, so it is written only when this init passes the flag. A
+			// re-init without it resets the profile to verified TLS: a setting that
+			// weakens security must be re-asked, never inherited. The result is announced
+			// below whenever it ends up true.
+			insecure := app.flagChanged("insecure") && app.insecure
 			apiKey := firstNonBlank(app.apiKey, os.Getenv("LAGO_API_KEY"), existing.APIKey)
 			selectedRegion := firstNonBlank(region, existing.Region)
 			mode := firstNonBlank(app.mode, os.Getenv("LAGO_MODE"), existing.Mode)
@@ -176,7 +184,7 @@ func newInitCommand(app *App) *cobra.Command {
 				// writing to the wrong continent. They are only accepted together when
 				// they normalize to the same host.
 				if app.flagChanged("api-url") && apiURL != "" {
-					if conflict := conflictingTarget(apiURL, cloudURL, app.insecure); conflict != nil {
+					if conflict := conflictingTarget(apiURL, cloudURL, insecure); conflict != nil {
 						return conflict
 					}
 				}
@@ -203,7 +211,7 @@ func newInitCommand(app *App) *cobra.Command {
 			// into the config file, so `whoami` reported a URL that was not the one being
 			// called. The profile now records the resolved base URL, and every later read
 			// is the same string the client uses.
-			normalized, err := transport.NormalizeBaseURL(apiURL, app.insecure)
+			normalized, err := transport.NormalizeBaseURL(apiURL, insecure)
 			if err != nil {
 				return err
 			}
@@ -218,7 +226,7 @@ func newInitCommand(app *App) *cobra.Command {
 					timeout = parsed
 				}
 			}
-			client, err := transport.New(transport.Config{BaseURL: apiURL, APIKey: apiKey, Timeout: timeout, Insecure: app.insecure, NoRetry: app.noRetry, Verbose: app.verbose, UserAgent: "lago-cli/" + app.Version, Err: app.Err, DialContext: app.dialContext})
+			client, err := transport.New(transport.Config{BaseURL: apiURL, APIKey: apiKey, Timeout: timeout, Insecure: insecure, NoRetry: app.noRetry, Verbose: app.verbose, UserAgent: "lago-cli/" + app.Version, Err: app.Err, DialContext: app.dialContext})
 			if err != nil {
 				return err
 			}
@@ -231,7 +239,14 @@ func newInitCommand(app *App) *cobra.Command {
 				cfg.Profiles = map[string]config.Profile{}
 			}
 			cfg.Version = config.CurrentVersion
-			cfg.CurrentProfile = profileName
+			// QA F-13: `init --profile staging` switched current_profile, so every later
+			// command silently targeted the profile that was just configured. The first
+			// profile ever written becomes current, because there is nothing else to
+			// point at; after that, switching is opt-in with --use.
+			switched := use || cfg.CurrentProfile == ""
+			if switched {
+				cfg.CurrentProfile = profileName
+			}
 			if cfg.Channel == "" {
 				cfg.Channel = "stable"
 			}
@@ -239,17 +254,26 @@ func newInitCommand(app *App) *cobra.Command {
 				cfg.UpdateCheck = updateCheck
 				cfg.UpdateConsent = true
 			}
-			cfg.Profiles[profileName] = config.Profile{Region: selectedRegion, APIURL: apiURL, APIKey: apiKey, Mode: mode, Timeout: timeout.String(), Insecure: app.insecure, OrganizationID: organizationID, Organization: organizationName}
+			cfg.Profiles[profileName] = config.Profile{Region: selectedRegion, APIURL: apiURL, APIKey: apiKey, Mode: mode, Timeout: timeout.String(), Insecure: insecure, OrganizationID: organizationID, Organization: organizationName}
 			if err := config.Save(path, cfg); err != nil {
 				return apperr.Wrap(apperr.ExitGeneral, "save configuration", err)
 			}
 			fmt.Fprintf(app.Out, "Connected to Lago as %s.\n", firstNonBlank(organizationName, organizationID, "your organization"))
 			fmt.Fprintf(app.Out, "Saved %s profile %q to %s (mode: %s).\n", selectedRegion, profileName, path, mode)
+			if !switched && cfg.CurrentProfile != profileName {
+				fmt.Fprintf(app.Err, "Profile %q saved; %q remains the current profile. Pass --use to switch, or --profile %q per command.\n", profileName, cfg.CurrentProfile, profileName)
+			}
+			if insecure {
+				fmt.Fprintf(app.Err, "WARNING: insecure = true is persisted in profile %q; TLS verification is disabled for every command that uses it. Re-run `lago init --profile %q` without --insecure to clear it.\n", profileName, profileName)
+			} else if existing.Insecure {
+				fmt.Fprintf(app.Err, "insecure = true was cleared from profile %q; TLS verification is back on.\n", profileName)
+			}
 			return nil
 		},
 	}
 	cmd.Flags().StringVar(&region, "region", "", "Lago region: us, eu, or self-hosted")
 	cmd.Flags().BoolVar(&updateCheck, "update-check", false, "Allow a once-daily anonymous release check")
+	cmd.Flags().BoolVar(&use, "use", false, "Make this profile the current profile (the first profile is current by default)")
 	return cmd
 }
 
@@ -268,15 +292,34 @@ func newWhoamiCommand(app *App) *cobra.Command {
 			// the profile holds. They differ whenever a base URL was configured without
 			// the /api/v1 prefix, and an operator debugging "which environment am I on"
 			// needs the one the client used, not the one they typed.
+			organization := unwrapNamedObject(value, "organization")
+			if organization == nil {
+				organization, _ = value.(map[string]any)
+			}
 			result := map[string]any{
 				"profile":          app.resolved.Name,
 				"region":           app.resolved.Profile.Region,
 				"mode":             app.resolved.Profile.Mode,
 				"api_url":          app.resolved.Profile.APIURL,
 				"resolved_api_url": app.ResolvedAPIURL(),
-				"organization":     value,
+				"organization":     organization,
 			}
-			return app.Render(result, response)
+			if app.outputMode() != output.Table && app.outputMode() != "" || app.query != "" {
+				return app.Render(result, response)
+			}
+			// QA C-3: the default answer to "who am I" is a short identity block, in
+			// reading order, with the host requests actually go to. The full object is
+			// one flag away: --output json, or `lago organizations get`.
+			pairs := []output.Pair{
+				{Key: "name", Value: scalarString(organization["name"])},
+				{Key: "lago_id", Value: scalarString(organization["lago_id"])},
+				{Key: "default_currency", Value: scalarString(organization["default_currency"])},
+				{Key: "timezone", Value: scalarString(organization["timezone"])},
+				{Key: "profile", Value: app.resolved.Name},
+				{Key: "mode", Value: app.resolved.Profile.Mode},
+				{Key: "resolved_api_url", Value: app.ResolvedAPIURL()},
+			}
+			return app.renderPairs(pairs, response)
 		},
 	}
 }
@@ -365,12 +408,11 @@ func writeDoctorBundle(app *App, path string, checks map[string]bool) error {
 func newAPICommand(app *App) *cobra.Command {
 	var data string
 	var headers []string
-	var idempotencyKey string
 	cmd := &cobra.Command{
 		Use:   "api METHOD PATH",
 		Short: "Make an authenticated request to any Lago API endpoint",
 		Example: "  lago api GET /customers?page=2\n" +
-			"  lago api POST /events --data @event.json --idempotency-key event-42\n" +
+			"  lago api POST /events --data @event.json\n" +
 			"  printf '{\"event\":{}}' | lago api POST /events --data -",
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -405,11 +447,7 @@ func newAPICommand(app *App) *cobra.Command {
 				}
 				httpHeaders.Add(strings.TrimSpace(name), strings.TrimSpace(value))
 			}
-			if idempotencyKey != "" {
-				httpHeaders.Set("Idempotency-Key", idempotencyKey)
-			}
-			idempotent := isIdempotentMethod(method) || idempotencyKey != ""
-			value, response, err := app.Request(cmd.Context(), transport.Request{Method: method, Path: path, Query: query, Headers: httpHeaders, Body: body, Idempotent: idempotent})
+			value, response, err := app.Request(cmd.Context(), transport.Request{Method: method, Path: path, Query: query, Headers: httpHeaders, Body: body, Idempotent: isIdempotentMethod(method)})
 			if err != nil {
 				return err
 			}
@@ -418,7 +456,6 @@ func newAPICommand(app *App) *cobra.Command {
 	}
 	cmd.Flags().StringVarP(&data, "data", "d", "", "Request body JSON, @file, or - for stdin")
 	cmd.Flags().StringSliceVarP(&headers, "header", "H", nil, "Additional request header (repeatable)")
-	cmd.Flags().StringVar(&idempotencyKey, "idempotency-key", "", "Idempotency key for safe mutation retries")
 	return cmd
 }
 
@@ -458,6 +495,16 @@ func prompt(reader *bufio.Reader, out io.Writer, label, defaultValue string) (st
 		return "", apperr.Wrap(apperr.ExitGeneral, "read interactive input", err)
 	}
 	return firstNonBlank(strings.TrimSpace(value), defaultValue), nil
+}
+
+// scalarString prints a JSON scalar for an identity block; nested values print nothing.
+func scalarString(value any) string {
+	switch typed := value.(type) {
+	case nil, map[string]any, []any:
+		return ""
+	default:
+		return fmt.Sprint(typed)
+	}
 }
 
 func isInteractive(app *App) bool {

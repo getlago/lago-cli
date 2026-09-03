@@ -32,8 +32,8 @@ Manage Lago coupons
 * [lago coupons apply](lago_coupons_apply)	 - Apply a coupon to a customer
 * [lago coupons create](lago_coupons_create)	 - Create a coupon
 * [lago coupons delete](lago_coupons_delete)	 - Delete a coupon
-* [lago coupons delete-applied](lago_coupons_delete-applied)	 - Delete an applied coupon
+* [lago coupons delete-applied-coupon](lago_coupons_delete-applied-coupon)	 - Delete an applied coupon
 * [lago coupons get](lago_coupons_get)	 - Retrieve a coupon
 * [lago coupons list](lago_coupons_list)	 - List all coupons
-* [lago coupons list-applied](lago_coupons_list-applied)	 - List all applied coupons
+* [lago coupons list-applied-coupons](lago_coupons_list-applied-coupons)	 - List all applied coupons
 * [lago coupons update](lago_coupons_update)	 - Update a coupon

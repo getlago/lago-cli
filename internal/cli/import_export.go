@@ -13,7 +13,6 @@ import (
 	"github.com/getlago/lago-cli/internal/apperr"
 	"github.com/getlago/lago-cli/internal/generated"
 	"github.com/getlago/lago-cli/internal/transport"
-	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 )
 
@@ -95,9 +94,10 @@ func newPlansImportCommand(app *App) *cobra.Command {
 				if err != nil {
 					return apperr.Wrap(apperr.ExitGeneral, "encode imported plan", err)
 				}
-				headers := make(http.Header)
-				headers.Set("Idempotency-Key", "plan-import-"+uuid.NewString())
-				value, _, err := app.Request(cmd.Context(), transport.Request{Method: method, Path: path, Headers: headers, Body: body, Idempotent: method == http.MethodPut || headers.Get("Idempotency-Key") != ""})
+				// A plan write is never replayed on its own: lago-api does not read an
+				// Idempotency-Key, and a PUT that races a concurrent edit is not idempotent
+				// in the billing sense. A transient failure is reported and rerun by hand.
+				value, _, err := app.Request(cmd.Context(), transport.Request{Method: method, Path: path, Body: body, Idempotent: false})
 				if err != nil {
 					return err
 				}

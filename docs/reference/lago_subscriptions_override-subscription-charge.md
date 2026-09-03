@@ -17,6 +17,7 @@ lago subscriptions override-subscription-charge <external_id> <charge_code> [fla
 
 ```
   lago subscriptions override-subscription-charge <external_id> <charge_code> --input @payload.json
+  lago subscriptions override-subscription-charge <external_id> <charge_code> --input @payload.json --output json  # full resource
 ```
 
 ### Options
@@ -28,7 +29,6 @@ lago subscriptions override-subscription-charge <external_id> <charge_code> [fla
                                                              For example, if the plan uses USD and the conversion rate is 0.5, then 1 pricing unit = $0.50.
       --filters string                                       List of filters used to apply differentiated pricing based on additional event properties.
   -h, --help                                                 help for override-subscription-charge
-      --idempotency-key string                               Idempotency key for safe mutation retries
       --input string                                         Complete JSON request body or @file.json
       --invoice-display-name string                          Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name.
       --min-amount-cents string                              The minimum spending amount required for the charge, measured in cents and excluding any applicable taxes. It indicates the minimum amount that needs to be charged for each billing period.

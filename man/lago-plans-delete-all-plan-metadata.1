@@ -17,10 +17,6 @@ This endpoint removes all metadata from a plan.
 \fB-h\fP, \fB--help\fP[=false]
 	help for delete-all-plan-metadata
 
-.PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
 \fB--api-key\fP=""
@@ -78,6 +74,7 @@ This endpoint removes all metadata from a plan.
 .SH EXAMPLE
 .EX
   lago plans delete-all-plan-metadata <code>
+  lago plans delete-all-plan-metadata <code> --output json  # full resource
 .EE
 
 

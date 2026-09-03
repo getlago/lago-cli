@@ -43,8 +43,11 @@ deny: an operation matching the destructive vocabulary (`void`, `finalize`, `ret
 `terminate`, `delete`, `destroy`, `refund`) or using DELETE is confirmation-gated, and
 only GET, HEAD, and OPTIONS are auto-retried without an operator-supplied idempotency key.
 `x-lago-cli-dangerous` and `x-lago-cli-retryable` are the upstream escape hatches, matching
-the `x-lago-cli-action` precedent. `--idempotency-key` is offered on every mutation.
+the `x-lago-cli-action` precedent.
 A contract test fails if any destructive operation is gated or retried incorrectly.
+
+*Superseded in part on 2026-09-02: `--idempotency-key` is no longer offered. See "No
+client-side idempotency key" below.*
 
 ## 2026-08-31 — Per-package coverage floors, never a repo-wide average
 
@@ -69,6 +72,10 @@ staging credentials. `scripts/check-fixtures.sh` treats a malformed pattern as a
 rather than reporting a clean tree.
 
 ## 2026-09-01 — Default mutation output is identifiers; full detail is `--output json`
+
+*Superseded in part on 2026-09-02: the exclusion of deletes and state transitions is
+withdrawn now that `status` is an identifier key. See "Every write prints identifiers plus
+status" below. The exclusions for read-shaped actions and bulk ingestion stand.*
 
 QA returned that a create printing 40 attributes buries the one thing the caller does
 not already have: the identifier Lago minted. Default table output for every generated
@@ -213,6 +220,23 @@ detail beats a list of identifiers.
 hostnames served locally, rather than proving URL handling only for `127.0.0.1`. CI runs
 the affected packages once per deployment target.
 
+## 2026-09-02 — Reject what the API would mishandle: userinfo URLs and out-of-range pages
+
+**Userinfo is refused, not stripped.** `https://api.getlago.com@evil.example` is a valid
+URL whose host is `evil.example`; the part before `@` is a username. QA S-16 and N-9 showed
+the CLI printing one host and dialling another. The normalizer now refuses any URL with
+userinfo, at exit 2, with `url.URL.Redacted()` so a pasted password never lands in a
+terminal or a log. Stripping the userinfo and continuing would be guessing which half the
+operator meant.
+
+**`--limit` is bounded at 1..1000 client-side.** `--limit 0` reached lago-api as
+`per_page=0` and came back as a 500: `BaseQuery#paginate` hands `per_page` straight to
+Kaminari (`scope.page(page).per(limit)`) with no `max_per_page`, and a zero page size
+divides by zero in `total_pages`. The spec declares no `maximum` on `per_page` either. So
+the lower bound is a server bug shield until lago-api validates the parameter, and the
+upper bound is a sanity limit, not a contract: nobody reads a thousand-row table, and
+`--all` exists for the rest. `--page` gets the same check on the single-page path that
+`--all` already had. Both are handed to lago-api and lago-openapi as fixes to make.
 ## 2026-09-02 — Required means required and non-nullable; types come from the spec
 
 Three generator findings from QA, one derivation pass.
@@ -265,6 +289,151 @@ confirmed by name, or not run at all.
 shapes the generated commands do not cover yet, and a test organization is the place to
 use it that way. Live mode goes through `--confirm <path>` or the typed prompt, the same
 gate as a generated delete. Recorded because the asymmetry is deliberate.
+## 2026-09-02 — Profiles: explicit switching, announced insecurity, warned permissions
+
+Four QA findings about what the CLI persists and how quietly it does so.
+
+**`init --profile X` no longer switches the current profile.** It did, so configuring a
+staging profile silently pointed every later command at staging. The first profile ever
+written becomes current, because there is nothing else to point at; after that, switching
+is opt-in with `--use`, and stderr names the profile that remains current. Recorded as
+breaking pre-1.0.
+
+**`--insecure` is persisted only for the init that passes it, and announced whenever it
+is true.** An init with the flag silently disabled TLS verification for every later command
+on the profile. It is now announced on stderr. A re-init without the flag clears it and
+says so, rather than inheriting it from the stored profile: a setting that weakens
+security is re-asked every time, in the fail-safe direction. The per-command `--insecure`
+warning stays.
+
+**Loose config permissions warn on every command.** `doctor` already checked the mode;
+QA asked why only `doctor`, since the file holds API keys and the operator who never runs
+`doctor` is the one who needs telling. The check runs once per invocation in `App.Load`.
+It warns rather than refuses, unlike ssh: a refusal would break every script on a shared
+CI volume for a condition fixed by the one command the warning prints. Windows has no
+POSIX mode bits and is skipped.
+
+**Aliases may not carry credentials or TLS flags.** An alias with `--api-key` is a second
+place a key lives, outside the 0600 profile table; one with `--insecure` disables TLS
+checks for whoever runs it without seeing the flag. `--api-url`, `--api-key` and
+`--insecure` are refused at `alias set` with the profile alternative named. `--profile` and
+`--mode` stay allowed: a mode is a safety declaration, not a secret.
+## 2026-09-02 — No client-side idempotency key
+
+QA sent two creates with the same `--idempotency-key` and different bodies. Both
+succeeded. The header reached the server and nothing read it: `IdempotencyRecord` in
+lago-api is internal to invoice generation and no controller consults the request header.
+A flag whose help promised "safe mutation retries" was a correctness lie in a billing
+tool, so it is removed rather than kept as a no-op: from generated commands, from
+`lago api`, from `plans import`, and from the fixture schema, which now rejects
+`idempotency_key` by name so an old fixture fails loudly instead of silently losing a
+safety it never had.
+
+The removal changes the retry policy, because the key was the only thing that made a
+mutation `Idempotent` for the transport. Mutations are now never auto-retried; a 429 or
+5xx on a write is reported and the operator decides. The one exception is a usage event
+that carries a `timestamp`: Lago deduplicates events on `transaction_id`, and on the
+ClickHouse store on `transaction_id` plus `timestamp`, so replaying such an event with the
+same body is provably safe. An event without a timestamp is sent once, which is the rule
+the 2026-09-02 events warning already taught. `plans import` loses its retry too; a PUT
+that races a concurrent edit is not idempotent in the billing sense, whatever RFC 9110
+says.
+
+The removal is a single commit so it can be reverted the day lago-api implements the
+header. Until then the request to lago-api is: read `Idempotency-Key` on every write, or
+document that it never will, so no client offers the flag again.
+## 2026-09-02 — Table cells are display-safe, list envelopes unwrap, columns are declared
+
+Four QA findings, one renderer, four rules.
+
+**Every cell is escaped, never stripped.** A customer name holding `\e[31m` and a newline
+recoloured the terminal and injected a fake row. All C0 and C1 control characters and
+invalid UTF-8 bytes now print as visible escapes (`\x1b`, `\n`, `\r`, `\t`, `\xNN`) on the one
+path every value takes to the terminal, `output.Sanitize`, and the text error printer uses
+the same function. Replacing keeps the evidence: an operator sees the name contains an
+escape instead of a silently shortened string. JSON output is untouched; `encoding/json`
+escapes on its own.
+
+**The list envelope unwraps; `meta` goes to stderr.** `{"customers": [...], "meta": {...}}`
+has two keys, so the single-key unwrap left it as two key/value rows with the page JSON
+in one cell. Exactly one array beside an optional `meta` object is now recognised as a
+list and rendered one row per item. `meta` is omitted from stdout: a pagination object as
+a table row is noise for a reader and useless to a script, which reads `--output json`
+where `meta` is intact. When `total_pages > 1` a one-line stderr hint names the page and
+the two ways to get the rest, the same channel the empty-query hint already uses. `--all`
+renders page by page without buffering, so its header repeats per page and the hint is
+suppressed; buffering rows to print one header would contradict the streaming rule.
+
+**Columns are declared per resource, in one file.** Customers, invoices, subscriptions and
+plans carry a fixed column list in `internal/output/columns.go`, verified against the
+pinned spec by a contract test so a rename fails the build rather than printing an empty
+column. Every other resource takes the heuristic: identifiers, then status, then each
+money amount followed by its currency, then dates, then the rest, drawn from the union of
+keys across all rows on the page (the old renderer read the first row only) and capped at
+eight. The map is data, not command code, so adding a resource is one line.
+
+**A cell never contains JSON.** A nested list summarises as `2 items: requests, storage`
+(labels from code, external ID, name or Lago ID, capped at five), a nested object as its
+identifier pairs, as `k=v` pairs when it is four scalars or fewer, or as `{12 fields}`.
+The structured form is one flag away. The exception is `--dry-run`: its envelope carries
+the request payload under `body`, which the summary would reduce to `{2 fields}`, so the
+envelope prints as JSON in table mode. It is a request, not a resource, and JSON is the
+form it will be sent in.
+
+## 2026-09-02 — Every write prints identifiers plus status; read-shaped writes print in full
+
+QA X-3: `delete`, `terminate`, `apply` and the wallet transaction commands dumped the
+full resource while `create` and `update` printed the terse block, so the same tool had
+two default shapes for a write. The 2026-09-01 rule excluded state transitions because
+"the interesting output is the new state", which is true and is exactly why `status`
+now sits in the identifier block, after `name`. With that, every non-GET operation is
+terse: 109 of 217 commands. The generator rule is still one function.
+
+The exclusions that stand are the ones where reduction would delete the answer: a POST
+that is a question (`invoices preview`, `credit-notes estimate`, `events estimate-fees`,
+`billable-metrics evaluate-expression`), a download or payment URL, and bulk ingestion
+whose output is a summary (`events send`, `events batch`). Twelve actions, listed in the
+generator and independently in the contract test so the two cannot drift silently.
+
+QA M-empty: key/value tables drop null and blank values. `events send` is asynchronous and
+answers with most fields unset; five blank rows tell the operator less than the three
+that carry a value. When every value is blank the keys still print, so the output is
+never empty. A terse array response renders one row per item with the identifier and
+status columns rather than a header-less block.
+
+QA C-3: `whoami` printed the organization as a JSON blob in one cell. It is now a short
+identity block in reading order, name first and the resolved host last, because "which
+organization and which host" is the whole question. The JSON form drops the double
+nesting (`organization` holds the object directly), recorded as breaking pre-1.0.
+
+## 2026-09-02 — Flag and action names: primary key unwrapped, scoped nouns kept, clean break
+
+Two naming rules in the generator, both breaking pre-1.0 and taken now because the
+command surface is not yet frozen.
+
+**The required object of a multi-key envelope is the primary key, and its fields are
+not prefixed.** `SubscriptionCreateInput` is `{subscription: {...}, authorization: {...}}`,
+so the single-property unwrap did not fire and every flag carried the envelope key:
+`--subscription-external-id`, `--subscription-plan-code`. When a multi-key envelope has
+exactly one required object property, that property is the resource being created and
+its children keep their own names; the siblings keep their prefix
+(`--authorization-amount-cents`, and `--status` on update, which is a scalar). Paths are
+unchanged, only flag spelling is, and generation fails if two fields would share a flag.
+Only the two subscription operations qualify in the current spec.
+
+**A path-scoped operation keeps the noun of what it acts on.** `wallets create-customer`
+created a wallet; `entitlements destroy-subscription` deleted an entitlement. Both came
+from stripping the resource noun off the operation ID. For operations whose path is
+scoped under another resource, the noun is kept whenever the stripped remainder still
+carries a qualifier: `create-customer-wallet`, `destroy-subscription-entitlement`,
+`list-applied-coupons`. A bare verb (`applyCoupon` under `/applied_coupons`) is unambiguous
+and stays short. Eleven commands rename. Nesting under the parent
+(`customers wallets create`) was rejected: it moves forty operations into a three-level
+tree and breaks the one-operation-one-command parity the contract test guards.
+
+**Clean break, no aliases.** The repository is internal and the output shapes are
+already changing in this release. A hidden alias table would preserve the misleading
+names in the code for the life of 1.x to spare a rename nobody has scripted yet.
 
 ## Deferred beyond 1.x
 

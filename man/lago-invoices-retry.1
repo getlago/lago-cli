@@ -17,10 +17,6 @@ This endpoint is used for retrying to generate a failed invoice.
 \fB-h\fP, \fB--help\fP[=false]
 	help for retry
 
-.PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
 \fB--api-key\fP=""
@@ -78,6 +74,7 @@ This endpoint is used for retrying to generate a failed invoice.
 .SH EXAMPLE
 .EX
   lago invoices retry <lago_id>
+  lago invoices retry <lago_id> --output json  # full resource
 .EE
 
 

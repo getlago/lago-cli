@@ -17,10 +17,6 @@ This endpoint is used to delete a coupon.
 \fB-h\fP, \fB--help\fP[=false]
 	help for delete
 
-.PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
 \fB--api-key\fP=""
@@ -78,6 +74,7 @@ This endpoint is used to delete a coupon.
 .SH EXAMPLE
 .EX
   lago coupons delete <code>
+  lago coupons delete <code> --output json  # full resource
 .EE
 
 

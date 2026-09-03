@@ -30,10 +30,6 @@ This is a premium feature.
 	help for mark-as-signed
 
 .PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
-.PP
 \fB--input\fP=""
 	Complete JSON request body or @file.json
 
@@ -98,6 +94,7 @@ This is a premium feature.
 .SH EXAMPLE
 .EX
   lago order-forms mark-as-signed <lago_id> --input @payload.json
+  lago order-forms mark-as-signed <lago_id> --input @payload.json --output json  # full resource
 .EE
 
 

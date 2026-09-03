@@ -14,13 +14,13 @@ lago entitlements destroy <code> <feature_code> [flags]
 
 ```
   lago entitlements destroy <code> <feature_code>
+  lago entitlements destroy <code> <feature_code> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for destroy
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for destroy
 ```
 
 ### Options inherited from parent commands

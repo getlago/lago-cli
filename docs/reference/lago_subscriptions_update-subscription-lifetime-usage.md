@@ -22,7 +22,6 @@ lago subscriptions update-subscription-lifetime-usage <external_id> [flags]
 ```
       --external-historical-usage-amount-cents string   The historical usage amount in cents for the subscription (provided by your own application).
   -h, --help                                            help for update-subscription-lifetime-usage
-      --idempotency-key string                          Idempotency key for safe mutation retries
       --input string                                    Complete JSON request body or @file.json
 ```
 

@@ -383,7 +383,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "add-ons",
@@ -2336,7 +2336,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "billable-metrics",
@@ -2354,7 +2354,7 @@
               "event",
               "code"
             ],
-            "flag": "event-code",
+            "flag": "code",
             "type": "string",
             "required": true,
             "complex": false,
@@ -2365,7 +2365,7 @@
               "event",
               "properties"
             ],
-            "flag": "event-properties",
+            "flag": "properties",
             "type": "object",
             "required": true,
             "complex": true,
@@ -2376,7 +2376,7 @@
               "event",
               "timestamp"
             ],
-            "flag": "event-timestamp",
+            "flag": "timestamp",
             "type": "string",
             "required": false,
             "complex": false,
@@ -4634,7 +4634,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "coupons",
@@ -4981,11 +4981,11 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "coupons",
-      "action": "delete-applied",
+      "action": "delete-applied-coupon",
       "operation_id": "deleteAppliedCoupon",
       "method": "DELETE",
       "path": "/customers/{external_customer_id}/applied_coupons/{applied_coupon_id}",
@@ -5013,7 +5013,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "coupons",
@@ -5073,7 +5073,7 @@
     },
     {
       "resource": "coupons",
-      "action": "list-applied",
+      "action": "list-applied-coupons",
       "operation_id": "findAllAppliedCoupons",
       "method": "GET",
       "path": "/applied_coupons",
@@ -5599,7 +5599,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "credit-notes",
@@ -5631,7 +5631,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "credit-notes",
@@ -5909,7 +5909,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "credit-notes",
@@ -5937,7 +5937,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "credit-notes",
@@ -6016,7 +6016,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "customers",
@@ -7722,7 +7722,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "customers",
@@ -8400,11 +8400,11 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "entitlements",
-      "action": "destroy-subscription",
+      "action": "destroy-subscription-entitlement",
       "operation_id": "destroySubscriptionEntitlement",
       "method": "DELETE",
       "path": "/subscriptions/{external_id}/entitlements/{feature_code}",
@@ -8446,7 +8446,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "entitlements",
@@ -8500,7 +8500,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "entitlements",
@@ -8560,7 +8560,7 @@
     },
     {
       "resource": "entitlements",
-      "action": "list-subscription",
+      "action": "list-subscription-entitlements",
       "operation_id": "findAllSubscriptionEntitlements",
       "method": "GET",
       "path": "/subscriptions/{external_id}/entitlements",
@@ -8634,7 +8634,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "entitlements",
@@ -8666,7 +8666,7 @@
     },
     {
       "resource": "entitlements",
-      "action": "update-subscription",
+      "action": "update-subscription-entitlements",
       "operation_id": "updateSubscriptionEntitlements",
       "method": "PATCH",
       "path": "/subscriptions/{external_id}/entitlements",
@@ -9137,7 +9137,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "features",
@@ -9169,7 +9169,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "features",
@@ -9319,7 +9319,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "fees",
@@ -9976,7 +9976,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "invoices",
@@ -10024,7 +10024,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "invoices",
@@ -10240,7 +10240,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "invoices",
@@ -10315,7 +10315,7 @@
               "customer",
               "address_line1"
             ],
-            "flag": "customer-address-line1",
+            "flag": "address-line1",
             "type": "string",
             "required": false,
             "complex": false,
@@ -10326,7 +10326,7 @@
               "customer",
               "address_line2"
             ],
-            "flag": "customer-address-line2",
+            "flag": "address-line2",
             "type": "string",
             "required": false,
             "nullable": true,
@@ -10338,7 +10338,7 @@
               "customer",
               "city"
             ],
-            "flag": "customer-city",
+            "flag": "city",
             "type": "string",
             "required": false,
             "complex": false,
@@ -10349,7 +10349,7 @@
               "customer",
               "country"
             ],
-            "flag": "customer-country",
+            "flag": "country",
             "type": "string",
             "required": false,
             "complex": false,
@@ -10611,7 +10611,7 @@
               "customer",
               "currency"
             ],
-            "flag": "customer-currency",
+            "flag": "currency",
             "type": "string",
             "required": false,
             "complex": false,
@@ -10762,7 +10762,7 @@
               "customer",
               "external_id"
             ],
-            "flag": "customer-external-id",
+            "flag": "external-id",
             "type": "string",
             "required": false,
             "complex": false,
@@ -10773,7 +10773,7 @@
               "customer",
               "integration_customers"
             ],
-            "flag": "customer-integration-customers",
+            "flag": "integration-customers",
             "type": "array",
             "required": false,
             "complex": true
@@ -10783,7 +10783,7 @@
               "customer",
               "name"
             ],
-            "flag": "customer-name",
+            "flag": "name",
             "type": "string",
             "required": false,
             "complex": false,
@@ -10795,7 +10795,7 @@
               "shipping_address",
               "address_line1"
             ],
-            "flag": "customer-shipping-address-address-line1",
+            "flag": "shipping-address-address-line1",
             "type": "string",
             "required": false,
             "nullable": true,
@@ -10808,7 +10808,7 @@
               "shipping_address",
               "address_line2"
             ],
-            "flag": "customer-shipping-address-address-line2",
+            "flag": "shipping-address-address-line2",
             "type": "string",
             "required": false,
             "nullable": true,
@@ -10821,7 +10821,7 @@
               "shipping_address",
               "city"
             ],
-            "flag": "customer-shipping-address-city",
+            "flag": "shipping-address-city",
             "type": "string",
             "required": false,
             "nullable": true,
@@ -10834,7 +10834,7 @@
               "shipping_address",
               "country"
             ],
-            "flag": "customer-shipping-address-country",
+            "flag": "shipping-address-country",
             "type": "string",
             "required": false,
             "nullable": true,
@@ -11099,7 +11099,7 @@
               "shipping_address",
               "state"
             ],
-            "flag": "customer-shipping-address-state",
+            "flag": "shipping-address-state",
             "type": "string",
             "required": false,
             "nullable": true,
@@ -11112,7 +11112,7 @@
               "shipping_address",
               "zipcode"
             ],
-            "flag": "customer-shipping-address-zipcode",
+            "flag": "shipping-address-zipcode",
             "type": "string",
             "required": false,
             "nullable": true,
@@ -11124,7 +11124,7 @@
               "customer",
               "state"
             ],
-            "flag": "customer-state",
+            "flag": "state",
             "type": "string",
             "required": false,
             "complex": false,
@@ -11135,7 +11135,7 @@
               "customer",
               "tax_identification_number"
             ],
-            "flag": "customer-tax-identification-number",
+            "flag": "tax-identification-number",
             "type": "string",
             "required": false,
             "complex": false,
@@ -11146,7 +11146,7 @@
               "customer",
               "timezone"
             ],
-            "flag": "customer-timezone",
+            "flag": "timezone",
             "type": "string",
             "required": false,
             "complex": false,
@@ -11371,7 +11371,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "invoices",
@@ -11395,7 +11395,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "invoices",
@@ -11449,7 +11449,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "invoices",
@@ -11562,7 +11562,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "order-forms",
@@ -11759,7 +11759,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "order-forms",
@@ -11782,7 +11782,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "orders",
@@ -11825,7 +11825,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "orders",
@@ -12801,11 +12801,11 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "payment-methods",
-      "action": "list-customers",
+      "action": "list-customers-payment-methods",
       "operation_id": "findAllCustomersPaymentMethods",
       "method": "GET",
       "path": "/customers/{external_customer_id}/payment_methods",
@@ -12873,7 +12873,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "payment-receipts",
@@ -14564,7 +14564,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "plans",
@@ -14588,7 +14588,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "plans",
@@ -14620,7 +14620,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "plans",
@@ -14668,7 +14668,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "plans",
@@ -14724,7 +14724,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "plans",
@@ -14772,7 +14772,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "plans",
@@ -15048,7 +15048,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "plans",
@@ -15076,7 +15076,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "plans",
@@ -16420,7 +16420,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "quotes",
@@ -16443,7 +16443,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "quotes",
@@ -16638,7 +16638,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "subscriptions",
@@ -16770,7 +16770,7 @@
               "subscription",
               "activation_rules"
             ],
-            "flag": "subscription-activation-rules",
+            "flag": "activation-rules",
             "type": "array",
             "required": false,
             "complex": true,
@@ -16781,7 +16781,7 @@
               "subscription",
               "billing_entity_code"
             ],
-            "flag": "subscription-billing-entity-code",
+            "flag": "billing-entity-code",
             "type": "string",
             "required": false,
             "complex": false,
@@ -16792,7 +16792,7 @@
               "subscription",
               "billing_time"
             ],
-            "flag": "subscription-billing-time",
+            "flag": "billing-time",
             "type": "string",
             "required": false,
             "complex": false,
@@ -16807,7 +16807,7 @@
               "subscription",
               "consolidate_invoice"
             ],
-            "flag": "subscription-consolidate-invoice",
+            "flag": "consolidate-invoice",
             "type": "boolean",
             "required": false,
             "complex": false,
@@ -16818,7 +16818,7 @@
               "subscription",
               "ending_at"
             ],
-            "flag": "subscription-ending-at",
+            "flag": "ending-at",
             "type": "string",
             "required": false,
             "complex": false,
@@ -16829,7 +16829,7 @@
               "subscription",
               "external_customer_id"
             ],
-            "flag": "subscription-external-customer-id",
+            "flag": "external-customer-id",
             "type": "string",
             "required": true,
             "complex": false,
@@ -16840,7 +16840,7 @@
               "subscription",
               "external_id"
             ],
-            "flag": "subscription-external-id",
+            "flag": "external-id",
             "type": "string",
             "required": true,
             "complex": false,
@@ -16852,7 +16852,7 @@
               "invoice_custom_section",
               "invoice_custom_section_codes"
             ],
-            "flag": "subscription-invoice-custom-section-invoice-custom-section-codes",
+            "flag": "invoice-custom-section-invoice-custom-section-codes",
             "type": "array",
             "required": false,
             "complex": true,
@@ -16864,7 +16864,7 @@
               "invoice_custom_section",
               "skip_invoice_custom_sections"
             ],
-            "flag": "subscription-invoice-custom-section-skip-invoice-custom-sections",
+            "flag": "invoice-custom-section-skip-invoice-custom-sections",
             "type": "boolean",
             "required": false,
             "complex": false,
@@ -16875,7 +16875,7 @@
               "subscription",
               "name"
             ],
-            "flag": "subscription-name",
+            "flag": "name",
             "type": "string",
             "required": false,
             "complex": false,
@@ -16887,7 +16887,7 @@
               "payment_method",
               "payment_method_id"
             ],
-            "flag": "subscription-payment-method-payment-method-id",
+            "flag": "payment-method-payment-method-id",
             "type": "string",
             "required": false,
             "complex": false,
@@ -16899,7 +16899,7 @@
               "payment_method",
               "payment_method_type"
             ],
-            "flag": "subscription-payment-method-payment-method-type",
+            "flag": "payment-method-payment-method-type",
             "type": "string",
             "required": false,
             "complex": false,
@@ -16914,7 +16914,7 @@
               "subscription",
               "plan_code"
             ],
-            "flag": "subscription-plan-code",
+            "flag": "plan-code",
             "type": "string",
             "required": true,
             "complex": false,
@@ -16926,7 +16926,7 @@
               "plan_overrides",
               "amount_cents"
             ],
-            "flag": "subscription-plan-overrides-amount-cents",
+            "flag": "plan-overrides-amount-cents",
             "type": "integer",
             "required": false,
             "complex": false,
@@ -16938,7 +16938,7 @@
               "plan_overrides",
               "amount_currency"
             ],
-            "flag": "subscription-plan-overrides-amount-currency",
+            "flag": "plan-overrides-amount-currency",
             "type": "string",
             "required": false,
             "complex": false,
@@ -17090,7 +17090,7 @@
               "plan_overrides",
               "charges"
             ],
-            "flag": "subscription-plan-overrides-charges",
+            "flag": "plan-overrides-charges",
             "type": "array",
             "required": false,
             "complex": true,
@@ -17102,7 +17102,7 @@
               "plan_overrides",
               "description"
             ],
-            "flag": "subscription-plan-overrides-description",
+            "flag": "plan-overrides-description",
             "type": "string",
             "required": false,
             "complex": false,
@@ -17114,7 +17114,7 @@
               "plan_overrides",
               "fixed_charges"
             ],
-            "flag": "subscription-plan-overrides-fixed-charges",
+            "flag": "plan-overrides-fixed-charges",
             "type": "array",
             "required": false,
             "complex": true,
@@ -17126,7 +17126,7 @@
               "plan_overrides",
               "invoice_display_name"
             ],
-            "flag": "subscription-plan-overrides-invoice-display-name",
+            "flag": "plan-overrides-invoice-display-name",
             "type": "string",
             "required": false,
             "complex": false,
@@ -17138,7 +17138,7 @@
               "plan_overrides",
               "metadata"
             ],
-            "flag": "subscription-plan-overrides-metadata",
+            "flag": "plan-overrides-metadata",
             "type": "object",
             "required": false,
             "complex": true,
@@ -17151,7 +17151,7 @@
               "minimum_commitment",
               "amount_cents"
             ],
-            "flag": "subscription-plan-overrides-minimum-commitment-amount-cents",
+            "flag": "plan-overrides-minimum-commitment-amount-cents",
             "type": "integer",
             "required": false,
             "complex": false,
@@ -17164,7 +17164,7 @@
               "minimum_commitment",
               "invoice_display_name"
             ],
-            "flag": "subscription-plan-overrides-minimum-commitment-invoice-display-name",
+            "flag": "plan-overrides-minimum-commitment-invoice-display-name",
             "type": "string",
             "required": false,
             "complex": false,
@@ -17177,7 +17177,7 @@
               "minimum_commitment",
               "tax_codes"
             ],
-            "flag": "subscription-plan-overrides-minimum-commitment-tax-codes",
+            "flag": "plan-overrides-minimum-commitment-tax-codes",
             "type": "array",
             "required": false,
             "complex": true,
@@ -17189,7 +17189,7 @@
               "plan_overrides",
               "name"
             ],
-            "flag": "subscription-plan-overrides-name",
+            "flag": "plan-overrides-name",
             "type": "string",
             "required": false,
             "complex": false,
@@ -17201,7 +17201,7 @@
               "plan_overrides",
               "tax_codes"
             ],
-            "flag": "subscription-plan-overrides-tax-codes",
+            "flag": "plan-overrides-tax-codes",
             "type": "array",
             "required": false,
             "complex": true,
@@ -17213,7 +17213,7 @@
               "plan_overrides",
               "trial_period"
             ],
-            "flag": "subscription-plan-overrides-trial-period",
+            "flag": "plan-overrides-trial-period",
             "type": "number",
             "required": false,
             "complex": false,
@@ -17225,7 +17225,7 @@
               "plan_overrides",
               "usage_thresholds"
             ],
-            "flag": "subscription-plan-overrides-usage-thresholds",
+            "flag": "plan-overrides-usage-thresholds",
             "type": "array",
             "required": false,
             "complex": true,
@@ -17236,7 +17236,7 @@
               "subscription",
               "progressive_billing_disabled"
             ],
-            "flag": "subscription-progressive-billing-disabled",
+            "flag": "progressive-billing-disabled",
             "type": "boolean",
             "required": false,
             "complex": false,
@@ -17247,7 +17247,7 @@
               "subscription",
               "purchase_order_number"
             ],
-            "flag": "subscription-purchase-order-number",
+            "flag": "purchase-order-number",
             "type": "string",
             "required": false,
             "nullable": true,
@@ -17259,7 +17259,7 @@
               "subscription",
               "subscription_at"
             ],
-            "flag": "subscription-subscription-at",
+            "flag": "subscription-at",
             "type": "string",
             "required": false,
             "complex": false,
@@ -17270,7 +17270,7 @@
               "subscription",
               "usage_thresholds"
             ],
-            "flag": "subscription-usage-thresholds",
+            "flag": "usage-thresholds",
             "type": "array",
             "required": false,
             "complex": true,
@@ -17602,7 +17602,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "subscriptions",
@@ -17648,7 +17648,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "subscriptions",
@@ -17702,7 +17702,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "subscriptions",
@@ -18443,7 +18443,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "subscriptions",
@@ -18694,7 +18694,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "subscriptions",
@@ -18751,7 +18751,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "subscriptions",
@@ -18805,7 +18805,7 @@
               "subscription",
               "activation_rules"
             ],
-            "flag": "subscription-activation-rules",
+            "flag": "activation-rules",
             "type": "array",
             "required": false,
             "complex": true,
@@ -18816,7 +18816,7 @@
               "subscription",
               "billing_entity_code"
             ],
-            "flag": "subscription-billing-entity-code",
+            "flag": "billing-entity-code",
             "type": "string",
             "required": false,
             "complex": false,
@@ -18827,7 +18827,7 @@
               "subscription",
               "consolidate_invoice"
             ],
-            "flag": "subscription-consolidate-invoice",
+            "flag": "consolidate-invoice",
             "type": "boolean",
             "required": false,
             "complex": false,
@@ -18838,7 +18838,7 @@
               "subscription",
               "ending_at"
             ],
-            "flag": "subscription-ending-at",
+            "flag": "ending-at",
             "type": "string",
             "required": false,
             "nullable": true,
@@ -18851,7 +18851,7 @@
               "invoice_custom_section",
               "invoice_custom_section_codes"
             ],
-            "flag": "subscription-invoice-custom-section-invoice-custom-section-codes",
+            "flag": "invoice-custom-section-invoice-custom-section-codes",
             "type": "array",
             "required": false,
             "complex": true,
@@ -18863,7 +18863,7 @@
               "invoice_custom_section",
               "skip_invoice_custom_sections"
             ],
-            "flag": "subscription-invoice-custom-section-skip-invoice-custom-sections",
+            "flag": "invoice-custom-section-skip-invoice-custom-sections",
             "type": "boolean",
             "required": false,
             "complex": false,
@@ -18874,7 +18874,7 @@
               "subscription",
               "name"
             ],
-            "flag": "subscription-name",
+            "flag": "name",
             "type": "string",
             "required": false,
             "nullable": true,
@@ -18887,7 +18887,7 @@
               "payment_method",
               "payment_method_id"
             ],
-            "flag": "subscription-payment-method-payment-method-id",
+            "flag": "payment-method-payment-method-id",
             "type": "string",
             "required": false,
             "complex": false,
@@ -18899,7 +18899,7 @@
               "payment_method",
               "payment_method_type"
             ],
-            "flag": "subscription-payment-method-payment-method-type",
+            "flag": "payment-method-payment-method-type",
             "type": "string",
             "required": false,
             "complex": false,
@@ -18915,7 +18915,7 @@
               "plan_overrides",
               "amount_cents"
             ],
-            "flag": "subscription-plan-overrides-amount-cents",
+            "flag": "plan-overrides-amount-cents",
             "type": "integer",
             "required": false,
             "complex": false,
@@ -18927,7 +18927,7 @@
               "plan_overrides",
               "amount_currency"
             ],
-            "flag": "subscription-plan-overrides-amount-currency",
+            "flag": "plan-overrides-amount-currency",
             "type": "string",
             "required": false,
             "complex": false,
@@ -19079,7 +19079,7 @@
               "plan_overrides",
               "charges"
             ],
-            "flag": "subscription-plan-overrides-charges",
+            "flag": "plan-overrides-charges",
             "type": "array",
             "required": false,
             "complex": true,
@@ -19091,7 +19091,7 @@
               "plan_overrides",
               "description"
             ],
-            "flag": "subscription-plan-overrides-description",
+            "flag": "plan-overrides-description",
             "type": "string",
             "required": false,
             "complex": false,
@@ -19103,7 +19103,7 @@
               "plan_overrides",
               "fixed_charges"
             ],
-            "flag": "subscription-plan-overrides-fixed-charges",
+            "flag": "plan-overrides-fixed-charges",
             "type": "array",
             "required": false,
             "complex": true,
@@ -19115,7 +19115,7 @@
               "plan_overrides",
               "invoice_display_name"
             ],
-            "flag": "subscription-plan-overrides-invoice-display-name",
+            "flag": "plan-overrides-invoice-display-name",
             "type": "string",
             "required": false,
             "complex": false,
@@ -19127,7 +19127,7 @@
               "plan_overrides",
               "metadata"
             ],
-            "flag": "subscription-plan-overrides-metadata",
+            "flag": "plan-overrides-metadata",
             "type": "object",
             "required": false,
             "complex": true,
@@ -19140,7 +19140,7 @@
               "minimum_commitment",
               "amount_cents"
             ],
-            "flag": "subscription-plan-overrides-minimum-commitment-amount-cents",
+            "flag": "plan-overrides-minimum-commitment-amount-cents",
             "type": "integer",
             "required": false,
             "complex": false,
@@ -19153,7 +19153,7 @@
               "minimum_commitment",
               "invoice_display_name"
             ],
-            "flag": "subscription-plan-overrides-minimum-commitment-invoice-display-name",
+            "flag": "plan-overrides-minimum-commitment-invoice-display-name",
             "type": "string",
             "required": false,
             "complex": false,
@@ -19166,7 +19166,7 @@
               "minimum_commitment",
               "tax_codes"
             ],
-            "flag": "subscription-plan-overrides-minimum-commitment-tax-codes",
+            "flag": "plan-overrides-minimum-commitment-tax-codes",
             "type": "array",
             "required": false,
             "complex": true,
@@ -19178,7 +19178,7 @@
               "plan_overrides",
               "name"
             ],
-            "flag": "subscription-plan-overrides-name",
+            "flag": "plan-overrides-name",
             "type": "string",
             "required": false,
             "complex": false,
@@ -19190,7 +19190,7 @@
               "plan_overrides",
               "tax_codes"
             ],
-            "flag": "subscription-plan-overrides-tax-codes",
+            "flag": "plan-overrides-tax-codes",
             "type": "array",
             "required": false,
             "complex": true,
@@ -19202,7 +19202,7 @@
               "plan_overrides",
               "trial_period"
             ],
-            "flag": "subscription-plan-overrides-trial-period",
+            "flag": "plan-overrides-trial-period",
             "type": "number",
             "required": false,
             "complex": false,
@@ -19214,7 +19214,7 @@
               "plan_overrides",
               "usage_thresholds"
             ],
-            "flag": "subscription-plan-overrides-usage-thresholds",
+            "flag": "plan-overrides-usage-thresholds",
             "type": "array",
             "required": false,
             "complex": true,
@@ -19225,7 +19225,7 @@
               "subscription",
               "progressive_billing_disabled"
             ],
-            "flag": "subscription-progressive-billing-disabled",
+            "flag": "progressive-billing-disabled",
             "type": "boolean",
             "required": false,
             "complex": false,
@@ -19236,7 +19236,7 @@
               "subscription",
               "purchase_order_number"
             ],
-            "flag": "subscription-purchase-order-number",
+            "flag": "purchase-order-number",
             "type": "string",
             "required": false,
             "nullable": true,
@@ -19248,7 +19248,7 @@
               "subscription",
               "subscription_at"
             ],
-            "flag": "subscription-subscription-at",
+            "flag": "subscription-at",
             "type": "string",
             "required": false,
             "complex": false,
@@ -19259,7 +19259,7 @@
               "subscription",
               "usage_thresholds"
             ],
-            "flag": "subscription-usage-thresholds",
+            "flag": "usage-thresholds",
             "type": "array",
             "required": false,
             "complex": true,
@@ -19749,7 +19749,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "taxes",
@@ -20324,7 +20324,7 @@
     },
     {
       "resource": "wallets",
-      "action": "create-customer",
+      "action": "create-customer-wallet",
       "operation_id": "createCustomerWallet",
       "method": "POST",
       "path": "/customers/{external_customer_id}/wallets",
@@ -20995,7 +20995,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -21027,7 +21027,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -21051,7 +21051,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -21091,7 +21091,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -21131,7 +21131,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -21163,11 +21163,11 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "wallets",
-      "action": "destroy-customer",
+      "action": "destroy-customer-wallet",
       "operation_id": "destroyCustomerWallet",
       "method": "DELETE",
       "path": "/customers/{external_customer_id}/wallets/{code}",
@@ -21195,7 +21195,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -21223,7 +21223,7 @@
     },
     {
       "resource": "wallets",
-      "action": "get-customer",
+      "action": "get-customer-wallet",
       "operation_id": "findCustomerWallet",
       "method": "GET",
       "path": "/customers/{external_customer_id}/wallets/{code}",
@@ -21407,7 +21407,7 @@
     },
     {
       "resource": "wallets",
-      "action": "list-customer",
+      "action": "list-customer-wallets",
       "operation_id": "findAllCustomerWallets",
       "method": "GET",
       "path": "/customers/{external_customer_id}/wallets",
@@ -21567,7 +21567,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -21595,7 +21595,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -21623,7 +21623,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -21659,7 +21659,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -21683,7 +21683,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "wallets",
@@ -21883,7 +21883,7 @@
     },
     {
       "resource": "wallets",
-      "action": "update-customer",
+      "action": "update-customer-wallet",
       "operation_id": "updateCustomerWallet",
       "method": "PUT",
       "path": "/customers/{external_customer_id}/wallets/{code}",
@@ -22340,7 +22340,7 @@
       "idempotent": false,
       "dangerous": true,
       "paginated": false,
-      "mutation": false
+      "mutation": true
     },
     {
       "resource": "webhook-endpoints",

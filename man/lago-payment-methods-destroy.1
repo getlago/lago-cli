@@ -17,10 +17,6 @@ This endpoint deletes a specific payment method for a customer.
 \fB-h\fP, \fB--help\fP[=false]
 	help for destroy
 
-.PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
 \fB--api-key\fP=""
@@ -78,6 +74,7 @@ This endpoint deletes a specific payment method for a customer.
 .SH EXAMPLE
 .EX
   lago payment-methods destroy <lago_id> <external_customer_id>
+  lago payment-methods destroy <lago_id> <external_customer_id> --output json  # full resource
 .EE
 
 

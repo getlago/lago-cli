@@ -14,13 +14,13 @@ lago invoices refresh <lago_id> [flags]
 
 ```
   lago invoices refresh <lago_id>
+  lago invoices refresh <lago_id> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for refresh
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for refresh
 ```
 
 ### Options inherited from parent commands

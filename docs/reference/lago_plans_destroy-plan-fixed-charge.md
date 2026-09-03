@@ -14,6 +14,7 @@ lago plans destroy-plan-fixed-charge <code> <fixed_charge_code> [flags]
 
 ```
   lago plans destroy-plan-fixed-charge <code> <fixed_charge_code> --input @payload.json
+  lago plans destroy-plan-fixed-charge <code> <fixed_charge_code> --input @payload.json --output json  # full resource
 ```
 
 ### Options
@@ -21,7 +22,6 @@ lago plans destroy-plan-fixed-charge <code> <fixed_charge_code> [flags]
 ```
       --cascade-updates string   When set to 'true', the deletion will be cascaded to the children plans.
   -h, --help                     help for destroy-plan-fixed-charge
-      --idempotency-key string   Idempotency key for safe mutation retries
       --input string             Complete JSON request body or @file.json
 ```
 

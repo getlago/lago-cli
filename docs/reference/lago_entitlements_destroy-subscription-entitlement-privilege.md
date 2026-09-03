@@ -14,13 +14,13 @@ lago entitlements destroy-subscription-entitlement-privilege <external_id> <feat
 
 ```
   lago entitlements destroy-subscription-entitlement-privilege <external_id> <feature_code> <privilege_code>
+  lago entitlements destroy-subscription-entitlement-privilege <external_id> <feature_code> <privilege_code> --output json  # full resource
 ```
 
 ### Options
 
 ```
   -h, --help                         help for destroy-subscription-entitlement-privilege
-      --idempotency-key string       Idempotency key for safe mutation retries
       --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
 ```
 

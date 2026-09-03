@@ -14,17 +14,8 @@ Evaluate an expression for a billable metric creation by providing the expressio
 
 
 .SH OPTIONS
-\fB--event-code\fP=""
+\fB--code\fP=""
 	The code that identifies a targeted billable metric.
-
-.PP
-\fB--event-properties\fP=""
-	This field represents additional properties associated with the event. They can be used when evaluating the expression.
-
-.PP
-\fB--event-timestamp\fP=""
-	This field captures the Unix timestamp in seconds indicating the occurrence of the event in Coordinated Universal Time (UTC).
-If this timestamp is not provided, the API will automatically set it to the time of event reception.
 
 .PP
 \fB--expression\fP=""
@@ -37,12 +28,17 @@ Round is accepting an optional second parameter to specify the number of decimal
 	help for evaluate-expression
 
 .PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
-.PP
 \fB--input\fP=""
 	Complete JSON request body or @file.json
+
+.PP
+\fB--properties\fP=""
+	This field represents additional properties associated with the event. They can be used when evaluating the expression.
+
+.PP
+\fB--timestamp\fP=""
+	This field captures the Unix timestamp in seconds indicating the occurrence of the event in Coordinated Universal Time (UTC).
+If this timestamp is not provided, the API will automatically set it to the time of event reception.
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS

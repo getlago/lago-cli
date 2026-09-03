@@ -17,10 +17,6 @@ This endpoint is used to terminate an existing wallet with prepaid credits.
 \fB-h\fP, \fB--help\fP[=false]
 	help for terminate
 
-.PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
 \fB--api-key\fP=""
@@ -78,6 +74,7 @@ This endpoint is used to terminate an existing wallet with prepaid credits.
 .SH EXAMPLE
 .EX
   lago wallets terminate <lago_id>
+  lago wallets terminate <lago_id> --output json  # full resource
 .EE
 
 

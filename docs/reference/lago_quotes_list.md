@@ -25,7 +25,7 @@ lago quotes list [flags]
       --external-customer-id string   Filter quotes by the external unique identifiers of their customers (provided by your own application).
       --from-date string              Filter quotes created from a specific date.
   -h, --help                          help for list
-      --limit string                  Maximum number of results
+      --limit string                  Results per page (1-1000)
       --number string                 Filter quotes by their number, as assigned by Lago.
       --order-type string             Filter quotes by order type. Possible values are 'subscription_creation', 'subscription_amendment' and 'one_off'.
       --owner-id string               Filter quotes by the Lago identifiers of the users owning them.

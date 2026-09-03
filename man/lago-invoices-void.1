@@ -28,10 +28,6 @@ This endpoint is used for voiding an invoice.
 	help for void
 
 .PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
-.PP
 \fB--input\fP=""
 	Complete JSON request body or @file.json
 
@@ -96,6 +92,7 @@ This endpoint is used for voiding an invoice.
 .SH EXAMPLE
 .EX
   lago invoices void <lago_id> --input @payload.json
+  lago invoices void <lago_id> --input @payload.json --output json  # full resource
 .EE
 
 

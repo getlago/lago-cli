@@ -20,12 +20,11 @@ lago features update <code> [flags]
 ### Options
 
 ```
-      --description string       Internal description of the feature.
-  -h, --help                     help for update
-      --idempotency-key string   Idempotency key for safe mutation retries
-      --input string             Complete JSON request body or @file.json
-      --name string              Name of the feature.
-      --privileges string        Privileges associated with this feature. Can be empty.
+      --description string   Internal description of the feature.
+  -h, --help                 help for update
+      --input string         Complete JSON request body or @file.json
+      --name string          Name of the feature.
+      --privileges string    Privileges associated with this feature. Can be empty.
 ```
 
 ### Options inherited from parent commands

@@ -6,7 +6,6 @@ steps:
   - id: metric
     method: POST
     path: /billable_metrics
-    idempotency_key: ${prefix}-metric
     body:
       billable_metric:
         name: Demo requests
@@ -17,7 +16,6 @@ steps:
   - id: plan
     method: POST
     path: /plans
-    idempotency_key: ${prefix}-plan
     body:
       plan:
         name: Demo usage plan
@@ -36,7 +34,6 @@ steps:
   - id: customer
     method: POST
     path: /customers
-    idempotency_key: ${prefix}-customer
     body:
       customer:
         external_id: ${prefix}-customer
@@ -47,7 +44,6 @@ steps:
   - id: subscription
     method: POST
     path: /subscriptions
-    idempotency_key: ${prefix}-subscription
     body:
       subscription:
         external_customer_id: ${customer_id}
@@ -58,7 +54,6 @@ steps:
   - id: event
     method: POST
     path: /events
-    idempotency_key: ${prefix}-event-1
     body:
       event:
         transaction_id: ${prefix}-event-1
@@ -67,7 +62,6 @@ steps:
   - id: invoice-preview
     method: POST
     path: /invoices/preview
-    idempotency_key: ${prefix}-preview
     body:
       customer:
         external_id: ${customer_id}

@@ -1,4 +1,4 @@
-## lago coupons list-applied
+## lago coupons list-applied-coupons
 
 List all applied coupons
 
@@ -7,13 +7,13 @@ List all applied coupons
 This endpoint is used to list all applied coupons. You can filter by coupon status and by customer.
 
 ```
-lago coupons list-applied [flags]
+lago coupons list-applied-coupons [flags]
 ```
 
 ### Examples
 
 ```
-  lago coupons list-applied
+  lago coupons list-applied-coupons
 ```
 
 ### Options
@@ -22,8 +22,8 @@ lago coupons list-applied [flags]
       --all                           Fetch every page
       --coupon-code string            The code of the coupon applied to the customer. Use it to filter applied coupons by their code.
       --external-customer-id string   The customer external unique identifier (provided by your own application)
-  -h, --help                          help for list-applied
-      --limit string                  Maximum number of results
+  -h, --help                          help for list-applied-coupons
+      --limit string                  Results per page (1-1000)
       --page string                   Page number.
       --per-page string               Number of records per page.
       --status string                 The status of the coupon. Can be either 'active' or 'terminated'.; one of: active, terminated

@@ -31,11 +31,11 @@ Manage Lago entitlements
 * [lago](lago)	 - The official CLI for Lago billing
 * [lago entitlements create](lago_entitlements_create)	 - Create an entitlement
 * [lago entitlements destroy](lago_entitlements_destroy)	 - Delete an entitlement
-* [lago entitlements destroy-subscription](lago_entitlements_destroy-subscription)	 - Remove an entitlement from a subscription
+* [lago entitlements destroy-subscription-entitlement](lago_entitlements_destroy-subscription-entitlement)	 - Remove an entitlement from a subscription
 * [lago entitlements destroy-subscription-entitlement-privilege](lago_entitlements_destroy-subscription-entitlement-privilege)	 - Remove a privilege from a subscription entitlement override
 * [lago entitlements get](lago_entitlements_get)	 - Retrieve an entitlement
 * [lago entitlements list](lago_entitlements_list)	 - List all entitlements
-* [lago entitlements list-subscription](lago_entitlements_list-subscription)	 - List all subscription entitlements
+* [lago entitlements list-subscription-entitlements](lago_entitlements_list-subscription-entitlements)	 - List all subscription entitlements
 * [lago entitlements remove-entitlement-privilege](lago_entitlements_remove-entitlement-privilege)	 - Remove a privilege from an entitlement
 * [lago entitlements update](lago_entitlements_update)	 - Partial update of an entitlement
-* [lago entitlements update-subscription](lago_entitlements_update-subscription)	 - Update subscription entitlements
+* [lago entitlements update-subscription-entitlements](lago_entitlements_update-subscription-entitlements)	 - Update subscription entitlements

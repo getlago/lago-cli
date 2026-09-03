@@ -2,20 +2,40 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-wallets-get-customer - Retrieve a wallet
+lago-wallets-list-customer-wallets - List all customer's wallets
 
 
 .SH SYNOPSIS
-\fBlago wallets get-customer   [flags]\fP
+\fBlago wallets list-customer-wallets  [flags]\fP
 
 
 .SH DESCRIPTION
-This endpoint is used to retrieve an existing wallet with prepaid credits.
+This endpoint is used to list all wallets with prepaid credits of a customer
 
 
 .SH OPTIONS
+\fB--all\fP[=false]
+	Fetch every page
+
+.PP
+\fB--billing-entity-codes\fP=""
+	Filter wallets by billing entity codes.
+
+.PP
 \fB-h\fP, \fB--help\fP[=false]
-	help for get-customer
+	help for list-customer-wallets
+
+.PP
+\fB--limit\fP=""
+	Results per page (1-1000)
+
+.PP
+\fB--page\fP=""
+	Page number.
+
+.PP
+\fB--per-page\fP=""
+	Number of records per page.
 
 .PP
 \fB--watch\fP[=false]
@@ -81,7 +101,7 @@ This endpoint is used to retrieve an existing wallet with prepaid credits.
 
 .SH EXAMPLE
 .EX
-  lago wallets get-customer <external_customer_id> <code>
+  lago wallets list-customer-wallets <external_customer_id>
 .EE
 
 

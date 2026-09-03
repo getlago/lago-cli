@@ -1,32 +1,27 @@
-## lago wallets list-customer
+## lago wallets get-customer-wallet
 
-List all customer's wallets
+Retrieve a wallet
 
 ### Synopsis
 
-This endpoint is used to list all wallets with prepaid credits of a customer
+This endpoint is used to retrieve an existing wallet with prepaid credits.
 
 ```
-lago wallets list-customer <external_customer_id> [flags]
+lago wallets get-customer-wallet <external_customer_id> <code> [flags]
 ```
 
 ### Examples
 
 ```
-  lago wallets list-customer <external_customer_id>
+  lago wallets get-customer-wallet <external_customer_id> <code>
 ```
 
 ### Options
 
 ```
-      --all                           Fetch every page
-      --billing-entity-codes string   Filter wallets by billing entity codes.
-  -h, --help                          help for list-customer
-      --limit string                  Maximum number of results
-      --page string                   Page number.
-      --per-page string               Number of records per page.
-      --watch                         Poll and re-render when the response changes
-      --watch-interval duration       Polling interval used with --watch (default 2s)
+  -h, --help                      help for get-customer-wallet
+      --watch                     Poll and re-render when the response changes
+      --watch-interval duration   Polling interval used with --watch (default 2s)
 ```
 
 ### Options inherited from parent commands

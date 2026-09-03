@@ -17,13 +17,13 @@ lago quotes void-quote-version <lago_id> [flags]
 
 ```
   lago quotes void-quote-version <lago_id>
+  lago quotes void-quote-version <lago_id> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for void-quote-version
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for void-quote-version
 ```
 
 ### Options inherited from parent commands

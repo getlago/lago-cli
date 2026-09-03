@@ -14,13 +14,13 @@ lago webhook-endpoints delete <lago_id> [flags]
 
 ```
   lago webhook-endpoints delete <lago_id>
+  lago webhook-endpoints delete <lago_id> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for delete
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for delete
 ```
 
 ### Options inherited from parent commands

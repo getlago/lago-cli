@@ -22,7 +22,6 @@ lago events estimate-fees [flags]
       --code string                            The code that identifies a targeted billable metric. It is essential that this code matches the 'code' property of one of your active billable metrics. If the provided code does not correspond to any active billable metric, it will be ignored during the process.
       --external-subscription-id string        The unique identifier of the subscription within your application.
   -h, --help                                   help for estimate-fees
-      --idempotency-key string                 Idempotency key for safe mutation retries
       --input string                           Complete JSON request body or @file.json
       --properties-target-wallet-code string   The code of the wallet targeted by this event for prepaid credits deduction.
                                                When provided, credits are drawn from this specific wallet instead of following the standard wallet selection logic.

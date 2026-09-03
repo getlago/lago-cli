@@ -22,7 +22,7 @@ lago customers subscriptions <external_customer_id> [flags]
       --all                           Fetch every page
       --billing-entity-codes string   Filter subscriptions by billing entity codes.
   -h, --help                          help for subscriptions
-      --limit string                  Maximum number of results
+      --limit string                  Results per page (1-1000)
       --page string                   Page number.
       --per-page string               Number of records per page.
       --plan-code string              The unique code representing the plan to be attached to the customer. This code must correspond to the code property of one of the active plans.

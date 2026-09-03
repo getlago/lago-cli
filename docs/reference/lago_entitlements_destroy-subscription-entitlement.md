@@ -1,26 +1,27 @@
-## lago coupons delete-applied
+## lago entitlements destroy-subscription-entitlement
 
-Delete an applied coupon
+Remove an entitlement from a subscription
 
 ### Synopsis
 
-This endpoint is used to delete a specific coupon that has been applied to a customer.
+This endpoint removes a specific feature entitlement from a subscription. The entitlement remains available from the plan.
 
 ```
-lago coupons delete-applied <external_customer_id> <applied_coupon_id> [flags]
+lago entitlements destroy-subscription-entitlement <external_id> <feature_code> [flags]
 ```
 
 ### Examples
 
 ```
-  lago coupons delete-applied <external_customer_id> <applied_coupon_id>
+  lago entitlements destroy-subscription-entitlement <external_id> <feature_code>
+  lago entitlements destroy-subscription-entitlement <external_id> <feature_code> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for delete-applied
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help                         help for destroy-subscription-entitlement
+      --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
 ```
 
 ### Options inherited from parent commands
@@ -43,4 +44,4 @@ lago coupons delete-applied <external_customer_id> <applied_coupon_id> [flags]
 
 ### SEE ALSO
 
-* [lago coupons](lago_coupons)	 - Manage Lago coupons
+* [lago entitlements](lago_entitlements)	 - Manage Lago entitlements

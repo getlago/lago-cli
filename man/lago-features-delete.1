@@ -17,10 +17,6 @@ This endpoint deletes an existing feature representing an entitlement component 
 \fB-h\fP, \fB--help\fP[=false]
 	help for delete
 
-.PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
 \fB--api-key\fP=""
@@ -78,6 +74,7 @@ This endpoint deletes an existing feature representing an entitlement component 
 .SH EXAMPLE
 .EX
   lago features delete <code>
+  lago features delete <code> --output json  # full resource
 .EE
 
 

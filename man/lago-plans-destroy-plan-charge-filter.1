@@ -22,10 +22,6 @@ This endpoint deletes a specific filter from a charge.
 	help for destroy-plan-charge-filter
 
 .PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
-.PP
 \fB--input\fP=""
 	Complete JSON request body or @file.json
 
@@ -86,6 +82,7 @@ This endpoint deletes a specific filter from a charge.
 .SH EXAMPLE
 .EX
   lago plans destroy-plan-charge-filter <code> <charge_code> <filter_id> --input @payload.json
+  lago plans destroy-plan-charge-filter <code> <charge_code> <filter_id> --input @payload.json --output json  # full resource
 .EE
 
 

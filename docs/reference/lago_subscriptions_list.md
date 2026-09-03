@@ -25,7 +25,7 @@ lago subscriptions list [flags]
       --external-customer-id string   The customer external unique identifier (provided by your own application)
       --external-id string            Filter subscriptions by their external unique identifier (provided by your own application).
   -h, --help                          help for list
-      --limit string                  Maximum number of results
+      --limit string                  Results per page (1-1000)
       --overridden string             When set, filters subscriptions by whether their plan is an override of a parent plan. 'true' returns only subscriptions on overridden plans; 'false' returns only those on standard (non-overridden) plans.
       --page string                   Page number.
       --per-page string               Number of records per page.

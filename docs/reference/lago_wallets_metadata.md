@@ -15,14 +15,14 @@ lago wallets metadata <lago_id> [flags]
 
 ```
   lago wallets metadata <lago_id> --input @payload.json
+  lago wallets metadata <lago_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for metadata
-      --idempotency-key string   Idempotency key for safe mutation retries
-      --input string             Complete JSON request body or @file.json
+  -h, --help           help for metadata
+      --input string   Complete JSON request body or @file.json
 ```
 
 ### Options inherited from parent commands

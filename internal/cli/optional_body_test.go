@@ -73,7 +73,8 @@ func TestQA_MOptionalBody_RequiredBodyIsStillGuarded(t *testing.T) {
 	}
 }
 
-// QA M-subscriptions-u: `subscriptions update` demanded --subscription-ending-at, a
+// QA M-subscriptions-u: `subscriptions update` demanded --ending-at (then spelled
+// --subscription-ending-at), a
 // nullable field the API does not need.
 func TestQA_MSubscriptionsU_UpdateWithoutEndingAtIsAccepted(t *testing.T) {
 	var mutex sync.Mutex
@@ -86,8 +87,8 @@ func TestQA_MSubscriptionsU_UpdateWithoutEndingAtIsAccepted(t *testing.T) {
 		_, _ = response.Write([]byte(`{"subscription":{"lago_id":"sub_1","external_id":"s1","name":"Renamed"}}`))
 	})
 	profileAt(t, server.URL)
-	if _, _, err := execute(t, "", "--output", "json", "subscriptions", "update", "s1", "--subscription-name", "Renamed"); err != nil {
-		t.Fatalf("subscriptions update without --subscription-ending-at failed: %v", err)
+	if _, _, err := execute(t, "", "--output", "json", "subscriptions", "update", "s1", "--name", "Renamed"); err != nil {
+		t.Fatalf("subscriptions update without --ending-at failed: %v", err)
 	}
 	mutex.Lock()
 	defer mutex.Unlock()

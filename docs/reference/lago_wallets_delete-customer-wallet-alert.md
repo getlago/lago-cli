@@ -14,13 +14,13 @@ lago wallets delete-customer-wallet-alert <external_customer_id> <wallet_code> <
 
 ```
   lago wallets delete-customer-wallet-alert <external_customer_id> <wallet_code> <code>
+  lago wallets delete-customer-wallet-alert <external_customer_id> <wallet_code> <code> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for delete-customer-wallet-alert
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for delete-customer-wallet-alert
 ```
 
 ### Options inherited from parent commands

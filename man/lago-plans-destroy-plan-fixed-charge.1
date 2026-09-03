@@ -22,10 +22,6 @@ This endpoint deletes a specific fixed charge from a plan.
 	help for destroy-plan-fixed-charge
 
 .PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
-.PP
 \fB--input\fP=""
 	Complete JSON request body or @file.json
 
@@ -86,6 +82,7 @@ This endpoint deletes a specific fixed charge from a plan.
 .SH EXAMPLE
 .EX
   lago plans destroy-plan-fixed-charge <code> <fixed_charge_code> --input @payload.json
+  lago plans destroy-plan-fixed-charge <code> <fixed_charge_code> --input @payload.json --output json  # full resource
 .EE
 
 

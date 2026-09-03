@@ -17,10 +17,6 @@ This endpoint removes a single metadata key from a plan.
 \fB-h\fP, \fB--help\fP[=false]
 	help for delete-plan-metadata-key
 
-.PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
 \fB--api-key\fP=""
@@ -78,6 +74,7 @@ This endpoint removes a single metadata key from a plan.
 .SH EXAMPLE
 .EX
   lago plans delete-plan-metadata-key <code> <key>
+  lago plans delete-plan-metadata-key <code> <key> --output json  # full resource
 .EE
 
 

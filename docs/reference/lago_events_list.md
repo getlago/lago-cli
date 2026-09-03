@@ -23,7 +23,7 @@ lago events list [flags]
       --code string                        Filter events by its code.
       --external-subscription-id string    External subscription ID
   -h, --help                               help for list
-      --limit string                       Maximum number of results
+      --limit string                       Results per page (1-1000)
       --page string                        Page number.
       --per-page string                    Number of records per page.
       --timestamp-from string              Filter events by timestamp starting from a specific date.

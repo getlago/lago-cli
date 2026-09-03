@@ -18,10 +18,6 @@ This endpoint deletes a specific filter from a charge on a subscription.
 	help for destroy-subscription-charge-filter
 
 .PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
-.PP
 \fB--subscription-status\fP=""
 	Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
 
@@ -82,6 +78,7 @@ This endpoint deletes a specific filter from a charge on a subscription.
 .SH EXAMPLE
 .EX
   lago subscriptions destroy-subscription-charge-filter <external_id> <charge_code> <filter_id>
+  lago subscriptions destroy-subscription-charge-filter <external_id> <charge_code> <filter_id> --output json  # full resource
 .EE
 
 

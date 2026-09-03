@@ -1,26 +1,32 @@
-## lago wallets destroy-customer
+## lago wallets list-customer-wallets
 
-Terminate a wallet
+List all customer's wallets
 
 ### Synopsis
 
-This endpoint is used to terminate an existing wallet with prepaid credits.
+This endpoint is used to list all wallets with prepaid credits of a customer
 
 ```
-lago wallets destroy-customer <external_customer_id> <code> [flags]
+lago wallets list-customer-wallets <external_customer_id> [flags]
 ```
 
 ### Examples
 
 ```
-  lago wallets destroy-customer <external_customer_id> <code>
+  lago wallets list-customer-wallets <external_customer_id>
 ```
 
 ### Options
 
 ```
-  -h, --help                     help for destroy-customer
-      --idempotency-key string   Idempotency key for safe mutation retries
+      --all                           Fetch every page
+      --billing-entity-codes string   Filter wallets by billing entity codes.
+  -h, --help                          help for list-customer-wallets
+      --limit string                  Results per page (1-1000)
+      --page string                   Page number.
+      --per-page string               Number of records per page.
+      --watch                         Poll and re-render when the response changes
+      --watch-interval duration       Polling interval used with --watch (default 2s)
 ```
 
 ### Options inherited from parent commands

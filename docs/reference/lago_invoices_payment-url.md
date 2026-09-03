@@ -19,8 +19,7 @@ lago invoices payment-url <lago_id> [flags]
 ### Options
 
 ```
-  -h, --help                     help for payment-url
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for payment-url
 ```
 
 ### Options inherited from parent commands
