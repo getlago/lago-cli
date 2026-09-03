@@ -25,7 +25,6 @@ lago invoices create [flags]
       --external-customer-id string                                  Unique identifier assigned to the customer in your application.
       --fees string                                                  API field (array)
   -h, --help                                                         help for create
-      --idempotency-key string                                       Idempotency key for safe mutation retries
       --input string                                                 Complete JSON request body or @file.json
       --invoice-custom-section-invoice-custom-section-codes string   List of unique codes identifying the invoice custom sections to apply. These override the default invoice custom sections configured at the customer or billing entity level.
       --invoice-custom-section-skip-invoice-custom-sections string   Set to 'true' to exclude all invoice custom sections from PDF generation for invoices related to this resource. When 'true', 'invoice_custom_section_codes' is ignored.

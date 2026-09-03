@@ -20,9 +20,8 @@ lago entitlements create <code> [flags]
 ### Options
 
 ```
-  -h, --help                     help for create
-      --idempotency-key string   Idempotency key for safe mutation retries
-      --input string             Complete JSON request body or @file.json
+  -h, --help           help for create
+      --input string   Complete JSON request body or @file.json
 ```
 
 ### Options inherited from parent commands

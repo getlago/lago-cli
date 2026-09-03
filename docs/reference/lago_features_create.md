@@ -20,13 +20,12 @@ lago features create [flags]
 ### Options
 
 ```
-      --code string              Unique code used to identify the feature.
-      --description string       Internal description of the feature.
-  -h, --help                     help for create
-      --idempotency-key string   Idempotency key for safe mutation retries
-      --input string             Complete JSON request body or @file.json
-      --name string              Name of the feature.
-      --privileges string        Privileges associated with this feature. Can be empty.
+      --code string          Unique code used to identify the feature.
+      --description string   Internal description of the feature.
+  -h, --help                 help for create
+      --input string         Complete JSON request body or @file.json
+      --name string          Name of the feature.
+      --privileges string    Privileges associated with this feature. Can be empty.
 ```
 
 ### Options inherited from parent commands

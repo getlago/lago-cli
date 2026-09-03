@@ -20,9 +20,8 @@ lago plans merge-plan-metadata <code> [flags]
 ### Options
 
 ```
-  -h, --help                     help for merge-plan-metadata
-      --idempotency-key string   Idempotency key for safe mutation retries
-      --input string             Complete JSON request body or @file.json
+  -h, --help           help for merge-plan-metadata
+      --input string   Complete JSON request body or @file.json
 ```
 
 ### Options inherited from parent commands

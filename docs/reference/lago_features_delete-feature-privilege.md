@@ -19,8 +19,7 @@ lago features delete-feature-privilege <code> <privilege_code> [flags]
 ### Options
 
 ```
-  -h, --help                     help for delete-feature-privilege
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for delete-feature-privilege
 ```
 
 ### Options inherited from parent commands

@@ -23,7 +23,6 @@ lago payment-requests create [flags]
       --email string                                The customer's email address used for sending dunning notifications
       --external-customer-id string                 The customer external unique identifier (provided by your own application)
   -h, --help                                        help for create
-      --idempotency-key string                      Idempotency key for safe mutation retries
       --input string                                Complete JSON request body or @file.json
       --lago-invoice-ids string                     A list of Lago IDs for the customer's overdue invoices to start the dunning process
       --payment-method-payment-method-id string     The unique identifier of the payment method (required when using a specific provider payment method).

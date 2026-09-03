@@ -29,7 +29,6 @@ lago wallets create-customer <external_customer_id> [flags]
       --external-customer-id string                                  The customer external unique identifier (provided by your own application)
       --granted-credits string                                       The number of free granted credits. Required only if there is no paid credits.
   -h, --help                                                         help for create-customer
-      --idempotency-key string                                       Idempotency key for safe mutation retries
       --ignore-paid-top-up-limits-on-creation string                 If set to true, the wallet will ignore paid top-up limits on creation.
       --input string                                                 Complete JSON request body or @file.json
       --invoice-custom-section-invoice-custom-section-codes string   List of unique codes identifying the invoice custom sections to apply. These override the default invoice custom sections configured at the customer or billing entity level.

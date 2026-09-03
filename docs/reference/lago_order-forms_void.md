@@ -22,8 +22,7 @@ lago order-forms void <lago_id> [flags]
 ### Options
 
 ```
-  -h, --help                     help for void
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for void
 ```
 
 ### Options inherited from parent commands

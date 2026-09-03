@@ -23,7 +23,6 @@ lago credit-notes create [flags]
       --credit-amount-cents string   The total amount to be credited to the customer balance for discounts on future invoices. For a total or partial refund, credit or offset, the amount in cents must include both the item amount and the applicable tax. The refunded, credited and offsetted amounts should always balance. The total, including taxes, cannot exceed the invoice's total fees.
       --description string           The description of the credit note.
   -h, --help                         help for create
-      --idempotency-key string       Idempotency key for safe mutation retries
       --input string                 Complete JSON request body or @file.json
       --invoice-id string            The invoice unique identifier, created by Lago.
       --items string                 The list of credit note's items.

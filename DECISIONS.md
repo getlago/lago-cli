@@ -43,8 +43,11 @@ deny: an operation matching the destructive vocabulary (`void`, `finalize`, `ret
 `terminate`, `delete`, `destroy`, `refund`) or using DELETE is confirmation-gated, and
 only GET, HEAD, and OPTIONS are auto-retried without an operator-supplied idempotency key.
 `x-lago-cli-dangerous` and `x-lago-cli-retryable` are the upstream escape hatches, matching
-the `x-lago-cli-action` precedent. `--idempotency-key` is offered on every mutation.
+the `x-lago-cli-action` precedent.
 A contract test fails if any destructive operation is gated or retried incorrectly.
+
+*Superseded in part on 2026-09-02: `--idempotency-key` is no longer offered. See "No
+client-side idempotency key" below.*
 
 ## 2026-08-31 — Per-package coverage floors, never a repo-wide average
 
@@ -311,6 +314,30 @@ place a key lives, outside the 0600 profile table; one with `--insecure` disable
 checks for whoever runs it without seeing the flag. `--api-url`, `--api-key` and
 `--insecure` are refused at `alias set` with the profile alternative named. `--profile` and
 `--mode` stay allowed: a mode is a safety declaration, not a secret.
+## 2026-09-02 — No client-side idempotency key
+
+QA sent two creates with the same `--idempotency-key` and different bodies. Both
+succeeded. The header reached the server and nothing read it: `IdempotencyRecord` in
+lago-api is internal to invoice generation and no controller consults the request header.
+A flag whose help promised "safe mutation retries" was a correctness lie in a billing
+tool, so it is removed rather than kept as a no-op: from generated commands, from
+`lago api`, from `plans import`, and from the fixture schema, which now rejects
+`idempotency_key` by name so an old fixture fails loudly instead of silently losing a
+safety it never had.
+
+The removal changes the retry policy, because the key was the only thing that made a
+mutation `Idempotent` for the transport. Mutations are now never auto-retried; a 429 or
+5xx on a write is reported and the operator decides. The one exception is a usage event
+that carries a `timestamp`: Lago deduplicates events on `transaction_id`, and on the
+ClickHouse store on `transaction_id` plus `timestamp`, so replaying such an event with the
+same body is provably safe. An event without a timestamp is sent once, which is the rule
+the 2026-09-02 events warning already taught. `plans import` loses its retry too; a PUT
+that races a concurrent edit is not idempotent in the billing sense, whatever RFC 9110
+says.
+
+The removal is a single commit so it can be reverted the day lago-api implements the
+header. Until then the request to lago-api is: read `Idempotency-Key` on every write, or
+document that it never will, so no client offers the flag again.
 
 ## Deferred beyond 1.x
 

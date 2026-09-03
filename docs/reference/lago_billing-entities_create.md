@@ -41,7 +41,6 @@ lago billing-entities create [flags]
       --eu-tax-management string                                                    Whether EU tax management is enabled for this billing entity
       --finalize-zero-amount-invoice string                                         Whether to finalize invoices with zero amount for this billing entity
   -h, --help                                                                        help for create
-      --idempotency-key string                                                      Idempotency key for safe mutation retries
       --input string                                                                Complete JSON request body or @file.json
       --legal-name string                                                           The legal name of the billing entity
       --legal-number string                                                         The legal registration number of the billing entity

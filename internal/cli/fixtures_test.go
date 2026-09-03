@@ -58,7 +58,6 @@ steps:
   - id: metric
     method: POST
     path: /billable_metrics
-    idempotency_key: ${prefix}-metric
     body:
       billable_metric:
         code: ${prefix}-requests
@@ -588,5 +587,84 @@ func TestQA_S21_DestructiveFixtureDryRunNeedsNoConfirmation(t *testing.T) {
 
 	if _, _, err := execute(t, "", "--dry-run", "--output", "json", "fixtures", "run", path); err != nil {
 		t.Fatalf("dry run failed: %v", err)
+	}
+}
+
+// QA F-12: `idempotency_key` set a header lago-api never read. A fixture that still
+// carries it fails by name, so the author learns the safety was never there instead
+// of reading an anonymous unknown-field error.
+func TestQA_F12_FixtureNamesRemovedIdempotencyKey(t *testing.T) {
+	server := jsonAPI(t, func(http.ResponseWriter, *http.Request) {
+		t.Error("fixture with idempotency_key reached the API")
+	})
+	profileAt(t, server.URL)
+	path := writeFixture(t, `
+version: 1
+name: legacy
+steps:
+  - id: metric
+    method: POST
+    path: /billable_metrics
+    idempotency_key: legacy-metric
+    body:
+      billable_metric:
+        code: requests
+`)
+	_, _, err := execute(t, "", "fixtures", "run", path)
+	if err == nil {
+		t.Fatal("fixture with idempotency_key was accepted")
+	}
+	if apperr.ExitCode(err) != apperr.ExitUsage {
+		t.Errorf("exit code = %d, want %d", apperr.ExitCode(err), apperr.ExitUsage)
+	}
+	if !strings.Contains(err.Error(), `step "metric" uses idempotency_key`) || !strings.Contains(err.Error(), "no longer supports") {
+		t.Errorf("error does not name the removed key: %v", err)
+	}
+}
+
+// Nothing the CLI sends carries an Idempotency-Key any more: not a raw request, not a
+// fixture step, not a plan import.
+func TestQA_F12_RawAPIAndFixturesAndImportSendNoIdempotencyKey(t *testing.T) {
+	var mutex sync.Mutex
+	var headers []string
+	requests := 0
+	server := jsonAPI(t, func(response http.ResponseWriter, request *http.Request) {
+		mutex.Lock()
+		requests++
+		if header := request.Header.Get("Idempotency-Key"); header != "" {
+			headers = append(headers, request.Method+" "+request.URL.Path+" "+header)
+		}
+		mutex.Unlock()
+		if request.Method == http.MethodGet {
+			response.WriteHeader(http.StatusNotFound)
+			_, _ = response.Write([]byte(`{"status":404,"error":"Not Found"}`))
+			return
+		}
+		_, _ = response.Write([]byte(`{"plan":{"code":"p1"}}`))
+	})
+	profileAt(t, server.URL)
+
+	if _, _, err := execute(t, "", "--output", "json", "api", "POST", "/events", "--data", `{"event":{"code":"x"}}`); err != nil {
+		t.Fatalf("api POST failed: %v", err)
+	}
+	fixturePath := writeFixture(t, "version: 1\nname: plain\nsteps:\n  - id: plan\n    method: POST\n    path: /plans\n    body:\n      plan:\n        code: p1\n")
+	if _, _, err := execute(t, "", "--output", "json", "fixtures", "run", fixturePath); err != nil {
+		t.Fatalf("fixtures run failed: %v", err)
+	}
+	importPath := filepath.Join(t.TempDir(), "plans.json")
+	if err := os.WriteFile(importPath, []byte(`{"plans":[{"code":"p1","name":"P1","interval":"monthly","amount_cents":100,"amount_currency":"USD"}]}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if _, _, err := execute(t, "", "--output", "json", "plans", "import", importPath); err != nil {
+		t.Fatalf("plans import failed: %v", err)
+	}
+
+	mutex.Lock()
+	defer mutex.Unlock()
+	if requests < 3 {
+		t.Fatalf("only %d requests reached the server", requests)
+	}
+	if len(headers) != 0 {
+		t.Errorf("Idempotency-Key was sent on: %v", headers)
 	}
 }

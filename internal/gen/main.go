@@ -734,7 +734,7 @@ func dangerousOperation(operation map[string]any, method, path, lowerAction stri
 }
 
 // retryableOperation reports whether the transport may replay an operation on its own,
-// without an operator-supplied idempotency key. Only side-effect-free reads qualify.
+// Only side-effect-free reads qualify; lago-api reads no Idempotency-Key header.
 // PUT and DELETE are idempotent in the RFC sense and still move money in Lago, so they
 // are never auto-retried by default; `x-lago-cli-retryable` opts an operation back in.
 func retryableOperation(operation map[string]any, method string) bool {

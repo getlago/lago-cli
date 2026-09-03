@@ -21,7 +21,6 @@ lago subscriptions update <external_id> [flags]
 
 ```
   -h, --help                                                                         help for update
-      --idempotency-key string                                                       Idempotency key for safe mutation retries
       --input string                                                                 Complete JSON request body or @file.json
       --status string                                                                By default, this endpoint only return 'active' subscriptions. If you want to update a subscription with a different 'status', you can specify it here.; one of: active, pending
       --subscription-activation-rules string                                         Optional list of activation rules that gate the subscription activation. Activation rules can only be set or modified while the subscription is 'pending' (future-dated and not yet activated); the request is rejected for 'incomplete', 'active', or 'terminated' subscriptions.

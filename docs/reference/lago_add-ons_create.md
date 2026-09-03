@@ -25,7 +25,6 @@ lago add-ons create [flags]
       --code string                   Unique code used to identify the add-on.
       --description string            The description of the add-on.
   -h, --help                          help for create
-      --idempotency-key string        Idempotency key for safe mutation retries
       --input string                  Complete JSON request body or @file.json
       --invoice-display-name string   Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the actual charge will be used as the default display name.
       --name string                   The name of the add-on.

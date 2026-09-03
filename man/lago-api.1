@@ -25,10 +25,6 @@ Make an authenticated request to any Lago API endpoint
 \fB-h\fP, \fB--help\fP[=false]
 	help for api
 
-.PP
-\fB--idempotency-key\fP=""
-	Idempotency key for safe mutation retries
-
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
 \fB--api-key\fP=""
@@ -86,7 +82,7 @@ Make an authenticated request to any Lago API endpoint
 .SH EXAMPLE
 .EX
   lago api GET /customers?page=2
-  lago api POST /events --data @event.json --idempotency-key event-42
+  lago api POST /events --data @event.json
   printf '{"event":{}}' | lago api POST /events --data -
 .EE
 

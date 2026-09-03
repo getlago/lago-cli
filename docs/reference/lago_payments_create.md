@@ -20,13 +20,12 @@ lago payments create [flags]
 ### Options
 
 ```
-      --amount-cents string      The payment amount in cents
-  -h, --help                     help for create
-      --idempotency-key string   Idempotency key for safe mutation retries
-      --input string             Complete JSON request body or @file.json
-      --invoice-id string        Unique identifier assigned to the invoice
-      --paid-at string           The date the payment was made
-      --reference string         Reference for the payment
+      --amount-cents string   The payment amount in cents
+  -h, --help                  help for create
+      --input string          Complete JSON request body or @file.json
+      --invoice-id string     Unique identifier assigned to the invoice
+      --paid-at string        The date the payment was made
+      --reference string      Reference for the payment
 ```
 
 ### Options inherited from parent commands

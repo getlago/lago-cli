@@ -25,10 +25,9 @@ lago orders execute <lago_id> [flags]
 ### Options
 
 ```
-      --execution-mode string    How the order is carried out. It is only persisted when it differs from the mode already stored on the order, so restating the current mode never fails. Changing the mode of an order that has already been executed is rejected.; one of: execute_in_lago, order_only
-  -h, --help                     help for execute
-      --idempotency-key string   Idempotency key for safe mutation retries
-      --input string             Complete JSON request body or @file.json
+      --execution-mode string   How the order is carried out. It is only persisted when it differs from the mode already stored on the order, so restating the current mode never fails. Changing the mode of an order that has already been executed is rejected.; one of: execute_in_lago, order_only
+  -h, --help                    help for execute
+      --input string            Complete JSON request body or @file.json
 ```
 
 ### Options inherited from parent commands

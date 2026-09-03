@@ -54,7 +54,6 @@ lago customers create [flags]
                                                                                     - 'skip': Invoices with a total amount of zero are not finalized.; one of: inherit, skip, finalize
       --firstname string                                                            First name of the customer
   -h, --help                                                                        help for create
-      --idempotency-key string                                                      Idempotency key for safe mutation retries
       --input string                                                                Complete JSON request body or @file.json
       --integration-customers string                                                API field (array)
       --invoice-custom-section-codes string                                         List of unique codes identifying the invoice custom sections.

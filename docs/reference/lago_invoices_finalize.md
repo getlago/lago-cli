@@ -19,8 +19,7 @@ lago invoices finalize <lago_id> [flags]
 ### Options
 
 ```
-  -h, --help                     help for finalize
-      --idempotency-key string   Idempotency key for safe mutation retries
+  -h, --help   help for finalize
 ```
 
 ### Options inherited from parent commands

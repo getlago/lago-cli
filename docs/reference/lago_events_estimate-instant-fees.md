@@ -22,7 +22,6 @@ lago events estimate-instant-fees [flags]
       --code string                       The code that identifies a targeted billable metric. It is essential that this code matches the 'code' property of one of your active billable metrics. If the provided code does not correspond to any active billable metric, it will be ignored during the process.
       --external-subscription-id string   The unique identifier of the subscription within your application.
   -h, --help                              help for estimate-instant-fees
-      --idempotency-key string            Idempotency key for safe mutation retries
       --input string                      Complete JSON request body or @file.json
       --properties string                 This field represents additional properties associated with the event, which are utilized in the calculation of the final fee. This object becomes mandatory when the targeted billable metric employs a 'sum_agg', 'max_agg', or 'unique_count_agg' aggregation method. However, when using a simple 'count_agg', this object is not required.
       --transaction-id string             This field represents a unique identifier for the event.

@@ -80,15 +80,11 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 		cmd.Flags().StringVar(&bulkFile, "file", "", "Stream newline-delimited JSON events from a file, or - for stdin")
 		cmd.Flags().IntVar(&concurrency, "concurrency", 4, "Concurrent bulk event requests (1-64)")
 	}
-	var idempotencyKey string
 	var watch bool
 	var watchInterval time.Duration
 	if operation.Method == http.MethodGet {
 		cmd.Flags().BoolVar(&watch, "watch", false, "Poll and re-render when the response changes")
 		cmd.Flags().DurationVar(&watchInterval, "watch-interval", 2*time.Second, "Polling interval used with --watch")
-	}
-	if !isIdempotentMethod(operation.Method) {
-		cmd.Flags().StringVar(&idempotencyKey, "idempotency-key", "", "Idempotency key for safe mutation retries")
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -132,14 +128,11 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 		callerChoseTransactionID := cmd.Flags().Changed("transaction-id")
 		if operation.Resource == "events" && operation.Action == "send" && operation.Body != nil && !cmd.Flags().Changed("input") {
 			if transactionID, exists := flagValues["transaction-id"]; exists && !cmd.Flags().Changed("transaction-id") {
-				generatedID := defaultIdempotencyKey()
+				generatedID := defaultTransactionID()
 				if err := cmd.Flags().Set("transaction-id", generatedID); err != nil {
 					return apperr.Wrap(apperr.ExitGeneral, "set event transaction ID", err)
 				}
 				*transactionID = generatedID
-				if idempotencyKey == "" {
-					idempotencyKey = generatedID
-				}
 			}
 		}
 		body, err := generatedBody(app.In, cmd, operation.Body, flagValues)
@@ -161,11 +154,6 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 				return err
 			}
 		}
-		headers := make(http.Header)
-		if idempotencyKey != "" {
-			headers.Set("Idempotency-Key", idempotencyKey)
-		}
-		idempotent := operation.Idempotent || idempotencyKey != ""
 		if watch {
 			if watchInterval < 500*time.Millisecond {
 				return apperr.New(apperr.ExitUsage, "watch interval must be at least 500ms", "Pass --watch-interval 2s or a longer duration.")
@@ -173,7 +161,7 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 			return runWatch(cmd, app, operation, path, query, watchInterval)
 		}
 		subjects := identifierSubjects(operation, pathParameters, args, cmd, flagValues)
-		value, response, err := app.Request(cmd.Context(), transport.Request{Method: operation.Method, Path: path, Query: query, Headers: headers, Body: body, Idempotent: idempotent, Subjects: subjects})
+		value, response, err := app.Request(cmd.Context(), transport.Request{Method: operation.Method, Path: path, Query: query, Body: body, Idempotent: operation.Idempotent, Subjects: subjects})
 		if err != nil {
 			return err
 		}
@@ -540,6 +528,8 @@ func flagDescription(description, valueType string, enum []string) string {
 	return description
 }
 
-func defaultIdempotencyKey() string { return uuid.NewString() }
+// defaultTransactionID mints the transaction_id for a single `events send` whose caller
+// did not choose one. It is the server-side deduplication key for that event.
+func defaultTransactionID() string { return uuid.NewString() }
 
 var _ = bytes.MinRead

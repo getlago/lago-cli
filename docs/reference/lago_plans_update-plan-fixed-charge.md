@@ -30,7 +30,6 @@ lago plans update-plan-fixed-charge <code> <fixed_charge_code> [flags]
                                                                - 'volume'; one of: standard, graduated, volume
       --code string                                          Unique code identifying the fixed charge within the plan.
   -h, --help                                                 help for update-plan-fixed-charge
-      --idempotency-key string                               Idempotency key for safe mutation retries
       --input string                                         Complete JSON request body or @file.json
       --invoice-display-name string                          Specifies the name that will be displayed on an invoice. If no value is set for this field, the name of the add-on will be used as the default display name.
       --pay-in-advance string                                This field determines the billing timing for this fixed charge. When set to 'true', the charge is due and invoiced immediately at the beginning of the billing period. When set to 'false', the charge is due and invoiced at the end of the billing period.

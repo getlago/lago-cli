@@ -19,11 +19,10 @@ lago credit-notes estimate [flags]
 ### Options
 
 ```
-  -h, --help                     help for estimate
-      --idempotency-key string   Idempotency key for safe mutation retries
-      --input string             Complete JSON request body or @file.json
-      --invoice-id string        The invoice unique identifier, created by Lago.
-      --items string             The list of credit note's items.
+  -h, --help                help for estimate
+      --input string        Complete JSON request body or @file.json
+      --invoice-id string   The invoice unique identifier, created by Lago.
+      --items string        The list of credit note's items.
 ```
 
 ### Options inherited from parent commands

@@ -20,7 +20,6 @@ lago subscriptions terminate <external_id> [flags]
 
 ```
   -h, --help                                help for terminate
-      --idempotency-key string              Idempotency key for safe mutation retries
       --on-termination-credit-note string   When a pay-in-advance subscription is terminated before the end of its billing period, we generate a credit note for the unused subscription time by default.
                                             This field allows you to control the behavior of the credit note generation:
 

@@ -24,7 +24,6 @@ lago taxes update <code> [flags]
       --code string                      Unique code used to identify the tax associated with the API request.
       --description string               Internal description of the taxe
   -h, --help                             help for update
-      --idempotency-key string           Idempotency key for safe mutation retries
       --input string                     Complete JSON request body or @file.json
       --name string                      Name of the tax.
       --rate string                      The percentage rate of the tax

@@ -3,6 +3,7 @@ package cli
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/getlago/lago-cli/internal/apperr"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -171,30 +172,34 @@ func TestEventNDJSONDryRunStreamsWithGeneratedIDs(t *testing.T) {
 	}
 }
 
-func TestEventStreamRetriesWithStablePerEventIdempotency(t *testing.T) {
+// QA F-12: the Idempotency-Key header was sent but lago-api never read it, so the
+// retries it unlocked were not safe. The stream now retries a 5xx only for an event
+// that carries a timestamp, because transaction_id plus timestamp is the server-side
+// deduplication key. A bare event is sent once and its failure is reported.
+func TestQA_F12_EventStreamRetriesOnlyTimestampedEvents(t *testing.T) {
 	setCleanEnvironment(t)
 	path := filepath.Join(t.TempDir(), "events.ndjson")
-	data := "{\"code\":\"requests\",\"external_subscription_id\":\"sub_1\"}\n{\"code\":\"requests\",\"external_subscription_id\":\"sub_2\"}\n"
+	data := "{\"code\":\"requests\",\"external_subscription_id\":\"sub_1\",\"timestamp\":1700000000}\n{\"code\":\"requests\",\"external_subscription_id\":\"sub_2\"}\n"
 	if err := os.WriteFile(path, []byte(data), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	var mutex sync.Mutex
 	attempts := map[string]int{}
 	server := httptest.NewTLSServer(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
-		key := request.Header.Get("Idempotency-Key")
-		if key == "" {
-			t.Error("event request has no idempotency key")
+		if key := request.Header.Get("Idempotency-Key"); key != "" {
+			t.Errorf("event request carried Idempotency-Key %q; lago-api does not read it", key)
 		}
 		var payload map[string]map[string]any
 		if err := json.NewDecoder(request.Body).Decode(&payload); err != nil {
 			t.Error(err)
 		}
-		if payload["event"]["transaction_id"] != key {
-			t.Errorf("transaction ID %v does not match key %s", payload["event"]["transaction_id"], key)
+		subscription, _ := payload["event"]["external_subscription_id"].(string)
+		if transactionID, _ := payload["event"]["transaction_id"].(string); transactionID == "" {
+			t.Error("event was sent without a transaction_id")
 		}
 		mutex.Lock()
-		attempts[key]++
-		attempt := attempts[key]
+		attempts[subscription]++
+		attempt := attempts[subscription]
 		mutex.Unlock()
 		if attempt == 1 {
 			response.WriteHeader(http.StatusInternalServerError)
@@ -208,21 +213,25 @@ func TestEventStreamRetriesWithStablePerEventIdempotency(t *testing.T) {
 	app := NewApp(strings.NewReader(""), &stdout, &stderr, "test")
 	root := NewRoot(app)
 	root.SetArgs([]string{"--api-url", server.URL, "--api-key", "lago_test_FAKEabcdefghijklmnopqrstuv", "--mode", "test", "--insecure", "--output", "json", "events", "send", "--file", path, "--concurrency", "2"})
-	if err := root.Execute(); err != nil {
-		t.Fatalf("stream failed: %v stderr=%s", err, stderr.String())
+	err := root.Execute()
+	if err == nil {
+		t.Fatal("stream succeeded although the untimestamped event failed once and was not retried")
+	}
+	if apperr.ExitCode(err) != apperr.ExitServer {
+		t.Errorf("exit code = %d, want %d (the 500 from the unretried event)", apperr.ExitCode(err), apperr.ExitServer)
 	}
 	mutex.Lock()
 	defer mutex.Unlock()
-	if len(attempts) != 2 {
-		t.Fatalf("transaction IDs = %#v", attempts)
+	if attempts["sub_1"] != 2 {
+		t.Errorf("timestamped event attempts = %d, want 2", attempts["sub_1"])
 	}
-	for key, count := range attempts {
-		if count != 2 {
-			t.Errorf("key %s attempts=%d", key, count)
+	if attempts["sub_2"] != 1 {
+		t.Errorf("untimestamped event attempts = %d, want 1", attempts["sub_2"])
+	}
+	for _, want := range []string{`"retried": 1`, `"sent": 1`, `"failed": 1`} {
+		if !strings.Contains(stdout.String(), want) {
+			t.Errorf("summary lacks %s:\n%s", want, stdout.String())
 		}
-	}
-	if !strings.Contains(stdout.String(), `"retried": 2`) || !strings.Contains(stdout.String(), `"sent": 2`) {
-		t.Fatalf("summary=%s", stdout.String())
 	}
 }
 

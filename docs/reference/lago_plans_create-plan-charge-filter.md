@@ -22,7 +22,6 @@ lago plans create-plan-charge-filter <code> <charge_code> [flags]
 ```
       --cascade-updates string                               This field determines whether the creation of the filter should be cascaded to the children plans. When set to 'true', the changes will be cascaded into children. Conversely, when set to 'false', the changes will only be applied to the plan itself. If not defined in the request, default value is 'false'.
   -h, --help                                                 help for create-plan-charge-filter
-      --idempotency-key string                               Idempotency key for safe mutation retries
       --input string                                         Complete JSON request body or @file.json
       --invoice-display-name string                          Specifies the name that will be displayed on an invoice. If no value is set for this field, the values of the filter will be used as the default display name.
       --properties-amount string                             - The unit price, excluding tax, for a 'standard' charge model. It is expressed as a decimal value.
