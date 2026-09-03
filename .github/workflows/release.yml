@@ -3,6 +3,13 @@ name: Release
 on:
   push:
     tags: ['v*']
+  # Re-run the smoke tests against a release that already exists, without re-tagging.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Released version to smoke-test, without the leading v (for example 1.0.0)
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -10,7 +17,7 @@ permissions:
 
 jobs:
   release:
-    if: github.repository == 'getlago/lago-cli'
+    if: github.repository == 'getlago/lago-cli' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,14 +44,23 @@ jobs:
   # line is smoke-tested on macOS and on Linuxbrew.
   smoke-homebrew:
     needs: release
+    if: always() && (needs.release.result == 'success' || github.event_name == 'workflow_dispatch')
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
+      # Linux runners ship Homebrew in /home/linuxbrew but do not put it on PATH.
+      - name: Put Homebrew on PATH
+        if: runner.os == 'Linux'
+        run: echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
       - name: Install from the Lago tap
         run: brew install getlago/tap/lago
+      - name: Installed version is the released one
+        run: |
+          expected="${{ github.event_name == 'push' && github.ref_name || format('v{0}', inputs.version) }}"
+          test "v$(lago version --output json | jq -r .version)" = "$expected"
       - name: Verify the release signature the formula installed from
         run: |
           brew install cosign
@@ -66,6 +82,7 @@ jobs:
 
   smoke-go-install:
     needs: release
+    if: always() && (needs.release.result == 'success' || github.event_name == 'workflow_dispatch')
     strategy:
       fail-fast: false
       matrix:
@@ -77,7 +94,7 @@ jobs:
           go-version: stable
       - name: Install with go install
         shell: bash
-        run: go install github.com/getlago/lago-cli/cmd/lago@${{ github.ref_name }}
+        run: go install github.com/getlago/lago-cli/cmd/lago@${{ github.event_name == 'push' && github.ref_name || format('v{0}', inputs.version) }}
       - name: Verify the installed binary
         shell: bash
         run: |
