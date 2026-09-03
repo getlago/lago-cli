@@ -58,7 +58,9 @@ func generate(markdown, man, completions string) error {
 	if err := doc.GenManTree(root, header, man); err != nil {
 		return err
 	}
-	if err := root.GenBashCompletionFile(filepath.Join(completions, "lago.bash")); err != nil {
+	// The V2 script asks the binary for completions at runtime (`lago __complete`), so it
+	// stays a few kilobytes instead of embedding every flag of 217 commands (609 KB).
+	if err := root.GenBashCompletionFileV2(filepath.Join(completions, "lago.bash"), true); err != nil {
 		return err
 	}
 	if err := root.GenZshCompletionFile(filepath.Join(completions, "_lago")); err != nil {

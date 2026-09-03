@@ -41,10 +41,12 @@ func assertDetailLine(t *testing.T, stderr, line string) {
 }
 
 // QA E-5c: an event with a malformed timestamp came back as "Unprocessable Entity,
-// check the command flags" with no hint which flag.
+// check the command flags" with no hint which flag. The value sent here passes the
+// CLI's own timestamp parsing (Unix seconds); what is under test is how a server-side
+// rejection is printed, so the mocked API answers 422 regardless of the value.
 func TestQA_E5c_TimestampInvalidFormatIsPrinted(t *testing.T) {
 	stderr, code := runAgainst422(t, `{"status":422,"error":"Unprocessable Entity","code":"validation_errors","error_details":{"timestamp":["invalid_format"]}}`,
-		"events", "send", "--code", "requests", "--external-subscription-id", "sub_1", "--timestamp", "yesterday")
+		"events", "send", "--code", "requests", "--external-subscription-id", "sub_1", "--timestamp", "1788338088")
 	if code != apperr.ExitValidation {
 		t.Fatalf("exit code = %d, want %d", code, apperr.ExitValidation)
 	}

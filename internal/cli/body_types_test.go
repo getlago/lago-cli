@@ -87,7 +87,13 @@ func TestQA_TypeCoercion_GeneratedBodiesSendSpecTypes(t *testing.T) {
 				if parameterFlags[field.Flag] || (field.Complex && !field.Required) {
 					continue
 				}
-				arguments = append(arguments, "--"+field.Flag, syntheticValue(field.Type, field.Enum))
+				value := syntheticValue(field.Type, field.Enum)
+				if operation.Resource == "events" && field.Flag == "timestamp" {
+					// The CLI parses this field client-side (Unix seconds or RFC 3339)
+					// before sending, so a placeholder string never reaches the wire.
+					value = "1788338088"
+				}
+				arguments = append(arguments, "--"+field.Flag, value)
 			}
 			if operation.Dangerous {
 				identifier := operation.Resource
