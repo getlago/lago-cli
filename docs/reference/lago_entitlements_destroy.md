@@ -14,6 +14,7 @@ lago entitlements destroy <code> <feature_code> [flags]
 
 ```
   lago entitlements destroy <code> <feature_code>
+  lago entitlements destroy <code> <feature_code> --output json  # full resource
 ```
 
 ### Options

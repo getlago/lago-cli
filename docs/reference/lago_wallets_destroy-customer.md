@@ -14,6 +14,7 @@ lago wallets destroy-customer <external_customer_id> <code> [flags]
 
 ```
   lago wallets destroy-customer <external_customer_id> <code>
+  lago wallets destroy-customer <external_customer_id> <code> --output json  # full resource
 ```
 
 ### Options

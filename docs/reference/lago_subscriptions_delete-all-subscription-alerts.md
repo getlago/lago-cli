@@ -14,6 +14,7 @@ lago subscriptions delete-all-subscription-alerts <external_id> [flags]
 
 ```
   lago subscriptions delete-all-subscription-alerts <external_id>
+  lago subscriptions delete-all-subscription-alerts <external_id> --output json  # full resource
 ```
 
 ### Options

@@ -14,6 +14,7 @@ lago add-ons delete <code> [flags]
 
 ```
   lago add-ons delete <code>
+  lago add-ons delete <code> --output json  # full resource
 ```
 
 ### Options

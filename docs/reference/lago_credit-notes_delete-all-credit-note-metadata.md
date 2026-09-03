@@ -14,6 +14,7 @@ lago credit-notes delete-all-credit-note-metadata <lago_id> [flags]
 
 ```
   lago credit-notes delete-all-credit-note-metadata <lago_id>
+  lago credit-notes delete-all-credit-note-metadata <lago_id> --output json  # full resource
 ```
 
 ### Options

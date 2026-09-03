@@ -14,6 +14,7 @@ lago wallets delete-wallet-metadata-key <lago_id> <key> [flags]
 
 ```
   lago wallets delete-wallet-metadata-key <lago_id> <key>
+  lago wallets delete-wallet-metadata-key <lago_id> <key> --output json  # full resource
 ```
 
 ### Options

@@ -14,6 +14,7 @@ lago credit-notes void <lago_id> [flags]
 
 ```
   lago credit-notes void <lago_id>
+  lago credit-notes void <lago_id> --output json  # full resource
 ```
 
 ### Options

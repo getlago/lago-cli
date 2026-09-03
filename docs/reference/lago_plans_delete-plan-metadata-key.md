@@ -14,6 +14,7 @@ lago plans delete-plan-metadata-key <code> <key> [flags]
 
 ```
   lago plans delete-plan-metadata-key <code> <key>
+  lago plans delete-plan-metadata-key <code> <key> --output json  # full resource
 ```
 
 ### Options

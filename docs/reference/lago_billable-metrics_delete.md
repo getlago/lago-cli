@@ -14,6 +14,7 @@ lago billable-metrics delete <code> [flags]
 
 ```
   lago billable-metrics delete <code>
+  lago billable-metrics delete <code> --output json  # full resource
 ```
 
 ### Options

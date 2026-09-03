@@ -15,6 +15,7 @@ lago credit-notes merge-credit-note-metadata <lago_id> [flags]
 
 ```
   lago credit-notes merge-credit-note-metadata <lago_id> --input @payload.json
+  lago credit-notes merge-credit-note-metadata <lago_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options

@@ -18,6 +18,7 @@ lago order-forms mark-as-signed <lago_id> [flags]
 
 ```
   lago order-forms mark-as-signed <lago_id> --input @payload.json
+  lago order-forms mark-as-signed <lago_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options

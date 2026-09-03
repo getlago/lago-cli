@@ -14,6 +14,7 @@ lago entitlements remove-entitlement-privilege <code> <feature_code> <privilege_
 
 ```
   lago entitlements remove-entitlement-privilege <code> <feature_code> <privilege_code>
+  lago entitlements remove-entitlement-privilege <code> <feature_code> <privilege_code> --output json  # full resource
 ```
 
 ### Options

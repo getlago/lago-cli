@@ -14,6 +14,7 @@ lago plans delete-all-plan-metadata <code> [flags]
 
 ```
   lago plans delete-all-plan-metadata <code>
+  lago plans delete-all-plan-metadata <code> --output json  # full resource
 ```
 
 ### Options

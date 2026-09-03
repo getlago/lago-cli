@@ -14,6 +14,7 @@ lago entitlements destroy-subscription <external_id> <feature_code> [flags]
 
 ```
   lago entitlements destroy-subscription <external_id> <feature_code>
+  lago entitlements destroy-subscription <external_id> <feature_code> --output json  # full resource
 ```
 
 ### Options

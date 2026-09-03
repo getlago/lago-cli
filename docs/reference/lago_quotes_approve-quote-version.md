@@ -18,6 +18,7 @@ lago quotes approve-quote-version <lago_id> [flags]
 
 ```
   lago quotes approve-quote-version <lago_id> --input @payload.json
+  lago quotes approve-quote-version <lago_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options

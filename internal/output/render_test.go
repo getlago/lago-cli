@@ -212,6 +212,12 @@ func TestIdentifierRendererPrintsOnlyIdentity(t *testing.T) {
 			absent: []string{"CURRENCY", "USD", "CREATED_AT"},
 		},
 		{
+			name:   "status is an identifier of the new state",
+			value:  map[string]any{"invoice": map[string]any{"lago_id": "inv_1", "status": "finalized", "total_amount_cents": json.Number("100")}},
+			want:   []string{"LAGO_ID", "inv_1", "STATUS", "finalized"},
+			absent: []string{"TOTAL_AMOUNT_CENTS"},
+		},
+		{
 			name:   "code is printed for resources with no external ID",
 			value:  map[string]any{"plan": map[string]any{"lago_id": "2b90", "code": "quickstart", "amount_cents": json.Number("0")}},
 			want:   []string{"LAGO_ID", "CODE", "quickstart"},
@@ -302,7 +308,7 @@ func TestIdentifiersNeverReduceStructuredOutput(t *testing.T) {
 // an operator most often pipes onward is the first line of output.
 func TestIdentifierOrderIsStable(t *testing.T) {
 	t.Parallel()
-	if got := identifierKeys; len(got) != 4 || got[0] != "lago_id" || got[1] != "external_id" || got[2] != "code" || got[3] != "name" {
+	if got := identifierKeys; len(got) != 5 || got[0] != "lago_id" || got[1] != "external_id" || got[2] != "code" || got[3] != "name" || got[4] != "status" {
 		t.Fatalf("identifier order changed to %v; update the README and snapshots deliberately", got)
 	}
 }

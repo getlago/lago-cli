@@ -73,6 +73,10 @@ rather than reporting a clean tree.
 
 ## 2026-09-01 — Default mutation output is identifiers; full detail is `--output json`
 
+*Superseded in part on 2026-09-02: the exclusion of deletes and state transitions is
+withdrawn now that `status` is an identifier key. See "Every write prints identifiers plus
+status" below. The exclusions for read-shaped actions and bulk ingestion stand.*
+
 QA returned that a create printing 40 attributes buries the one thing the caller does
 not already have: the identifier Lago minted. Default table output for every generated
 create and update is therefore a terse block of `lago_id`, `external_id`, `code` and
@@ -375,6 +379,32 @@ The structured form is one flag away. The exception is `--dry-run`: its envelope
 the request payload under `body`, which the summary would reduce to `{2 fields}`, so the
 envelope prints as JSON in table mode. It is a request, not a resource, and JSON is the
 form it will be sent in.
+
+## 2026-09-02 — Every write prints identifiers plus status; read-shaped writes print in full
+
+QA X-3: `delete`, `terminate`, `apply` and the wallet transaction commands dumped the
+full resource while `create` and `update` printed the terse block, so the same tool had
+two default shapes for a write. The 2026-09-01 rule excluded state transitions because
+"the interesting output is the new state", which is true and is exactly why `status`
+now sits in the identifier block, after `name`. With that, every non-GET operation is
+terse: 109 of 217 commands. The generator rule is still one function.
+
+The exclusions that stand are the ones where reduction would delete the answer: a POST
+that is a question (`invoices preview`, `credit-notes estimate`, `events estimate-fees`,
+`billable-metrics evaluate-expression`), a download or payment URL, and bulk ingestion
+whose output is a summary (`events send`, `events batch`). Twelve actions, listed in the
+generator and independently in the contract test so the two cannot drift silently.
+
+QA M-empty: key/value tables drop null and blank values. `events send` is asynchronous and
+answers with most fields unset; five blank rows tell the operator less than the three
+that carry a value. When every value is blank the keys still print, so the output is
+never empty. A terse array response renders one row per item with the identifier and
+status columns rather than a header-less block.
+
+QA C-3: `whoami` printed the organization as a JSON blob in one cell. It is now a short
+identity block in reading order, name first and the resolved host last, because "which
+organization and which host" is the whole question. The JSON form drops the double
+nesting (`organization` holds the object directly), recorded as breaking pre-1.0.
 
 ## Deferred beyond 1.x
 

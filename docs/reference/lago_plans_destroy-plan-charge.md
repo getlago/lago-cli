@@ -14,6 +14,7 @@ lago plans destroy-plan-charge <code> <charge_code> [flags]
 
 ```
   lago plans destroy-plan-charge <code> <charge_code> --input @payload.json
+  lago plans destroy-plan-charge <code> <charge_code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

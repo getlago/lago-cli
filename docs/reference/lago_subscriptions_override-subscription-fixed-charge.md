@@ -17,6 +17,7 @@ lago subscriptions override-subscription-fixed-charge <external_id> <fixed_charg
 
 ```
   lago subscriptions override-subscription-fixed-charge <external_id> <fixed_charge_code> --input @payload.json
+  lago subscriptions override-subscription-fixed-charge <external_id> <fixed_charge_code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

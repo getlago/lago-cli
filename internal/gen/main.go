@@ -746,28 +746,35 @@ func retryableOperation(operation map[string]any, method string) bool {
 
 // mutationOperation reports whether a command's default table output is the terse
 // identifier block rather than the full attribute dump. See DECISIONS.md: an operator
-// running a create wants the ID they just minted, not 40 attributes they already sent.
+// running a write wants the identifier and the new state, not 40 attributes.
 //
-// The rule is mechanical so it is predictable from the command name: a POST, PUT or
-// PATCH whose action is `create`/`update` or begins with `create-`/`update-`. It
-// deliberately excludes read-shaped mutations (`invoices preview`, `credit-notes
-// estimate`, `events estimate-fees`), state transitions whose interesting output is
-// the new state (`invoices finalize`, `invoices void`, `orders execute`), and bulk
-// ingestion whose output is a summary (`events send`, `events batch`). Widening the
-// set is a one-line change here, never 30 hand edits at the call sites.
+// The rule is mechanical so it is predictable from the command name: every write (POST,
+// PUT, PATCH, DELETE) is terse except the read-shaped ones whose body is the answer
+// (`invoices preview`, `credit-notes estimate`, `events estimate-fees`, downloads and
+// payment URLs, `billable-metrics evaluate-expression`) and bulk ingestion whose output
+// is a summary (`events send`, `events batch`). State transitions (`invoices finalize`,
+// `subscriptions terminate`, `coupons apply`) are terse: `status` is an identifier key,
+// so the new state is exactly what the block prints. Widening or narrowing the set is a
+// change here, never 100 hand edits at the call sites.
 func mutationOperation(method, lowerAction string) bool {
 	switch method {
-	case http.MethodPost, http.MethodPut, http.MethodPatch:
-	default:
+	case http.MethodGet, http.MethodHead, http.MethodOptions:
 		return false
 	}
-	for _, prefix := range []string{"create", "update"} {
-		if lowerAction == prefix || strings.HasPrefix(lowerAction, prefix+"-") {
-			return true
+	for _, excluded := range readShapedActions {
+		if lowerAction == excluded {
+			return false
 		}
 	}
-	return false
+	if strings.HasSuffix(lowerAction, "-url") || strings.HasPrefix(lowerAction, "estimate") || strings.HasSuffix(lowerAction, "-estimate-instant-fees") {
+		return false
+	}
+	return true
 }
+
+// readShapedActions are writes whose response is the answer, not a resource: the caller
+// asked a question, and reducing the reply to identifiers would delete it.
+var readShapedActions = []string{"preview", "estimate", "estimate-fees", "download", "evaluate-expression", "send", "batch"}
 
 func boolExtension(operation map[string]any, key string) (bool, bool) {
 	value, exists := operation[key]

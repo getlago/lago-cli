@@ -246,6 +246,16 @@ func (a *App) render(renderer output.Renderer, value any, response *transport.Re
 	return nil
 }
 
+// renderPairs prints a hand-ordered identity block and the timing line, for built-in
+// commands whose table output is not a resource dump.
+func (a *App) renderPairs(pairs []output.Pair, response *transport.Response) error {
+	if err := output.WritePairs(a.Out, pairs); err != nil {
+		return err
+	}
+	a.reportTiming(response)
+	return nil
+}
+
 // reportTiming prints the `timing:` line for one request when --timing is set. It is
 // called once per request, from render on success and from Request on failure.
 func (a *App) reportTiming(response *transport.Response) {

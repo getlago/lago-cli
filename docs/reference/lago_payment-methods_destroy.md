@@ -14,6 +14,7 @@ lago payment-methods destroy <lago_id> <external_customer_id> [flags]
 
 ```
   lago payment-methods destroy <lago_id> <external_customer_id>
+  lago payment-methods destroy <lago_id> <external_customer_id> --output json  # full resource
 ```
 
 ### Options

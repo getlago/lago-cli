@@ -20,6 +20,7 @@ import (
 	"github.com/getlago/lago-cli/internal/config"
 	"github.com/getlago/lago-cli/internal/diagnostics"
 	"github.com/getlago/lago-cli/internal/generated"
+	"github.com/getlago/lago-cli/internal/output"
 	"github.com/getlago/lago-cli/internal/transport"
 	cliupdate "github.com/getlago/lago-cli/internal/update"
 	"github.com/spf13/cobra"
@@ -291,15 +292,34 @@ func newWhoamiCommand(app *App) *cobra.Command {
 			// the profile holds. They differ whenever a base URL was configured without
 			// the /api/v1 prefix, and an operator debugging "which environment am I on"
 			// needs the one the client used, not the one they typed.
+			organization := unwrapNamedObject(value, "organization")
+			if organization == nil {
+				organization, _ = value.(map[string]any)
+			}
 			result := map[string]any{
 				"profile":          app.resolved.Name,
 				"region":           app.resolved.Profile.Region,
 				"mode":             app.resolved.Profile.Mode,
 				"api_url":          app.resolved.Profile.APIURL,
 				"resolved_api_url": app.ResolvedAPIURL(),
-				"organization":     value,
+				"organization":     organization,
 			}
-			return app.Render(result, response)
+			if app.outputMode() != output.Table && app.outputMode() != "" || app.query != "" {
+				return app.Render(result, response)
+			}
+			// QA C-3: the default answer to "who am I" is a short identity block, in
+			// reading order, with the host requests actually go to. The full object is
+			// one flag away: --output json, or `lago organizations get`.
+			pairs := []output.Pair{
+				{Key: "name", Value: scalarString(organization["name"])},
+				{Key: "lago_id", Value: scalarString(organization["lago_id"])},
+				{Key: "default_currency", Value: scalarString(organization["default_currency"])},
+				{Key: "timezone", Value: scalarString(organization["timezone"])},
+				{Key: "profile", Value: app.resolved.Name},
+				{Key: "mode", Value: app.resolved.Profile.Mode},
+				{Key: "resolved_api_url", Value: app.ResolvedAPIURL()},
+			}
+			return app.renderPairs(pairs, response)
 		},
 	}
 }
@@ -475,6 +495,16 @@ func prompt(reader *bufio.Reader, out io.Writer, label, defaultValue string) (st
 		return "", apperr.Wrap(apperr.ExitGeneral, "read interactive input", err)
 	}
 	return firstNonBlank(strings.TrimSpace(value), defaultValue), nil
+}
+
+// scalarString prints a JSON scalar for an identity block; nested values print nothing.
+func scalarString(value any) string {
+	switch typed := value.(type) {
+	case nil, map[string]any, []any:
+		return ""
+	default:
+		return fmt.Sprint(typed)
+	}
 }
 
 func isInteractive(app *App) bool {

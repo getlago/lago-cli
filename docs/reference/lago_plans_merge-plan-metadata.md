@@ -15,6 +15,7 @@ lago plans merge-plan-metadata <code> [flags]
 
 ```
   lago plans merge-plan-metadata <code> --input @payload.json
+  lago plans merge-plan-metadata <code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

@@ -15,6 +15,7 @@ lago wallets replace-customer-wallet-metadata <external_customer_id> <wallet_cod
 
 ```
   lago wallets replace-customer-wallet-metadata <external_customer_id> <wallet_code> --input @payload.json
+  lago wallets replace-customer-wallet-metadata <external_customer_id> <wallet_code> --input @payload.json --output json  # full resource
 ```
 
 ### Options

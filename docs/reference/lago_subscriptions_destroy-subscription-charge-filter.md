@@ -14,6 +14,7 @@ lago subscriptions destroy-subscription-charge-filter <external_id> <charge_code
 
 ```
   lago subscriptions destroy-subscription-charge-filter <external_id> <charge_code> <filter_id>
+  lago subscriptions destroy-subscription-charge-filter <external_id> <charge_code> <filter_id> --output json  # full resource
 ```
 
 ### Options
