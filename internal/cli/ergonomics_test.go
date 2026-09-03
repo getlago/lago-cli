@@ -37,6 +37,60 @@ func TestNormalizeEventTimestamp(t *testing.T) {
 	}
 }
 
+// QA run 3 and run 4: a millisecond epoch passed straight through and would have been
+// stored 3000 years out; `2026`, `+17`, `-5`, `Inf`, `NaN` and hex all parsed as
+// numbers. Digits only, inside a plausible window, everything else is refused with a
+// message that names the likely mistake.
+func TestQA_Timestamp_RejectsImplausibleNumbers(t *testing.T) {
+	t.Parallel()
+	for _, tc := range []struct{ in, mention string }{
+		{"1788273288000", "millisecond"},
+		{"1788273288000.5", "millisecond"},
+		{"100000000000", "millisecond"},
+		{"2026", "too small"},
+		{"999999999", "too small"},
+		{"0", "too small"},
+		{"+1788273288", "neither"},
+		{"-5", "neither"},
+		{"Inf", "neither"},
+		{"NaN", "neither"},
+		{"0x1p3", "neither"},
+		{"1_000_000_000", "neither"},
+	} {
+		got, err := normalizeEventTimestamp(tc.in)
+		if err == nil {
+			t.Errorf("%q was accepted as %q", tc.in, got)
+			continue
+		}
+		if !strings.Contains(err.Error(), tc.mention) {
+			t.Errorf("%q: error %q does not mention %q", tc.in, err, tc.mention)
+		}
+	}
+	for _, ok := range []string{"1000000000", "1788273288", "1788273288.5", "99999999999"} {
+		if _, err := normalizeEventTimestamp(ok); err != nil {
+			t.Errorf("%q was refused: %v", ok, err)
+		}
+	}
+}
+
+// The same window applies when the timestamp arrives as a JSON number, through
+// --input or an NDJSON line, where no string normalization runs.
+func TestQA_Timestamp_JSONNumbersAreCheckedToo(t *testing.T) {
+	t.Parallel()
+	if _, err := normalizeEventBodyTimestamp([]byte(`{"event":{"code":"c","external_subscription_id":"s","timestamp":1788273288000}}`)); err == nil {
+		t.Error("--input body with a millisecond epoch was accepted")
+	}
+	if _, err := normalizeEventBodyTimestamp([]byte(`{"event":{"code":"c","external_subscription_id":"s","timestamp":1788273288}}`)); err != nil {
+		t.Errorf("--input body with plausible seconds was refused: %v", err)
+	}
+	if _, _, _, err := prepareEvent([]byte(`{"code":"c","external_subscription_id":"s","transaction_id":"t","timestamp":1788273288000}`)); err == nil {
+		t.Error("NDJSON line with a millisecond epoch was accepted")
+	}
+	if _, _, _, err := prepareEvent([]byte(`{"code":"c","external_subscription_id":"s","transaction_id":"t","timestamp":1788273288}`)); err != nil {
+		t.Errorf("NDJSON line with plausible seconds was refused: %v", err)
+	}
+}
+
 // An RFC 3339 --timestamp reaches the API as Unix seconds, on the flag path, the --input
 // path, and the --file stream alike. Unix seconds pass through untouched.
 func TestEventsTimestampAcceptsRFC3339(t *testing.T) {

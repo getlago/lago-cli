@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -177,6 +178,8 @@ func prepareEvent(raw []byte) (body []byte, retryable bool, retryUnsafe bool, er
 			return nil, false, false, fmt.Errorf("timestamp: %w", err)
 		}
 		event["timestamp"] = normalized
+	} else if err := checkNumericEventTimestamp(event["timestamp"]); err != nil {
+		return nil, false, false, fmt.Errorf("timestamp: %w", err)
 	}
 	if transactionID, _ := event["transaction_id"].(string); transactionID == "" {
 		event["transaction_id"] = uuid.NewString()
@@ -201,16 +204,30 @@ func isEventTimestamp(wrapper string, path []string) bool {
 	return wrapper == "event" && len(path) == 1 && path[0] == "timestamp"
 }
 
-// normalizeEventTimestamp accepts Unix seconds (with optional decimals) unchanged, and
-// converts an RFC 3339 instant to Unix seconds, keeping sub-second precision as decimals.
-// Lago stores the timestamp in UTC; a zone offset in the input is honoured, not dropped.
+// Bounds for a plausible Unix-seconds event timestamp. Below the floor (2001-09-09) a
+// number is almost certainly not an epoch: `2026` typed as a year is 33 minutes after
+// 1970 and would be billed nowhere. At or above the ceiling (year 5138) the value is a
+// millisecond epoch pasted from JavaScript or a database, and sending it unchanged
+// silently stores the event 3000 years out, outside every billing period.
+const (
+	minEventTimestampSeconds = 1_000_000_000
+	maxEventTimestampSeconds = 100_000_000_000
+)
+
+var unixSecondsPattern = regexp.MustCompile(`^[0-9]+(\.[0-9]+)?$`)
+
+// normalizeEventTimestamp accepts plausible Unix seconds (with optional decimals)
+// unchanged, and converts an RFC 3339 instant to Unix seconds, keeping sub-second
+// precision as decimals. Lago stores the timestamp in UTC; a zone offset in the input
+// is honoured, not dropped. Numbers are digits only: signs, exponents, hex and Inf/NaN
+// are not timestamps even though strconv would parse them.
 func normalizeEventTimestamp(raw string) (string, error) {
 	trimmed := strings.TrimSpace(raw)
 	if trimmed == "" {
 		return raw, nil
 	}
-	if _, err := strconv.ParseFloat(trimmed, 64); err == nil && !strings.ContainsAny(trimmed, "eE") {
-		return trimmed, nil
+	if unixSecondsPattern.MatchString(trimmed) {
+		return checkUnixSeconds(trimmed)
 	}
 	instant, err := time.Parse(time.RFC3339Nano, trimmed)
 	if err != nil {
@@ -222,6 +239,33 @@ func normalizeEventTimestamp(raw string) (string, error) {
 		return seconds + "." + fraction, nil
 	}
 	return seconds, nil
+}
+
+// checkUnixSeconds accepts a digits-only value when it sits inside the plausible
+// window, and otherwise says what the number most likely is.
+func checkUnixSeconds(digits string) (string, error) {
+	seconds, err := strconv.ParseFloat(digits, 64)
+	if err != nil {
+		return "", fmt.Errorf("%q is not a Unix timestamp", digits)
+	}
+	switch {
+	case seconds >= maxEventTimestampSeconds:
+		return "", fmt.Errorf("%s looks like a millisecond epoch (year %d as seconds); divide by 1000 or pass an RFC 3339 instant", digits, time.Unix(int64(seconds), 0).UTC().Year())
+	case seconds < minEventTimestampSeconds:
+		return "", fmt.Errorf("%s is too small for Unix seconds (%s); pass Unix seconds since 1970 or an RFC 3339 instant", digits, time.Unix(int64(seconds), 0).UTC().Format(time.RFC3339))
+	}
+	return digits, nil
+}
+
+// checkNumericEventTimestamp applies the same window to a timestamp that arrived as a
+// JSON number in an --input body or an NDJSON line, where no string normalization runs.
+func checkNumericEventTimestamp(value any) error {
+	number, ok := value.(json.Number)
+	if !ok {
+		return nil
+	}
+	_, err := checkUnixSeconds(number.String())
+	return err
 }
 
 // normalizeEventBodyTimestamp applies normalizeEventTimestamp to a complete --input
@@ -242,6 +286,9 @@ func normalizeEventBodyTimestamp(body []byte) ([]byte, error) {
 	}
 	timestamp, isText := event["timestamp"].(string)
 	if !isText {
+		if err := checkNumericEventTimestamp(event["timestamp"]); err != nil {
+			return nil, apperr.New(apperr.ExitUsage, "invalid event timestamp: "+err.Error(), "Pass Unix seconds (1788338088, optionally with decimals) or an RFC 3339 instant (2026-09-02T09:30:00Z).")
+		}
 		return body, nil
 	}
 	normalized, err := normalizeEventTimestamp(timestamp)
