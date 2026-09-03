@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/getlago/lago-cli/internal/apperr"
+	"github.com/getlago/lago-cli/internal/output"
 )
 
 // writeTextError prints an error for a human in default (table) output mode.
@@ -22,24 +23,26 @@ import (
 func writeTextError(errOut io.Writer, err error) {
 	var appErr *apperr.Error
 	if !errors.As(err, &appErr) {
-		fmt.Fprintf(errOut, "Error: %s\n", err)
+		fmt.Fprintf(errOut, "Error: %s\n", output.Sanitize(err.Error()))
 		return
 	}
-	fmt.Fprintf(errOut, "Error: %s\n", appErr.Message)
+	// API-controlled text reaches the terminal here, so it takes the same escaping as a
+	// table cell (QA S-22). See output.Sanitize.
+	fmt.Fprintf(errOut, "Error: %s\n", output.Sanitize(appErr.Message))
 	for _, line := range formatErrorDetails(appErr.Details) {
-		fmt.Fprintf(errOut, "  %s\n", line)
+		fmt.Fprintf(errOut, "  %s\n", output.Sanitize(line))
 	}
 	if appErr.Status > 0 {
 		fmt.Fprintf(errOut, "HTTP status: %d\n", appErr.Status)
 	}
 	if appErr.Code != "" {
-		fmt.Fprintf(errOut, "Lago code: %s\n", appErr.Code)
+		fmt.Fprintf(errOut, "Lago code: %s\n", output.Sanitize(appErr.Code))
 	}
 	if appErr.RequestID != "" {
-		fmt.Fprintf(errOut, "Request ID: %s\n", appErr.RequestID)
+		fmt.Fprintf(errOut, "Request ID: %s\n", output.Sanitize(appErr.RequestID))
 	}
 	if appErr.Suggestion != "" {
-		fmt.Fprintf(errOut, "Suggestion: %s\n", appErr.Suggestion)
+		fmt.Fprintf(errOut, "Suggestion: %s\n", output.Sanitize(appErr.Suggestion))
 	}
 }
 

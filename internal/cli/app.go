@@ -222,9 +222,8 @@ func (a *App) Render(value any, response *transport.Response) error {
 
 // RenderMutation renders a create or update response through the identifier renderer.
 //
-// A --dry-run response is the request envelope, not a resource, so it always renders
-// in full: reducing `{method, url, headers, body}` to an identifier block would print
-// nothing useful and hide the payload the flag exists to show.
+// A --dry-run response is the request envelope, not a resource, so it never goes
+// through the identifier reduction; see render for how the envelope is printed.
 func (a *App) RenderMutation(value any, response *transport.Response) error {
 	if response != nil && response.DryRunData != nil {
 		return a.render(a.Renderer(), value, response)
@@ -233,6 +232,13 @@ func (a *App) RenderMutation(value any, response *transport.Response) error {
 }
 
 func (a *App) render(renderer output.Renderer, value any, response *transport.Response) error {
+	// A --dry-run envelope is `{method, url, headers, body}` with the payload nested
+	// under body. Table cells summarise nested values, which would reduce the payload
+	// the flag exists to show to `{2 fields}`, so the envelope prints as JSON instead:
+	// it is a request, not a resource, and JSON is the form it will be sent in.
+	if response != nil && response.DryRunData != nil && (renderer.Mode == "" || renderer.Mode == output.Table) {
+		renderer.Mode = output.JSON
+	}
 	if err := renderer.Render(value); err != nil {
 		return err
 	}

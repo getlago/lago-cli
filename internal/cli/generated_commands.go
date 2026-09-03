@@ -370,7 +370,9 @@ func runAllPages(cmd *cobra.Command, app *App, operation generated.Operation, pa
 		if err != nil {
 			return err
 		}
-		if err := app.Render(value, response); err != nil {
+		renderer := app.Renderer()
+		renderer.AllPages = true
+		if err := app.render(renderer, value, response); err != nil {
 			return err
 		}
 		more, err := hasNextPage(value, page)

@@ -166,7 +166,7 @@ TRANSACTION_ID  0f3c1d2e-4a5b-6c7d-8e9f-0a1b2c3d4e5f
 
 $ lago invoices preview --input '{"customer":{"external_id":"quickstart_customer"},"subscriptions":{"external_ids":["quickstart_subscription"]}}'
 CURRENCY            USD
-FEES                [{"amount_cents":100,"units":"1.0"}]
+FEES                1 item
 ISSUING_DATE        2026-10-01
 TOTAL_AMOUNT_CENTS  100
 ```
@@ -190,7 +190,26 @@ $ lago customers create --external-id quickstart_customer --name "Quickstart Cus
 }
 ```
 
-Reads are unchanged: `lago customers get` and `lago customers list` print every column.
+Reads print in full. `lago customers get` prints every field as key/value rows, with nested lists and objects summarised (`CHARGES  2 items: requests, storage`) rather than dumped as JSON. `--output json` is the structured form.
+
+### List columns
+
+`list` commands print one row per item. Four resources have a fixed, documented column set; every other resource picks identifiers, status, money amounts with their currency, and dates first, across all rows on the page, up to eight columns.
+
+```console
+$ lago customers list
+LAGO_ID  EXTERNAL_ID  NAME  EMAIL  CURRENCY  CREATED_AT
+$ lago invoices list
+LAGO_ID  NUMBER  STATUS  PAYMENT_STATUS  CURRENCY  TOTAL_AMOUNT_CENTS  ISSUING_DATE
+$ lago subscriptions list
+LAGO_ID  EXTERNAL_ID  PLAN_CODE  STATUS  STARTED_AT  ENDING_AT
+$ lago plans list
+LAGO_ID  CODE  NAME  INTERVAL  AMOUNT_CENTS  AMOUNT_CURRENCY
+```
+
+A column absent from every row on the page is dropped. When the page is one of several, stderr says so: `page 1 of 3 (250 total); use --page N or --all`. The pagination `meta` object stays in `--output json`.
+
+Table cells escape terminal control characters. A name containing an ANSI sequence or a newline prints as `\x1b[31m...` and `\n`, so a hostile value cannot recolour your terminal or inject a fake row. JSON output escapes on its own.
 
 `events send` generates a transaction ID when one is omitted. When you pass your own `--transaction-id`, pass `--timestamp` (unix seconds) with it and resend both unchanged on retry. Lago deduplicates on `transaction_id`, but on the ClickHouse event store the timestamp is part of the key and a missing one defaults to the time of reception, so a retry without a timestamp is a second billable event. The CLI warns on stderr when a command is not safe to retry for that reason.
 
@@ -203,7 +222,7 @@ $ cat events.ndjson | lago events send --file -
 
 ## Querying responses with `--query`
 
-`--query` takes a [JMESPath](https://jmespath.org) expression. The trap is that **Lago wraps every response**, and the wrapper is part of the path. A query written against the unwrapped resource matches nothing and returns `null`.
+`--query` takes a [JMESPath](https://jmespath.org) expression. The trap is that **Lago wraps every response**, and the wrapper is part of the path. A query written against the unwrapped resource matches nothing and returns `null`. Table mode unwraps `{"customers": [...], "meta": {...}}` for display; `--query` and `--output json` see the envelope as sent.
 
 | Endpoint | Response shape | Query starts with |
 | --- | --- | --- |
