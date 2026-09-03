@@ -290,13 +290,88 @@ func TestDescribeNotFoundNamesEveryIdentifier(t *testing.T) {
 	} {
 		t.Run(testCase.name, func(t *testing.T) {
 			t.Parallel()
-			got := describeNotFound(testCase.subjects)
+			got, ok := describeNotFound("", testCase.subjects)
+			if !ok {
+				t.Fatalf("describeNotFound(%+v) declined to describe", testCase.subjects)
+			}
 			for _, want := range testCase.want {
 				if !strings.Contains(got, want) {
 					t.Errorf("describeNotFound(%+v) = %q, missing %q", testCase.subjects, got, want)
 				}
 			}
 		})
+	}
+}
+
+// QA run 3: `invoices create` with an unknown add-on code answered 404 with the Lago code
+// add_on_not_found, and the CLI said `no customer "x" exists` because the customer was
+// the only identifier it knew about. The Lago code names what is missing; the subjects
+// only supply the value when they agree with it.
+func TestQA_E5_NotFoundNamesTheResourceFromTheLagoCode(t *testing.T) {
+	t.Parallel()
+	for _, testCase := range []struct {
+		name     string
+		code     string
+		subjects []Subject
+		want     string
+		reject   []string
+	}{
+		{
+			name:     "code names a resource no subject carries",
+			code:     "add_on_not_found",
+			subjects: []Subject{{Kind: "customer", Value: "qa_cust"}},
+			want:     "no matching add on exists in this organization",
+			reject:   []string{"customer", "qa_cust"},
+		},
+		{
+			name:     "code names one of several subjects",
+			code:     "plan_not_found",
+			subjects: []Subject{{Kind: "customer", Value: "cus_1"}, {Kind: "plan", Value: "quickstart"}},
+			want:     `no plan "quickstart" exists in this organization`,
+			reject:   []string{"cus_1"},
+		},
+		{
+			name:     "multi-word kinds match snake_case codes",
+			code:     "billable_metric_not_found",
+			subjects: []Subject{{Kind: "billable metric", Value: "requests"}},
+			want:     `no billable metric "requests" exists in this organization`,
+		},
+		{
+			name:     "no code falls back to the subjects",
+			code:     "",
+			subjects: []Subject{{Kind: "subscription", Value: "sub_1"}},
+			want:     `no subscription "sub_1" exists in this organization`,
+		},
+		{
+			name:     "a code of another shape falls back to the subjects",
+			code:     "not_found",
+			subjects: []Subject{{Kind: "customer", Value: "cus_1"}},
+			want:     `no customer "cus_1" exists in this organization`,
+		},
+	} {
+		t.Run(testCase.name, func(t *testing.T) {
+			t.Parallel()
+			got, ok := describeNotFound(testCase.code, testCase.subjects)
+			if !ok {
+				t.Fatalf("describeNotFound declined to describe %q %+v", testCase.code, testCase.subjects)
+			}
+			if got != testCase.want {
+				t.Errorf("describeNotFound(%q, %+v) = %q, want %q", testCase.code, testCase.subjects, got, testCase.want)
+			}
+			for _, bad := range testCase.reject {
+				if strings.Contains(got, bad) {
+					t.Errorf("message %q names %q, which the Lago code rules out", got, bad)
+				}
+			}
+		})
+	}
+	// A 404 with a resource code and no subjects at all is still described.
+	if got, ok := describeNotFound("wallet_not_found", nil); !ok || got != "no matching wallet exists in this organization" {
+		t.Errorf("code without subjects = %q, %v", got, ok)
+	}
+	// A 404 with neither is left to the API's own message.
+	if _, ok := describeNotFound("", nil); ok {
+		t.Error("nothing to say, yet describeNotFound described")
 	}
 }
 
