@@ -499,6 +499,11 @@ func classify(status int) (int, string) {
 		return apperr.ExitAuth, "Run `lago init` or check LAGO_API_KEY and its permissions."
 	case status == http.StatusNotFound:
 		return apperr.ExitNotFound, "Check the resource identifier and active profile."
+	case status == http.StatusMethodNotAllowed:
+		// Lago answers 405 when the resource's state forbids the operation (voiding an
+		// invoice that is already voided, reading usage on a subscription that is not
+		// active), not when the verb is wrong. Saying so beats "check the command flags".
+		return apperr.ExitValidation, "The resource is not in a state that allows this operation (for example voiding an already voided invoice). Check its status and the Lago code above."
 	case status == http.StatusTooManyRequests:
 		return apperr.ExitRateLimit, "Wait for Retry-After or retry with a lower request rate."
 	case status >= 500:

@@ -19,7 +19,7 @@ func TestColumnAllowlistOrdersKnownResources(t *testing.T) {
 	t.Parallel()
 	customer := map[string]any{"created_at": "2026-01-01", "currency": "USD", "email": "ops@acme.test", "name": "Acme", "external_id": "acme", "lago_id": "cus_1", "slug": "ACM-1", "timezone": "UTC"}
 	invoice := map[string]any{"lago_id": "inv_1", "number": "LAG-1", "status": "finalized", "payment_status": "pending", "currency": "EUR", "total_amount_cents": json.Number("1200"), "issuing_date": "2026-01-01", "fees_amount_cents": json.Number("1000")}
-	subscription := map[string]any{"lago_id": "sub_1", "external_id": "s1", "plan_code": "pro", "status": "active", "started_at": "2026-01-01", "ending_at": nil, "billing_time": "calendar"}
+	subscription := map[string]any{"lago_id": "sub_1", "external_id": "s1", "plan_code": "pro", "status": "active", "started_at": "2026-01-01", "ending_at": "2027-01-01", "billing_time": "calendar"}
 	plan := map[string]any{"lago_id": "pl_1", "code": "pro", "name": "Pro", "interval": "monthly", "amount_cents": json.Number("4900"), "amount_currency": "USD", "trial_period": json.Number("0")}
 	for _, tc := range []struct {
 		key  string
@@ -96,5 +96,34 @@ func TestResourceColumnsAccessorReturnsACopy(t *testing.T) {
 	copied["customers"][0] = "mutated"
 	if resourceColumns["customers"][0] != "lago_id" {
 		t.Fatal("ResourceColumns exposed the internal slice")
+	}
+}
+
+// QA run 4, events batch: the async events endpoint answers with lago_id, created_at and
+// the customer and subscription IDs all null, and the table printed every one of them
+// as an empty column. A column is printed only when some row on the page has a value in
+// it, for declared and heuristic columns alike.
+func TestQA_M4_ColumnsBlankOnEveryRowAreDropped(t *testing.T) {
+	t.Parallel()
+	events := []any{
+		map[string]any{"lago_id": nil, "code": "requests", "created_at": nil, "external_subscription_id": "sub_1", "lago_customer_id": nil, "timestamp": "2026-09-03T09:00:00Z", "transaction_id": "t1"},
+		map[string]any{"lago_id": nil, "code": "requests", "created_at": "", "external_subscription_id": "sub_2", "lago_customer_id": nil, "timestamp": "2026-09-03T09:00:01Z", "transaction_id": "t2"},
+	}
+	got := headerLine(t, map[string]any{"events": events})
+	for _, blank := range []string{"LAGO_ID", "CREATED_AT", "LAGO_CUSTOMER_ID"} {
+		if strings.Contains(got, blank) {
+			t.Errorf("header %q keeps %s although every row is blank", got, blank)
+		}
+	}
+	for _, present := range []string{"CODE", "EXTERNAL_SUBSCRIPTION_ID", "TIMESTAMP", "TRANSACTION_ID"} {
+		if !strings.Contains(got, present) {
+			t.Errorf("header %q lost %s", got, present)
+		}
+	}
+	// A declared column that is null on this page is dropped too, and comes back when a
+	// row carries it.
+	blankEnding := map[string]any{"subscriptions": []any{map[string]any{"lago_id": "sub_1", "external_id": "s1", "plan_code": "pro", "status": "active", "started_at": "2026-01-01", "ending_at": nil}}}
+	if got := headerLine(t, blankEnding); strings.Contains(got, "ENDING_AT") {
+		t.Errorf("declared column ENDING_AT printed while null on every row: %q", got)
 	}
 }
