@@ -22,7 +22,7 @@ lago taxes update <code> [flags]
 ```
       --applied-to-organization string   **Deprecated.** This field will be removed in a future version. When set to true, it applies the tax to the organization's default billing entity. To apply or remove a tax from any billing entity (including the default one), please use the 'PUT /billing_entities/:code' endpoint instead.
       --code string                      Unique code used to identify the tax associated with the API request.
-      --description string               Internal description of the taxe
+      --description string               Internal description of the tax
   -h, --help                             help for update
       --input string                     Complete JSON request body or @file.json
       --name string                      Name of the tax.

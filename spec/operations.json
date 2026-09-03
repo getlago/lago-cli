@@ -5809,7 +5809,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter credit notes by credit status. Possible values are `available`, `consumed`  or `voided`.",
+          "description": "Filter credit notes by credit status. Possible values are `available`, `consumed` or `voided`.",
           "enum": [
             "available",
             "consumed",
@@ -5822,7 +5822,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter credit notes by refund status. Possible values are `pending`, `succeeded`  or `failed`.",
+          "description": "Filter credit notes by refund status. Possible values are `pending`, `succeeded` or `failed`.",
           "enum": [
             "pending",
             "succeeded",
@@ -5860,6 +5860,14 @@
           "type": "integer",
           "required": false,
           "description": "Filter credit notes up to a specific amount. This parameter must be defined in cents to ensure consistent handling for all currency types."
+        },
+        {
+          "name": "types[]",
+          "flag": "types",
+          "in": "query",
+          "type": "array",
+          "required": false,
+          "description": "Filter credit notes by the kind of amount they carry. `credit` matches credit notes with a credited amount, `refund` those with a refunded amount and `offset` those with an amount deducted from the invoice balance. A credit note can match several types."
         },
         {
           "name": "self_billed",
@@ -8796,15 +8804,13 @@
           },
           {
             "path": [
-              "properties",
-              "target_wallet_code"
+              "properties"
             ],
-            "flag": "properties-target-wallet-code",
-            "type": "string",
+            "flag": "properties",
+            "type": "object",
             "required": false,
-            "nullable": true,
-            "complex": false,
-            "description": "The code of the wallet targeted by this event for prepaid credits deduction.\nWhen provided, credits are drawn from this specific wallet instead of following the standard wallet selection logic.\nIf the code does not match an existing wallet, no credits will be applied for the event.\nThis field is only taken into account when the targeted charge has `accepts_target_wallet` set to `true`.\nThis field requires a premium integration."
+            "complex": true,
+            "description": "This field represents additional properties associated with the event, which are utilized in the calculation of the final fee. This object becomes mandatory when the targeted billable metric employs a `sum_agg`, `max_agg`, or `unique_count_agg` aggregation method. However, when using a simple `count_agg`, this object is not required. Any property of the targeted billable metric can be sent here, in addition to the documented fields below."
           }
         ],
         "required": true
@@ -9352,7 +9358,7 @@
       "method": "GET",
       "path": "/fees",
       "summary": "List all fees",
-      "description": "This endpoint is used for retrieving all fees that has been issued.",
+      "description": "This endpoint is used for retrieving all fees that have been issued.",
       "docs_url": "https://getlago.com/docs/api-reference/invoices/invoice-object#fee-object",
       "parameters": [
         {
@@ -9401,7 +9407,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter results by fee\"s currency.",
+          "description": "Filter results by the fee's currency.",
           "enum": [
             "AED",
             "AFN",
@@ -9549,9 +9555,10 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "The fee type. Possible values are `add-on`, `charge`, `credit`, `subscription` or \"commitment\".",
+          "description": "The fee type. Possible values are `add_on`, `charge`, `fixed_charge`, `credit`, `subscription` or `commitment`.",
           "enum": [
             "charge",
+            "fixed_charge",
             "add_on",
             "subscription",
             "credit",
@@ -9572,7 +9579,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Indicates the payment status of the fee. It represents the current status of the payment associated with the fee. The possible values for this field are `pending`, `succeeded`, `failed` and refunded`.",
+          "description": "Indicates the payment status of the fee. It represents the current status of the payment associated with the fee. The possible values for this field are `pending`, `succeeded`, `failed` and `refunded`.",
           "enum": [
             "pending",
             "succeeded",
@@ -9586,7 +9593,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter results created after creation date and time in UTC."
+          "description": "Filter results created at or after this date and time in UTC."
         },
         {
           "name": "created_at_to",
@@ -9594,7 +9601,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter results created before creation date and time in UTC."
+          "description": "Filter results created at or before this date and time in UTC."
         },
         {
           "name": "succeeded_at_from",
@@ -9602,7 +9609,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter results with payment success after creation date and time in UTC."
+          "description": "Filter results with a payment success at or after this date and time in UTC."
         },
         {
           "name": "succeeded_at_to",
@@ -9610,7 +9617,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter results with payment success after creation date and time in UTC."
+          "description": "Filter results with a payment success at or before this date and time in UTC."
         },
         {
           "name": "failed_at_from",
@@ -9618,7 +9625,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter results with payment failure after creation date and time in UTC."
+          "description": "Filter results with a payment failure at or after this date and time in UTC."
         },
         {
           "name": "failed_at_to",
@@ -9626,7 +9633,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter results with payment failure after creation date and time in UTC."
+          "description": "Filter results with a payment failure at or before this date and time in UTC."
         },
         {
           "name": "refunded_at_from",
@@ -9634,7 +9641,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter results with payment refund after creation date and time in UTC."
+          "description": "Filter results with a payment refund at or after this date and time in UTC."
         },
         {
           "name": "refunded_at_to",
@@ -9642,7 +9649,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter results with payment refund after creation date and time in UTC."
+          "description": "Filter results with a payment refund at or before this date and time in UTC."
         }
       ],
       "idempotent": true,
@@ -9945,6 +9952,17 @@
             "nullable": true,
             "complex": false,
             "description": "The purchase order number to associate with the invoice."
+          },
+          {
+            "path": [
+              "skip_psp"
+            ],
+            "flag": "skip-psp",
+            "type": "boolean",
+            "required": false,
+            "nullable": true,
+            "complex": false,
+            "description": "If true, the invoice will be created but not sent to the payment provider."
           }
         ],
         "required": true
@@ -10163,6 +10181,22 @@
           "type": "boolean",
           "required": false,
           "description": "Filter invoices with a payment dispute lost. Possible values are `true` or `false`."
+        },
+        {
+          "name": "partially_paid",
+          "flag": "partially-paid",
+          "in": "query",
+          "type": "boolean",
+          "required": false,
+          "description": "Filter invoices that are partially paid. When `true`, only invoices with a non-zero amount paid that is below the total due are returned. When `false`, those invoices are excluded."
+        },
+        {
+          "name": "settlements[]",
+          "flag": "settlements",
+          "in": "query",
+          "type": "array",
+          "required": false,
+          "description": "Filter invoices settled by at least one of the given settlement types. `payment` matches invoices settled by a payment, `credit_note` matches invoices settled by a credit note."
         },
         {
           "name": "invoice_type",
@@ -19697,7 +19731,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "Internal description of the taxe"
+            "description": "Internal description of the tax"
           },
           {
             "path": [
@@ -19858,7 +19892,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "Internal description of the taxe"
+            "description": "Internal description of the tax"
           },
           {
             "path": [
@@ -22505,6 +22539,6 @@
       "mutation": false
     }
   ],
-  "spec_sha256": "852e7331acfc080d1af9bda9d1663a50a7fa5b4a2aea22a89fb16787ee75b671",
+  "spec_sha256": "ce82ac3701caa4ab59bb35557a4e592adb0b81ce69fa37549fde391fc241aa1a",
   "spec_version": "1.52.1"
 }

@@ -4,7 +4,7 @@ List all fees
 
 ### Synopsis
 
-This endpoint is used for retrieving all fees that has been issued.
+This endpoint is used for retrieving all fees that have been issued.
 
 ```
 lago fees list [flags]
@@ -21,24 +21,24 @@ lago fees list [flags]
 ```
       --all                               Fetch every page
       --billable-metric-code string       Filter results by the 'code' of the billable metric attached to the fee. Only applies to 'charge' types.
-      --created-at-from string            Filter results created after creation date and time in UTC.
-      --created-at-to string              Filter results created before creation date and time in UTC.
-      --currency string                   Filter results by fee"s currency.; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SZL, THB, TJS, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
+      --created-at-from string            Filter results created at or after this date and time in UTC.
+      --created-at-to string              Filter results created at or before this date and time in UTC.
+      --currency string                   Filter results by the fee's currency.; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SZL, THB, TJS, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
       --event-transaction-id string       Filter results by event transaction ID
       --external-customer-id string       Unique identifier assigned to the customer in your application.
       --external-subscription-id string   External subscription ID
-      --failed-at-from string             Filter results with payment failure after creation date and time in UTC.
-      --failed-at-to string               Filter results with payment failure after creation date and time in UTC.
-      --fee-type string                   The fee type. Possible values are 'add-on', 'charge', 'credit', 'subscription' or "commitment".; one of: charge, add_on, subscription, credit, commitment
+      --failed-at-from string             Filter results with a payment failure at or after this date and time in UTC.
+      --failed-at-to string               Filter results with a payment failure at or before this date and time in UTC.
+      --fee-type string                   The fee type. Possible values are 'add_on', 'charge', 'fixed_charge', 'credit', 'subscription' or 'commitment'.; one of: charge, fixed_charge, add_on, subscription, credit, commitment
   -h, --help                              help for list
       --limit string                      Results per page (1-1000)
       --page string                       Page number.
-      --payment-status string             Indicates the payment status of the fee. It represents the current status of the payment associated with the fee. The possible values for this field are 'pending', 'succeeded', 'failed' and refunded'.; one of: pending, succeeded, failed, refunded
+      --payment-status string             Indicates the payment status of the fee. It represents the current status of the payment associated with the fee. The possible values for this field are 'pending', 'succeeded', 'failed' and 'refunded'.; one of: pending, succeeded, failed, refunded
       --per-page string                   Number of records per page.
-      --refunded-at-from string           Filter results with payment refund after creation date and time in UTC.
-      --refunded-at-to string             Filter results with payment refund after creation date and time in UTC.
-      --succeeded-at-from string          Filter results with payment success after creation date and time in UTC.
-      --succeeded-at-to string            Filter results with payment success after creation date and time in UTC.
+      --refunded-at-from string           Filter results with a payment refund at or after this date and time in UTC.
+      --refunded-at-to string             Filter results with a payment refund at or before this date and time in UTC.
+      --succeeded-at-from string          Filter results with a payment success at or after this date and time in UTC.
+      --succeeded-at-to string            Filter results with a payment success at or before this date and time in UTC.
       --watch                             Poll and re-render when the response changes
       --watch-interval duration           Polling interval used with --watch (default 2s)
 ```

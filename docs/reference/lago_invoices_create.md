@@ -31,6 +31,7 @@ lago invoices create [flags]
       --payment-method-payment-method-id string                      The unique identifier of the payment method (required when using a specific provider payment method).
       --payment-method-payment-method-type string                    The type of payment method to use.; one of: provider, manual
       --purchase-order-number string                                 The purchase order number to associate with the invoice.
+      --skip-psp string                                              If true, the invoice will be created but not sent to the payment provider.
 ```
 
 ### Options inherited from parent commands

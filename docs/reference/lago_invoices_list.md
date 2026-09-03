@@ -32,6 +32,7 @@ lago invoices list [flags]
       --limit string                   Results per page (1-1000)
       --metadata[key] string           Filter invoices by metadata. Replace 'key' with the actual metadata key you want to match, and provide the corresponding value. Providing empty value will search for invoice without given metadata key. For example, 'metadata[color]=blue'.
       --page string                    Page number.
+      --partially-paid string          Filter invoices that are partially paid. When 'true', only invoices with a non-zero amount paid that is below the total due are returned. When 'false', those invoices are excluded.
       --payment-dispute-lost string    Filter invoices with a payment dispute lost. Possible values are 'true' or 'false'.
       --payment-overdue string         Filter invoices by payment_overdue. Possible values are 'true' or 'false'.
       --payment-statuses string        Filter invoices by payment statuses. Possible values are 'pending', 'failed' or 'succeeded'.
@@ -39,6 +40,7 @@ lago invoices list [flags]
       --purchase-order-number string   Filter by the invoice purchase order number. The match is exact but case-insensitive.
       --search-term string             Search invoices by id, number, customer name, customer external_id or customer email.
       --self-billed string             Filter invoices by self billed. Possible values are 'true' or 'false'.
+      --settlements string             Filter invoices settled by at least one of the given settlement types. 'payment' matches invoices settled by a payment, 'credit_note' matches invoices settled by a credit note.
       --statuses string                Filter invoices by statuses. Possible values are 'draft', 'failed', 'finalized', 'pending' and 'voided'.
       --watch                          Poll and re-render when the response changes
       --watch-interval duration        Polling interval used with --watch (default 2s)
