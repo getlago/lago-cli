@@ -473,24 +473,61 @@ func responseError(response *Response, subjects []Subject) error {
 		message = http.StatusText(response.Status)
 	}
 	exitCode, suggestion := classify(response.Status)
-	if response.Status == http.StatusNotFound && len(subjects) > 0 {
-		message = describeNotFound(subjects)
-		suggestion = "Check that each identifier is the right kind for the flag it was passed to: a plan code is not a subscription external ID, and a Lago ID is not an external ID."
+	if response.Status == http.StatusNotFound {
+		if described, ok := describeNotFound(envelope.Code, subjects); ok {
+			message = described
+			suggestion = "Check that each identifier is the right kind for the flag it was passed to: a plan code is not a subscription external ID, and a Lago ID is not an external ID."
+		}
 	}
 	return &apperr.Error{ExitCode: exitCode, Status: response.Status, Code: envelope.Code, Message: message, Details: envelope.Details, RequestID: response.RequestID, Suggestion: suggestion}
 }
 
-// describeNotFound turns the identifiers a request carried into a message naming the
-// resource type and the value, so a 404 never reads as an empty result.
-func describeNotFound(subjects []Subject) string {
+// describeNotFound turns a 404 into a message naming the resource type and, when the
+// request carried it, the value, so a 404 never reads as an empty result.
+//
+// The Lago code is the authority on what was not found: `add_on_not_found` on an
+// `invoices create` means the add-on code in the body, not the customer in the path.
+// QA run 3 hit exactly that, and the old subject-only message blamed the customer.
+// When the code names a resource, the message uses it and picks the matching subject
+// if one exists; a code that names no subject is reported without a value rather than
+// with the wrong one. Without a usable code, the subjects alone describe the request.
+func describeNotFound(code string, subjects []Subject) (string, bool) {
+	resource := notFoundResource(code)
+	if resource != "" {
+		for _, subject := range subjects {
+			if normalizeKind(subject.Kind) == resource {
+				return fmt.Sprintf("no %s %q exists in this organization", subject.Kind, subject.Value), true
+			}
+		}
+		return "no matching " + strings.ReplaceAll(resource, "_", " ") + " exists in this organization", true
+	}
+	if len(subjects) == 0 {
+		return "", false
+	}
 	parts := make([]string, 0, len(subjects))
 	for _, subject := range subjects {
 		parts = append(parts, fmt.Sprintf("%s %q", subject.Kind, subject.Value))
 	}
 	if len(parts) == 1 {
-		return "no " + parts[0] + " exists in this organization"
+		return "no " + parts[0] + " exists in this organization", true
 	}
-	return "not found: " + strings.Join(parts, ", ") + " (one of these does not exist in this organization)"
+	return "not found: " + strings.Join(parts, ", ") + " (one of these does not exist in this organization)", true
+}
+
+// notFoundResource extracts the resource from a Lago `<resource>_not_found` code, or
+// returns "" when the code has another shape.
+func notFoundResource(code string) string {
+	resource, found := strings.CutSuffix(code, "_not_found")
+	if !found || resource == "" {
+		return ""
+	}
+	return resource
+}
+
+// normalizeKind maps a subject kind as the CLI names it ("add on", "billable metric")
+// onto the snake_case resource a Lago code uses ("add_on", "billable_metric").
+func normalizeKind(kind string) string {
+	return strings.ReplaceAll(strings.ToLower(strings.TrimSpace(kind)), " ", "_")
 }
 
 func classify(status int) (int, string) {
