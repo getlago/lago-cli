@@ -66,6 +66,10 @@ This endpoint is used for retrieving all invoices.
 	Page number.
 
 .PP
+\fB--partially-paid\fP=""
+	Filter invoices that are partially paid. When 'true', only invoices with a non-zero amount paid that is below the total due are returned. When 'false', those invoices are excluded.
+
+.PP
 \fB--payment-dispute-lost\fP=""
 	Filter invoices with a payment dispute lost. Possible values are 'true' or 'false'.
 
@@ -92,6 +96,10 @@ This endpoint is used for retrieving all invoices.
 .PP
 \fB--self-billed\fP=""
 	Filter invoices by self billed. Possible values are 'true' or 'false'.
+
+.PP
+\fB--settlements\fP=""
+	Filter invoices settled by at least one of the given settlement types. 'payment' matches invoices settled by a payment, 'credit_note' matches invoices settled by a credit note.
 
 .PP
 \fB--statuses\fP=""
