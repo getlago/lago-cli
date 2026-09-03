@@ -2,8 +2,9 @@
 
 All notable changes are generated from conventional commits at release time. This project follows [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## 1.0.0 (2026-09-04)
 
+- Release readiness: the Homebrew tap publishes a formula instead of a cask, so `brew install getlago/tap/lago` works on Linuxbrew as well as macOS and installs the man page and shell completions; the smoke test runs on ubuntu and macOS, checks those files and verifies the cosign signature of the release it installed; the README documents how to verify a release and no longer carries the private-repository install notes.
 - `make generate` writes `completions/lago.ps1` with CRLF endings, matching the checkout rule in `.gitattributes`, so regenerating on macOS or Linux no longer leaves the file modified with a line-ending warning.
 - Bootstrap the generated Lago CLI, secure profiles, resilient transport, raw API access, output formats, and golden billing commands.
 - Pasting the full API path, a trailing slash, a custom port, or a sub-path now all normalize to one base URL, on cloud US, cloud EU, and self-hosted. `lago api GET /api/v1/customers` no longer requests `/api/v1/api/v1/customers`.

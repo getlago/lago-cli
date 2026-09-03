@@ -1,49 +1,26 @@
 # Lago CLI
 
-The official command-line interface for [Lago](https://getlago.com), the open-source usage-based billing platform. The CLI is generated from Lago's OpenAPI specification and ships as one static Go binary.
-
-> This repository is under active development. Until the first signed release, use a Lago test profile.
+The official command-line interface for [Lago](https://getlago.com), the open-source usage-based billing platform. The CLI is generated from Lago's OpenAPI specification and ships as one static Go binary. The user guide and command reference live in the [Lago documentation](https://getlago.com/docs/guide/lago-cli/overview).
 
 ## Install
 
 Two supported channels.
 
+Homebrew, on macOS and Linux. Installs the binary, the man page (`man lago`) and the bash, zsh and fish completions:
+
 ```console
 $ brew install getlago/tap/lago
 ```
 
+`go install`, anywhere Go runs (binary only; run `lago completion --help` for completions):
+
 ```console
 $ go install github.com/getlago/lago-cli/cmd/lago@latest
 ```
 
-<!-- TODO(public-repo): delete this subsection the day getlago/lago-cli goes public. -->
-### While the repository is private
+### Platforms
 
-`go install` fetches through the Go module proxy, which cannot read a private repository. Without the two settings below it fails like this:
-
-```
-go: github.com/getlago/lago-cli/cmd/lago@latest: module github.com/getlago/lago-cli: git ls-remote -q origin in /Users/you/go/pkg/mod/cache/vcs/...: exit status 128:
-	fatal: could not read Username for 'https://github.com': terminal prompts disabled
-```
-
-Tell Go to bypass the proxy for this module, and Git to reach GitHub over SSH:
-
-```console
-$ export GOPRIVATE=github.com/getlago/lago-cli
-$ git config --global url."git@github.com:".insteadOf "https://github.com/"
-$ go install github.com/getlago/lago-cli/cmd/lago@latest
-```
-
-The Homebrew tap is public and needs neither setting.
-
-### What the two channels do not mean
-
-This is a reduction in **channels**, not in platform support:
-
-- Release archives are still built for macOS, Linux, and Windows on amd64 and arm64, and CI compiles and smoke-tests that full matrix on every pull request.
-- `go install` works anywhere Go runs, Windows included.
-
-Removed for 1.0: the shell and PowerShell installers, the container image, Scoop, and Winget. They are parked, with re-enable criteria, in [`dist-channels/parked/`](dist-channels/parked/README.md).
+Release archives are built for macOS, Linux, and Windows on amd64 and arm64, and CI compiles and smoke-tests that matrix on every pull request. On Windows, use `go install` or the zip archive from the [releases page](https://github.com/getlago/lago-cli/releases).
 
 Neither channel self-updates. `lago upgrade` checks for a newer release and prints the command that matches how your binary was installed:
 
@@ -53,6 +30,22 @@ Lago CLI 1.1.0 is available (installed: 1.0.0).
 
     brew upgrade getlago/tap/lago
 ```
+
+### Verify a release
+
+Every release is built by the `release.yml` workflow in this repository, checksummed, and signed with keyless [cosign](https://docs.sigstore.dev). Homebrew and `go install` do not verify the signature for you; in a sensitive environment, verify before installing from an archive:
+
+```console
+$ v=1.0.0
+$ base=https://github.com/getlago/lago-cli/releases/download/v$v
+$ curl -fsSLO $base/checksums.txt -O $base/checksums.txt.sig -O $base/checksums.txt.pem
+$ cosign verify-blob --certificate checksums.txt.pem --signature checksums.txt.sig \
+    --certificate-identity-regexp '^https://github.com/getlago/lago-cli/.github/workflows/release.yml@refs/tags/v' \
+    --certificate-oidc-issuer https://token.actions.githubusercontent.com checksums.txt
+$ sha256sum --check --ignore-missing checksums.txt
+```
+
+The certificate identity is the release workflow of this repository, so a signature produced anywhere else fails the check even if the checksum matches.
 
 ## Configure
 
@@ -92,7 +85,7 @@ $ lago init --api-key "$LAGO_API_KEY" --region self-hosted --api-url https://lag
 
 `--region us` and `--region eu` are shorthand for the two URLs in the table above; they resolve to exactly the same normalized host as passing `--api-url` explicitly.
 
-Check which host you are actually hitting, on any deployment. `RESOLVED_API_URL` is the base URL the CLI calls; `API_URL` is what the profile holds:
+Check which host you are actually hitting, on any deployment. `RESOLVED_API_URL` is the base URL the CLI calls (`--output json` adds `api_url`, what the profile holds):
 
 ```console
 $ lago whoami
@@ -346,7 +339,7 @@ make lint
 make security
 ```
 
-Pull requests validate the checked-in OpenAPI snapshot. A daily trusted workflow fetches `https://swagger.getlago.com/openapi.yaml` and opens a spec-drift PR; `@getlago/developers` owns a one-business-day merge SLA. See [ARCHITECTURE.md](ARCHITECTURE.md), [CONTRIBUTING.md](CONTRIBUTING.md), [DECISIONS.md](DECISIONS.md), and [SECURITY.md](SECURITY.md).
+Pull requests validate the checked-in OpenAPI snapshot. A daily workflow fetches `https://swagger.getlago.com/openapi.yaml` and opens a spec-drift PR when it changed. See [ARCHITECTURE.md](ARCHITECTURE.md), [CONTRIBUTING.md](CONTRIBUTING.md), [DECISIONS.md](DECISIONS.md), and [SECURITY.md](SECURITY.md).
 
 ## Telemetry
 

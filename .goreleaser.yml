@@ -57,7 +57,7 @@ signs:
       - --output-certificate=${certificate}
       - ${artifact}
 
-homebrew_casks:
+brews:
   - name: lago
     repository:
       owner: getlago
@@ -66,14 +66,16 @@ homebrew_casks:
     homepage: https://getlago.com
     description: Official CLI for the Lago billing platform
     license: MIT
-    binaries: [lago]
-    manpages: [man/lago.1]
-    completions:
-      bash: completions/lago.bash
-      zsh: completions/_lago
-      fish: completions/lago.fish
-    url:
-      verified: github.com/getlago/lago-cli/releases/download
+    # A formula, not a cask: casks are macOS only, a formula installs on Linuxbrew too.
+    # The formula points at the prebuilt release archives, so no Go toolchain is needed.
+    install: |
+      bin.install "lago"
+      man1.install "man/lago.1"
+      bash_completion.install "completions/lago.bash" => "lago"
+      zsh_completion.install "completions/_lago"
+      fish_completion.install "completions/lago.fish"
+    test: |
+      assert_match version.to_s, shell_output("#{bin}/lago version --output json")
 
 changelog:
   use: github-native
