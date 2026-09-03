@@ -32,6 +32,9 @@ jobs:
 
   # Two supported channels, two smoke tests. A channel with no post-release smoke test
   # is an untested channel, so this job gates the release rather than reporting on it.
+  #
+  # The tap publishes a formula (see brews in .goreleaser.yml), so the same install
+  # line is smoke-tested on macOS and on Linuxbrew.
   smoke-homebrew:
     needs: release
     strategy:
@@ -42,7 +45,22 @@ jobs:
     steps:
       - name: Install from the Lago tap
         run: brew install getlago/tap/lago
+      - name: Verify the release signature the formula installed from
+        run: |
+          brew install cosign
+          version=$(lago version --output json | jq -r .version)
+          base="https://github.com/getlago/lago-cli/releases/download/v${version}"
+          curl -fsSLO "${base}/checksums.txt" -O "${base}/checksums.txt.sig" -O "${base}/checksums.txt.pem"
+          cosign verify-blob --certificate checksums.txt.pem --signature checksums.txt.sig \
+            --certificate-identity-regexp '^https://github.com/getlago/lago-cli/.github/workflows/release.yml@refs/tags/v' \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com checksums.txt
       - run: lago version --output json
+      - name: Man page and completions are installed
+        run: |
+          test -f "$(brew --prefix)/share/man/man1/lago.1"
+          test -f "$(brew --prefix)/etc/bash_completion.d/lago"
+          test -f "$(brew --prefix)/share/zsh/site-functions/_lago"
+          test -f "$(brew --prefix)/share/fish/vendor_completions.d/lago.fish"
       - name: Doctor runs and exits 3 with no credentials
         run: lago doctor --output json || test $? -eq 3
 

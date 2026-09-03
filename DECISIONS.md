@@ -438,3 +438,19 @@ names in the code for the life of 1.x to spare a rename nobody has scripted yet.
 ## Deferred beyond 1.x
 
 Plugin/extension system, TUI dashboard, and `lago scaffold` sample-app generation.
+
+**1.0 ships from a public repository and a Homebrew formula, not a cask.** Homebrew
+downloads release archives anonymously and `go install` fetches source through the
+public module proxy, so both supported channels require `getlago/lago-cli` to be public
+at the first tag; a private repository with public releases is not a GitHub feature, and
+a separate artifact repository or a bucket was judged not worth the infrastructure while
+the source is MIT-licensed anyway. The tap publishes a formula because casks are macOS
+only: the formula installs the prebuilt binary, the man page and the shell completions on
+macOS and on Linuxbrew with the same `brew install` line, so a Linux user gets a clean
+install without a Go toolchain. The post-release smoke test installs from the tap on
+ubuntu and macOS, checks that the man page and completions landed, and verifies the
+cosign signature of the release it installed from, so a release whose signature does not
+match the release workflow identity fails before anyone is told to install it.
+GoReleaser marks `brews` deprecated in favour of casks; it still works in the pinned
+v2.18.0 and the release is not blocked by the warning. If a later GoReleaser removes
+it, the fallback is to commit the formula to the tap directly.
