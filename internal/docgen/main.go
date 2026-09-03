@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"io"
@@ -69,7 +70,22 @@ func generate(markdown, man, completions string) error {
 	if err := root.GenFishCompletionFile(filepath.Join(completions, "lago.fish"), true); err != nil {
 		return err
 	}
-	return root.GenPowerShellCompletionFile(filepath.Join(completions, "lago.ps1"))
+	// .gitattributes checks lago.ps1 out with CRLF (PowerShell's native ending), but
+	// cobra writes LF, so every `make generate` on macOS or Linux left the file "modified"
+	// in git status with a line-ending warning. Write what the checkout expects.
+	var script bytes.Buffer
+	if err := root.GenPowerShellCompletion(&script); err != nil {
+		return err
+	}
+	// 0600 satisfies gosec G306; git records only the executable bit, so the mode of a
+	// checked-in generated file does not matter beyond that.
+	return os.WriteFile(filepath.Join(completions, "lago.ps1"), toCRLF(script.Bytes()), 0o600)
+}
+
+// toCRLF converts bare LF line endings to CRLF without doubling ones already there.
+func toCRLF(data []byte) []byte {
+	normalized := bytes.ReplaceAll(data, []byte("\r\n"), []byte("\n"))
+	return bytes.ReplaceAll(normalized, []byte("\n"), []byte("\r\n"))
 }
 
 func normalizeMarkdownTree(root string) error {
