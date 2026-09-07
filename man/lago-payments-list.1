@@ -10,12 +10,32 @@ lago-payments-list - List all payments
 
 
 .SH DESCRIPTION
-This endpoint is used to list all payments
+List payments with filters combined using AND and values within each array combined using OR. Results keep their existing visibility rules and are ordered by creation date descending, then ID. Amounts are integer cents and support the full signed 64-bit range from 0 through 9223372036854775807. Unknown enum or currency values, negative or out-of-range amounts, inverted amount bounds, invalid invoice UUIDs and receipt or invoice numbers longer than 255 characters return 422 validation_errors. Invalid date bounds are ignored. Search narrows the scope before exact filters apply; invoice search is skipped when invoice_id or invoice_number is supplied, and customer search is skipped when external_customer_id is supplied. Repeat the same filters when requesting the page number returned in meta.next_page.
 
 
 .SH OPTIONS
 \fB--all\fP[=false]
 	Fetch every page
+
+.PP
+\fB--amount-from\fP=""
+	Inclusive minimum payment amount in integer cents, from 0 through 9223372036854775807; it must not exceed 'amount_to' when both bounds are supplied.
+
+.PP
+\fB--amount-to\fP=""
+	Inclusive maximum payment amount in integer cents, from 0 through 9223372036854775807; set it equal to 'amount_from' to match an exact amount.
+
+.PP
+\fB--created-at-from\fP=""
+	Filter payments created on or after this ISO-8601 date, inclusive from the start of the day in the organization timezone; invalid dates are ignored.
+
+.PP
+\fB--created-at-to\fP=""
+	Filter payments created on or before this ISO-8601 date, inclusive through the end of the day in the organization timezone; invalid dates are ignored.
+
+.PP
+\fB--currency\fP=""
+	Filter the results by currency, expressed as an ISO 4217 code.
 
 .PP
 \fB--external-customer-id\fP=""
@@ -27,7 +47,11 @@ This endpoint is used to list all payments
 
 .PP
 \fB--invoice-id\fP=""
-	Unique identifier assigned to the invoice within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the invoice's record within the Lago system.
+	Filter by the Lago invoice UUID, matching the directly payable invoice or any invoice covered by a payment request.
+
+.PP
+\fB--invoice-number\fP=""
+	Filter by an exact, case-insensitive invoice number of at most 255 characters, matching either the directly payable invoice or any invoice covered by a payment request.
 
 .PP
 \fB--limit\fP=""
@@ -38,8 +62,40 @@ This endpoint is used to list all payments
 	Page number.
 
 .PP
+\fB--payable-type\fP=""
+	Filter by either 'Invoice' or 'PaymentRequest', matching any supplied payable type; a single value can also be sent as 'payable_type=PaymentRequest'.
+
+.PP
+\fB--payment-method-type\fP=""
+	Filter by any of 'card', 'sepa_debit', 'us_bank_account', 'bacs_debit', 'link', 'boleto', 'crypto' or 'customer_balance', using the payment provider method data and falling back to the saved payment method when its type is empty; a single value can also be sent as 'payment_method_type=card'.
+
+.PP
+\fB--payment-provider-type\fP=""
+	Filter by any of 'stripe', 'gocardless', 'cashfree', 'adyen', 'flutterwave' or 'moneyhash'; a single value can also be sent as 'payment_provider_type=stripe'.
+
+.PP
+\fB--payment-status\fP=""
+	Filter by any of 'pending', 'processing', 'succeeded' or 'failed'; a single value can also be sent as 'payment_status=succeeded', and this parameter takes precedence over 'payment_statuses'.
+
+.PP
+\fB--payment-statuses\fP=""
+	Alias for 'payment_status[]', matching any of 'pending', 'processing', 'succeeded' or 'failed'; a single value can also be sent as 'payment_statuses=succeeded', and it is ignored when 'payment_status' is supplied.
+
+.PP
+\fB--payment-type\fP=""
+	Filter by either 'manual' or 'provider', matching any supplied type; a single value can also be sent as 'payment_type=manual'.
+
+.PP
 \fB--per-page\fP=""
 	Number of records per page.
+
+.PP
+\fB--receipt-number\fP=""
+	Filter by an exact, case-insensitive payment receipt number of at most 255 characters; payments without a receipt do not match.
+
+.PP
+\fB--search-term\fP=""
+	Search case-insensitively within provider payment IDs, references, payment UUIDs, directly payable invoice numbers and customer name, first name, last name, external ID or email; receipt numbers use their own exact filter.
 
 .PP
 \fB--watch\fP[=false]
