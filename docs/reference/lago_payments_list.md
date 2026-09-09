@@ -32,7 +32,6 @@ lago payments list [flags]
       --limit string                   Results per page (1-1000)
       --page string                    Page number.
       --payable-type string            Filter by either 'Invoice' or 'PaymentRequest', matching any supplied payable type; a single value can also be sent as 'payable_type=PaymentRequest'.
-      --payment-method-type string     Filter by any of 'card', 'sepa_debit', 'us_bank_account', 'bacs_debit', 'link', 'boleto', 'crypto' or 'customer_balance', using the payment provider method data and falling back to the saved payment method when its type is empty; a single value can also be sent as 'payment_method_type=card'.
       --payment-provider-type string   Filter by any of 'stripe', 'gocardless', 'cashfree', 'adyen', 'flutterwave' or 'moneyhash'; a single value can also be sent as 'payment_provider_type=stripe'.
       --payment-status string          Filter by any of 'pending', 'processing', 'succeeded' or 'failed'; a single value can also be sent as 'payment_status=succeeded', and this parameter takes precedence over 'payment_statuses'.
       --payment-statuses string        Alias for 'payment_status[]', matching any of 'pending', 'processing', 'succeeded' or 'failed'; a single value can also be sent as 'payment_statuses=succeeded', and it is ignored when 'payment_status' is supplied.

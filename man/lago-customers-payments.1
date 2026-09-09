@@ -62,10 +62,6 @@ List payments with filters combined using AND and values within each array combi
 	Filter by either 'Invoice' or 'PaymentRequest', matching any supplied payable type; a single value can also be sent as 'payable_type=PaymentRequest'.
 
 .PP
-\fB--payment-method-type\fP=""
-	Filter by any of 'card', 'sepa_debit', 'us_bank_account', 'bacs_debit', 'link', 'boleto', 'crypto' or 'customer_balance', using the payment provider method data and falling back to the saved payment method when its type is empty; a single value can also be sent as 'payment_method_type=card'.
-
-.PP
 \fB--payment-provider-type\fP=""
 	Filter by any of 'stripe', 'gocardless', 'cashfree', 'adyen', 'flutterwave' or 'moneyhash'; a single value can also be sent as 'payment_provider_type=stripe'.
 

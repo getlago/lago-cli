@@ -8281,14 +8281,6 @@
           "description": "Filter by any of `stripe`, `gocardless`, `cashfree`, `adyen`, `flutterwave` or `moneyhash`; a single value can also be sent as `payment_provider_type=stripe`."
         },
         {
-          "name": "payment_method_type[]",
-          "flag": "payment-method-type",
-          "in": "query",
-          "type": "array",
-          "required": false,
-          "description": "Filter by any of `card`, `sepa_debit`, `us_bank_account`, `bacs_debit`, `link`, `boleto`, `crypto` or `customer_balance`, using the payment provider method data and falling back to the saved payment method when its type is empty; a single value can also be sent as `payment_method_type=card`."
-        },
-        {
           "name": "currency",
           "flag": "currency",
           "in": "query",
@@ -13443,14 +13435,6 @@
           "type": "array",
           "required": false,
           "description": "Filter by any of `stripe`, `gocardless`, `cashfree`, `adyen`, `flutterwave` or `moneyhash`; a single value can also be sent as `payment_provider_type=stripe`."
-        },
-        {
-          "name": "payment_method_type[]",
-          "flag": "payment-method-type",
-          "in": "query",
-          "type": "array",
-          "required": false,
-          "description": "Filter by any of `card`, `sepa_debit`, `us_bank_account`, `bacs_debit`, `link`, `boleto`, `crypto` or `customer_balance`, using the payment provider method data and falling back to the saved payment method when its type is empty; a single value can also be sent as `payment_method_type=card`."
         },
         {
           "name": "currency",
@@ -22763,6 +22747,6 @@
       "mutation": false
     }
   ],
-  "spec_sha256": "edc85fddf229feb79974e65bb8c7a1a8e720926cb294d3749e6bd572edb72d7d",
+  "spec_sha256": "c4edc0affd837e4d1e1ea873bb4ef697912e84603193076474b62000ad153d49",
   "spec_version": "1.52.1"
 }
