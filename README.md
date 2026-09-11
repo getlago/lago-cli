@@ -2,6 +2,10 @@
 
 The official command-line interface for [Lago](https://getlago.com), the open-source usage-based billing platform. The CLI is generated from Lago's OpenAPI specification and ships as one static Go binary. The user guide and command reference live in the [Lago documentation](https://getlago.com/docs/guide/lago-cli/overview).
 
+## Demo
+
+https://github.com/user-attachments/assets/b66ed65c-348d-4b6c-9361-6bb029089aad
+
 ## Install
 
 Two supported channels.
