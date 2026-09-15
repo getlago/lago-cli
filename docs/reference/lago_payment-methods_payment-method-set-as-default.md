@@ -4,7 +4,7 @@ Set the payment method as default
 
 ### Synopsis
 
-Use the payment method as default when not selected a payment method
+This endpoint sets a payment method as the customer's default one. It is the payment method Lago uses when a payment is triggered without an explicit one. Any other default payment method of the customer is unset.
 
 ```
 lago payment-methods payment-method-set-as-default <lago_id> <external_customer_id> [flags]
