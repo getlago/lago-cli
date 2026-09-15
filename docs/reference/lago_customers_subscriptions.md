@@ -21,6 +21,7 @@ lago customers subscriptions <external_customer_id> [flags]
 ```
       --all                           Fetch every page
       --billing-entity-codes string   Filter subscriptions by billing entity codes.
+      --external-id string            The subscription external unique identifier (provided by your own application).
   -h, --help                          help for subscriptions
       --limit string                  Results per page (1-1000)
       --page string                   Page number.

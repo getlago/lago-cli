@@ -8148,6 +8148,14 @@
           "description": "Number of records per page."
         },
         {
+          "name": "currency",
+          "flag": "currency",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "Filter the results by currency, expressed as an ISO 4217 code."
+        },
+        {
           "name": "payment_status",
           "flag": "payment-status",
           "in": "query",
@@ -8319,6 +8327,14 @@
           "type": "integer",
           "required": false,
           "description": "Number of records per page."
+        },
+        {
+          "name": "external_id",
+          "flag": "external-id",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "The subscription external unique identifier (provided by your own application)."
         },
         {
           "name": "plan_code",
@@ -12884,7 +12900,7 @@
       "method": "PUT",
       "path": "/customers/{external_customer_id}/payment_methods/{lago_id}/set_as_default",
       "summary": "Set the payment method as default",
-      "description": "Use the payment method as default when not selected a payment method",
+      "description": "This endpoint sets a payment method as the customer's default one. It is the payment method Lago uses when a payment is triggered without an explicit one. Any other default payment method of the customer is unset.",
       "docs_url": "https://getlago.com/docs/api-reference/payment-methods/payment-method-object",
       "parameters": [
         {
@@ -12925,7 +12941,7 @@
           "in": "path",
           "type": "string",
           "required": true,
-          "description": "Payment receipt ID"
+          "description": "Unique identifier of the payment receipt."
         }
       ],
       "idempotent": true,
@@ -12991,9 +13007,9 @@
             ],
             "flag": "email",
             "type": "string",
-            "required": true,
+            "required": false,
             "complex": false,
-            "description": "The customer's email address used for sending dunning notifications"
+            "description": "The email address used for sending dunning notifications. When omitted, the customer's own email address is used."
           },
           {
             "path": [
@@ -22539,6 +22555,6 @@
       "mutation": false
     }
   ],
-  "spec_sha256": "ce82ac3701caa4ab59bb35557a4e592adb0b81ce69fa37549fde391fc241aa1a",
-  "spec_version": "1.52.1"
+  "spec_sha256": "77d4a4f887e9025311458f1b7828d03738a3b141b687938c971f3aab7eebdc3e",
+  "spec_version": "1.53.0"
 }
