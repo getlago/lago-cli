@@ -89,7 +89,7 @@ func TestUpgradeCommandNamesOneChannel(t *testing.T) {
 			t.Errorf("go install command = %q", command)
 		}
 	case Script:
-		if command != "curl -fsSL https://getlago.github.io/lago-cli/install.sh | sh" {
+		if !strings.HasPrefix(command, "curl -fsSL https://getlago.github.io/lago-cli/install.sh | ") || !strings.HasSuffix(command, " sh") {
 			t.Errorf("script command = %q", command)
 		}
 	case Unknown:
@@ -98,6 +98,29 @@ func TestUpgradeCommandNamesOneChannel(t *testing.T) {
 		}
 	default:
 		t.Fatalf("unexpected method %q", method)
+	}
+}
+
+// A script install outside /usr/local/bin must be told to re-run the installer into
+// the directory it lives in; otherwise the upgrade lands in /usr/local/bin and the old
+// binary, earlier on the PATH, keeps running.
+func TestCommandForScriptInstallNamesItsDirectory(t *testing.T) {
+	for _, testCase := range []struct {
+		method    Method
+		directory string
+		want      string
+	}{
+		{Homebrew, "/opt/homebrew/Cellar/lago/1.0.0/bin", "brew upgrade getlago/tap/lago"},
+		{GoInstall, "/home/u/go/bin", "go install github.com/getlago/lago-cli/cmd/lago@latest"},
+		{Script, "/usr/local/bin", "curl -fsSL https://getlago.github.io/lago-cli/install.sh | sh"},
+		{Script, "/usr/local/bin/", "curl -fsSL https://getlago.github.io/lago-cli/install.sh | sh"},
+		{Script, "/home/u/.local/bin", "curl -fsSL https://getlago.github.io/lago-cli/install.sh | LAGO_INSTALL_DIR=/home/u/.local/bin sh"},
+		{Script, "/Users/u/my tools/bin", "curl -fsSL https://getlago.github.io/lago-cli/install.sh | LAGO_INSTALL_DIR='/Users/u/my tools/bin' sh"},
+		{Unknown, "/opt/tools", ""},
+	} {
+		if got := CommandFor(testCase.method, testCase.directory); got != testCase.want {
+			t.Errorf("CommandFor(%q, %q) = %q, want %q", testCase.method, testCase.directory, got, testCase.want)
+		}
 	}
 }
 

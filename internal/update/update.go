@@ -153,16 +153,41 @@ func UpgradeCommand() (Method, string, error) {
 		executable = resolved
 	}
 	method := Detect(executable)
+	return method, CommandFor(method, filepath.Dir(executable)), nil
+}
+
+// CommandFor is the upgrade command for a binary installed by method into directory.
+//
+// A script install outside the installer's default directory gets the same line with
+// LAGO_INSTALL_DIR set, so re-running it replaces the binary that is actually on the
+// PATH instead of leaving a second copy in /usr/local/bin. Unknown yields no command so
+// the caller knows to print them all.
+func CommandFor(method Method, directory string) string {
 	switch method {
 	case Homebrew:
-		return method, HomebrewCommand, nil
+		return HomebrewCommand
 	case GoInstall:
-		return method, GoInstallCommand, nil
+		return GoInstallCommand
 	case Script:
-		return method, ScriptCommand, nil
+		if filepath.ToSlash(filepath.Clean(directory)) == defaultScriptInstallDir {
+			return ScriptCommand
+		}
+		return strings.Replace(ScriptCommand, "| sh", "| LAGO_INSTALL_DIR="+shellQuote(directory)+" sh", 1)
 	default:
-		return method, "", nil
+		return ""
 	}
+}
+
+// shellQuote single-quotes a path when it contains anything a shell would interpret,
+// so a directory with a space in it survives a paste into a terminal.
+func shellQuote(value string) string {
+	if strings.IndexFunc(value, func(r rune) bool {
+		return !(r == '/' || r == '.' || r == '_' || r == '-' || r == '~' ||
+			(r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9'))
+	}) < 0 {
+		return value
+	}
+	return "'" + strings.ReplaceAll(value, "'", `'\''`) + "'"
 }
 
 // Detect classifies an executable path into the channel that installed it.
@@ -205,8 +230,10 @@ func Detect(executable string) Method {
 // override it honours, and the directory its error message tells a user without sudo
 // to pick. A binary copied there by hand from a release archive is upgraded the same
 // way, by re-running the installer, so the heuristic is right for that case too.
+const defaultScriptInstallDir = "/usr/local/bin"
+
 func scriptInstallDirs() []string {
-	dirs := []string{"/usr/local/bin"}
+	dirs := []string{defaultScriptInstallDir}
 	if override := os.Getenv("LAGO_INSTALL_DIR"); override != "" {
 		dirs = append(dirs, override)
 	}
