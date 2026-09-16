@@ -7,8 +7,9 @@ before:
     - go run ./internal/gen -check
     - go test ./...
 
-# The full os/arch matrix stays. Only the install *channels* were reduced to Homebrew
-# and `go install`; re-adding a channel later is a publish-and-docs change, not a port.
+# The full os/arch matrix stays. The install *channels* are Homebrew, `go install` and the
+# shell installer (install.sh, which downloads these archives); re-adding another channel
+# later is a publish-and-docs change, not a port.
 builds:
   - id: lago
     main: ./cmd/lago
@@ -43,9 +44,9 @@ sboms:
 
 # Keyless signing over checksums.txt. The certificate is published alongside the
 # signature so a consumer can run `cosign verify-blob` unaided: a signature with no
-# certificate cannot be verified. Nothing in the two supported channels verifies it
-# automatically today, so this is material for auditors and for anyone installing an
-# archive by hand.
+# certificate cannot be verified. install.sh verifies it whenever cosign is on the
+# user's PATH; Homebrew and `go install` never do, so for them this is material for
+# auditors and for anyone installing an archive by hand.
 signs:
   - cmd: cosign
     artifacts: checksum

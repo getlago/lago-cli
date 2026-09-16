@@ -51,12 +51,17 @@ func TestDetectClassifiesTheInstallingChannel(t *testing.T) {
 		{name: "default gopath bin", path: filepath.Join(mustHome(t), "go", "bin", "lago"), want: GoInstall},
 		{name: "explicit GOBIN", path: "/srv/tools/lago", env: map[string]string{"GOBIN": "/srv/tools"}, want: GoInstall},
 		{name: "explicit GOPATH", path: "/w/gopath/bin/lago", env: map[string]string{"GOPATH": "/w/gopath"}, want: GoInstall},
-		{name: "manual install", path: "/usr/local/bin/lago", want: Unknown},
+		{name: "script default dir", path: "/usr/local/bin/lago", want: Script},
+		{name: "script LAGO_INSTALL_DIR", path: "/srv/lago/bin/lago", env: map[string]string{"LAGO_INSTALL_DIR": "/srv/lago/bin"}, want: Script},
+		{name: "script user-local dir", path: filepath.Join(mustHome(t), ".local", "bin", "lago"), want: Script},
+		{name: "intel homebrew link resolved to cellar", path: "/usr/local/Cellar/lago/1.0.0/bin/lago", want: Homebrew},
+		{name: "unpacked archive elsewhere", path: "/opt/tools/lago", want: Unknown},
 		{name: "windows manual install", path: `C:\\Program Files\\lago\\lago.exe`, want: Unknown},
 	} {
 		t.Run(testCase.name, func(t *testing.T) {
 			t.Setenv("GOBIN", "")
 			t.Setenv("GOPATH", "")
+			t.Setenv("LAGO_INSTALL_DIR", "")
 			for name, value := range testCase.env {
 				t.Setenv(name, value)
 			}
@@ -68,7 +73,7 @@ func TestDetectClassifiesTheInstallingChannel(t *testing.T) {
 }
 
 // Each recognised channel maps to exactly one command, and an unrecognised install
-// yields no command so the caller knows to print both.
+// yields no command so the caller knows to print them all.
 func TestUpgradeCommandNamesOneChannel(t *testing.T) {
 	method, command, err := UpgradeCommand()
 	if err != nil {
@@ -82,6 +87,10 @@ func TestUpgradeCommandNamesOneChannel(t *testing.T) {
 	case GoInstall:
 		if command != "go install github.com/getlago/lago-cli/cmd/lago@latest" {
 			t.Errorf("go install command = %q", command)
+		}
+	case Script:
+		if command != "curl -fsSL https://getlago.github.io/lago-cli/install.sh | sh" {
+			t.Errorf("script command = %q", command)
 		}
 	case Unknown:
 		if command != "" {

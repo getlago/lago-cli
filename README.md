@@ -8,7 +8,7 @@ https://github.com/user-attachments/assets/b66ed65c-348d-4b6c-9361-6bb029089aad
 
 ## Install
 
-Two supported channels.
+Three supported channels. None of them needs a Go toolchain except `go install`.
 
 Homebrew, on macOS and Linux. Installs the binary, the man page (`man lago`) and the bash, zsh and fish completions:
 
@@ -16,7 +16,26 @@ Homebrew, on macOS and Linux. Installs the binary, the man page (`man lago`) and
 $ brew install getlago/tap/lago
 ```
 
-`go install`, anywhere Go runs (binary only; run `lago completion --help` for completions):
+Shell installer, on macOS and Linux (binary only; run `lago completion --help` for completions). It downloads the prebuilt release archive for your platform, verifies its SHA-256 against the release's `checksums.txt`, verifies the cosign signature of that file when `cosign` is installed, and installs `lago` into `/usr/local/bin`, asking for `sudo` only if that directory is not writable:
+
+```console
+$ curl -fsSL https://getlago.github.io/lago-cli/install.sh | sh
+```
+
+Set `LAGO_INSTALL_DIR` to install somewhere else, and `LAGO_INSTALL_VERSION` to pin a release:
+
+```console
+$ curl -fsSL https://getlago.github.io/lago-cli/install.sh | LAGO_INSTALL_DIR=$HOME/.local/bin LAGO_INSTALL_VERSION=1.0.0 sh
+```
+
+The script is served from GitHub Pages out of this repository, so what you run is what is checked in as `install.sh`, and every release smoke-tests it from that URL. Read it before you pipe it to `sh`, if you prefer:
+
+```console
+$ curl -fsSL https://getlago.github.io/lago-cli/install.sh -o install-lago.sh
+$ less install-lago.sh && sh install-lago.sh
+```
+
+`go install`, anywhere Go runs (binary only):
 
 ```console
 $ go install github.com/getlago/lago-cli/cmd/lago@latest
@@ -26,7 +45,7 @@ $ go install github.com/getlago/lago-cli/cmd/lago@latest
 
 Release archives are built for macOS, Linux, and Windows on amd64 and arm64, and CI compiles and smoke-tests that matrix on every pull request. On Windows, use `go install` or the zip archive from the [releases page](https://github.com/getlago/lago-cli/releases).
 
-Neither channel self-updates. `lago upgrade` checks for a newer release and prints the command that matches how your binary was installed:
+No channel self-updates. `lago upgrade` checks for a newer release and prints the command that matches how your binary was installed. For the shell installer that command is the same `curl … | sh` line, which is idempotent:
 
 ```console
 $ lago upgrade
@@ -37,7 +56,7 @@ Lago CLI 1.1.0 is available (installed: 1.0.0).
 
 ### Verify a release
 
-Every release is built by the `release.yml` workflow in this repository, checksummed, and signed with keyless [cosign](https://docs.sigstore.dev). Homebrew and `go install` do not verify the signature for you; in a sensitive environment, verify before installing from an archive:
+Every release is built by the `release.yml` workflow in this repository, checksummed, and signed with keyless [cosign](https://docs.sigstore.dev). The shell installer verifies the checksum always and the signature whenever `cosign` is on your PATH. Homebrew and `go install` do not verify the signature for you; in a sensitive environment, verify before installing from an archive:
 
 ```console
 $ v=1.0.0

@@ -99,6 +99,8 @@ change requiring a major version, which is exactly why it is being made now.
 
 ## 2026-09-01 — Two install channels for 1.0
 
+*Superseded in part on 2026-09-16: the shell installer is back, served from GitHub Pages. See "Shell installer, hosted on GitHub Pages" below.*
+
 QA returned that the CLI should ship through Homebrew and `go install` only. Both are
 now documented, smoke-tested on every release, and the only channels that exist. The
 shell installer, the PowerShell installer, the GHCR image, Scoop and Winget are removed
@@ -454,3 +456,51 @@ match the release workflow identity fails before anyone is told to install it.
 GoReleaser marks `brews` deprecated in favour of casks; it still works in the pinned
 v2.18.0 and the release is not blocked by the warning. If a later GoReleaser removes
 it, the fallback is to commit the formula to the tap directly.
+
+## 2026-09-16 — Shell installer, hosted on GitHub Pages
+
+The shell installer parked on 2026-09-01 is back, as `install.sh` in the repository root,
+served at `https://getlago.github.io/lago-cli/install.sh`. The four re-enable criteria in
+`dist-channels/parked/README.md` were met in order: a maintainer asked for a
+`curl | sh` install that needs no Go toolchain; GitHub Pages for `getlago/lago-cli` is an
+endpoint Lago controls through the `getlago` organization, and unlike `getlago.com` it
+needs no website deployment to ship a file; the release workflow gained a
+`smoke-install-script` job that installs from that URL on ubuntu and macOS with cosign
+present and fails the release when it cannot; and the README documents the line.
+
+**Why GitHub Pages and not `getlago.com/install.sh`.** The parked script pointed at
+`getlago.com`, which is owned by the website, not this repository, so publishing meant a
+cross-team deploy for every change to a shell script. Pages deploys from this repository
+on push to `main`, so the script users run is the one that is checked in, reviewed, and
+tested by the same CI. If a `getlago.com` alias is wanted later it can redirect here; the
+Pages URL stays canonical so the `lago upgrade` output and the smoke test have one URL.
+
+**What the script verifies.** The SHA-256 of the archive against `checksums.txt`, always.
+The cosign signature of `checksums.txt` against the exact release-workflow identity
+(`release.yml@refs/tags/v…`), whenever `cosign` is on the PATH, and it says plainly when it
+is not. It refuses any `LAGO_INSTALL_REPOSITORY` outside `getlago/*`, pins TLS 1.2 and
+https-only redirects, and runs entirely from a `main` function so a truncated download
+executes nothing. `latest` resolves by following the `releases/latest` redirect instead of
+the REST API, which is rate-limited per IP and fails in CI and shared offices; that
+redirect never points at a prerelease, so `latest` is always stable.
+
+**The script is published before it is used, and tested before it is published.** The
+Pages workflow lints the script and installs the latest release with it before deploying,
+so a broken script never becomes the served one. The release smoke job fetches from the
+Pages URL rather than the checkout, so a Pages deployment that silently never happened
+fails the release, which is the exact failure mode that parked the channel.
+
+**`lago upgrade` still does not self-update.** The 2026-09-01 entry made self-update a
+fifth condition for any script channel. That condition is withdrawn rather than met: the
+installer is idempotent, so re-running it is the upgrade, and a CLI that downloads and
+swaps its own binary is a second copy of the download-verify-replace logic to keep in
+step with the first. `upgrade` now detects a script install (the script's default
+`/usr/local/bin`, its `LAGO_INSTALL_DIR` override, or `~/.local/bin`) and prints the
+`curl | sh` line; an unrecognised install prints all three commands. Homebrew is checked
+first because Intel Homebrew's prefix is `/usr/local`, and the executable path is
+symlink-resolved so a brew-linked `/usr/local/bin/lago` reads as its Cellar path.
+
+The `test/docs` guardrail changed shape with it: `install.sh` left the parked-pattern
+list, the README must now document three channels, and a new test pins the one URL across
+the README, the script, the Pages workflow, the release smoke job, and the upgrade
+command, so the endpoint cannot drift in one place only.

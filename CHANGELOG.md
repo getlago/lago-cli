@@ -4,6 +4,7 @@ All notable changes are generated from conventional commits at release time. Thi
 
 ## Unreleased
 
+- Shell installer: `curl -fsSL https://getlago.github.io/lago-cli/install.sh | sh` installs the prebuilt binary for macOS and Linux on amd64 and arm64 with no Go toolchain, verifying the release checksum and, when `cosign` is installed, the release signature. The script is served from GitHub Pages out of this repository and smoke-tested from that URL on every release. `lago upgrade` recognises a script install and prints that line.
 - Release workflow: Homebrew is put on PATH on the Linux smoke runner (the 1.0.0 run failed there with `brew: command not found` after publishing), the smoke test checks the installed version is the released one, and the smoke jobs can be re-run against an existing release with `workflow_dispatch`.
 
 ## 1.0.0 (2026-09-04)
