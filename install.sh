@@ -138,8 +138,7 @@ install_binary() {
   binary=$1 dir=$2
   if [ -d "$dir" ] && [ -w "$dir" ]; then
     install -m 0755 "$binary" "$dir/lago"
-  elif [ ! -e "$dir" ] && [ -w "$(dirname "$dir")" ]; then
-    mkdir -p "$dir"
+  elif [ ! -e "$dir" ] && mkdir -p "$dir" 2>/dev/null; then
     install -m 0755 "$binary" "$dir/lago"
   elif command -v sudo >/dev/null 2>&1; then
     say "Installing to $dir requires sudo"
