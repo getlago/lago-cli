@@ -22,9 +22,10 @@ func releaseAPI(t *testing.T, latest string) *httptest.Server {
 	return server
 }
 
-// `lago upgrade` no longer replaces the running binary: with only Homebrew and
-// `go install` supported, no install is one the CLI itself owns. It must print the
-// command for the channel that installed it, and never claim to have upgraded anything.
+// `lago upgrade` does not replace the running binary: Homebrew, `go install` and the
+// shell installer are all upgraded by re-running their own command, so no install is one
+// the CLI itself owns. It must print the command for the channel that installed it, and
+// never claim to have upgraded anything.
 func TestUpgradePrintsACommandAndNeverSelfInstalls(t *testing.T) {
 	setCleanEnvironment(t)
 	t.Setenv("LAGO_CONFIG_FILE", filepath.Join(t.TempDir(), "missing.toml"))
@@ -37,13 +38,17 @@ func TestUpgradePrintsACommandAndNeverSelfInstalls(t *testing.T) {
 	if !strings.Contains(stdout, "9.9.9") {
 		t.Errorf("upgrade did not report the available release: %q", stdout)
 	}
-	// The test binary is not brew- or go-install-managed, so both commands are printed.
-	for _, want := range []string{"brew upgrade getlago/tap/lago", "go install github.com/getlago/lago-cli/cmd/lago@latest"} {
+	// The test binary is not brew-, go-install- or script-managed, so every command is printed.
+	for _, want := range []string{
+		"brew upgrade getlago/tap/lago",
+		"go install github.com/getlago/lago-cli/cmd/lago@latest",
+		"curl -fsSL https://getlago.github.io/lago-cli/install.sh | sh",
+	} {
 		if !strings.Contains(stdout, want) {
 			t.Errorf("upgrade did not print %q:\n%s", want, stdout)
 		}
 	}
-	for _, forbidden := range []string{"Upgraded Lago CLI", "install.sh", "scoop", "winget", "Scoop", "Winget"} {
+	for _, forbidden := range []string{"Upgraded Lago CLI", "install.ps1", "scoop", "winget", "Scoop", "Winget"} {
 		if strings.Contains(stdout, forbidden) {
 			t.Errorf("upgrade output references the removed self-update path or a parked channel (%q):\n%s", forbidden, stdout)
 		}

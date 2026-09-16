@@ -60,10 +60,11 @@ func newVersionCommand(app *App) *cobra.Command {
 
 // newUpgradeCommand prints the upgrade command for how this binary was installed.
 //
-// It does not replace the running binary. Lago CLI ships through Homebrew and
-// `go install`, and neither is self-updating: Homebrew owns its Cellar, and `go install`
-// rebuilds from source. Replacing a Homebrew-managed binary in place would leave brew
-// reporting a version it no longer has. See dist-channels/parked/README.md.
+// It does not replace the running binary. Lago CLI ships through Homebrew, `go install`
+// and the shell installer, and none is self-updating: Homebrew owns its Cellar, `go install`
+// rebuilds from source, and re-running the installer is its upgrade. Replacing a
+// Homebrew-managed binary in place would leave brew reporting a version it no longer
+// has. See DECISIONS.md, "Shell installer, hosted on GitHub Pages".
 func newUpgradeCommand(app *App) *cobra.Command {
 	var channel string
 	cmd := &cobra.Command{
@@ -96,15 +97,16 @@ func newUpgradeCommand(app *App) *cobra.Command {
 			}
 			fmt.Fprintf(app.Out, "Lago CLI %s is available (installed: %s).\n", check.Latest, app.Version)
 			switch method {
-			case cliupdate.Homebrew, cliupdate.GoInstall:
+			case cliupdate.Homebrew, cliupdate.GoInstall, cliupdate.Script:
 				fmt.Fprintf(app.Out, "\n    %s\n", command)
 			default:
-				// Neither channel owns this binary, so both commands are printed rather
-				// than guessing one. Sending someone to `brew upgrade` for a binary
-				// Homebrew does not manage produces a brew error, not an upgrade.
+				// No channel owns this binary, so every command is printed rather than
+				// guessing one. Sending someone to `brew upgrade` for a binary Homebrew
+				// does not manage produces a brew error, not an upgrade.
 				fmt.Fprintln(app.Out, "\nLago CLI does not self-update. Run whichever command matches how you installed it:")
-				fmt.Fprintln(app.Out, "\n    brew upgrade getlago/tap/lago")
-				fmt.Fprintln(app.Out, "    go install github.com/getlago/lago-cli/cmd/lago@latest")
+				fmt.Fprintf(app.Out, "\n    %s\n", cliupdate.HomebrewCommand)
+				fmt.Fprintf(app.Out, "    %s\n", cliupdate.GoInstallCommand)
+				fmt.Fprintf(app.Out, "    %s\n", cliupdate.ScriptCommand)
 			}
 			return nil
 		},

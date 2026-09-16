@@ -24,6 +24,10 @@ jobs:
       - run: make coverage
       - run: ./scripts/check-ci-policy.sh
       - run: ./scripts/check-fixtures.sh
+      - name: Lint the shell installer
+        run: |
+          sh -n install.sh
+          shellcheck -s sh install.sh
 
   cross-platform:
     strategy:

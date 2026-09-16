@@ -23,7 +23,6 @@ var parkedChannels = []struct {
 	channel string
 	pattern *regexp.Regexp
 }{
-	{"shell installer", regexp.MustCompile(`install\.sh`)},
 	{"PowerShell installer", regexp.MustCompile(`install\.ps1`)},
 	{"Docker image", regexp.MustCompile(`ghcr\.io/getlago|docker\s+run.*lago-cli|dockers_v2|Dockerfile\.release`)},
 	{"Scoop", regexp.MustCompile(`(?i)scoop\s+(install|update|bucket)|scoops:|scoop-bucket`)},
@@ -65,7 +64,7 @@ func TestNoParkedChannelIsDocumentedOrPublished(t *testing.T) {
 	}
 }
 
-// The two supported channels must both be documented. A channel that is supported but
+// The three supported channels must all be documented. A channel that is supported but
 // undocumented fails the same way a documented-but-parked one does: the user cannot
 // install the tool the way the project intends.
 func TestSupportedChannelsAreDocumented(t *testing.T) {
@@ -77,6 +76,7 @@ func TestSupportedChannelsAreDocumented(t *testing.T) {
 	for _, required := range []string{
 		"brew install getlago/tap/lago",
 		"go install github.com/getlago/lago-cli/cmd/lago@latest",
+		"curl -fsSL https://getlago.github.io/lago-cli/install.sh | sh",
 	} {
 		if !strings.Contains(string(readme), required) {
 			t.Errorf("README does not document the supported install command %q", required)
@@ -89,13 +89,43 @@ func TestSupportedChannelsAreDocumented(t *testing.T) {
 func TestParkedFilesAreNotReferenced(t *testing.T) {
 	root := repositoryRoot(t)
 	parked := filepath.Join(root, "dist-channels", "parked")
-	for _, name := range []string{"install.sh", "install.ps1", "Dockerfile.release", "README.md"} {
+	for _, name := range []string{"install.ps1", "Dockerfile.release", "README.md"} {
 		if _, err := os.Stat(filepath.Join(parked, name)); err != nil {
 			t.Errorf("dist-channels/parked/%s is missing; parked channel code must stay recoverable: %v", name, err)
 		}
 	}
-	if _, err := os.Stat(filepath.Join(root, "scripts", "install.sh")); err == nil {
-		t.Error("scripts/install.sh is back in the build tree")
+	if _, err := os.Stat(filepath.Join(parked, "install.sh")); err == nil {
+		t.Error("dist-channels/parked/install.sh exists, but the shell installer is a supported channel living at install.sh")
+	}
+}
+
+// The shell installer is served from GitHub Pages by .github/workflows/pages.yml and
+// smoke-tested from that URL by the release workflow. The script, its deploy workflow
+// and its smoke job must all exist, and the URL the README gives must be the one the
+// deploy workflow publishes and the release workflow tests: three surfaces, one URL.
+func TestShellInstallerIsPublishedAndSmokeTested(t *testing.T) {
+	root := repositoryRoot(t)
+	const endpoint = "https://getlago.github.io/lago-cli/install.sh"
+	if _, err := os.Stat(filepath.Join(root, "install.sh")); err != nil {
+		t.Fatalf("install.sh is missing from the repository root: %v", err)
+	}
+	for path, wants := range map[string][]string{
+		"README.md":                     {"curl -fsSL " + endpoint + " | sh"},
+		"install.sh":                    {"curl -fsSL " + endpoint + " | sh"},
+		".github/workflows/pages.yml":   {"cp install.sh site/install.sh", "actions/deploy-pages"},
+		".github/workflows/release.yml": {"smoke-install-script:", "curl -fsSL " + endpoint + " | sh"},
+		"internal/update/update.go":     {"curl -fsSL " + endpoint + " | sh"},
+	} {
+		// #nosec G304 -- paths are fixed repository files.
+		content, err := os.ReadFile(filepath.Join(root, path))
+		if err != nil {
+			t.Fatalf("read %s: %v", path, err)
+		}
+		for _, want := range wants {
+			if !strings.Contains(string(content), want) {
+				t.Errorf("%s does not contain %q", path, want)
+			}
+		}
 	}
 }
 

@@ -37,8 +37,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
 
-  # Two supported channels, two smoke tests. A channel with no post-release smoke test
-  # is an untested channel, so this job gates the release rather than reporting on it.
+  # Three supported channels, three smoke tests. A channel with no post-release smoke test
+  # is an untested channel, so these jobs gate the release rather than reporting on it.
   #
   # The tap publishes a formula (see brews in .goreleaser.yml), so the same install
   # line is smoke-tested on macOS and on Linuxbrew.
@@ -100,3 +100,31 @@ jobs:
         run: |
           "$(go env GOPATH)/bin/lago" version --output json
           "$(go env GOPATH)/bin/lago" doctor --output json || test $? -eq 3
+
+  # The shell installer is fetched from the endpoint users are told to use, not from the
+  # checkout, so a Pages deployment that never happened fails here rather than on a
+  # user's machine. cosign is installed first so the signature branch of the script is
+  # the one exercised. On ubuntu /usr/local/bin needs sudo and on macOS it does not, so
+  # both install branches run.
+  smoke-install-script:
+    needs: release
+    if: always() && (needs.release.result == 'success' || github.event_name == 'workflow_dispatch')
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: sigstore/cosign-installer@v3
+      - name: Install from the published installer
+        env:
+          LAGO_INSTALL_VERSION: ${{ github.event_name == 'push' && github.ref_name || format('v{0}', inputs.version) }}
+        run: curl -fsSL https://getlago.github.io/lago-cli/install.sh | sh
+      - name: Installed version is the released one
+        run: |
+          expected="${{ github.event_name == 'push' && github.ref_name || format('v{0}', inputs.version) }}"
+          test "v$(lago version --output json | jq -r .version)" = "$expected"
+      - name: Installed where the script says it installs
+        run: test -x /usr/local/bin/lago
+      - name: Doctor runs and exits 3 with no credentials
+        run: lago doctor --output json || test $? -eq 3

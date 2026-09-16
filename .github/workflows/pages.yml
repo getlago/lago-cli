@@ -1,0 +1,61 @@
+name: Pages
+
+# Publishes install.sh at https://getlago.github.io/lago-cli/install.sh, the endpoint
+# behind `curl -fsSL https://getlago.github.io/lago-cli/install.sh | sh`. The script is
+# linted and run against the latest release before it is deployed, so a broken script
+# is never the one users download.
+on:
+  push:
+    branches: [main]
+    paths:
+      - install.sh
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time, and never cancel one in flight: a cancelled Pages deploy
+# can leave the site serving a stale or partial artifact.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.repository == 'getlago/lago-cli'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint the installer
+        run: |
+          sh -n install.sh
+          shellcheck -s sh install.sh
+      - uses: sigstore/cosign-installer@v3
+      - name: The installer installs the latest release before it is published
+        run: |
+          LAGO_INSTALL_DIR="$RUNNER_TEMP/bin" sh install.sh
+          "$RUNNER_TEMP/bin/lago" version --output json
+      - name: Assemble the site
+        run: |
+          mkdir -p site
+          cp install.sh site/install.sh
+          cat > site/index.html <<'HTML'
+          <!doctype html>
+          <meta charset="utf-8">
+          <title>Lago CLI installer</title>
+          <p>Install the <a href="https://github.com/getlago/lago-cli">Lago CLI</a> without a Go toolchain:</p>
+          <pre>curl -fsSL https://getlago.github.io/lago-cli/install.sh | sh</pre>
+          <p>The script downloads the prebuilt release for your platform and verifies its checksum. See the <a href="https://github.com/getlago/lago-cli#install">README</a> for the other install channels and how to verify a release.</p>
+          HTML
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4

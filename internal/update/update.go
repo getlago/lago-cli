@@ -101,12 +101,12 @@ func Latest(ctx context.Context, current, channel, userAgent, apiBase string) (C
 // down when only the update check failed. Every failure to fetch release metadata is a
 // network-class error (ExitNetwork), with a suggestion that names the likely cause.
 func releaseAPIError(statusCode int, status string) *apperr.Error {
-	suggestion := "Retry later, or upgrade with the command that matches your install: `brew upgrade getlago/tap/lago` or `go install github.com/getlago/lago-cli/cmd/lago@latest`."
+	suggestion := "Retry later, or upgrade with the command that matches your install: `brew upgrade getlago/tap/lago`, `go install github.com/getlago/lago-cli/cmd/lago@latest`, or re-run the installer from https://getlago.github.io/lago-cli/install.sh."
 	switch statusCode {
 	case http.StatusNotFound:
-		suggestion = "No published release was found. The repository may be private or have no release yet; upgrade with `brew upgrade getlago/tap/lago` or `go install github.com/getlago/lago-cli/cmd/lago@latest`."
+		suggestion = "No published release was found. The repository may be private or have no release yet; upgrade with `brew upgrade getlago/tap/lago`, `go install github.com/getlago/lago-cli/cmd/lago@latest`, or re-run the installer from https://getlago.github.io/lago-cli/install.sh."
 	case http.StatusForbidden, http.StatusTooManyRequests:
-		suggestion = "GitHub refused or rate-limited the request, often because of a proxy or too many unauthenticated calls. Retry later, or upgrade with `brew upgrade getlago/tap/lago` or `go install github.com/getlago/lago-cli/cmd/lago@latest`."
+		suggestion = "GitHub refused or rate-limited the request, often because of a proxy or too many unauthenticated calls. Retry later, or upgrade with `brew upgrade getlago/tap/lago`, `go install github.com/getlago/lago-cli/cmd/lago@latest`, or re-run the installer from https://getlago.github.io/lago-cli/install.sh."
 	}
 	return &apperr.Error{ExitCode: apperr.ExitNetwork, Status: statusCode, Message: "GitHub release API returned " + status, Suggestion: suggestion}
 }
@@ -125,17 +125,25 @@ type Method string
 const (
 	Homebrew  Method = "homebrew"
 	GoInstall Method = "go-install"
+	Script    Method = "script"
 	Unknown   Method = "unknown"
+)
+
+// Commands are the upgrade commands per channel, in the order they are documented.
+const (
+	HomebrewCommand  = "brew upgrade getlago/tap/lago"
+	GoInstallCommand = "go install github.com/getlago/lago-cli/cmd/lago@latest"
+	ScriptCommand    = "curl -fsSL https://getlago.github.io/lago-cli/install.sh | sh"
 )
 
 // UpgradeCommand reports how the running binary was installed and the exact command
 // that upgrades it.
 //
-// Lago CLI ships through two channels, Homebrew and `go install`, and neither is
-// self-updating: Homebrew owns its Cellar and `go install` rebuilds from source. So
-// `lago upgrade` prints a command instead of replacing the binary. The download,
-// checksum-verify and atomic-replace path this replaced belonged to the parked script
-// installer; see dist-channels/parked/README.md.
+// Lago CLI ships through three channels, Homebrew, `go install` and the shell
+// installer, and none is self-updating: Homebrew owns its Cellar, `go install` rebuilds
+// from source, and the installer is idempotent, so re-running it is the upgrade. So
+// `lago upgrade` prints a command instead of replacing the binary; the binary never
+// downloads and swaps itself. See DECISIONS.md, "Shell installer, hosted on GitHub Pages".
 func UpgradeCommand() (Method, string, error) {
 	executable, err := os.Executable()
 	if err != nil {
@@ -145,22 +153,53 @@ func UpgradeCommand() (Method, string, error) {
 		executable = resolved
 	}
 	method := Detect(executable)
+	return method, CommandFor(method, filepath.Dir(executable)), nil
+}
+
+// CommandFor is the upgrade command for a binary installed by method into directory.
+//
+// A script install outside the installer's default directory gets the same line with
+// LAGO_INSTALL_DIR set, so re-running it replaces the binary that is actually on the
+// PATH instead of leaving a second copy in /usr/local/bin. Unknown yields no command so
+// the caller knows to print them all.
+func CommandFor(method Method, directory string) string {
 	switch method {
 	case Homebrew:
-		return method, "brew upgrade getlago/tap/lago", nil
+		return HomebrewCommand
 	case GoInstall:
-		return method, "go install github.com/getlago/lago-cli/cmd/lago@latest", nil
+		return GoInstallCommand
+	case Script:
+		if filepath.ToSlash(filepath.Clean(directory)) == defaultScriptInstallDir {
+			return ScriptCommand
+		}
+		return strings.Replace(ScriptCommand, "| sh", "| LAGO_INSTALL_DIR="+shellQuote(directory)+" sh", 1)
 	default:
-		return method, "", nil
+		return ""
 	}
+}
+
+// shellQuote single-quotes a path when it contains anything a shell would interpret,
+// so a directory with a space in it survives a paste into a terminal.
+func shellQuote(value string) string {
+	if strings.IndexFunc(value, func(r rune) bool {
+		return !(r == '/' || r == '.' || r == '_' || r == '-' || r == '~' ||
+			(r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9'))
+	}) < 0 {
+		return value
+	}
+	return "'" + strings.ReplaceAll(value, "'", `'\''`) + "'"
 }
 
 // Detect classifies an executable path into the channel that installed it.
 //
 // Homebrew is identified by its Cellar or its prefix; `go install` by GOBIN, GOPATH/bin,
-// or a path ending in go/bin. Anything else is Unknown, and Unknown prints both commands
-// rather than guessing: telling someone to run `brew upgrade` on a binary Homebrew does
-// not own produces a confusing Homebrew error instead of an upgrade.
+// or a path ending in go/bin; the shell installer by its default /usr/local/bin, the
+// LAGO_INSTALL_DIR override, or ~/.local/bin. Homebrew is checked first because on
+// Intel macOS its prefix is /usr/local, and the executable path is symlink-resolved
+// before it gets here, so a brew-linked /usr/local/bin/lago reads as its Cellar path.
+// Anything else is Unknown, and Unknown prints every command rather than guessing:
+// telling someone to run `brew upgrade` on a binary Homebrew does not own produces a
+// confusing Homebrew error instead of an upgrade.
 func Detect(executable string) Method {
 	path := filepath.ToSlash(executable)
 	lower := strings.ToLower(path)
@@ -179,7 +218,29 @@ func Detect(executable string) Method {
 	if strings.HasSuffix(directory, "/go/bin") {
 		return GoInstall
 	}
+	for _, candidate := range scriptInstallDirs() {
+		if directory == filepath.ToSlash(filepath.Clean(candidate)) {
+			return Script
+		}
+	}
 	return Unknown
+}
+
+// scriptInstallDirs are the directories install.sh installs into: its default, the
+// override it honours, and the directory its error message tells a user without sudo
+// to pick. A binary copied there by hand from a release archive is upgraded the same
+// way, by re-running the installer, so the heuristic is right for that case too.
+const defaultScriptInstallDir = "/usr/local/bin"
+
+func scriptInstallDirs() []string {
+	dirs := []string{defaultScriptInstallDir}
+	if override := os.Getenv("LAGO_INSTALL_DIR"); override != "" {
+		dirs = append(dirs, override)
+	}
+	if home, err := os.UserHomeDir(); err == nil {
+		dirs = append(dirs, filepath.Join(home, ".local", "bin"))
+	}
+	return dirs
 }
 
 func goPathBin() string {
