@@ -519,3 +519,39 @@ func TestEventStreamWarnsOnceForTimestamplessTransactionIDs(t *testing.T) {
 		t.Errorf("warning did not count the two timestampless events with a transaction_id:\n%s", stderr)
 	}
 }
+
+// An API key is a secret, so init reads it without echoing it. Echo can only be
+// suppressed on a real terminal; anywhere else (tests, pipes, CI) the value was never
+// hidden to begin with and promptSecret falls back to the visible prompt rather than
+// failing or blocking.
+func TestPromptSecretFallsBackWithoutATerminal(t *testing.T) {
+	t.Parallel()
+	var out strings.Builder
+	reader := bufio.NewReader(strings.NewReader("lago_test_FAKE000000000000000000000000\n"))
+	got, err := promptSecret(reader, reader, &out, "API key")
+	if err != nil {
+		t.Fatalf("promptSecret failed: %v", err)
+	}
+	if got != "lago_test_FAKE000000000000000000000000" {
+		t.Errorf("promptSecret = %q", got)
+	}
+	if out.String() != "API key: " {
+		t.Errorf("promptSecret label = %q", out.String())
+	}
+}
+
+// The profile name typed at the init prompt becomes a config key and a --profile
+// argument, so it is rejected while it can still be retyped.
+func TestValidateProfileName(t *testing.T) {
+	t.Parallel()
+	for _, name := range []string{"default", "staging", "eu-live", "acme.test", "a_b", "e2e"} {
+		if err := validateProfileName(name); err != nil {
+			t.Errorf("validateProfileName(%q) = %v, want nil", name, err)
+		}
+	}
+	for _, name := range []string{"", " ", "-leading", "has space", "quote\"", "../escape", strings.Repeat("a", 65)} {
+		if err := validateProfileName(name); err == nil {
+			t.Errorf("validateProfileName(%q) accepted an invalid name", name)
+		}
+	}
+}
