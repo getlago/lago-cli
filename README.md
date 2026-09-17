@@ -108,6 +108,20 @@ $ lago init --api-key "$LAGO_API_KEY" --region self-hosted --api-url https://lag
 
 `--region us` and `--region eu` are shorthand for the two URLs in the table above; they resolve to exactly the same normalized host as passing `--api-url` explicitly.
 
+Run `lago init` with no flags and it asks instead. The profile name comes first, so a second environment gets its own name rather than overwriting `default`, and the API key is read without echoing: it never reaches your scrollback or a screen share.
+
+```console
+$ lago init
+Profile name [default]: staging
+Allow an anonymous release check at most once per day? (y/N) [N]: n
+API key (hidden):
+Region (us/eu/self-hosted) [us]: eu
+Connected to Lago as Example Organization.
+Saved eu profile "staging" to ~/.config/lago/config.toml (mode: live).
+```
+
+The release-check question is asked once, the first time you answer it. Every prompt is skipped when the answer is already on the command line or in the environment, so `lago init --profile staging --api-key "$LAGO_API_KEY" --region eu` stays non-interactive and scriptable.
+
 Check which host you are actually hitting, on any deployment. `RESOLVED_API_URL` is the base URL the CLI calls (`--output json` adds `api_url`, what the profile holds):
 
 ```console

@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"sort"
 	"strings"
@@ -140,7 +141,26 @@ func newInitCommand(app *App) *cobra.Command {
 				return apperr.Wrap(apperr.ExitGeneral, "load configuration", err)
 			}
 			profileName := firstNonBlank(app.profile, os.Getenv("LAGO_PROFILE"), cfg.CurrentProfile, "default")
-			existing := cfg.Profiles[profileName]
+			interactive := isInteractive(app)
+			reader := bufio.NewReader(app.In)
+			// The profile name was never asked for, so an interactive init always landed
+			// on "default": configuring a second environment overwrote the first without
+			// ever naming it. It is asked whenever --profile and LAGO_PROFILE left it
+			// unchosen, with the current profile as the default answer.
+			if interactive && app.profile == "" && os.Getenv("LAGO_PROFILE") == "" {
+				answer, promptErr := prompt(reader, app.Out, "Profile name", profileName)
+				if promptErr != nil {
+					return promptErr
+				}
+				if promptErr := validateProfileName(answer); promptErr != nil {
+					return promptErr
+				}
+				profileName = answer
+			}
+			existing, profileExists := cfg.Profiles[profileName]
+			if interactive && profileExists {
+				fmt.Fprintf(app.Out, "Profile %q already exists; its settings will be updated.\n", profileName)
+			}
 			// QA C-8, S-5: --insecure disables TLS verification for every later command
 			// on the profile, so it is written only when this init passes the flag. A
 			// re-init without it resets the profile to verified TLS: a setting that
@@ -151,8 +171,6 @@ func newInitCommand(app *App) *cobra.Command {
 			selectedRegion := firstNonBlank(region, existing.Region)
 			mode := firstNonBlank(app.mode, os.Getenv("LAGO_MODE"), existing.Mode)
 
-			interactive := isInteractive(app)
-			reader := bufio.NewReader(app.In)
 			if interactive && !updateCheckSet && !cfg.UpdateConsent {
 				answer, promptErr := prompt(reader, app.Out, "Allow an anonymous release check at most once per day? (y/N)", "N")
 				if promptErr != nil {
@@ -162,7 +180,7 @@ func newInitCommand(app *App) *cobra.Command {
 				updateCheckSet = true
 			}
 			if apiKey == "" && interactive {
-				apiKey, err = prompt(reader, app.Out, "API key", "")
+				apiKey, err = promptSecret(reader, app.In, app.Out, "API key")
 				if err != nil {
 					return err
 				}
@@ -497,6 +515,39 @@ func prompt(reader *bufio.Reader, out io.Writer, label, defaultValue string) (st
 		return "", apperr.Wrap(apperr.ExitGeneral, "read interactive input", err)
 	}
 	return firstNonBlank(strings.TrimSpace(value), defaultValue), nil
+}
+
+// promptSecret reads a value without echoing it. An API key typed at the prompt used
+// to stay in the terminal scrollback, in screen shares, and in whatever the terminal
+// emulator logs, so init never echoes one back. Echo can only be suppressed on a real
+// terminal; when the reader already holds buffered input, or stdin is not a terminal,
+// the value was never hidden in the first place and the visible prompt is used.
+func promptSecret(reader *bufio.Reader, in io.Reader, out io.Writer, label string) (string, error) {
+	file, ok := in.(*os.File)
+	if !ok || !term.IsTerminal(int(file.Fd())) || reader.Buffered() > 0 {
+		return prompt(reader, out, label, "")
+	}
+	fmt.Fprintf(out, "%s (hidden): ", label)
+	value, err := term.ReadPassword(int(file.Fd()))
+	// ReadPassword swallows the newline the user typed, so the next line of output
+	// would otherwise start on the prompt line.
+	fmt.Fprintln(out)
+	if err != nil && !errors.Is(err, io.EOF) {
+		return "", apperr.Wrap(apperr.ExitGeneral, "read interactive input", err)
+	}
+	return strings.TrimSpace(string(value)), nil
+}
+
+var profileNamePattern = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$`)
+
+// validateProfileName guards the name typed at the init prompt. Profile names become
+// config keys and are passed to --profile, so a blank or exotic answer is rejected
+// while it can still be retyped, rather than written to disk and hit later.
+func validateProfileName(name string) error {
+	if !profileNamePattern.MatchString(name) {
+		return apperr.New(apperr.ExitUsage, fmt.Sprintf("invalid profile name %q", name), "Start with a letter or digit and use letters, digits, dots, dashes, or underscores (64 characters max).")
+	}
+	return nil
 }
 
 // scalarString prints a JSON scalar for an identity block; nested values print nothing.
