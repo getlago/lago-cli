@@ -19,7 +19,11 @@ lago subscriptions alerts <external_id> [flags]
 ### Options
 
 ```
+      --all                          Fetch every page
   -h, --help                         help for alerts
+      --limit string                 Results per page (1-1000)
+      --page string                  Page number.
+      --per-page string              Number of records per page.
       --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
       --watch                        Poll and re-render when the response changes
       --watch-interval duration      Polling interval used with --watch (default 2s)

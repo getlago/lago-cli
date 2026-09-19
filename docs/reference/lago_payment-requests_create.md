@@ -20,7 +20,7 @@ lago payment-requests create [flags]
 ### Options
 
 ```
-      --email string                                The customer's email address used for sending dunning notifications
+      --email string                                The email address used for sending dunning notifications. When omitted, the customer's own email address is used.
       --external-customer-id string                 The customer external unique identifier (provided by your own application)
   -h, --help                                        help for create
       --input string                                Complete JSON request body or @file.json
