@@ -32,6 +32,8 @@ lago wallets update-customer-wallet <external_customer_id> <code> [flags]
       --invoice-requires-successful-payment string                   A boolean setting that, when set to true, delays issuing an invoice for a wallet top-up until a successful payment is made; if false, the invoice is issued immediately upon wallet top-up, regardless of the payment status. Default value of false.
       --metadata string                                              Metadata to set as key-value pairs. Keys are strings (max 100 characters), values can be strings (max 255 characters) or null.
       --name string                                                  The name of the wallet.
+      --paid-top-up-max-amount-cents string                          Maximum amount of cents that can be top-up with a single paid transaction.
+      --paid-top-up-min-amount-cents string                          Minimum amount of cents that can be top-up with a single paid transaction.
       --payment-method-payment-method-id string                      The unique identifier of the payment method (required when using a specific provider payment method).
       --payment-method-payment-method-type string                    The type of payment method to use.; one of: provider, manual
       --priority string                                              Wallet priority for ordering when a customer has multiple wallets. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50.

@@ -276,9 +276,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -598,9 +600,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -815,9 +819,11 @@
             "SOS",
             "SRD",
             "STD",
+            "SYP",
             "SZL",
             "THB",
             "TJS",
+            "TND",
             "TOP",
             "TRY",
             "TTD",
@@ -994,9 +1000,11 @@
             "SOS",
             "SRD",
             "STD",
+            "SYP",
             "SZL",
             "THB",
             "TJS",
+            "TND",
             "TOP",
             "TRY",
             "TTD",
@@ -1165,9 +1173,11 @@
             "SOS",
             "SRD",
             "STD",
+            "SYP",
             "SZL",
             "THB",
             "TJS",
+            "TND",
             "TOP",
             "TRY",
             "TTD",
@@ -1336,9 +1346,11 @@
             "SOS",
             "SRD",
             "STD",
+            "SYP",
             "SZL",
             "THB",
             "TJS",
+            "TND",
             "TOP",
             "TRY",
             "TTD",
@@ -1507,9 +1519,11 @@
             "SOS",
             "SRD",
             "STD",
+            "SYP",
             "SZL",
             "THB",
             "TJS",
+            "TND",
             "TOP",
             "TRY",
             "TTD",
@@ -1699,9 +1713,11 @@
             "SOS",
             "SRD",
             "STD",
+            "SYP",
             "SZL",
             "THB",
             "TJS",
+            "TND",
             "TOP",
             "TRY",
             "TTD",
@@ -3125,9 +3141,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -4022,9 +4040,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -4544,9 +4564,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -4785,9 +4807,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -5290,9 +5314,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -6700,9 +6726,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -8148,6 +8176,14 @@
           "description": "Number of records per page."
         },
         {
+          "name": "currency",
+          "flag": "currency",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "Filter the results by currency, expressed as an ISO 4217 code."
+        },
+        {
           "name": "payment_status",
           "flag": "payment-status",
           "in": "query",
@@ -8319,6 +8355,14 @@
           "type": "integer",
           "required": false,
           "description": "Number of records per page."
+        },
+        {
+          "name": "external_id",
+          "flag": "external-id",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "The subscription external unique identifier (provided by your own application)."
         },
         {
           "name": "plan_code",
@@ -9524,9 +9568,11 @@
             "SOS",
             "SRD",
             "STD",
+            "SYP",
             "SZL",
             "THB",
             "TJS",
+            "TND",
             "TOP",
             "TRY",
             "TTD",
@@ -9850,9 +9896,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -10766,9 +10814,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -12484,9 +12534,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -12884,7 +12936,7 @@
       "method": "PUT",
       "path": "/customers/{external_customer_id}/payment_methods/{lago_id}/set_as_default",
       "summary": "Set the payment method as default",
-      "description": "Use the payment method as default when not selected a payment method",
+      "description": "This endpoint sets a payment method as the customer's default one. It is the payment method Lago uses when a payment is triggered without an explicit one. Any other default payment method of the customer is unset.",
       "docs_url": "https://getlago.com/docs/api-reference/payment-methods/payment-method-object",
       "parameters": [
         {
@@ -12925,7 +12977,7 @@
           "in": "path",
           "type": "string",
           "required": true,
-          "description": "Payment receipt ID"
+          "description": "Unique identifier of the payment receipt."
         }
       ],
       "idempotent": true,
@@ -12991,9 +13043,9 @@
             ],
             "flag": "email",
             "type": "string",
-            "required": true,
+            "required": false,
             "complex": false,
-            "description": "The customer's email address used for sending dunning notifications"
+            "description": "The email address used for sending dunning notifications. When omitted, the customer's own email address is used."
           },
           {
             "path": [
@@ -13461,9 +13513,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -15269,9 +15323,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -16705,11 +16761,27 @@
             "terminated",
             "canceled"
           ]
+        },
+        {
+          "name": "page",
+          "flag": "page",
+          "in": "query",
+          "type": "integer",
+          "required": false,
+          "description": "Page number."
+        },
+        {
+          "name": "per_page",
+          "flag": "per-page",
+          "in": "query",
+          "type": "integer",
+          "required": false,
+          "description": "Number of records per page."
         }
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false,
+      "paginated": true,
       "mutation": false
     },
     {
@@ -17093,9 +17165,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -19082,9 +19156,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -19985,7 +20061,7 @@
             ],
             "flag": "currency",
             "type": "string",
-            "required": false,
+            "required": true,
             "complex": false,
             "description": "The currency of the wallet.",
             "enum": [
@@ -20104,9 +20180,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -20146,7 +20224,7 @@
             ],
             "flag": "external-customer-id",
             "type": "string",
-            "required": false,
+            "required": true,
             "complex": false,
             "description": "The customer external unique identifier (provided by your own application)"
           },
@@ -20311,7 +20389,7 @@
             ],
             "flag": "rate-amount",
             "type": "string",
-            "required": false,
+            "required": true,
             "complex": false,
             "description": "The rate of conversion between credits and the amount in the specified currency. It indicates the ratio or factor used to convert credits into the corresponding monetary value in the currency of the transaction."
           },
@@ -20347,6 +20425,16 @@
             "nullable": true,
             "complex": false,
             "description": "The name of the wallet transactions triggered when creating the wallet. It will appear on the invoice as the label for the fee. If not set, the label on the invoice will fallback to either `Prepaid credits - {{wallet_name}}` if the wallet name is set, or `Prepaid credits`."
+          },
+          {
+            "path": [
+              "transaction_priority"
+            ],
+            "flag": "transaction-priority",
+            "type": "integer",
+            "required": false,
+            "complex": false,
+            "description": "The priority of the wallet transactions triggered when creating the wallet. It drives the order in which credits are consumed. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50."
           }
         ],
         "required": true
@@ -20429,7 +20517,7 @@
             ],
             "flag": "currency",
             "type": "string",
-            "required": false,
+            "required": true,
             "complex": false,
             "description": "The currency of the wallet.",
             "enum": [
@@ -20548,9 +20636,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -20590,7 +20680,7 @@
             ],
             "flag": "external-customer-id",
             "type": "string",
-            "required": false,
+            "required": true,
             "complex": false,
             "description": "The customer external unique identifier (provided by your own application)"
           },
@@ -20755,7 +20845,7 @@
             ],
             "flag": "rate-amount",
             "type": "string",
-            "required": false,
+            "required": true,
             "complex": false,
             "description": "The rate of conversion between credits and the amount in the specified currency. It indicates the ratio or factor used to convert credits into the corresponding monetary value in the currency of the transaction."
           },
@@ -20791,6 +20881,16 @@
             "nullable": true,
             "complex": false,
             "description": "The name of the wallet transactions triggered when creating the wallet. It will appear on the invoice as the label for the fee. If not set, the label on the invoice will fallback to either `Prepaid credits - {{wallet_name}}` if the wallet name is set, or `Prepaid credits`."
+          },
+          {
+            "path": [
+              "transaction_priority"
+            ],
+            "flag": "transaction-priority",
+            "type": "integer",
+            "required": false,
+            "complex": false,
+            "description": "The priority of the wallet transactions triggered when creating the wallet. It drives the order in which credits are consumed. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50."
           }
         ],
         "required": true
@@ -20961,6 +21061,16 @@
           },
           {
             "path": [
+              "priority"
+            ],
+            "flag": "priority",
+            "type": "integer",
+            "required": false,
+            "complex": false,
+            "description": "The priority of the wallet transaction. It drives the order in which credits are consumed. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50."
+          },
+          {
+            "path": [
               "purchase_order_number"
             ],
             "flag": "purchase-order-number",
@@ -20980,6 +21090,17 @@
             "nullable": true,
             "complex": false,
             "description": "The number of voided credits."
+          },
+          {
+            "path": [
+              "voided_transaction_id"
+            ],
+            "flag": "voided-transaction-id",
+            "type": "string",
+            "required": false,
+            "nullable": true,
+            "complex": false,
+            "description": "Unique identifier of the inbound wallet transaction to void. Only available on traceable wallets, and the target transaction must still have a remaining amount."
           },
           {
             "path": [
@@ -21352,11 +21473,27 @@
           "type": "string",
           "required": true,
           "description": "A unique wallet identifier within a customer. It is either set by the user at creation or auto-generated by Lago if not provided."
+        },
+        {
+          "name": "page",
+          "flag": "page",
+          "in": "query",
+          "type": "integer",
+          "required": false,
+          "description": "Page number."
+        },
+        {
+          "name": "per_page",
+          "flag": "per-page",
+          "in": "query",
+          "type": "integer",
+          "required": false,
+          "description": "Number of records per page."
         }
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false,
+      "paginated": true,
       "mutation": false
     },
     {
@@ -21472,6 +21609,14 @@
           "type": "integer",
           "required": false,
           "description": "Number of records per page."
+        },
+        {
+          "name": "currency",
+          "flag": "currency",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "Filter the results by currency, expressed as an ISO 4217 code."
         },
         {
           "name": "billing_entity_codes[]",
@@ -21852,6 +21997,28 @@
           },
           {
             "path": [
+              "paid_top_up_max_amount_cents"
+            ],
+            "flag": "paid-top-up-max-amount-cents",
+            "type": "integer",
+            "required": false,
+            "nullable": true,
+            "complex": false,
+            "description": "Maximum amount of cents that can be top-up with a single paid transaction."
+          },
+          {
+            "path": [
+              "paid_top_up_min_amount_cents"
+            ],
+            "flag": "paid-top-up-min-amount-cents",
+            "type": "integer",
+            "required": false,
+            "nullable": true,
+            "complex": false,
+            "description": "Minimum amount of cents that can be top-up with a single paid transaction."
+          },
+          {
+            "path": [
               "payment_method",
               "payment_method_id"
             ],
@@ -22053,6 +22220,28 @@
             "nullable": true,
             "complex": false,
             "description": "The name of the wallet."
+          },
+          {
+            "path": [
+              "paid_top_up_max_amount_cents"
+            ],
+            "flag": "paid-top-up-max-amount-cents",
+            "type": "integer",
+            "required": false,
+            "nullable": true,
+            "complex": false,
+            "description": "Maximum amount of cents that can be top-up with a single paid transaction."
+          },
+          {
+            "path": [
+              "paid_top_up_min_amount_cents"
+            ],
+            "flag": "paid-top-up-min-amount-cents",
+            "type": "integer",
+            "required": false,
+            "nullable": true,
+            "complex": false,
+            "description": "Minimum amount of cents that can be top-up with a single paid transaction."
           },
           {
             "path": [
@@ -22277,6 +22466,14 @@
           "type": "string",
           "required": false,
           "description": "The transaction type of the wallet transaction. Possible values are `inbound` (increasing the wallet balance) or `outbound` (decreasing the wallet balance)."
+        },
+        {
+          "name": "metadata[key]",
+          "flag": "metadata[key]",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "Filter wallet transactions by metadata. Replace `key` with the actual metadata key you want to match, and provide the corresponding value. For example, `metadata[color]=blue`."
         }
       ],
       "idempotent": true,
@@ -22539,6 +22736,6 @@
       "mutation": false
     }
   ],
-  "spec_sha256": "ce82ac3701caa4ab59bb35557a4e592adb0b81ce69fa37549fde391fc241aa1a",
-  "spec_version": "1.52.1"
+  "spec_sha256": "f41f86039f834a9b7594d5043ddb0a733a931b6cdc8927c706e51e3cae23ea6b",
+  "spec_version": "1.53.0"
 }

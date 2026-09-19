@@ -22,6 +22,7 @@ lago wallets wallet-transactions <lago_id> [flags]
       --all                         Fetch every page
   -h, --help                        help for wallet-transactions
       --limit string                Results per page (1-1000)
+      --metadata[key] string        Filter wallet transactions by metadata. Replace 'key' with the actual metadata key you want to match, and provide the corresponding value. For example, 'metadata[color]=blue'.
       --page string                 Page number.
       --per-page string             Number of records per page.
       --status string               The status of the wallet transaction. Possible values are 'pending' or 'settled'.
