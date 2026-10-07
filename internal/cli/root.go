@@ -72,6 +72,7 @@ func NewRoot(app *App) *cobra.Command {
 	root.AddCommand(newVersionCommand(app))
 	root.AddCommand(newUpgradeCommand(app))
 	root.AddCommand(newInitCommand(app))
+	root.AddCommand(newProfileCommand(app))
 	root.AddCommand(newWhoamiCommand(app))
 	root.AddCommand(newDoctorCommand(app))
 	root.AddCommand(newAPICommand(app))

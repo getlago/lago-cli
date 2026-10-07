@@ -1,0 +1,94 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-profile-add - Add or update a named profile and validate its credentials
+
+
+.SH SYNOPSIS
+\fBlago profile add NAME [flags]\fP
+
+
+.SH DESCRIPTION
+Add or update a named profile and validate its credentials
+
+
+.SH OPTIONS
+\fB-h\fP, \fB--help\fP[=false]
+	help for add
+
+.PP
+\fB--region\fP=""
+	Lago region: us, eu, or self-hosted
+
+.PP
+\fB--update-check\fP[=false]
+	Allow a once-daily anonymous release check
+
+.PP
+\fB--use\fP[=false]
+	Make this profile the current profile (the first profile is current by default)
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago profile add staging
+  lago profile add staging --api-key "$LAGO_API_KEY" --region eu --mode test --use
+.EE
+
+
+.SH SEE ALSO
+\fBlago-profile(1)\fP

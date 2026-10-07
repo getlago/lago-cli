@@ -57,6 +57,7 @@ lago [flags]
 * [lago payment-requests](lago_payment-requests)	 - Manage Lago payment requests
 * [lago payments](lago_payments)	 - Manage Lago payments
 * [lago plans](lago_plans)	 - Manage Lago plans
+* [lago profile](lago_profile)	 - Manage configured Lago profiles
 * [lago quotes](lago_quotes)	 - Manage Lago quotes
 * [lago seed](lago_seed)	 - Populate a test account with reproducible data
 * [lago subscriptions](lago_subscriptions)	 - Manage Lago subscriptions
