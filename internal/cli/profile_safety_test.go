@@ -204,3 +204,69 @@ func TestQA_F2_AliasRejectsCredentialAndTLSFlags(t *testing.T) {
 		t.Errorf("alias saved as %v", got)
 	}
 }
+
+func TestProfileAddSavesNamedProfile(t *testing.T) {
+	setCleanEnvironment(t)
+	path := filepath.Join(t.TempDir(), "config.toml")
+	t.Setenv("LAGO_CONFIG_FILE", path)
+	url := organizationServer(t)
+
+	if _, _, err := initProfile(t, url, "first"); err != nil {
+		t.Fatalf("init failed: %v", err)
+	}
+	if _, _, err := execute(t, "", "--api-url", url, "--api-key", "lago_test_FAKE000000000000000000000000", "--mode", "test", "--insecure", "profile", "add", "staging", "--region", "self-hosted"); err != nil {
+		t.Fatalf("profile add failed: %v", err)
+	}
+	cfg := loadConfig(t, path)
+	if _, ok := cfg.Profiles["staging"]; !ok {
+		t.Fatal("profile add did not save the staging profile")
+	}
+	if cfg.CurrentProfile != "first" {
+		t.Errorf("profile add switched current_profile to %q without --use", cfg.CurrentProfile)
+	}
+
+	if _, _, err := execute(t, "", "--profile", "other", "profile", "add", "staging"); err == nil {
+		t.Error("profile add accepted a conflicting --profile")
+	}
+	if _, _, err := execute(t, "", "profile", "add", "-bad name"); err == nil {
+		t.Error("profile add accepted an invalid name")
+	}
+}
+
+func TestProfileListHidesAPIKeys(t *testing.T) {
+	setCleanEnvironment(t)
+	path := filepath.Join(t.TempDir(), "config.toml")
+	t.Setenv("LAGO_CONFIG_FILE", path)
+	url := organizationServer(t)
+
+	stdout, _, err := execute(t, "", "profile", "list")
+	if err != nil || !strings.Contains(stdout, "No profiles configured") {
+		t.Fatalf("empty list: err=%v stdout=%q", err, stdout)
+	}
+	for _, name := range []string{"first", "second"} {
+		if _, _, err := initProfile(t, url, name); err != nil {
+			t.Fatalf("init %s failed: %v", name, err)
+		}
+	}
+
+	stdout, _, err = execute(t, "", "profile", "list")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{"first", "second", url, "Example Organization"} {
+		if !strings.Contains(stdout, want) {
+			t.Errorf("table output is missing %q:\n%s", want, stdout)
+		}
+	}
+
+	stdout, _, err = execute(t, "", "--profile", "second", "profile", "list", "--output", "json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(stdout, "lago_test_FAKE") || strings.Contains(stdout, "api_key") {
+		t.Errorf("profile list leaked an API key:\n%s", stdout)
+	}
+	if !strings.Contains(stdout, `"active": true`) || !strings.Contains(stdout, `"name": "second"`) {
+		t.Errorf("json output does not mark the --profile selection active:\n%s", stdout)
+	}
+}

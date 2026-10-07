@@ -90,7 +90,7 @@ func newAliasCommand(app *App) *cobra.Command {
 			if flag := reservedAliasFlag(expansion); flag != "" {
 				return apperr.New(apperr.ExitUsage, fmt.Sprintf("alias expansion may not set %s", flag), "Credentials and TLS choices belong in profiles: run `lago init --profile <name>` and put --profile <name> in the alias instead.")
 			}
-			for _, reserved := range append(generatedResources(), "alias", "api", "completion", "docs", "doctor", "fixtures", "help", "init", "logs", "seed", "upgrade", "version", "whoami") {
+			for _, reserved := range append(generatedResources(), "alias", "api", "completion", "docs", "doctor", "fixtures", "help", "init", "logs", "profile", "seed", "upgrade", "version", "whoami") {
 				if name == reserved {
 					return apperr.New(apperr.ExitUsage, fmt.Sprintf("%q is a built-in command", name), "Choose an alias name that does not shadow the command tree.")
 				}

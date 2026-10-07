@@ -284,6 +284,7 @@ func TestPassiveUpdateSkipsOfflineCommands(t *testing.T) {
 		{"version"}, {"help"}, {"completion", "zsh"}, {"init"}, {"upgrade"},
 		{"--output", "json", "version"}, {"--profile", "staging", "version"},
 		{"--output=json", "version"}, {"--verbose", "version"}, {"--dry-run", "init"}, {},
+		{"profile", "add", "staging"}, {"--profile", "staging", "profile", "list"},
 	} {
 		if !excludedPassiveCommand(arguments) {
 			t.Errorf("%v was not excluded from the update check", arguments)
@@ -381,7 +382,7 @@ func TestFinishPassiveUpdateAnnouncesAndRecords(t *testing.T) {
 	available := make(chan passiveUpdateResult, 1)
 	available <- passiveUpdateResult{
 		check: cliupdate.Check{Current: "v1.0.0", Latest: "v1.1.0", UpdateAvailable: true},
-		cfg:   file, path: path,
+		path:  path,
 	}
 	var announced strings.Builder
 	finishPassiveUpdate(available, &announced)
@@ -397,11 +398,37 @@ func TestFinishPassiveUpdateAnnouncesAndRecords(t *testing.T) {
 	}
 
 	failed := make(chan passiveUpdateResult, 1)
-	failed <- passiveUpdateResult{err: errors.New("network down"), cfg: file, path: path}
+	failed <- passiveUpdateResult{err: errors.New("network down"), path: path}
 	var quiet strings.Builder
 	finishPassiveUpdate(failed, &quiet)
 	if quiet.String() != "" {
 		t.Errorf("a failed check produced output: %q", quiet.String())
+	}
+
+	// The command runs between the start of the check and its end. Whatever it saved
+	// must survive the check being recorded, not be replaced by the copy loaded when
+	// the check started.
+	file, err = config.Load(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	file.Profiles["staging"] = config.Profile{Region: config.RegionEU, APIURL: "https://api.eu.getlago.com/api/v1", Mode: config.ModeTest}
+	file.CurrentProfile = "staging"
+	if err := config.Save(path, file); err != nil {
+		t.Fatal(err)
+	}
+	again := make(chan passiveUpdateResult, 1)
+	again <- passiveUpdateResult{check: cliupdate.Check{Current: "v1.0.0", Latest: "v1.2.0"}, path: path}
+	finishPassiveUpdate(again, &strings.Builder{})
+	saved, err = config.Load(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := saved.Profiles["staging"]; !ok || saved.CurrentProfile != "staging" {
+		t.Errorf("recording the check overwrote the command's configuration: %+v", saved)
+	}
+	if saved.LatestVersion != "v1.2.0" {
+		t.Errorf("the second check was not recorded: %q", saved.LatestVersion)
 	}
 
 	// A pending check must not block the command that is finishing.

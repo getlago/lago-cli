@@ -26,7 +26,6 @@ func updateAPIBase() string {
 
 type passiveUpdateResult struct {
 	check cliupdate.Check
-	cfg   config.File
 	path  string
 	err   error
 }
@@ -52,7 +51,7 @@ func startPassiveUpdate(arguments []string, version string) <-chan passiveUpdate
 		ctx, cancel := context.WithTimeout(context.Background(), 750*time.Millisecond)
 		defer cancel()
 		check, _, checkErr := cliupdate.Latest(ctx, version, channel, "lago-cli/"+version, updateAPIBase())
-		result <- passiveUpdateResult{check: check, cfg: cfg, path: path, err: checkErr}
+		result <- passiveUpdateResult{check: check, path: path, err: checkErr}
 	}()
 	return result
 }
@@ -66,9 +65,16 @@ func finishPassiveUpdate(result <-chan passiveUpdateResult, errOut interface{ Wr
 		if update.err != nil {
 			return
 		}
-		update.cfg.LastUpdateCheck = time.Now().UTC().Format(time.RFC3339)
-		update.cfg.LatestVersion = update.check.Latest
-		_ = config.Save(update.path, update.cfg)
+		// The configuration is read again here rather than reused from when the check
+		// started: the command ran in between, and saving that older copy wiped out
+		// whatever it wrote, such as a profile added by `lago profile add`. If the file
+		// can no longer be read, the check is not recorded rather than risking it.
+		cfg, err := config.Load(update.path)
+		if err == nil {
+			cfg.LastUpdateCheck = time.Now().UTC().Format(time.RFC3339)
+			cfg.LatestVersion = update.check.Latest
+			_ = config.Save(update.path, cfg)
+		}
 		if update.check.UpdateAvailable {
 			_, _ = fmt.Fprintf(errOut, "A newer Lago CLI is available: %s (current %s). Run `lago upgrade`.\n", update.check.Latest, update.check.Current)
 		}
@@ -101,7 +107,7 @@ func excludedPassiveCommand(arguments []string) bool {
 			continue
 		}
 		switch argument {
-		case "completion", "help", "init", "upgrade", "version":
+		case "completion", "help", "init", "profile", "upgrade", "version":
 			return true
 		default:
 			return false

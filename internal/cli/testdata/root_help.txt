@@ -36,6 +36,7 @@ Available Commands:
   payment-requests  Manage Lago payment requests
   payments          Manage Lago payments
   plans             Manage Lago plans
+  profile           Manage configured Lago profiles
   quotes            Manage Lago quotes
   seed              Populate a test account with reproducible data
   subscriptions     Manage Lago subscriptions
