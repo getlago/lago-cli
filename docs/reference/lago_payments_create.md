@@ -20,7 +20,7 @@ lago payments create [flags]
 ### Options
 
 ```
-      --amount-cents string   The payment amount in cents
+      --amount-cents string   The payment amount in cents. It must be greater than zero.
   -h, --help                  help for create
       --input string          Complete JSON request body or @file.json
       --invoice-id string     Unique identifier assigned to the invoice

@@ -19,9 +19,10 @@ Evaluate an expression for a billable metric creation by providing the expressio
 
 .PP
 \fB--expression\fP=""
-	Expression used to calculate the event units. The expression is evalutated for each event and the result is then used to calculate the total aggregated units.
-Accepted function are 'ceil', 'concat' and 'round' as well as '+', '-', '\\' and '*' operations.
-Round is accepting an optional second parameter to specify the number of decimal.
+	Expression used to calculate the event units. The expression is evaluated for each event and the result is then used to calculate the total aggregated units.
+Event values are read with 'event.code', 'event.timestamp' and 'event.properties.\&'.
+Accepted functions are 'ceil', 'concat', 'floor', 'greatest', 'least' and 'round' as well as '+', '-', '/' and '*' operations.
+\&'ceil', 'floor' and 'round' accept an optional second parameter to specify the number of decimals.
 
 .PP
 \fB-h\fP, \fB--help\fP[=false]

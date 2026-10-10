@@ -22,6 +22,10 @@ This endpoint retrieves all existing api logs that represent requests performed 
 	Filter results by API version
 
 .PP
+\fB--clients\fP=""
+	Filter results by the client that issued the request, as reported by its user agent.
+
+.PP
 \fB--from-date\fP=""
 	Filter api logs from a specific date.
 
@@ -51,7 +55,7 @@ This endpoint retrieves all existing api logs that represent requests performed 
 
 .PP
 \fB--request-paths\fP=""
-	Filter results by the path of the request
+	Filter results by the path of the request. A value containing '*' is matched as a wildcard, otherwise the path must match exactly.
 
 .PP
 \fB--to-date\fP=""

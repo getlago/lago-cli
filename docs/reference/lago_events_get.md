@@ -4,7 +4,7 @@ Retrieve a specific event
 
 ### Synopsis
 
-This endpoint is used for retrieving a specific usage measurement event that has been sent to a customer or a subscription.
+This endpoint is used for retrieving a specific usage measurement event that has been sent to a subscription.
 
 Note that transaction_id is unique per external_subscription_id so multiple subscriptions can share the same transaction_id. This endpoint will only return the first event found with the given transaction_id.
 

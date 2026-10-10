@@ -21,7 +21,7 @@ lago payment-receipts list [flags]
 ```
       --all                       Fetch every page
   -h, --help                      help for list
-      --invoice-id string         Filter payment receipts by invoice id.
+      --invoice-id string         Filter payment receipts by invoice. It returns the receipts of the payments made on this invoice, including the payments made through a payment request that covers it.
       --limit string              Results per page (1-1000)
       --page string               Page number.
       --per-page string           Number of records per page.

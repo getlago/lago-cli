@@ -21,6 +21,7 @@ lago api-logs list [flags]
 ```
       --all                       Fetch every page
       --api-version string        Filter results by API version
+      --clients string            Filter results by the client that issued the request, as reported by its user agent.
       --from-date string          Filter api logs from a specific date.
   -h, --help                      help for list
       --http-methods string       Filter results by HTTP methods
@@ -28,7 +29,7 @@ lago api-logs list [flags]
       --limit string              Results per page (1-1000)
       --page string               Page number.
       --per-page string           Number of records per page.
-      --request-paths string      Filter results by the path of the request
+      --request-paths string      Filter results by the path of the request. A value containing '*' is matched as a wildcard, otherwise the path must match exactly.
       --to-date string            Filter api logs up to a specific date.
       --watch                     Poll and re-render when the response changes
       --watch-interval duration   Polling interval used with --watch (default 2s)

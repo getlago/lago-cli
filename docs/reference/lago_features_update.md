@@ -4,7 +4,7 @@ Update a feature
 
 ### Synopsis
 
-This endpoint updates an existing feature representing an entitlement component of your application.
+This endpoint updates an existing feature representing an entitlement component of your application. Only the fields present in the payload are updated. Privileges are matched by their code, an unknown code adds a new privilege and a known one updates its name and adds the select options of the payload to the existing ones. The value type of an existing privilege cannot be changed. Privileges left out of the payload are kept, use the delete privilege endpoint to remove one.
 
 ```
 lago features update <code> [flags]

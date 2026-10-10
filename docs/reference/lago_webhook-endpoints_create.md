@@ -24,7 +24,7 @@ lago webhook-endpoints create [flags]
   -h, --help                    help for create
       --input string            Complete JSON request body or @file.json
       --name string             The name of the webhook.
-      --signature-algo string   The signature used for the webhook. If no value is passed,; one of: jwt, hmac,
+      --signature-algo string   The algorithm used to sign the webhook payload. Defaults to 'jwt' when no value is passed.; one of: jwt, hmac,
       --webhook-url string      The URL of the webhook endpoint.
 ```
 

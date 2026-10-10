@@ -26,10 +26,12 @@ This field allows you to control the behavior of the credit note generation:
 .IP \(bu 2
 \&'refund': A credit note is generated for the unused subscription time. If the invoice is paid or partially paid, the unused paid amount is refunded; any unpaid unused amount is credited back to the customer.
 .IP \(bu 2
+\&'offset': A credit note is generated for the unused subscription time. If the invoice is paid or partially paid, the unused paid amount is refunded; any unpaid unused amount is applied to the invoice reducing its amount due.
+.IP \(bu 2
 \&'skip': No credit note is generated for the unused subscription time.
 
 .PP
-\fINote: This field is only applicable to pay-in-advance plans and is ignored for pay-in-arrears plans.\fP; one of: credit, refund, skip
+\fINote: This field is only applicable to pay-in-advance plans and is ignored for pay-in-arrears plans.\fP; one of: credit, refund, offset, skip
 
 .PP
 \fB--on-termination-invoice\fP=""

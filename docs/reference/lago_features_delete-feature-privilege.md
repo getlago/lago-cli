@@ -1,10 +1,10 @@
 ## lago features delete-feature-privilege
 
-Delete a privilege. Deleting a privilege removes it from all plans and subscriptions.
+Delete a privilege
 
 ### Synopsis
 
-Delete privilege from feature. Deleting a privilege removes it from all plans and subscriptions.
+This endpoint deletes a privilege from a feature. Deleting a privilege removes it from all plans and subscriptions.
 
 ```
 lago features delete-feature-privilege <code> <privilege_code> [flags]

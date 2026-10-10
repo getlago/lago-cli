@@ -23,11 +23,11 @@ This endpoint is used to create a new billing entity
 
 .PP
 \fB--billing-configuration-document-locale\fP=""
-	The language of the documents generated for this billing entity
+	The language of the documents generated for this billing entity, in the ISO 639-1 format.
 
 .PP
 \fB--billing-configuration-invoice-footer\fP=""
-	The footer text to be displayed on invoices for this billing entity
+	The footer text to be displayed on invoices for this billing entity (600 characters max).
 
 .PP
 \fB--billing-configuration-invoice-grace-period\fP=""
@@ -55,11 +55,11 @@ This endpoint is used to create a new billing entity
 
 .PP
 \fB--default-currency\fP=""
-	The default currency of the billing entity; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SZL, THB, TJS, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
+	The default currency of the billing entity; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SYP, SZL, THB, TJS, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
 
 .PP
 \fB--document-number-prefix\fP=""
-	The prefix used in document numbers for this billing entity
+	The prefix used in document numbers for this billing entity (1 to 10 characters). It is upper cased. When it is not provided, Lago builds one from the first three letters of the name and the last four characters of the identifier.
 
 .PP
 \fB--document-numbering\fP=""
@@ -69,7 +69,7 @@ This endpoint is used to create a new billing entity
 
 .PP
 \fB--einvoicing\fP=""
-	Whether e-invoicing is enabled for this billing entity
+	Whether e-invoicing is enabled for this billing entity. It can only be enabled when the billing entity country is 'FR' or 'DE'.
 
 .PP
 \fB--email\fP=""
@@ -81,7 +81,7 @@ This endpoint is used to create a new billing entity
 
 .PP
 \fB--eu-tax-management\fP=""
-	Whether EU tax management is enabled for this billing entity
+	Whether EU tax management is enabled for this billing entity. It can only be enabled when the billing entity country is in the European Union.
 
 .PP
 \fB--finalize-zero-amount-invoice\fP=""
@@ -105,7 +105,7 @@ This endpoint is used to create a new billing entity
 
 .PP
 \fB--logo\fP=""
-	The base64 encoded logo image for the billing entity
+	The base64 encoded logo image for the billing entity. Accepted formats are PNG, JPG and JPEG, up to 800 kB.
 
 .PP
 \fB--name\fP=""

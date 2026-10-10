@@ -20,7 +20,7 @@ lago subscriptions update-subscription-charge-filter <external_id> <charge_code>
 ### Options
 
 ```
-      --cascade-updates string                               This field determines whether the changes made to the filter should be cascaded to the children plans. When set to 'true', the changes will be cascaded into children. Conversely, when set to 'false', the changes will only be applied to the plan itself. If not defined in the request, default value is 'false'.
+      --cascade-updates string                               This field determines whether the changes made to the filter should be cascaded to the children plans. When set to 'true', the changes will be cascaded into children. Conversely, when set to 'false', the changes will only be applied to the plan itself. If not defined in the request, default value is 'false'. This field only applies to plan charge filters and is ignored on the subscription charge filter endpoints.
   -h, --help                                                 help for update-subscription-charge-filter
       --input string                                         Complete JSON request body or @file.json
       --invoice-display-name string                          Specifies the name that will be displayed on an invoice. If no value is set for this field, the values of the filter will be used as the default display name.
@@ -40,7 +40,7 @@ lago subscriptions update-subscription-charge-filter <external_id> <charge_code>
       --properties-pricing-group-keys string                 The list of event properties that are used to group the events on the invoice.
       --properties-rate string                               The percentage rate that is applied to the amount of each transaction for a 'percentage' charge model. It is expressed as a decimal value.
       --properties-volume-ranges string                      Volume ranges, sorted from bottom to top tiers, used for a 'volume' charge model.
-      --subscription-status string                           Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
+      --subscription-status string                           Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', 'canceled', or 'incomplete'.; one of: pending, active, terminated, canceled, incomplete
       --values string                                        List of possible filter values. The key and values must match one of the billable metric filters.
 ```
 

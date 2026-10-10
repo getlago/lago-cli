@@ -30,7 +30,7 @@ lago subscriptions list [flags]
       --page string                   Page number.
       --per-page string               Number of records per page.
       --plan-code string              The unique code representing the plan to be attached to the customer. This code must correspond to the code property of one of the active plans.
-      --status string                 If the field is not defined, Lago will return only 'active' subscriptions. However, if you wish to fetch subscriptions by different status you can define them in a status[] query param. Available filter values: 'pending', 'canceled', 'terminated', 'active'.
+      --status string                 If the field is not defined, Lago will return only 'active' subscriptions. However, if you wish to fetch subscriptions by different status you can define them in a status[] query param. Available filter values: 'pending', 'canceled', 'terminated', 'active', 'incomplete'.
       --watch                         Poll and re-render when the response changes
       --watch-interval duration       Polling interval used with --watch (default 2s)
 ```
