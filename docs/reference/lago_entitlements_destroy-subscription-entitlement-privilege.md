@@ -4,7 +4,7 @@ Remove a privilege from a subscription entitlement override
 
 ### Synopsis
 
-This endpoint removes a specific privilege from a subscription entitlement. The privilege entitlement remains available from the plan.
+This endpoint removes a specific privilege from a subscription entitlement. The plan keeps the privilege and other subscriptions are not affected, but this subscription stops getting it. It returns the full list of entitlements remaining on the subscription.
 
 ```
 lago entitlements destroy-subscription-entitlement-privilege <external_id> <feature_code> <privilege_code> [flags]
@@ -21,7 +21,7 @@ lago entitlements destroy-subscription-entitlement-privilege <external_id> <feat
 
 ```
   -h, --help                         help for destroy-subscription-entitlement-privilege
-      --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
+      --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', 'canceled', or 'incomplete'.; one of: pending, active, terminated, canceled, incomplete
 ```
 
 ### Options inherited from parent commands

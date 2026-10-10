@@ -12,6 +12,12 @@ lago-plans-update-plan-charge - Update a charge
 .SH DESCRIPTION
 This endpoint updates a specific charge for a plan.
 
+.PP
+The payload replaces the charge configuration: \fBcharge_model\fR must be sent on every update, and \fBinvoice_display_name\fR is cleared when it is left out.
+
+.PP
+Once the plan is attached to a subscription, only \fBinvoice_display_name\fR, \fBproperties\fR, \fBfilters\fR, \fBtax_codes\fR, \fBapplied_pricing_unit\fR and \fBaccepts_target_wallet\fR are applied. The other fields are ignored.
+
 
 .SH OPTIONS
 \fB--accepts-target-wallet\fP=""

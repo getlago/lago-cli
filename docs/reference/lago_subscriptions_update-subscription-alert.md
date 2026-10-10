@@ -25,7 +25,7 @@ lago subscriptions update-subscription-alert <external_id> <code> [flags]
   -h, --help                          help for update-subscription-alert
       --input string                  Complete JSON request body or @file.json
       --name string                   The name of the alert.
-      --subscription-status string    Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
+      --subscription-status string    Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', 'canceled', or 'incomplete'.; one of: pending, active, terminated, canceled, incomplete
       --thresholds string             Array of thresholds associated with the alert.
 ```
 

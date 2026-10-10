@@ -149,7 +149,7 @@
             "type": "integer",
             "required": true,
             "complex": false,
-            "description": "The cost of the add-on in cents, excluding any applicable taxes, that is billed to a customer. By creating a one-off invoice, you will be able to override this value."
+            "description": "The cost of the add-on in cents, excluding any applicable taxes, that is billed to a customer. It must be greater than zero. By creating a one-off invoice, you will be able to override this value."
           },
           {
             "path": [
@@ -276,9 +276,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -368,7 +370,7 @@
       "method": "DELETE",
       "path": "/add_ons/{code}",
       "summary": "Delete an add-on",
-      "description": "This endpoint is used to delete an existing add-on.",
+      "description": "This endpoint is used to delete an existing add-on. The fixed charges that use this add-on are deleted too.",
       "docs_url": "https://getlago.com/docs/api-reference/add-ons/add-on-object",
       "parameters": [
         {
@@ -471,7 +473,7 @@
             "type": "integer",
             "required": false,
             "complex": false,
-            "description": "The cost of the add-on in cents, excluding any applicable taxes, that is billed to a customer. By creating a one-off invoice, you will be able to override this value."
+            "description": "The cost of the add-on in cents, excluding any applicable taxes, that is billed to a customer. It must be greater than zero. By creating a one-off invoice, you will be able to override this value."
           },
           {
             "path": [
@@ -598,9 +600,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -815,9 +819,11 @@
             "SOS",
             "SRD",
             "STD",
+            "SYP",
             "SZL",
             "THB",
             "TJS",
+            "TND",
             "TOP",
             "TRY",
             "TTD",
@@ -847,6 +853,14 @@
           "type": "string",
           "required": false,
           "description": "The customer external unique identifier (provided by your own application). Use it to filter revenue analytics at the customer level."
+        },
+        {
+          "name": "billing_entity_code",
+          "flag": "billing-entity-code",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "Restrict the analytics to a single billing entity, identified by its code. An unknown code is ignored and the analytics cover the whole organization."
         },
         {
           "name": "months",
@@ -994,9 +1008,11 @@
             "SOS",
             "SRD",
             "STD",
+            "SYP",
             "SZL",
             "THB",
             "TJS",
+            "TND",
             "TOP",
             "TRY",
             "TTD",
@@ -1018,6 +1034,14 @@
             "ZAR",
             "ZMW"
           ]
+        },
+        {
+          "name": "billing_entity_code",
+          "flag": "billing-entity-code",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "Restrict the analytics to a single billing entity, identified by its code. An unknown code is ignored and the analytics cover the whole organization."
         },
         {
           "name": "months",
@@ -1165,9 +1189,11 @@
             "SOS",
             "SRD",
             "STD",
+            "SYP",
             "SZL",
             "THB",
             "TJS",
+            "TND",
             "TOP",
             "TRY",
             "TTD",
@@ -1191,6 +1217,14 @@
           ]
         },
         {
+          "name": "billing_entity_code",
+          "flag": "billing-entity-code",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "Restrict the analytics to a single billing entity, identified by its code. An unknown code is ignored and the analytics cover the whole organization."
+        },
+        {
           "name": "months",
           "flag": "months",
           "in": "query",
@@ -1211,7 +1245,7 @@
       "method": "GET",
       "path": "/analytics/mrr",
       "summary": "List MRR",
-      "description": "This endpoint is used to list MRR.",
+      "description": "Quantifies the revenue generated from `subscription` fees on a monthly basis. This figure is calculated post-application of applicable taxes and deduction of any applicable discounts. The method of calculation varies based on the subscription billing cycle:\n\n- Revenue from `monthly` subscription invoices is included in the MRR for the month in which the invoice is issued.\n- Revenue from `quarterly` subscription invoices is distributed evenly over three months. This distribution applies to fees paid in advance (allocated to the next remaining months depending on calendar or anniversary billing) as well as to fees paid in arrears (allocated to the preceding months depending on calendar or anniversary billing).\n- Revenue from `yearly` subscription invoices is distributed evenly over twelve months. This allocation is applicable for fees paid in advance (spread over the next remaining months depending on calendar or anniversary billing) and for fees paid in arrears (spread over the previous months depending on calendar or anniversary billing).\n- Revenue from `semiannual` subscription invoices is distributed evenly over six months. This allocation is applicable for fees paid in advance (spread over the next remaining months depending on calendar or anniversary billing) and for fees paid in arrears (spread over the previous months depending on calendar or anniversary billing).\n- Revenue from `weekly` subscription invoices, the total revenue from all invoices issued within a month is summed up. This total is then divided by the number of invoices issued during that month, and the result is multiplied by 4.33, representing the average number of weeks in a month.",
       "parameters": [
         {
           "name": "currency",
@@ -1219,7 +1253,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Quantifies the revenue generated from `subscription` fees on a monthly basis. This figure is calculated post-application of applicable taxes and deduction of any applicable discounts. The method of calculation varies based on the subscription billing cycle:\n\n- Revenue from `monthly` subscription invoices is included in the MRR for the month in which the invoice is issued.\n- Revenue from `quarterly` subscription invoices is distributed evenly over three months. This distribution applies to fees paid in advance (allocated to the next remaining months depending on calendar or anniversary billing) as well as to fees paid in arrears (allocated to the preceding months depending on calendar or anniversary billing).\n- Revenue from `yearly` subscription invoices is distributed evenly over twelve months. This allocation is applicable for fees paid in advance (spread over the next remaining months depending on calendar or anniversary billing) and for fees paid in arrears (spread over the previous months depending on calendar or anniversary billing).\n- Revenue from `semiannual` subscription invoices is distributed evenly over six months. This allocation is applicable for fees paid in advance (spread over the next remaining months depending on calendar or anniversary billing) and for fees paid in arrears (spread over the previous months depending on calendar or anniversary billing).\n- Revenue from `weekly` subscription invoices, the total revenue from all invoices issued within a month is summed up. This total is then divided by the number of invoices issued during that month, and the result is multiplied by 4.33, representing the average number of weeks in a month.",
+          "description": "The currency of MRR analytics. Format must be ISO 4217.",
           "enum": [
             "AED",
             "AFN",
@@ -1336,9 +1370,11 @@
             "SOS",
             "SRD",
             "STD",
+            "SYP",
             "SZL",
             "THB",
             "TJS",
+            "TND",
             "TOP",
             "TRY",
             "TTD",
@@ -1360,6 +1396,14 @@
             "ZAR",
             "ZMW"
           ]
+        },
+        {
+          "name": "billing_entity_code",
+          "flag": "billing-entity-code",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "Restrict the analytics to a single billing entity, identified by its code. An unknown code is ignored and the analytics cover the whole organization."
         },
         {
           "name": "months",
@@ -1507,9 +1551,11 @@
             "SOS",
             "SRD",
             "STD",
+            "SYP",
             "SZL",
             "THB",
             "TJS",
+            "TND",
             "TOP",
             "TRY",
             "TTD",
@@ -1541,6 +1587,14 @@
           "description": "The customer external unique identifier (provided by your own application). Use it to filter revenue analytics at the customer level."
         },
         {
+          "name": "billing_entity_code",
+          "flag": "billing-entity-code",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "Restrict the analytics to a single billing entity, identified by its code. An unknown code is ignored and the analytics cover the whole organization."
+        },
+        {
           "name": "months",
           "flag": "months",
           "in": "query",
@@ -1569,7 +1623,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "The time granularity of usage analytics. Possible values are 'daily', 'weekly', 'monthly', 'yearly'.",
+          "description": "The time granularity of usage analytics. Possible values are 'daily', 'weekly' and 'monthly'. Defaults to 'daily'.",
           "enum": [
             "daily",
             "weekly",
@@ -1699,9 +1753,11 @@
             "SOS",
             "SRD",
             "STD",
+            "SYP",
             "SZL",
             "THB",
             "TJS",
+            "TND",
             "TOP",
             "TRY",
             "TTD",
@@ -2148,12 +2204,20 @@
           "description": "Filter results by API version"
         },
         {
-          "name": "request_paths",
+          "name": "request_paths[]",
           "flag": "request-paths",
           "in": "query",
-          "type": "string",
+          "type": "array",
           "required": false,
-          "description": "Filter results by the path of the request"
+          "description": "Filter results by the path of the request. A value containing `*` is matched as a wildcard, otherwise the path must match exactly."
+        },
+        {
+          "name": "clients[]",
+          "flag": "clients",
+          "in": "query",
+          "type": "array",
+          "required": false,
+          "description": "Filter results by the client that issued the request, as reported by its user agent."
         }
       ],
       "idempotent": true,
@@ -2221,7 +2285,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "Expression used to calculate the event units. The expression is evalutated for each event and the result is then used to calculate the total aggregated units.\nAccepted function are `ceil`, `concat` and `round` as well as `+`, `-`, `\\` and `*` operations.\nRound is accepting an optional second parameter to specify the number of decimal.\n"
+            "description": "Expression used to calculate the event units. The expression is evaluated for each event and the result is then used to calculate the total aggregated units.\nEvent values are read with `event.code`, `event.timestamp` and `event.properties.\u003cname\u003e`.\nAccepted functions are `ceil`, `concat`, `floor`, `greatest`, `least` and `round` as well as `+`, `-`, `/` and `*` operations.\n`ceil`, `floor` and `round` accept an optional second parameter to specify the number of decimals.\n"
           },
           {
             "path": [
@@ -2241,7 +2305,8 @@
             "flag": "filters",
             "type": "array",
             "required": false,
-            "complex": true
+            "complex": true,
+            "description": "List of filters of the billable metric. On update, this list replaces the existing filters: a filter that is not sent is deleted."
           },
           {
             "path": [
@@ -2300,7 +2365,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "Parameter exclusively utilized in conjunction with the `weighted_sum` aggregation type. It serves to adjust the aggregation result by assigning weights and proration to the result based on time intervals. When this field is not provided, the default time interval is assumed to be in `seconds`.",
+            "description": "Parameter exclusively utilized in conjunction with the `weighted_sum_agg` aggregation type. It serves to adjust the aggregation result by assigning weights and proration to the result based on time intervals. It is required when `aggregation_type` is `weighted_sum_agg`, and `seconds` is the only accepted value.",
             "enum": [
               "seconds",
               ""
@@ -2390,7 +2455,7 @@
             "type": "string",
             "required": true,
             "complex": false,
-            "description": "Expression used to calculate the event units. The expression is evalutated for each event and the result is then used to calculate the total aggregated units.\nAccepted function are `ceil`, `concat` and `round` as well as `+`, `-`, `\\` and `*` operations.\nRound is accepting an optional second parameter to specify the number of decimal.\n"
+            "description": "Expression used to calculate the event units. The expression is evaluated for each event and the result is then used to calculate the total aggregated units.\nEvent values are read with `event.code`, `event.timestamp` and `event.properties.\u003cname\u003e`.\nAccepted functions are `ceil`, `concat`, `floor`, `greatest`, `least` and `round` as well as `+`, `-`, `/` and `*` operations.\n`ceil`, `floor` and `round` accept an optional second parameter to specify the number of decimals.\n"
           }
         ],
         "required": true
@@ -2463,7 +2528,7 @@
       "method": "PUT",
       "path": "/billable_metrics/{code}",
       "summary": "Update a billable metric",
-      "description": "This endpoint updates an existing billable metric representing a pricing component of your application.",
+      "description": "This endpoint updates an existing billable metric representing a pricing component of your application.\n\nOnce the billable metric is used by a plan charge, only `name`, `description` and `filters` are applied. The other fields are ignored.",
       "docs_url": "https://getlago.com/docs/api-reference/billable-metrics/object",
       "parameters": [
         {
@@ -2526,7 +2591,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "Expression used to calculate the event units. The expression is evalutated for each event and the result is then used to calculate the total aggregated units.\nAccepted function are `ceil`, `concat` and `round` as well as `+`, `-`, `\\` and `*` operations.\nRound is accepting an optional second parameter to specify the number of decimal.\n"
+            "description": "Expression used to calculate the event units. The expression is evaluated for each event and the result is then used to calculate the total aggregated units.\nEvent values are read with `event.code`, `event.timestamp` and `event.properties.\u003cname\u003e`.\nAccepted functions are `ceil`, `concat`, `floor`, `greatest`, `least` and `round` as well as `+`, `-`, `/` and `*` operations.\n`ceil`, `floor` and `round` accept an optional second parameter to specify the number of decimals.\n"
           },
           {
             "path": [
@@ -2546,7 +2611,8 @@
             "flag": "filters",
             "type": "array",
             "required": false,
-            "complex": true
+            "complex": true,
+            "description": "List of filters of the billable metric. On update, this list replaces the existing filters: a filter that is not sent is deleted."
           },
           {
             "path": [
@@ -2605,7 +2671,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "Parameter exclusively utilized in conjunction with the `weighted_sum` aggregation type. It serves to adjust the aggregation result by assigning weights and proration to the result based on time intervals. When this field is not provided, the default time interval is assumed to be in `seconds`.",
+            "description": "Parameter exclusively utilized in conjunction with the `weighted_sum_agg` aggregation type. It serves to adjust the aggregation result by assigning weights and proration to the result based on time intervals. It is required when `aggregation_type` is `weighted_sum_agg`, and `seconds` is the only accepted value.",
             "enum": [
               "seconds",
               ""
@@ -2662,7 +2728,7 @@
             "type": "string",
             "required": false,
             "complex": false,
-            "description": "The language of the documents generated for this billing entity"
+            "description": "The language of the documents generated for this billing entity, in the ISO 639-1 format."
           },
           {
             "path": [
@@ -2673,7 +2739,7 @@
             "type": "string",
             "required": false,
             "complex": false,
-            "description": "The footer text to be displayed on invoices for this billing entity"
+            "description": "The footer text to be displayed on invoices for this billing entity (600 characters max)."
           },
           {
             "path": [
@@ -3125,9 +3191,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -3159,7 +3227,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The prefix used in document numbers for this billing entity"
+            "description": "The prefix used in document numbers for this billing entity (1 to 10 characters). It is upper cased. When it is not provided, Lago builds one from the first three letters of the name and the last four characters of the identifier."
           },
           {
             "path": [
@@ -3183,7 +3251,7 @@
             "type": "boolean",
             "required": false,
             "complex": false,
-            "description": "Whether e-invoicing is enabled for this billing entity"
+            "description": "Whether e-invoicing is enabled for this billing entity. It can only be enabled when the billing entity country is `FR` or `DE`."
           },
           {
             "path": [
@@ -3214,7 +3282,7 @@
             "type": "boolean",
             "required": false,
             "complex": false,
-            "description": "Whether EU tax management is enabled for this billing entity"
+            "description": "Whether EU tax management is enabled for this billing entity. It can only be enabled when the billing entity country is in the European Union."
           },
           {
             "path": [
@@ -3257,7 +3325,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The base64 encoded logo image for the billing entity"
+            "description": "The base64 encoded logo image for the billing entity. Accepted formats are PNG, JPG and JPEG, up to 800 kB."
           },
           {
             "path": [
@@ -3569,7 +3637,7 @@
             "type": "string",
             "required": false,
             "complex": false,
-            "description": "The language of the documents generated for this billing entity"
+            "description": "The language of the documents generated for this billing entity, in the ISO 639-1 format."
           },
           {
             "path": [
@@ -3580,7 +3648,7 @@
             "type": "string",
             "required": false,
             "complex": false,
-            "description": "The footer text to be displayed on invoices for this billing entity"
+            "description": "The footer text to be displayed on invoices for this billing entity (600 characters max)."
           },
           {
             "path": [
@@ -4022,9 +4090,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -4056,7 +4126,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The prefix used in document numbers for this billing entity"
+            "description": "The prefix used in document numbers for this billing entity (1 to 10 characters). It is upper cased."
           },
           {
             "path": [
@@ -4080,7 +4150,7 @@
             "type": "boolean",
             "required": false,
             "complex": false,
-            "description": "Whether e-invoicing is enabled for this billing entity"
+            "description": "Whether e-invoicing is enabled for this billing entity. It can only be enabled when the billing entity country is `FR` or `DE`."
           },
           {
             "path": [
@@ -4111,7 +4181,7 @@
             "type": "boolean",
             "required": false,
             "complex": false,
-            "description": "Whether EU tax management is enabled for this billing entity"
+            "description": "Whether EU tax management is enabled for this billing entity. It can only be enabled when the billing entity country is in the European Union."
           },
           {
             "path": [
@@ -4164,7 +4234,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The base64 encoded logo image for the billing entity. Sending \"null\" will remove the logo, if any exist."
+            "description": "The base64 encoded logo image for the billing entity. Accepted formats are PNG, JPG and JPEG, up to 800 kB. Sending \"null\" removes the current logo."
           },
           {
             "path": [
@@ -4544,9 +4614,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -4785,9 +4857,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -4918,7 +4992,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "Specifies the number of billing periods to which the coupon applies. This field is required only for coupons with a `recurring` frequency type"
+            "description": "Specifies the number of billing periods to which the coupon applies. This field is required only for coupons with a `recurring` frequency type."
           },
           {
             "path": [
@@ -5138,7 +5212,7 @@
       "method": "PUT",
       "path": "/coupons/{code}",
       "summary": "Update a coupon",
-      "description": "This endpoint is used to update a coupon that can be then attached to a customer to create a discount.",
+      "description": "This endpoint is used to update a coupon that can be then attached to a customer to create a discount.\n\nOnce the coupon has been applied to at least one customer, only `name`, `description`, `expiration` and `expiration_at` are updated. The other fields in the payload are ignored.",
       "docs_url": "https://getlago.com/docs/api-reference/coupons/coupon-object",
       "parameters": [
         {
@@ -5290,9 +5364,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -5423,7 +5499,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "Specifies the number of billing periods to which the coupon applies. This field is required only for coupons with a `recurring` frequency type"
+            "description": "Specifies the number of billing periods to which the coupon applies. This field is required only for coupons with a `recurring` frequency type."
           },
           {
             "path": [
@@ -6117,7 +6193,7 @@
       "method": "POST",
       "path": "/customers",
       "summary": "Create a customer",
-      "description": "This endpoint creates a new customer.",
+      "description": "This endpoint creates a customer. When a customer with the same `external_id` already exists, it is updated instead, and only the fields present in the payload are changed.",
       "docs_url": "https://getlago.com/docs/api-reference/customers/object",
       "body": {
         "wrapper": "customer",
@@ -6130,7 +6206,7 @@
             "type": "string",
             "required": false,
             "complex": false,
-            "description": "The type of the account. It can have one of the following values:\n- `customer`: the account is a customer, default value.\n- `partner`: the account is a partner.\n\nThis field is only applied when revenue share is enabled on your organization; otherwise it is ignored.",
+            "description": "The type of the account. It can have one of the following values:\n- `customer`: the account is a customer, default value.\n- `partner`: the account is a partner.\n\nThis field is only applied when revenue share is enabled on your organization and the customer has no subscription, invoice, add-on, fixed-amount coupon or wallet yet; otherwise it is ignored.",
             "enum": [
               "customer",
               "partner"
@@ -6166,6 +6242,7 @@
             "flag": "billing-configuration-document-locale",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "The document locale, specified in the ISO 639-1 format. This field represents the language or locale used for the documents issued by Lago"
           },
@@ -6177,8 +6254,9 @@
             "flag": "billing-configuration-invoice-grace-period",
             "type": "integer",
             "required": false,
+            "nullable": true,
             "complex": false,
-            "description": "The grace period, expressed in days, for the invoice. This period refers to the additional time granted to the customer beyond the invoice due date to adjust usage and line items"
+            "description": "The grace period, expressed in days, for the invoice. This period refers to the additional time granted to the customer beyond the invoice due date to adjust usage and line items. It is null when the customer has no grace period of its own and falls back to the billing entity."
           },
           {
             "path": [
@@ -6188,15 +6266,17 @@
             "flag": "billing-configuration-payment-provider",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
-            "description": "The payment provider utilized to initiate payments for invoices issued by Lago.\nAccepted values: `stripe`, `adyen`, `cashfree`, `flutterwave`, `gocardless`, `moneyhash` or null. This field is required if you intend to assign a `provider_customer_id`.",
+            "description": "The payment provider utilized to initiate payments for invoices issued by Lago.\nAccepted values: `stripe`, `adyen`, `cashfree`, `flutterwave`, `gocardless`, `moneyhash` or null. This field is required if you intend to assign a `provider_customer_id`. Send null to detach the customer from its current payment provider.",
             "enum": [
               "stripe",
               "adyen",
               "cashfree",
               "flutterwave",
               "gocardless",
-              "moneyhash"
+              "moneyhash",
+              ""
             ]
           },
           {
@@ -6207,6 +6287,7 @@
             "flag": "billing-configuration-payment-provider-code",
             "type": "string",
             "required": false,
+            "nullable": true,
             "complex": false,
             "description": "Unique code used to identify a payment provider connection."
           },
@@ -6700,9 +6781,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -6870,7 +6953,7 @@
             "type": "array",
             "required": false,
             "complex": true,
-            "description": "Set of key-value pairs that you can attach to a customer. This can be useful for storing additional information about the customer in a structured format"
+            "description": "Set of key-value pairs that you can attach to a customer. This can be useful for storing additional information about the customer in a structured format. A customer can hold up to 5 key-value pairs."
           },
           {
             "path": [
@@ -6915,7 +6998,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The first line of the billing address"
+            "description": "The first line of the shipping address"
           },
           {
             "path": [
@@ -6927,7 +7010,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The second line of the billing address"
+            "description": "The second line of the shipping address"
           },
           {
             "path": [
@@ -6939,7 +7022,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The city of the customer's billing address"
+            "description": "The city of the customer's shipping address"
           },
           {
             "path": [
@@ -6951,7 +7034,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "Country code of the customer's billing address. Format must be ISO 3166 (alpha-2)",
+            "description": "Country code of the customer's shipping address. Format must be ISO 3166 (alpha-2)",
             "enum": [
               "",
               "AD",
@@ -7215,7 +7298,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The state of the customer's billing address"
+            "description": "The state of the customer's shipping address"
           },
           {
             "path": [
@@ -7227,7 +7310,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The zipcode of the customer's billing address"
+            "description": "The zipcode of the customer's shipping address"
           },
           {
             "path": [
@@ -7828,11 +7911,22 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter invoices by status. Possible values are `draft` or `finalized`.",
+          "description": "Filter invoices by status. Possible values are `draft`, `failed`, `finalized`, `pending` and `voided`.",
           "enum": [
             "draft",
-            "finalized"
+            "finalized",
+            "failed",
+            "pending",
+            "voided"
           ]
+        },
+        {
+          "name": "statuses[]",
+          "flag": "statuses",
+          "in": "query",
+          "type": "array",
+          "required": false,
+          "description": "Filter invoices by statuses. Possible values are `draft`, `failed`, `finalized`, `pending` and `voided`."
         },
         {
           "name": "payment_status",
@@ -7848,6 +7942,14 @@
           ]
         },
         {
+          "name": "payment_statuses[]",
+          "flag": "payment-statuses",
+          "in": "query",
+          "type": "array",
+          "required": false,
+          "description": "Filter invoices by payment statuses. Possible values are `pending`, `failed` or `succeeded`."
+        },
+        {
           "name": "payment_overdue",
           "flag": "payment-overdue",
           "in": "query",
@@ -7861,7 +7963,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Search invoices by id, number, customer name, customer external_id or customer email."
+          "description": "Search the customer's invoices by id or number. Customer attributes are not searched here, because the list is already scoped to one customer."
         },
         {
           "name": "payment_dispute_lost",
@@ -7894,6 +7996,38 @@
           "type": "boolean",
           "required": false,
           "description": "Filter invoices by self billed. Possible values are `true` or `false`."
+        },
+        {
+          "name": "currency",
+          "flag": "currency",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "Filter invoices by currency. Possible values ISO 4217 currency codes."
+        },
+        {
+          "name": "partially_paid",
+          "flag": "partially-paid",
+          "in": "query",
+          "type": "boolean",
+          "required": false,
+          "description": "Filter invoices that are partially paid. When `true`, only invoices with a non-zero amount paid that is below the total due are returned. When `false`, those invoices are excluded."
+        },
+        {
+          "name": "settlements[]",
+          "flag": "settlements",
+          "in": "query",
+          "type": "array",
+          "required": false,
+          "description": "Filter invoices settled by at least one of the given settlement types. `payment` matches invoices settled by a payment, `credit_note` matches invoices settled by a credit note."
+        },
+        {
+          "name": "billing_entity_codes[]",
+          "flag": "billing-entity-codes",
+          "in": "query",
+          "type": "array",
+          "required": false,
+          "description": "Filter invoices by billing entity codes. Possible values are the billing entity codes you have created."
         },
         {
           "name": "metadata[key]",
@@ -8148,6 +8282,14 @@
           "description": "Number of records per page."
         },
         {
+          "name": "currency",
+          "flag": "currency",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "Filter the results by currency, expressed as an ISO 4217 code."
+        },
+        {
           "name": "payment_status",
           "flag": "payment-status",
           "in": "query",
@@ -8321,6 +8463,22 @@
           "description": "Number of records per page."
         },
         {
+          "name": "currency",
+          "flag": "currency",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "Filter the results by currency, expressed as an ISO 4217 code."
+        },
+        {
+          "name": "external_id",
+          "flag": "external-id",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "The subscription external unique identifier (provided by your own application)."
+        },
+        {
           "name": "plan_code",
           "flag": "plan-code",
           "in": "query",
@@ -8329,12 +8487,20 @@
           "description": "The unique code representing the plan to be attached to the customer. This code must correspond to the code property of one of the active plans."
         },
         {
+          "name": "overridden",
+          "flag": "overridden",
+          "in": "query",
+          "type": "boolean",
+          "required": false,
+          "description": "When set, filters subscriptions by whether their plan is an override of a parent plan. `true` returns only subscriptions on overridden plans; `false` returns only those on standard (non-overridden) plans."
+        },
+        {
           "name": "status[]",
           "flag": "status",
           "in": "query",
           "type": "array",
           "required": false,
-          "description": "If the field is not defined, Lago will return only `active` subscriptions. However, if you wish to fetch subscriptions by different status you can define them in a status[] query param. Available filter values: `pending`, `canceled`, `terminated`, `active`."
+          "description": "If the field is not defined, Lago will return only `active` subscriptions. However, if you wish to fetch subscriptions by different status you can define them in a status[] query param. Available filter values: `pending`, `canceled`, `terminated`, `active`, `incomplete`."
         },
         {
           "name": "billing_entity_codes[]",
@@ -8417,7 +8583,7 @@
       "method": "DELETE",
       "path": "/subscriptions/{external_id}/entitlements/{feature_code}",
       "summary": "Remove an entitlement from a subscription",
-      "description": "This endpoint removes a specific feature entitlement from a subscription. The entitlement remains available from the plan.",
+      "description": "This endpoint removes a specific feature entitlement from a subscription. The plan keeps the feature and other subscriptions are not affected, but this subscription stops getting it. It returns the full list of entitlements remaining on the subscription.",
       "docs_url": "https://getlago.com/docs/api-reference/entitlements/plan-entitlements/plan-entitlement-object",
       "parameters": [
         {
@@ -8442,12 +8608,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -8463,7 +8630,7 @@
       "method": "DELETE",
       "path": "/subscriptions/{external_id}/entitlements/{feature_code}/privileges/{privilege_code}",
       "summary": "Remove a privilege from a subscription entitlement override",
-      "description": "This endpoint removes a specific privilege from a subscription entitlement. The privilege entitlement remains available from the plan.",
+      "description": "This endpoint removes a specific privilege from a subscription entitlement. The plan keeps the privilege and other subscriptions are not affected, but this subscription stops getting it. It returns the full list of entitlements remaining on the subscription.",
       "docs_url": "https://getlago.com/docs/api-reference/entitlements/plan-entitlements/plan-entitlement-object",
       "parameters": [
         {
@@ -8496,12 +8663,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -8590,12 +8758,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -8651,7 +8820,7 @@
       "method": "PATCH",
       "path": "/plans/{code}/entitlements",
       "summary": "Partial update of an entitlement",
-      "description": "This accepts a list of entitlements to update. If the feature isn't part of the plan yet, it's added with all the privileges from the payload. If the feature is already part of the plan, the privilege and values are updated or added. All privileges must be valid for the feature. All features  and privileges not part of the payload are left untouched. To remove privileges or features, use the DELETE endpoints.",
+      "description": "This accepts a list of entitlements to update. If the feature isn't part of the plan yet, it's added with all the privileges from the payload. If the feature is already part of the plan, the privilege and values are updated or added. All privileges must be valid for the feature. All features and privileges not part of the payload are left untouched. To remove privileges or features, use the DELETE endpoints.",
       "docs_url": "https://getlago.com/docs/api-reference/entitlements/plan-entitlements/plan-entitlement-object",
       "parameters": [
         {
@@ -8679,7 +8848,7 @@
       "method": "PATCH",
       "path": "/subscriptions/{external_id}/entitlements",
       "summary": "Update subscription entitlements",
-      "description": "This accepts a list of entitlements to update. If the feature isn't part of the subscription yet, it's added with all the privileges from the payload. If the feature is already part of the subscription (via plan or via override), the privilege and values are updated or added. All privileges must be valid for the feature. All features  and privileges not part of the payload are left untouched. To remove privileges or features, use the DELETE endpoints.",
+      "description": "This accepts a list of entitlements to update. If the feature isn't part of the subscription yet, it's added with all the privileges from the payload. If the feature is already part of the subscription (via plan or via override), the privilege and values are updated or added. All privileges must be valid for the feature. All features and privileges not part of the payload are left untouched. To remove privileges or features, use the DELETE endpoints.",
       "docs_url": "https://getlago.com/docs/api-reference/entitlements/plan-entitlements/plan-entitlement-object",
       "parameters": [
         {
@@ -8696,12 +8865,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -8804,6 +8974,17 @@
           },
           {
             "path": [
+              "precise_total_amount_cents"
+            ],
+            "flag": "precise-total-amount-cents",
+            "type": "string",
+            "required": false,
+            "nullable": true,
+            "complex": false,
+            "description": "The precise total amount in cents with precision used by the `dynamic` pricing model to compute the estimated usage amount. Defaults to `0` when omitted."
+          },
+          {
+            "path": [
               "properties"
             ],
             "flag": "properties",
@@ -8888,7 +9069,7 @@
       "method": "GET",
       "path": "/events/{transaction_id}",
       "summary": "Retrieve a specific event",
-      "description": "This endpoint is used for retrieving a specific usage measurement event that has been sent to a customer or a subscription.\n\nNote that transaction_id is unique per external_subscription_id so multiple subscriptions can share the same transaction_id. This endpoint will only return the first event found with the given transaction_id.\n\nWARNING: If your Lago organization is configured to use the Clickhouse-based event pipeline, multiple events can share the same `transaction_id` (with different timestamps). This endpoint will only return the first event found.\n",
+      "description": "This endpoint is used for retrieving a specific usage measurement event that has been sent to a subscription.\n\nNote that transaction_id is unique per external_subscription_id so multiple subscriptions can share the same transaction_id. This endpoint will only return the first event found with the given transaction_id.\n\nWARNING: If your Lago organization is configured to use the Clickhouse-based event pipeline, multiple events can share the same `transaction_id` (with different timestamps). This endpoint will only return the first event found.\n",
       "docs_url": "https://getlago.com/docs/api-reference/events/event-object",
       "parameters": [
         {
@@ -8945,7 +9126,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter events by its code."
+          "description": "Filter events by code."
         },
         {
           "name": "timestamp_from_started_at",
@@ -8953,7 +9134,7 @@
           "in": "query",
           "type": "boolean",
           "required": false,
-          "description": "Requires `external_subscription_id` to be set. Filter events by timestamp after the subscription started at datetime."
+          "description": "Requires `external_subscription_id` to be set, and cannot be combined with `timestamp_from`. Filter events by timestamp after the subscription started at datetime."
         },
         {
           "name": "timestamp_from",
@@ -8983,8 +9164,8 @@
       "operation_id": "createEvent",
       "method": "POST",
       "path": "/events",
-      "summary": "Send usage events",
-      "description": "This endpoint is used for transmitting usage measurement events to either a designated customer or a specific subscription.",
+      "summary": "Send a usage event",
+      "description": "This endpoint is used for transmitting a usage measurement event to a subscription.",
       "docs_url": "https://getlago.com/docs/api-reference/events/event-object",
       "body": {
         "wrapper": "event",
@@ -9039,7 +9220,7 @@
             "type": "string",
             "required": false,
             "complex": false,
-            "description": "This field captures the Unix timestamp in seconds indicating the occurrence of the event in Coordinated Universal Time (UTC).\nIf this timestamp is not provided, the API will automatically set it to the time of event reception.\nYou can also provide miliseconds precision by appending decimals to the timestamp.\n"
+            "description": "This field captures the Unix timestamp in seconds indicating the occurrence of the event in Coordinated Universal Time (UTC).\nIf this timestamp is not provided, the API will automatically set it to the time of event reception.\nYou can also provide milliseconds precision by appending decimals to the timestamp.\n"
           },
           {
             "path": [
@@ -9151,8 +9332,8 @@
       "operation_id": "deleteFeaturePrivilege",
       "method": "DELETE",
       "path": "/features/{code}/privileges/{privilege_code}",
-      "summary": "Delete a privilege. Deleting a privilege removes it from all plans and subscriptions.",
-      "description": "Delete privilege from feature. Deleting a privilege removes it from all plans and subscriptions.",
+      "summary": "Delete a privilege",
+      "description": "This endpoint deletes a privilege from a feature. Deleting a privilege removes it from all plans and subscriptions.",
       "docs_url": "https://getlago.com/docs/api-reference/entitlements/features/feature-object",
       "parameters": [
         {
@@ -9248,7 +9429,7 @@
       "method": "PUT",
       "path": "/features/{code}",
       "summary": "Update a feature",
-      "description": "This endpoint updates an existing feature representing an entitlement component of your application.",
+      "description": "This endpoint updates an existing feature representing an entitlement component of your application. Only the fields present in the payload are updated. Privileges are matched by their code, an unknown code adds a new privilege and a known one updates its name and adds the select options of the payload to the existing ones. The value type of an existing privilege cannot be changed. Privileges left out of the payload are kept, use the delete privilege endpoint to remove one.",
       "docs_url": "https://getlago.com/docs/api-reference/entitlements/features/feature-object",
       "parameters": [
         {
@@ -9524,9 +9705,11 @@
             "SOS",
             "SRD",
             "STD",
+            "SYP",
             "SZL",
             "THB",
             "TJS",
+            "TND",
             "TOP",
             "TRY",
             "TTD",
@@ -9664,7 +9847,7 @@
       "method": "PUT",
       "path": "/fees/{lago_id}",
       "summary": "Update a fee",
-      "description": "This endpoint is used for updating a specific fee that has been issued.",
+      "description": "This endpoint is used for updating the payment status of a specific fee. Only a fee that is not attached to an invoice can be updated; once the fee is on an invoice, its payment status follows the invoice and the endpoint returns a `405` error.",
       "docs_url": "https://getlago.com/docs/api-reference/invoices/invoice-object#fee-object",
       "parameters": [
         {
@@ -9696,7 +9879,7 @@
             ]
           }
         ],
-        "required": false
+        "required": true
       },
       "idempotent": false,
       "dangerous": false,
@@ -9850,9 +10033,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -10003,7 +10188,7 @@
       "method": "POST",
       "path": "/invoices/{lago_id}/download",
       "summary": "Download an invoice PDF",
-      "description": "This endpoint is used for downloading a specific invoice PDF document.",
+      "description": "This endpoint is used for downloading a specific invoice PDF document. Only `finalized` invoices can be downloaded; any other invoice returns a `404` error.\nWhen the PDF has already been generated, the invoice object is returned and its `file_url` points to the document. When it has not been generated yet, the response is a `200` with an empty body and the generation starts in the background. Call the endpoint again to get the invoice object with its `file_url`.",
       "docs_url": "https://getlago.com/docs/api-reference/invoices/invoice-object",
       "parameters": [
         {
@@ -10164,7 +10349,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Search invoices by id, number, customer name, customer external_id or customer email."
+          "description": "Search invoices by id, number, purchase order number, or by the name, legal name, first name, last name, external_id or email of the customer."
         },
         {
           "name": "currency",
@@ -10766,9 +10951,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -10834,7 +11021,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The first line of the billing address"
+            "description": "The first line of the shipping address"
           },
           {
             "path": [
@@ -10847,7 +11034,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The second line of the billing address"
+            "description": "The second line of the shipping address"
           },
           {
             "path": [
@@ -10860,7 +11047,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The city of the customer's billing address"
+            "description": "The city of the customer's shipping address"
           },
           {
             "path": [
@@ -10873,7 +11060,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "Country code of the customer's billing address. Format must be ISO 3166 (alpha-2)",
+            "description": "Country code of the customer's shipping address. Format must be ISO 3166 (alpha-2)",
             "enum": [
               "",
               "AD",
@@ -11138,7 +11325,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The state of the customer's billing address"
+            "description": "The state of the customer's shipping address"
           },
           {
             "path": [
@@ -11151,7 +11338,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The zipcode of the customer's billing address"
+            "description": "The zipcode of the customer's shipping address"
           },
           {
             "path": [
@@ -11322,6 +11509,17 @@
               "Pacific/Port_Moresby",
               "Pacific/Tongatapu"
             ]
+          },
+          {
+            "path": [
+              "customer",
+              "zipcode"
+            ],
+            "flag": "zipcode",
+            "type": "string",
+            "required": false,
+            "complex": false,
+            "description": "The zipcode of the customer's billing address."
           },
           {
             "path": [
@@ -12484,9 +12682,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -12884,7 +13084,7 @@
       "method": "PUT",
       "path": "/customers/{external_customer_id}/payment_methods/{lago_id}/set_as_default",
       "summary": "Set the payment method as default",
-      "description": "Use the payment method as default when not selected a payment method",
+      "description": "This endpoint sets a payment method as the customer's default one. It is the payment method Lago uses when a payment is triggered without an explicit one. Any other default payment method of the customer is unset.",
       "docs_url": "https://getlago.com/docs/api-reference/payment-methods/payment-method-object",
       "parameters": [
         {
@@ -12925,7 +13125,7 @@
           "in": "path",
           "type": "string",
           "required": true,
-          "description": "Payment receipt ID"
+          "description": "Unique identifier of the payment receipt."
         }
       ],
       "idempotent": true,
@@ -12965,7 +13165,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter payment receipts by invoice id."
+          "description": "Filter payment receipts by invoice. It returns the receipts of the payments made on this invoice, including the payments made through a payment request that covers it."
         }
       ],
       "idempotent": true,
@@ -12980,7 +13180,7 @@
       "method": "POST",
       "path": "/payment_requests",
       "summary": "Create a payment request",
-      "description": "This endpoint is used to create a payment request to collect payments of overdue invoices of a given customer",
+      "description": "This endpoint is used to create a payment request to collect the payment of the overdue invoices of a customer.",
       "docs_url": "https://getlago.com/docs/api-reference/payment-requests/payment-request-object",
       "body": {
         "wrapper": "payment_request",
@@ -12991,9 +13191,9 @@
             ],
             "flag": "email",
             "type": "string",
-            "required": true,
+            "required": false,
             "complex": false,
-            "description": "The customer's email address used for sending dunning notifications"
+            "description": "The email address used for sending dunning notifications. When omitted, the customer's own email address is used."
           },
           {
             "path": [
@@ -13162,7 +13362,7 @@
             "type": "integer",
             "required": true,
             "complex": false,
-            "description": "The payment amount in cents"
+            "description": "The payment amount in cents. It must be greater than zero."
           },
           {
             "path": [
@@ -13461,9 +13661,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -13779,7 +13981,7 @@
             ],
             "flag": "code",
             "type": "string",
-            "required": false,
+            "required": true,
             "complex": false,
             "description": "Unique code identifying the charge within the plan."
           },
@@ -14083,7 +14285,7 @@
             "type": "boolean",
             "required": false,
             "complex": false,
-            "description": "This field determines whether the creation of the filter should be cascaded to the children plans. When set to `true`, the changes will be cascaded into children. Conversely, when set to `false`, the changes will only be applied to the plan itself. If not defined in the request, default value is `false`."
+            "description": "This field determines whether the creation of the filter should be cascaded to the children plans. When set to `true`, the changes will be cascaded into children. Conversely, when set to `false`, the changes will only be applied to the plan itself. If not defined in the request, default value is `false`. This field only applies to plan charge filters and is ignored on the subscription charge filter endpoints."
           },
           {
             "path": [
@@ -14340,7 +14542,7 @@
             ],
             "flag": "charge-model",
             "type": "string",
-            "required": false,
+            "required": true,
             "complex": false,
             "description": "Specifies the pricing model used for the calculation of the fixed charge fee. It can be any of the following values:\n  - `standard`\n  - `graduated`\n  - `volume`\n",
             "enum": [
@@ -14355,7 +14557,7 @@
             ],
             "flag": "code",
             "type": "string",
-            "required": false,
+            "required": true,
             "complex": false,
             "description": "Unique code identifying the fixed charge within the plan."
           },
@@ -15269,9 +15471,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -15504,7 +15708,7 @@
       "method": "PUT",
       "path": "/plans/{code}/charges/{charge_code}",
       "summary": "Update a charge",
-      "description": "This endpoint updates a specific charge for a plan.",
+      "description": "This endpoint updates a specific charge for a plan.\n\nThe payload replaces the charge configuration: `charge_model` must be sent on every update, and `invoice_display_name` is cleared when it is left out.\n\nOnce the plan is attached to a subscription, only `invoice_display_name`, `properties`, `filters`, `tax_codes`, `applied_pricing_unit` and `accepts_target_wallet` are applied. The other fields are ignored.",
       "docs_url": "https://getlago.com/docs/api-reference/plans/object",
       "parameters": [
         {
@@ -15917,7 +16121,7 @@
             "type": "boolean",
             "required": false,
             "complex": false,
-            "description": "This field determines whether the changes made to the filter should be cascaded to the children plans. When set to `true`, the changes will be cascaded into children. Conversely, when set to `false`, the changes will only be applied to the plan itself. If not defined in the request, default value is `false`."
+            "description": "This field determines whether the changes made to the filter should be cascaded to the children plans. When set to `true`, the changes will be cascaded into children. Conversely, when set to `false`, the changes will only be applied to the plan itself. If not defined in the request, default value is `false`. This field only applies to plan charge filters and is ignored on the subscription charge filter endpoints."
           },
           {
             "path": [
@@ -16113,7 +16317,7 @@
       "method": "PUT",
       "path": "/plans/{code}/fixed_charges/{fixed_charge_code}",
       "summary": "Update a fixed charge",
-      "description": "This endpoint updates a specific fixed charge for a plan.",
+      "description": "This endpoint updates a specific fixed charge for a plan.\n\nThe payload replaces the fixed charge configuration: `units` and `charge_model` must be sent on every update, and `invoice_display_name` is cleared when it is left out.\n\nOnce the plan is attached to a subscription, `code` and `charge_model` are ignored.",
       "docs_url": "https://getlago.com/docs/api-reference/plans/object",
       "parameters": [
         {
@@ -16698,18 +16902,35 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
+        },
+        {
+          "name": "page",
+          "flag": "page",
+          "in": "query",
+          "type": "integer",
+          "required": false,
+          "description": "Page number."
+        },
+        {
+          "name": "per_page",
+          "flag": "per-page",
+          "in": "query",
+          "type": "integer",
+          "required": false,
+          "description": "Number of records per page."
         }
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false,
+      "paginated": true,
       "mutation": false
     },
     {
@@ -16752,12 +16973,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -17093,9 +17315,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -17342,12 +17566,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -17391,12 +17616,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -17411,7 +17637,7 @@
             "type": "boolean",
             "required": false,
             "complex": false,
-            "description": "This field determines whether the creation of the filter should be cascaded to the children plans. When set to `true`, the changes will be cascaded into children. Conversely, when set to `false`, the changes will only be applied to the plan itself. If not defined in the request, default value is `false`."
+            "description": "This field determines whether the creation of the filter should be cascaded to the children plans. When set to `true`, the changes will be cascaded into children. Conversely, when set to `false`, the changes will only be applied to the plan itself. If not defined in the request, default value is `false`. This field only applies to plan charge filters and is ignored on the subscription charge filter endpoints."
           },
           {
             "path": [
@@ -17624,12 +17850,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -17670,12 +17897,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -17724,12 +17952,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -17786,12 +18015,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -17840,12 +18070,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -17878,12 +18109,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "By default, this endpoint only return `active` subscriptions. If you want to retrieve a subscription with a different `status`, you can specify it here.\n\n_Note: As there may exists multiple `canceled` or `terminated` subscribtions for the same `external_id`, it is recommended to use the \"List all subscriptions\" endpoint to retrieve those subscriptions._\n",
+          "description": "By default, this endpoint only returns `active` subscriptions. If you want to retrieve a subscription with a different `status`, you can specify it here.\n\n_Note: As there may exist multiple `canceled` or `terminated` subscriptions for the same `external_id`, it is recommended to use the \"List all subscriptions\" endpoint to retrieve those subscriptions._\n",
           "enum": [
             "active",
             "terminated",
             "pending",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -17924,12 +18156,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -17970,12 +18203,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -18024,12 +18258,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -18070,12 +18305,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -18180,7 +18416,7 @@
           "in": "query",
           "type": "array",
           "required": false,
-          "description": "If the field is not defined, Lago will return only `active` subscriptions. However, if you wish to fetch subscriptions by different status you can define them in a status[] query param. Available filter values: `pending`, `canceled`, `terminated`, `active`."
+          "description": "If the field is not defined, Lago will return only `active` subscriptions. However, if you wish to fetch subscriptions by different status you can define them in a status[] query param. Available filter values: `pending`, `canceled`, `terminated`, `active`, `incomplete`."
         },
         {
           "name": "billing_entity_codes[]",
@@ -18228,12 +18464,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -18511,12 +18748,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -18762,10 +19000,11 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "When a pay-in-advance subscription is terminated before the end of its billing period, we generate a credit note for the unused subscription time by default.\nThis field allows you to control the behavior of the credit note generation:\n\n- `credit`: A credit note is generated for the unused subscription time. The unused amount is credited back to the customer.\n- `refund`: A credit note is generated for the unused subscription time. If the invoice is paid or partially paid, the unused paid amount is refunded; any unpaid unused amount is credited back to the customer.\n- `skip`: No credit note is generated for the unused subscription time.\n\n_Note: This field is only applicable to pay-in-advance plans and is ignored for pay-in-arrears plans._\n",
+          "description": "When a pay-in-advance subscription is terminated before the end of its billing period, we generate a credit note for the unused subscription time by default.\nThis field allows you to control the behavior of the credit note generation:\n\n- `credit`: A credit note is generated for the unused subscription time. The unused amount is credited back to the customer.\n- `refund`: A credit note is generated for the unused subscription time. If the invoice is paid or partially paid, the unused paid amount is refunded; any unpaid unused amount is credited back to the customer.\n- `offset`: A credit note is generated for the unused subscription time. If the invoice is paid or partially paid, the unused paid amount is refunded; any unpaid unused amount is applied to the invoice reducing its amount due.\n- `skip`: No credit note is generated for the unused subscription time.\n\n_Note: This field is only applicable to pay-in-advance plans and is ignored for pay-in-arrears plans._\n",
           "enum": [
             "credit",
             "refund",
+            "offset",
             "skip"
           ]
         },
@@ -18811,7 +19050,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "By default, this endpoint only return `active` subscriptions. If you want to update a subscription with a different `status`, you can specify it here.\n",
+          "description": "By default, this endpoint only updates `active` subscriptions. If you want to update a subscription with a different `status`, you can specify it here.\n",
           "enum": [
             "active",
             "pending"
@@ -18914,6 +19153,38 @@
             "nullable": true,
             "complex": false,
             "description": "The display name of the subscription on an invoice. This field allows for customization of the subscription's name for billing purposes, especially useful when a single customer has multiple subscriptions using the same plan."
+          },
+          {
+            "path": [
+              "subscription",
+              "on_termination_credit_note"
+            ],
+            "flag": "on-termination-credit-note",
+            "type": "string",
+            "required": false,
+            "complex": false,
+            "description": "Sets the default credit note behaviour applied when this subscription is later terminated before the end of its billing period:\n\n- `credit`: a credit note is generated for the unused subscription time. The unused amount is credited back to the customer.\n- `refund`: a credit note is generated for the unused subscription time. If the invoice is paid or partially paid, the unused paid amount is refunded; any unpaid unused amount is credited back to the customer.\n- `offset`: a credit note is generated for the unused subscription time. If the invoice is paid or partially paid, the unused paid amount is refunded; any unpaid unused amount is applied to the invoice reducing its amount due.\n- `skip`: no credit note is generated for the unused subscription time.\n\n_Note: This field is only applied to pay-in-advance plans and is ignored for pay-in-arrears plans._\n",
+            "enum": [
+              "credit",
+              "refund",
+              "offset",
+              "skip"
+            ]
+          },
+          {
+            "path": [
+              "subscription",
+              "on_termination_invoice"
+            ],
+            "flag": "on-termination-invoice",
+            "type": "string",
+            "required": false,
+            "complex": false,
+            "description": "Sets the default invoice behaviour applied when this subscription is later terminated before the end of its billing period:\n\n- `generate`: an invoice is generated for the unbilled usage.\n- `skip`: no invoice is generated for the unbilled usage.\n",
+            "enum": [
+              "generate",
+              "skip"
+            ]
           },
           {
             "path": [
@@ -19082,9 +19353,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -19339,12 +19612,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -19441,12 +19715,13 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, or `canceled`.\n",
+          "description": "Filter by subscription status. When provided, the subscription is looked up with this status instead of the default `active` status. Possible values are `pending`, `active`, `terminated`, `canceled`, or `incomplete`.\n",
           "enum": [
             "pending",
             "active",
             "terminated",
-            "canceled"
+            "canceled",
+            "incomplete"
           ]
         }
       ],
@@ -19461,7 +19736,7 @@
             "type": "boolean",
             "required": false,
             "complex": false,
-            "description": "This field determines whether the changes made to the filter should be cascaded to the children plans. When set to `true`, the changes will be cascaded into children. Conversely, when set to `false`, the changes will only be applied to the plan itself. If not defined in the request, default value is `false`."
+            "description": "This field determines whether the changes made to the filter should be cascaded to the children plans. When set to `true`, the changes will be cascaded into children. Conversely, when set to `false`, the changes will only be applied to the plan itself. If not defined in the request, default value is `false`. This field only applies to plan charge filters and is ignored on the subscription charge filter endpoints."
           },
           {
             "path": [
@@ -19697,7 +19972,7 @@
       "method": "POST",
       "path": "/taxes",
       "summary": "Create a tax",
-      "description": "This endpoint creates a new tax representing a customizable tax rate applicable to either the organization or a specific customer.",
+      "description": "This endpoint creates a new tax representing a customizable tax rate applicable to either a billing entity or a specific customer.",
       "docs_url": "https://getlago.com/docs/api-reference/taxes/tax-object",
       "body": {
         "wrapper": "tax",
@@ -19731,7 +20006,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "Internal description of the tax"
+            "description": "Internal description of the tax."
           },
           {
             "path": [
@@ -19751,7 +20026,7 @@
             "type": "string",
             "required": true,
             "complex": false,
-            "description": "The percentage rate of the tax"
+            "description": "The percentage rate of the tax."
           }
         ],
         "required": true
@@ -19791,8 +20066,8 @@
       "operation_id": "findTax",
       "method": "GET",
       "path": "/taxes/{code}",
-      "summary": "Retrieve a Tax",
-      "description": "This endpoint retrieves an existing tax representing a customizable tax rate applicable to either the organization or a specific customer. The tax is identified by its unique code.",
+      "summary": "Retrieve a tax",
+      "description": "This endpoint retrieves an existing tax representing a customizable tax rate applicable to either a billing entity or a specific customer. The tax is identified by its unique code.",
       "docs_url": "https://getlago.com/docs/api-reference/taxes/tax-object",
       "parameters": [
         {
@@ -19816,7 +20091,7 @@
       "method": "GET",
       "path": "/taxes",
       "summary": "List all taxes",
-      "description": "This endpoint retrieves all existing taxes representing a customizable tax rate applicable to either the organization or a specific customer.",
+      "description": "This endpoint retrieves all existing taxes representing a customizable tax rate applicable to either a billing entity or a specific customer.",
       "docs_url": "https://getlago.com/docs/api-reference/taxes/tax-object",
       "parameters": [
         {
@@ -19848,7 +20123,7 @@
       "method": "PUT",
       "path": "/taxes/{code}",
       "summary": "Update a tax",
-      "description": "This endpoint updates an existing tax representing a customizable tax rate applicable to either the organization or a specific customer.",
+      "description": "This endpoint updates an existing tax representing a customizable tax rate applicable to either a billing entity or a specific customer.",
       "docs_url": "https://getlago.com/docs/api-reference/taxes/tax-object",
       "parameters": [
         {
@@ -19892,7 +20167,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "Internal description of the tax"
+            "description": "Internal description of the tax."
           },
           {
             "path": [
@@ -19912,7 +20187,7 @@
             "type": "string",
             "required": false,
             "complex": false,
-            "description": "The percentage rate of the tax"
+            "description": "The percentage rate of the tax."
           }
         ],
         "required": true
@@ -19987,7 +20262,7 @@
             "type": "string",
             "required": false,
             "complex": false,
-            "description": "The currency of the wallet.",
+            "description": "The currency of the wallet. Required when the customer has no currency yet. When omitted, the wallet uses the customer's currency. When provided on a customer without a currency, it also sets the customer's currency.",
             "enum": [
               "AED",
               "AFN",
@@ -20104,9 +20379,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -20146,7 +20423,7 @@
             ],
             "flag": "external-customer-id",
             "type": "string",
-            "required": false,
+            "required": true,
             "complex": false,
             "description": "The customer external unique identifier (provided by your own application)"
           },
@@ -20292,7 +20569,7 @@
             "type": "integer",
             "required": false,
             "complex": false,
-            "description": "Wallet priority for ordering when a customer has multiple wallets. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50."
+            "description": "Wallet priority for ordering when a customer has multiple wallets. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50. Wallets with the same priority are applied by expiration date, soonest first, with wallets without an expiration date last, then by creation date, oldest first."
           },
           {
             "path": [
@@ -20311,7 +20588,7 @@
             ],
             "flag": "rate-amount",
             "type": "string",
-            "required": false,
+            "required": true,
             "complex": false,
             "description": "The rate of conversion between credits and the amount in the specified currency. It indicates the ratio or factor used to convert credits into the corresponding monetary value in the currency of the transaction."
           },
@@ -20347,6 +20624,16 @@
             "nullable": true,
             "complex": false,
             "description": "The name of the wallet transactions triggered when creating the wallet. It will appear on the invoice as the label for the fee. If not set, the label on the invoice will fallback to either `Prepaid credits - {{wallet_name}}` if the wallet name is set, or `Prepaid credits`."
+          },
+          {
+            "path": [
+              "transaction_priority"
+            ],
+            "flag": "transaction-priority",
+            "type": "integer",
+            "required": false,
+            "complex": false,
+            "description": "The priority of the wallet transactions triggered when creating the wallet. It drives the order in which credits are consumed. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50."
           }
         ],
         "required": true
@@ -20431,7 +20718,7 @@
             "type": "string",
             "required": false,
             "complex": false,
-            "description": "The currency of the wallet.",
+            "description": "The currency of the wallet. Required when the customer has no currency yet. When omitted, the wallet uses the customer's currency. When provided on a customer without a currency, it also sets the customer's currency.",
             "enum": [
               "AED",
               "AFN",
@@ -20548,9 +20835,11 @@
               "SOS",
               "SRD",
               "STD",
+              "SYP",
               "SZL",
               "THB",
               "TJS",
+              "TND",
               "TOP",
               "TRY",
               "TTD",
@@ -20590,7 +20879,7 @@
             ],
             "flag": "external-customer-id",
             "type": "string",
-            "required": false,
+            "required": true,
             "complex": false,
             "description": "The customer external unique identifier (provided by your own application)"
           },
@@ -20736,7 +21025,7 @@
             "type": "integer",
             "required": false,
             "complex": false,
-            "description": "Wallet priority for ordering when a customer has multiple wallets. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50."
+            "description": "Wallet priority for ordering when a customer has multiple wallets. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50. Wallets with the same priority are applied by expiration date, soonest first, with wallets without an expiration date last, then by creation date, oldest first."
           },
           {
             "path": [
@@ -20755,7 +21044,7 @@
             ],
             "flag": "rate-amount",
             "type": "string",
-            "required": false,
+            "required": true,
             "complex": false,
             "description": "The rate of conversion between credits and the amount in the specified currency. It indicates the ratio or factor used to convert credits into the corresponding monetary value in the currency of the transaction."
           },
@@ -20791,6 +21080,16 @@
             "nullable": true,
             "complex": false,
             "description": "The name of the wallet transactions triggered when creating the wallet. It will appear on the invoice as the label for the fee. If not set, the label on the invoice will fallback to either `Prepaid credits - {{wallet_name}}` if the wallet name is set, or `Prepaid credits`."
+          },
+          {
+            "path": [
+              "transaction_priority"
+            ],
+            "flag": "transaction-priority",
+            "type": "integer",
+            "required": false,
+            "complex": false,
+            "description": "The priority of the wallet transactions triggered when creating the wallet. It drives the order in which credits are consumed. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50."
           }
         ],
         "required": true
@@ -20961,6 +21260,16 @@
           },
           {
             "path": [
+              "priority"
+            ],
+            "flag": "priority",
+            "type": "integer",
+            "required": false,
+            "complex": false,
+            "description": "The priority of the wallet transaction. It drives the order in which credits are consumed. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50."
+          },
+          {
+            "path": [
               "purchase_order_number"
             ],
             "flag": "purchase-order-number",
@@ -20980,6 +21289,17 @@
             "nullable": true,
             "complex": false,
             "description": "The number of voided credits."
+          },
+          {
+            "path": [
+              "voided_transaction_id"
+            ],
+            "flag": "voided-transaction-id",
+            "type": "string",
+            "required": false,
+            "nullable": true,
+            "complex": false,
+            "description": "Unique identifier of the inbound wallet transaction to void. Only available on traceable wallets, and the target transaction must still have a remaining amount."
           },
           {
             "path": [
@@ -21352,11 +21672,27 @@
           "type": "string",
           "required": true,
           "description": "A unique wallet identifier within a customer. It is either set by the user at creation or auto-generated by Lago if not provided."
+        },
+        {
+          "name": "page",
+          "flag": "page",
+          "in": "query",
+          "type": "integer",
+          "required": false,
+          "description": "Page number."
+        },
+        {
+          "name": "per_page",
+          "flag": "per-page",
+          "in": "query",
+          "type": "integer",
+          "required": false,
+          "description": "Number of records per page."
         }
       ],
       "idempotent": true,
       "dangerous": false,
-      "paginated": false,
+      "paginated": true,
       "mutation": false
     },
     {
@@ -21366,7 +21702,7 @@
       "method": "GET",
       "path": "/wallet_transactions/{lago_id}",
       "summary": "Retrieve a wallet transaction",
-      "description": "This endpoint is used to retrieve a specific wallet transactions.",
+      "description": "This endpoint is used to retrieve a specific wallet transaction.",
       "docs_url": "https://getlago.com/docs/api-reference/wallets/wallet-object",
       "parameters": [
         {
@@ -21375,7 +21711,7 @@
           "in": "path",
           "type": "string",
           "required": true,
-          "description": "Unique identifier assigned to the wallet transaction within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the wallet's record within the Lago system."
+          "description": "Unique identifier assigned to the wallet transaction within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the wallet transaction's record within the Lago system."
         }
       ],
       "idempotent": true,
@@ -21446,7 +21782,7 @@
       "method": "GET",
       "path": "/customers/{external_customer_id}/wallets",
       "summary": "List all customer's wallets",
-      "description": "This endpoint is used to list all wallets with prepaid credits of a customer",
+      "description": "This endpoint is used to list all wallets with prepaid credits of a customer.",
       "docs_url": "https://getlago.com/docs/api-reference/wallets/wallet-object",
       "parameters": [
         {
@@ -21472,6 +21808,14 @@
           "type": "integer",
           "required": false,
           "description": "Number of records per page."
+        },
+        {
+          "name": "currency",
+          "flag": "currency",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "Filter the results by currency, expressed as an ISO 4217 code."
         },
         {
           "name": "billing_entity_codes[]",
@@ -21852,6 +22196,28 @@
           },
           {
             "path": [
+              "paid_top_up_max_amount_cents"
+            ],
+            "flag": "paid-top-up-max-amount-cents",
+            "type": "integer",
+            "required": false,
+            "nullable": true,
+            "complex": false,
+            "description": "Maximum amount of cents that can be top-up with a single paid transaction."
+          },
+          {
+            "path": [
+              "paid_top_up_min_amount_cents"
+            ],
+            "flag": "paid-top-up-min-amount-cents",
+            "type": "integer",
+            "required": false,
+            "nullable": true,
+            "complex": false,
+            "description": "Minimum amount of cents that can be top-up with a single paid transaction."
+          },
+          {
+            "path": [
               "payment_method",
               "payment_method_id"
             ],
@@ -21884,7 +22250,7 @@
             "type": "integer",
             "required": false,
             "complex": false,
-            "description": "Wallet priority for ordering when a customer has multiple wallets. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50."
+            "description": "Wallet priority for ordering when a customer has multiple wallets. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50. Wallets with the same priority are applied by expiration date, soonest first, with wallets without an expiration date last, then by creation date, oldest first."
           },
           {
             "path": [
@@ -22056,6 +22422,28 @@
           },
           {
             "path": [
+              "paid_top_up_max_amount_cents"
+            ],
+            "flag": "paid-top-up-max-amount-cents",
+            "type": "integer",
+            "required": false,
+            "nullable": true,
+            "complex": false,
+            "description": "Maximum amount of cents that can be top-up with a single paid transaction."
+          },
+          {
+            "path": [
+              "paid_top_up_min_amount_cents"
+            ],
+            "flag": "paid-top-up-min-amount-cents",
+            "type": "integer",
+            "required": false,
+            "nullable": true,
+            "complex": false,
+            "description": "Minimum amount of cents that can be top-up with a single paid transaction."
+          },
+          {
+            "path": [
               "payment_method",
               "payment_method_id"
             ],
@@ -22088,7 +22476,7 @@
             "type": "integer",
             "required": false,
             "complex": false,
-            "description": "Wallet priority for ordering when a customer has multiple wallets. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50."
+            "description": "Wallet priority for ordering when a customer has multiple wallets. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50. Wallets with the same priority are applied by expiration date, soonest first, with wallets without an expiration date last, then by creation date, oldest first."
           },
           {
             "path": [
@@ -22260,7 +22648,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "The status of the wallet transaction. Possible values are `pending` or `settled`."
+          "description": "The status of the wallet transaction. Possible values are `pending`, `settled` or `failed`."
         },
         {
           "name": "transaction_status",
@@ -22277,6 +22665,14 @@
           "type": "string",
           "required": false,
           "description": "The transaction type of the wallet transaction. Possible values are `inbound` (increasing the wallet balance) or `outbound` (decreasing the wallet balance)."
+        },
+        {
+          "name": "metadata[key]",
+          "flag": "metadata[key]",
+          "in": "query",
+          "type": "string",
+          "required": false,
+          "description": "Filter wallet transactions by metadata. Replace `key` with the actual metadata key you want to match, and provide the corresponding value. For example, `metadata[color]=blue`."
         }
       ],
       "idempotent": true,
@@ -22327,7 +22723,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The signature used for the webhook. If no value is passed,",
+            "description": "The algorithm used to sign the webhook payload. Defaults to `jwt` when no value is passed.",
             "enum": [
               "jwt",
               "hmac",
@@ -22485,7 +22881,7 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The signature used for the webhook. If no value is passed,",
+            "description": "The algorithm used to sign the webhook payload. When the field is omitted, the current value is kept.",
             "enum": [
               "jwt",
               "hmac",
@@ -22539,6 +22935,6 @@
       "mutation": false
     }
   ],
-  "spec_sha256": "ce82ac3701caa4ab59bb35557a4e592adb0b81ce69fa37549fde391fc241aa1a",
-  "spec_version": "1.52.1"
+  "spec_sha256": "59044919a5bd89dffa13e01da92193512197295fbda52ab6afb044eb58437917",
+  "spec_version": "1.55.0"
 }

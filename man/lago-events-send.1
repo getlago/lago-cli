@@ -2,7 +2,7 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-events-send - Send usage events
+lago-events-send - Send a usage event
 
 
 .SH SYNOPSIS
@@ -10,7 +10,7 @@ lago-events-send - Send usage events
 
 
 .SH DESCRIPTION
-This endpoint is used for transmitting usage measurement events to either a designated customer or a specific subscription.
+This endpoint is used for transmitting a usage measurement event to a subscription.
 
 
 .SH OPTIONS
@@ -49,7 +49,7 @@ This endpoint is used for transmitting usage measurement events to either a desi
 \fB--timestamp\fP=""
 	This field captures the Unix timestamp in seconds indicating the occurrence of the event in Coordinated Universal Time (UTC).
 If this timestamp is not provided, the API will automatically set it to the time of event reception.
-You can also provide miliseconds precision by appending decimals to the timestamp.
+You can also provide milliseconds precision by appending decimals to the timestamp.
 
 .PP
 \fB--transaction-id\fP=""

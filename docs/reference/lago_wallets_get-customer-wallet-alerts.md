@@ -19,7 +19,11 @@ lago wallets get-customer-wallet-alerts <external_customer_id> <wallet_code> [fl
 ### Options
 
 ```
+      --all                       Fetch every page
   -h, --help                      help for get-customer-wallet-alerts
+      --limit string              Results per page (1-1000)
+      --page string               Page number.
+      --per-page string           Number of records per page.
       --watch                     Poll and re-render when the response changes
       --watch-interval duration   Polling interval used with --watch (default 2s)
 ```
