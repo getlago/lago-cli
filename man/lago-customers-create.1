@@ -10,7 +10,7 @@ lago-customers-create - Create a customer
 
 
 .SH DESCRIPTION
-This endpoint creates a new customer.
+This endpoint creates a customer. When a customer with the same \fBexternal_id\fR already exists, it is updated instead, and only the fields present in the payload are changed.
 
 
 .SH OPTIONS
@@ -20,7 +20,7 @@ This endpoint creates a new customer.
 - 'partner': the account is a partner.
 
 .PP
-This field is only applied when revenue share is enabled on your organization; otherwise it is ignored.; one of: customer, partner
+This field is only applied when revenue share is enabled on your organization and the customer has no subscription, invoice, add-on, fixed-amount coupon or wallet yet; otherwise it is ignored.; one of: customer, partner
 
 .PP
 \fB--address-line1\fP=""
@@ -36,12 +36,12 @@ This field is only applied when revenue share is enabled on your organization; o
 
 .PP
 \fB--billing-configuration-invoice-grace-period\fP=""
-	The grace period, expressed in days, for the invoice. This period refers to the additional time granted to the customer beyond the invoice due date to adjust usage and line items
+	The grace period, expressed in days, for the invoice. This period refers to the additional time granted to the customer beyond the invoice due date to adjust usage and line items. It is null when the customer has no grace period of its own and falls back to the billing entity.
 
 .PP
 \fB--billing-configuration-payment-provider\fP=""
 	The payment provider utilized to initiate payments for invoices issued by Lago.
-Accepted values: 'stripe', 'adyen', 'cashfree', 'flutterwave', 'gocardless', 'moneyhash' or null. This field is required if you intend to assign a 'provider_customer_id'.; one of: stripe, adyen, cashfree, flutterwave, gocardless, moneyhash
+Accepted values: 'stripe', 'adyen', 'cashfree', 'flutterwave', 'gocardless', 'moneyhash' or null. This field is required if you intend to assign a 'provider_customer_id'. Send null to detach the customer from its current payment provider.; one of: stripe, adyen, cashfree, flutterwave, gocardless, moneyhash,
 
 .PP
 \fB--billing-configuration-payment-provider-code\fP=""
@@ -85,7 +85,7 @@ Accepted values: 'stripe', 'adyen', 'cashfree', 'flutterwave', 'gocardless', 'mo
 
 .PP
 \fB--currency\fP=""
-	Currency of the customer. Format must be ISO 4217; one of: , AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SZL, THB, TJS, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
+	Currency of the customer. Format must be ISO 4217; one of: , AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SYP, SZL, THB, TJS, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
 
 .PP
 \fB--customer-type\fP=""
@@ -150,7 +150,7 @@ Accepted values: 'stripe', 'adyen', 'cashfree', 'flutterwave', 'gocardless', 'mo
 
 .PP
 \fB--metadata\fP=""
-	Set of key-value pairs that you can attach to a customer. This can be useful for storing additional information about the customer in a structured format
+	Set of key-value pairs that you can attach to a customer. This can be useful for storing additional information about the customer in a structured format. A customer can hold up to 5 key-value pairs.
 
 .PP
 \fB--name\fP=""
@@ -166,27 +166,27 @@ Accepted values: 'stripe', 'adyen', 'cashfree', 'flutterwave', 'gocardless', 'mo
 
 .PP
 \fB--shipping-address-address-line1\fP=""
-	The first line of the billing address
+	The first line of the shipping address
 
 .PP
 \fB--shipping-address-address-line2\fP=""
-	The second line of the billing address
+	The second line of the shipping address
 
 .PP
 \fB--shipping-address-city\fP=""
-	The city of the customer's billing address
+	The city of the customer's shipping address
 
 .PP
 \fB--shipping-address-country\fP=""
-	Country code of the customer's billing address. Format must be ISO 3166 (alpha-2); one of: , AD, AE, AF, AG, AI, AL, AM, AO, AQ, AR, AS, AT, AU, AW, AX, AZ, BA, BB, BD, BE, BF, BG, BH, BI, BJ, BL, BM, BN, BO, BQ, BR, BS, BT, BV, BW, BY, BZ, CA, CC, CD, CF, CG, CH, CI, CK, CL, CM, CN, CO, CR, CU, CV, CW, CX, CY, CZ, DE, DJ, DK, DM, DO, DZ, EC, EE, EG, EH, ER, ES, ET, FI, FJ, FK, FM, FO, FR, GA, GB, GD, GE, GF, GG, GH, GI, GL, GM, GN, GP, GQ, GR, GS, GT, GU, GW, GY, HK, HM, HN, HR, HT, HU, ID, IE, IL, IM, IN, IO, IQ, IR, IS, IT, JE, JM, JO, JP, KE, KG, KH, KI, KM, KN, KP, KR, KW, KY, KZ, LA, LB, LC, LI, LK, LR, LS, LT, LU, LV, LY, MA, MC, MD, ME, MF, MG, MH, MK, ML, MM, MN, MO, MP, MQ, MR, MS, MT, MU, MV, MW, MX, MY, MZ, NA, NC, NE, NF, NG, NI, NL, NO, NP, NR, NU, NZ, OM, PA, PE, PF, PG, PH, PK, PL, PM, PN, PR, PS, PT, PW, PY, QA, RE, RO, RS, RU, RW, SA, SB, SC, SD, SE, SG, SH, SI, SJ, SK, SL, SM, SN, SO, SR, SS, ST, SV, SX, SY, SZ, TC, TD, TF, TG, TH, TJ, TK, TL, TM, TN, TO, TR, TT, TV, TW, TZ, UA, UG, UM, US, UY, UZ, VA, VC, VE, VG, VI, VN, VU, WF, WS, YE, YT, ZA, ZM, ZW
+	Country code of the customer's shipping address. Format must be ISO 3166 (alpha-2); one of: , AD, AE, AF, AG, AI, AL, AM, AO, AQ, AR, AS, AT, AU, AW, AX, AZ, BA, BB, BD, BE, BF, BG, BH, BI, BJ, BL, BM, BN, BO, BQ, BR, BS, BT, BV, BW, BY, BZ, CA, CC, CD, CF, CG, CH, CI, CK, CL, CM, CN, CO, CR, CU, CV, CW, CX, CY, CZ, DE, DJ, DK, DM, DO, DZ, EC, EE, EG, EH, ER, ES, ET, FI, FJ, FK, FM, FO, FR, GA, GB, GD, GE, GF, GG, GH, GI, GL, GM, GN, GP, GQ, GR, GS, GT, GU, GW, GY, HK, HM, HN, HR, HT, HU, ID, IE, IL, IM, IN, IO, IQ, IR, IS, IT, JE, JM, JO, JP, KE, KG, KH, KI, KM, KN, KP, KR, KW, KY, KZ, LA, LB, LC, LI, LK, LR, LS, LT, LU, LV, LY, MA, MC, MD, ME, MF, MG, MH, MK, ML, MM, MN, MO, MP, MQ, MR, MS, MT, MU, MV, MW, MX, MY, MZ, NA, NC, NE, NF, NG, NI, NL, NO, NP, NR, NU, NZ, OM, PA, PE, PF, PG, PH, PK, PL, PM, PN, PR, PS, PT, PW, PY, QA, RE, RO, RS, RU, RW, SA, SB, SC, SD, SE, SG, SH, SI, SJ, SK, SL, SM, SN, SO, SR, SS, ST, SV, SX, SY, SZ, TC, TD, TF, TG, TH, TJ, TK, TL, TM, TN, TO, TR, TT, TV, TW, TZ, UA, UG, UM, US, UY, UZ, VA, VC, VE, VG, VI, VN, VU, WF, WS, YE, YT, ZA, ZM, ZW
 
 .PP
 \fB--shipping-address-state\fP=""
-	The state of the customer's billing address
+	The state of the customer's shipping address
 
 .PP
 \fB--shipping-address-zipcode\fP=""
-	The zipcode of the customer's billing address
+	The zipcode of the customer's shipping address
 
 .PP
 \fB--skip-invoice-custom-sections\fP=""

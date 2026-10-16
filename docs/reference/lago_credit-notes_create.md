@@ -5,6 +5,7 @@ Create a credit note
 ### Synopsis
 
 This endpoint creates a new credit note.
+This is a premium feature.
 
 ```
 lago credit-notes create [flags]

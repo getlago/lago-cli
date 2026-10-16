@@ -4,7 +4,7 @@ Remove an entitlement from a subscription
 
 ### Synopsis
 
-This endpoint removes a specific feature entitlement from a subscription. The entitlement remains available from the plan.
+This endpoint removes a specific feature entitlement from a subscription. The plan keeps the feature and other subscriptions are not affected, but this subscription stops getting it. It returns the full list of entitlements remaining on the subscription.
 
 ```
 lago entitlements destroy-subscription-entitlement <external_id> <feature_code> [flags]
@@ -21,7 +21,7 @@ lago entitlements destroy-subscription-entitlement <external_id> <feature_code> 
 
 ```
   -h, --help                         help for destroy-subscription-entitlement
-      --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
+      --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', 'canceled', or 'incomplete'.; one of: pending, active, terminated, canceled, incomplete
 ```
 
 ### Options inherited from parent commands

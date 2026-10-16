@@ -26,9 +26,10 @@ lago subscriptions terminate <external_id> [flags]
 
                                             - 'credit': A credit note is generated for the unused subscription time. The unused amount is credited back to the customer.
                                             - 'refund': A credit note is generated for the unused subscription time. If the invoice is paid or partially paid, the unused paid amount is refunded; any unpaid unused amount is credited back to the customer.
+                                            - 'offset': A credit note is generated for the unused subscription time. If the invoice is paid or partially paid, the unused paid amount is refunded; any unpaid unused amount is applied to the invoice reducing its amount due.
                                             - 'skip': No credit note is generated for the unused subscription time.
 
-                                            _Note: This field is only applicable to pay-in-advance plans and is ignored for pay-in-arrears plans._; one of: credit, refund, skip
+                                            _Note: This field is only applicable to pay-in-advance plans and is ignored for pay-in-arrears plans._; one of: credit, refund, offset, skip
       --on-termination-invoice string       When a subscription is terminated before the end of its billing period, we generate an invoice for the unbilled usage.
                                             This field allows you to control the behavior of the invoice generation:
 

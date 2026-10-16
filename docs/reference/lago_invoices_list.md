@@ -38,7 +38,7 @@ lago invoices list [flags]
       --payment-statuses string        Filter invoices by payment statuses. Possible values are 'pending', 'failed' or 'succeeded'.
       --per-page string                Number of records per page.
       --purchase-order-number string   Filter by the invoice purchase order number. The match is exact but case-insensitive.
-      --search-term string             Search invoices by id, number, customer name, customer external_id or customer email.
+      --search-term string             Search invoices by id, number, purchase order number, or by the name, legal name, first name, last name, external_id or email of the customer.
       --self-billed string             Filter invoices by self billed. Possible values are 'true' or 'false'.
       --settlements string             Filter invoices settled by at least one of the given settlement types. 'payment' matches invoices settled by a payment, 'credit_note' matches invoices settled by a credit note.
       --statuses string                Filter invoices by statuses. Possible values are 'draft', 'failed', 'finalized', 'pending' and 'voided'.

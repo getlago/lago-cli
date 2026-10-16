@@ -18,8 +18,28 @@ This endpoint enables the retrieval of the usage-based billing data for a custom
 	Optional flag to determine if taxes should be applied. Defaults to 'true' if not provided or if null.
 
 .PP
+\fB--billable-metric-code\fP=""
+	Filter usage to a specific billable metric by its code.
+
+.PP
+\fB--charge-code\fP=""
+	Filter usage to a specific charge by its code.
+
+.PP
+\fB--charge-id\fP=""
+	Filter usage to a specific charge by its Lago ID (UUID).
+
+.PP
 \fB--external-subscription-id\fP=""
 	The unique identifier of the subscription within your application.
+
+.PP
+\fB--filter-by-presentation\fP=""
+	Filter 'presentation_breakdowns' by a JSON-encoded array of presentation group key values. Only breakdowns matching the provided values will be returned. Pass an empty array to disable 'presentation_breakdowns' entirely.
+
+.PP
+\fB--group\fP=""
+	Filter usage by pricing group. Pass key/value pairs as query parameters, e.g. 'group[cloud]=aws'.
 
 .PP
 \fB-h\fP, \fB--help\fP[=false]

@@ -4,7 +4,7 @@ Create an entitlement
 
 ### Synopsis
 
-This endpoint creates new entitlements by adding features to a plan. Note that all existing entitlements will be deleted and replaced by the ones provided. To add a new entitlement without removing the existing ones, use PATCH. The feature must exist and all privileges must be valid for the feature.
+This endpoint creates new entitlements by adding features to a plan. Note that all existing entitlements will be deleted and replaced by the ones provided. Sending an empty `entitlements` object, or omitting the key, therefore removes every entitlement of the plan. To add a new entitlement without removing the existing ones, use PATCH. The feature must exist and all privileges must be valid for the feature.
 
 ```
 lago entitlements create <code> [flags]

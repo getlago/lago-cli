@@ -20,19 +20,21 @@ lago coupons apply [flags]
 ### Options
 
 ```
-      --amount-cents string           The amount of the coupon in cents. This field is required only for coupon with 'fixed_amount' type.
-      --amount-currency string        The currency of the coupon. This field is required only for coupon with 'fixed_amount' type.; one of: , AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SZL, THB, TJS, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
+      --amount-cents string           The amount of the coupon in cents. If it is not set, the amount of the coupon is used.
+      --amount-currency string        The currency of the coupon amount. If it is not set, the currency of the coupon is used.; one of: , AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SYP, SZL, THB, TJS, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
       --coupon-code string            Unique code used to identify the coupon.
       --external-customer-id string   The customer external unique identifier (provided by your own application)
       --frequency string              The type of frequency for the coupon. It can have three possible values: 'once', 'recurring' or 'forever'.
 
                                       - If set to 'once', the coupon is applicable only for a single use.
                                       - If set to 'recurring', the coupon can be used multiple times for recurring billing periods.
-                                      - If set to 'forever', the coupon has unlimited usage and can be applied indefinitely.; one of: once, recurring, forever,
-      --frequency-duration string     Specifies the number of billing periods to which the coupon applies. This field is required only for coupons with a 'recurring' frequency type
+                                      - If set to 'forever', the coupon has unlimited usage and can be applied indefinitely.
+
+                                      If it is not set, the frequency of the coupon is used.; one of: once, recurring, forever,
+      --frequency-duration string     The number of billing periods to which the coupon applies. If it is not set, the frequency duration of the coupon is used. A 'recurring' applied coupon must end up with a frequency duration greater than 0.
   -h, --help                          help for apply
       --input string                  Complete JSON request body or @file.json
-      --percentage-rate string        The percentage rate of the coupon. This field is required only for coupons with a 'percentage' coupon type.
+      --percentage-rate string        The percentage rate of the coupon. If it is not set, the percentage rate of the coupon is used.
 ```
 
 ### Options inherited from parent commands

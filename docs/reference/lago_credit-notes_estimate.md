@@ -5,6 +5,7 @@ Estimate amounts for a new credit note
 ### Synopsis
 
 This endpoint allows you to retrieve amounts for a new credit note creation.
+This is a premium feature.
 
 ```
 lago credit-notes estimate [flags]
