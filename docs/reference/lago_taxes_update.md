@@ -4,7 +4,7 @@ Update a tax
 
 ### Synopsis
 
-This endpoint updates an existing tax representing a customizable tax rate applicable to either the organization or a specific customer.
+This endpoint updates an existing tax representing a customizable tax rate applicable to either a billing entity or a specific customer.
 
 ```
 lago taxes update <code> [flags]
@@ -22,11 +22,11 @@ lago taxes update <code> [flags]
 ```
       --applied-to-organization string   **Deprecated.** This field will be removed in a future version. When set to true, it applies the tax to the organization's default billing entity. To apply or remove a tax from any billing entity (including the default one), please use the 'PUT /billing_entities/:code' endpoint instead.
       --code string                      Unique code used to identify the tax associated with the API request.
-      --description string               Internal description of the tax
+      --description string               Internal description of the tax.
   -h, --help                             help for update
       --input string                     Complete JSON request body or @file.json
       --name string                      Name of the tax.
-      --rate string                      The percentage rate of the tax
+      --rate string                      The percentage rate of the tax.
 ```
 
 ### Options inherited from parent commands

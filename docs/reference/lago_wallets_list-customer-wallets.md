@@ -4,7 +4,7 @@ List all customer's wallets
 
 ### Synopsis
 
-This endpoint is used to list all wallets with prepaid credits of a customer
+This endpoint is used to list all wallets with prepaid credits of a customer.
 
 ```
 lago wallets list-customer-wallets <external_customer_id> [flags]
@@ -21,6 +21,7 @@ lago wallets list-customer-wallets <external_customer_id> [flags]
 ```
       --all                           Fetch every page
       --billing-entity-codes string   Filter wallets by billing entity codes.
+      --currency string               Filter the results by currency, expressed as an ISO 4217 code.
   -h, --help                          help for list-customer-wallets
       --limit string                  Results per page (1-1000)
       --page string                   Page number.

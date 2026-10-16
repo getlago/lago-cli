@@ -20,7 +20,12 @@ lago customers projected-usage <external_customer_id> [flags]
 
 ```
       --apply-taxes string                Optional flag to determine if taxes should be applied. Defaults to 'true' if not provided or if null.
+      --billable-metric-code string       Filter usage to a specific billable metric by its code.
+      --charge-code string                Filter usage to a specific charge by its code.
+      --charge-id string                  Filter usage to a specific charge by its Lago ID (UUID).
       --external-subscription-id string   The unique identifier of the subscription within your application.
+      --filter-by-presentation string     Filter 'presentation_breakdowns' by a JSON-encoded array of presentation group key values. Only breakdowns matching the provided values will be returned. Pass an empty array to disable 'presentation_breakdowns' entirely.
+      --group string                      Filter usage by pricing group. Pass key/value pairs as query parameters, e.g. 'group[cloud]=aws'.
   -h, --help                              help for projected-usage
       --watch                             Poll and re-render when the response changes
       --watch-interval duration           Polling interval used with --watch (default 2s)

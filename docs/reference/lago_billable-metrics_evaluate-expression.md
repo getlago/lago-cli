@@ -20,9 +20,10 @@ lago billable-metrics evaluate-expression [flags]
 
 ```
       --code string         The code that identifies a targeted billable metric.
-      --expression string   Expression used to calculate the event units. The expression is evalutated for each event and the result is then used to calculate the total aggregated units.
-                            Accepted function are 'ceil', 'concat' and 'round' as well as '+', '-', '\' and '*' operations.
-                            Round is accepting an optional second parameter to specify the number of decimal.
+      --expression string   Expression used to calculate the event units. The expression is evaluated for each event and the result is then used to calculate the total aggregated units.
+                            Event values are read with 'event.code', 'event.timestamp' and 'event.properties.<name>'.
+                            Accepted functions are 'ceil', 'concat', 'floor', 'greatest', 'least' and 'round' as well as '+', '-', '/' and '*' operations.
+                            'ceil', 'floor' and 'round' accept an optional second parameter to specify the number of decimals.
   -h, --help                help for evaluate-expression
       --input string        Complete JSON request body or @file.json
       --properties string   This field represents additional properties associated with the event. They can be used when evaluating the expression.

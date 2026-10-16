@@ -28,7 +28,7 @@ lago customers current-usage <external_customer_id> [flags]
       --filter-by-charge-id string        **Deprecated.** Filter usage to a specific charge by its Lago ID (UUID).
       --filter-by-group string            **Deprecated.** Filter usage by pricing group. Pass key/value pairs as query parameters, e.g. 'filter_by_group[cloud]=aws'.
       --filter-by-presentation string     Filter 'presentation_breakdowns' by a JSON-encoded array of presentation group key values. Only breakdowns matching the provided values will be returned. Pass an empty array to disable 'presentation_breakdowns' entirely.
-      --full-usage string                 When 'true', returns usage since subscription start instead of the current billing period. Requires one of 'charge_id', 'charge_code', 'group' (or their deprecated 'filter_by_*' equivalents) to be set.
+      --full-usage string                 When 'true', returns usage since the subscription started instead of the current billing period. It requires the granular lifetime usage add-on, at least one of 'charge_id', 'charge_code', 'billable_metric_code' or 'group' (or their deprecated 'filter_by_*' equivalents), and a subscription without prorated charges. The request returns '405' when one of these conditions is not met.
       --group string                      Filter usage by pricing group. Pass key/value pairs as query parameters, e.g. 'group[cloud]=aws'. Replaces deprecated 'filter_by_group'.
   -h, --help                              help for current-usage
       --watch                             Poll and re-render when the response changes

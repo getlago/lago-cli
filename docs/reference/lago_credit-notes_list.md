@@ -4,7 +4,7 @@ List all credit notes
 
 ### Synopsis
 
-This endpoint list all existing credit notes.
+This endpoint lists all existing credit notes.
 
 ```
 lago credit-notes list [flags]

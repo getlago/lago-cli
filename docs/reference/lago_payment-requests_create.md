@@ -4,7 +4,7 @@ Create a payment request
 
 ### Synopsis
 
-This endpoint is used to create a payment request to collect payments of overdue invoices of a given customer
+This endpoint is used to create a payment request to collect the payment of the overdue invoices of a customer.
 
 ```
 lago payment-requests create [flags]
@@ -20,7 +20,7 @@ lago payment-requests create [flags]
 ### Options
 
 ```
-      --email string                                The customer's email address used for sending dunning notifications
+      --email string                                The email address used for sending dunning notifications. When omitted, the customer's own email address is used.
       --external-customer-id string                 The customer external unique identifier (provided by your own application)
   -h, --help                                        help for create
       --input string                                Complete JSON request body or @file.json

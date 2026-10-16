@@ -12,6 +12,9 @@ lago-billable-metrics-update - Update a billable metric
 .SH DESCRIPTION
 This endpoint updates an existing billable metric representing a pricing component of your application.
 
+.PP
+Once the billable metric is used by a plan charge, only \fBname\fR, \fBdescription\fR and \fBfilters\fR are applied. The other fields are ignored.
+
 
 .SH OPTIONS
 \fB--aggregation-type\fP=""
@@ -27,9 +30,10 @@ This endpoint updates an existing billable metric representing a pricing compone
 
 .PP
 \fB--expression\fP=""
-	Expression used to calculate the event units. The expression is evalutated for each event and the result is then used to calculate the total aggregated units.
-Accepted function are 'ceil', 'concat' and 'round' as well as '+', '-', '\\' and '*' operations.
-Round is accepting an optional second parameter to specify the number of decimal.
+	Expression used to calculate the event units. The expression is evaluated for each event and the result is then used to calculate the total aggregated units.
+Event values are read with 'event.code', 'event.timestamp' and 'event.properties.\&'.
+Accepted functions are 'ceil', 'concat', 'floor', 'greatest', 'least' and 'round' as well as '+', '-', '/' and '*' operations.
+\&'ceil', 'floor' and 'round' accept an optional second parameter to specify the number of decimals.
 
 .PP
 \fB--field-name\fP=""
@@ -37,7 +41,7 @@ Round is accepting an optional second parameter to specify the number of decimal
 
 .PP
 \fB--filters\fP=""
-	API field (array)
+	List of filters of the billable metric. On update, this list replaces the existing filters: a filter that is not sent is deleted.
 
 .PP
 \fB-h\fP, \fB--help\fP[=false]
@@ -71,7 +75,7 @@ If not defined in the request, default value is 'false'.
 
 .PP
 \fB--weighted-interval\fP=""
-	Parameter exclusively utilized in conjunction with the 'weighted_sum' aggregation type. It serves to adjust the aggregation result by assigning weights and proration to the result based on time intervals. When this field is not provided, the default time interval is assumed to be in 'seconds'.; one of: seconds,
+	Parameter exclusively utilized in conjunction with the 'weighted_sum_agg' aggregation type. It serves to adjust the aggregation result by assigning weights and proration to the result based on time intervals. It is required when 'aggregation_type' is 'weighted_sum_agg', and 'seconds' is the only accepted value.; one of: seconds,
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
