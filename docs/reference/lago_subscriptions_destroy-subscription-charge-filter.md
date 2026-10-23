@@ -21,7 +21,7 @@ lago subscriptions destroy-subscription-charge-filter <external_id> <charge_code
 
 ```
   -h, --help                         help for destroy-subscription-charge-filter
-      --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
+      --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', 'canceled', or 'incomplete'.; one of: pending, active, terminated, canceled, incomplete
 ```
 
 ### Options inherited from parent commands

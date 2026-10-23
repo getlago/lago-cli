@@ -6,6 +6,10 @@ Update a fixed charge
 
 This endpoint updates a specific fixed charge for a plan.
 
+The payload replaces the fixed charge configuration: `units` and `charge_model` must be sent on every update, and `invoice_display_name` is cleared when it is left out.
+
+Once the plan is attached to a subscription, `code` and `charge_model` are ignored.
+
 ```
 lago plans update-plan-fixed-charge <code> <fixed_charge_code> [flags]
 ```

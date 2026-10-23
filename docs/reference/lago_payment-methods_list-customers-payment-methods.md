@@ -4,7 +4,7 @@ List all customer payment methods
 
 ### Synopsis
 
-This endpoint retrieves all payment methods of a Customer.
+This endpoint retrieves all payment methods of a customer.
 
 ```
 lago payment-methods list-customers-payment-methods <external_customer_id> [flags]

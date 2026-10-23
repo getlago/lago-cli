@@ -1,10 +1,10 @@
 ## lago events send
 
-Send usage events
+Send a usage event
 
 ### Synopsis
 
-This endpoint is used for transmitting usage measurement events to either a designated customer or a specific subscription.
+This endpoint is used for transmitting a usage measurement event to a subscription.
 
 ```
 lago events send [flags]
@@ -29,7 +29,7 @@ lago events send [flags]
       --properties string                   This field represents additional properties associated with the event, which are utilized in the calculation of the final fee. This object becomes mandatory when the targeted billable metric employs a 'sum_agg', 'max_agg', or 'unique_count_agg' aggregation method. However, when using a simple 'count_agg', this object is not required.
       --timestamp string                    This field captures the Unix timestamp in seconds indicating the occurrence of the event in Coordinated Universal Time (UTC).
                                             If this timestamp is not provided, the API will automatically set it to the time of event reception.
-                                            You can also provide miliseconds precision by appending decimals to the timestamp.
+                                            You can also provide milliseconds precision by appending decimals to the timestamp.
       --transaction-id string               This field represents a unique identifier for the event.
                                             It is crucial for ensuring idempotency, meaning that each event can be uniquely identified and processed without causing any unintended side effects.
 

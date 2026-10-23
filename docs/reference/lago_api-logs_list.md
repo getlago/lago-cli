@@ -1,10 +1,10 @@
 ## lago api-logs list
 
-List all api logs
+List all API logs
 
 ### Synopsis
 
-This endpoint retrieves all existing api logs that represent requests performed to Lago's API.
+This endpoint retrieves all existing API logs, which represent the requests made to Lago's API. Logs older than the retention period of your organization are left out. The retention period is 30 days unless another one was set for your organization.
 
 ```
 lago api-logs list [flags]
@@ -20,16 +20,17 @@ lago api-logs list [flags]
 
 ```
       --all                       Fetch every page
-      --api-version string        Filter results by API version
-      --from-date string          Filter api logs from a specific date.
+      --api-version string        Filter results by API version.
+      --clients string            Filter results by the client that issued the request, as reported by its user agent.
+      --from-date string          Filter API logs logged at or after this date.
   -h, --help                      help for list
-      --http-methods string       Filter results by HTTP methods
-      --http-statuses string      Filter results by HTTP status or by generic request status
+      --http-methods string       Filter results by HTTP methods.
+      --http-statuses string      Filter results by HTTP status or by generic request status. When 'succeeded' or 'failed' is passed, the numeric values of the filter are ignored.
       --limit string              Results per page (1-1000)
       --page string               Page number.
       --per-page string           Number of records per page.
-      --request-paths string      Filter results by the path of the request
-      --to-date string            Filter api logs up to a specific date.
+      --request-paths string      Filter results by the path of the request. A value containing '*' is matched as a wildcard, otherwise the path must match exactly.
+      --to-date string            Filter API logs logged at or before this date.
       --watch                     Poll and re-render when the response changes
       --watch-interval duration   Polling interval used with --watch (default 2s)
 ```

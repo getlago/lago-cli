@@ -14,12 +14,28 @@ This endpoint enables the retrieval of all alerts for a subscription.
 
 
 .SH OPTIONS
+\fB--all\fP[=false]
+	Fetch every page
+
+.PP
 \fB-h\fP, \fB--help\fP[=false]
 	help for alerts
 
 .PP
+\fB--limit\fP=""
+	Results per page (1-1000)
+
+.PP
+\fB--page\fP=""
+	Page number.
+
+.PP
+\fB--per-page\fP=""
+	Number of records per page.
+
+.PP
 \fB--subscription-status\fP=""
-	Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
+	Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', 'canceled', or 'incomplete'.; one of: pending, active, terminated, canceled, incomplete
 
 .PP
 \fB--watch\fP[=false]

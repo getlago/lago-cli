@@ -4,7 +4,7 @@ Retrieve webhook public key
 
 ### Synopsis
 
-This endpoint is used to retrieve the public key used to verify the webhooks signature
+**Deprecated.** Use `GET /webhooks/json_public_key` instead. This endpoint is used to retrieve the public key used to verify the webhook signature.
 
 ```
 lago webhooks public-key [flags]

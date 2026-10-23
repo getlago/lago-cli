@@ -22,9 +22,10 @@ lago wallets wallet-transactions <lago_id> [flags]
       --all                         Fetch every page
   -h, --help                        help for wallet-transactions
       --limit string                Results per page (1-1000)
+      --metadata[key] string        Filter wallet transactions by metadata. Replace 'key' with the actual metadata key you want to match, and provide the corresponding value. For example, 'metadata[color]=blue'.
       --page string                 Page number.
       --per-page string             Number of records per page.
-      --status string               The status of the wallet transaction. Possible values are 'pending' or 'settled'.
+      --status string               The status of the wallet transaction. Possible values are 'pending', 'settled' or 'failed'.
       --transaction-status string   The transaction status of the wallet transaction. Possible values are 'purchased' (with pending or settled status), 'granted' (without invoice_id), 'voided' or 'invoiced'.
       --transaction-type string     The transaction type of the wallet transaction. Possible values are 'inbound' (increasing the wallet balance) or 'outbound' (decreasing the wallet balance).
       --watch                       Poll and re-render when the response changes
