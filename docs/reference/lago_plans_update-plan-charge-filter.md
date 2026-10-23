@@ -20,7 +20,7 @@ lago plans update-plan-charge-filter <code> <charge_code> <filter_id> [flags]
 ### Options
 
 ```
-      --cascade-updates string                               This field determines whether the changes made to the filter should be cascaded to the children plans. When set to 'true', the changes will be cascaded into children. Conversely, when set to 'false', the changes will only be applied to the plan itself. If not defined in the request, default value is 'false'.
+      --cascade-updates string                               This field determines whether the changes made to the filter should be cascaded to the children plans. When set to 'true', the changes will be cascaded into children. Conversely, when set to 'false', the changes will only be applied to the plan itself. If not defined in the request, default value is 'false'. This field only applies to plan charge filters and is ignored on the subscription charge filter endpoints.
   -h, --help                                                 help for update-plan-charge-filter
       --input string                                         Complete JSON request body or @file.json
       --invoice-display-name string                          Specifies the name that will be displayed on an invoice. If no value is set for this field, the values of the filter will be used as the default display name.

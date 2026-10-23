@@ -24,7 +24,7 @@ lago features list [flags]
       --limit string              Results per page (1-1000)
       --page string               Page number.
       --per-page string           Number of records per page.
-      --search-term string        Search in name, code and description.
+      --search-term string        Filter features by search term. The term is matched against the name, the code and the description of the feature.
       --watch                     Poll and re-render when the response changes
       --watch-interval duration   Polling interval used with --watch (default 2s)
 ```

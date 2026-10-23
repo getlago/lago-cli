@@ -20,12 +20,12 @@ lago payments create [flags]
 ### Options
 
 ```
-      --amount-cents string   The payment amount in cents
+      --amount-cents string   The payment amount in cents. It must be greater than zero.
   -h, --help                  help for create
       --input string          Complete JSON request body or @file.json
-      --invoice-id string     Unique identifier assigned to the invoice
-      --paid-at string        The date the payment was made
-      --reference string      Reference for the payment
+      --invoice-id string     Unique identifier of the invoice the payment is recorded on, created by Lago.
+      --paid-at string        The date the payment was made. When omitted, the current date and time is used.
+      --reference string      Reference for the payment, such as the bank transfer or cheque number.
 ```
 
 ### Options inherited from parent commands

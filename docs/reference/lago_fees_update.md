@@ -4,7 +4,7 @@ Update a fee
 
 ### Synopsis
 
-This endpoint is used for updating a specific fee that has been issued.
+This endpoint is used for updating the payment status of a specific fee. Only a fee that is not attached to an invoice can be updated; once the fee is on an invoice, its payment status follows the invoice and the endpoint returns a `405` error.
 
 ```
 lago fees update <lago_id> [flags]

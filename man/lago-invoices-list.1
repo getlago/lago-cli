@@ -78,6 +78,10 @@ This endpoint is used for retrieving all invoices.
 	Filter invoices by payment_overdue. Possible values are 'true' or 'false'.
 
 .PP
+\fB--payment-status\fP=""
+	Filter invoices by payment status. Possible values are 'pending', 'failed' or 'succeeded'.; one of: pending, failed, succeeded
+
+.PP
 \fB--payment-statuses\fP=""
 	Filter invoices by payment statuses. Possible values are 'pending', 'failed' or 'succeeded'.
 
@@ -91,7 +95,7 @@ This endpoint is used for retrieving all invoices.
 
 .PP
 \fB--search-term\fP=""
-	Search invoices by id, number, customer name, customer external_id or customer email.
+	Search invoices by id, number, purchase order number, or by the name, legal name, first name, last name, external_id or email of the customer.
 
 .PP
 \fB--self-billed\fP=""
@@ -100,6 +104,10 @@ This endpoint is used for retrieving all invoices.
 .PP
 \fB--settlements\fP=""
 	Filter invoices settled by at least one of the given settlement types. 'payment' matches invoices settled by a payment, 'credit_note' matches invoices settled by a credit note.
+
+.PP
+\fB--status\fP=""
+	Filter invoices by status. Possible values are 'draft', 'failed', 'finalized', 'pending' and 'voided'.; one of: draft, finalized, failed, pending, voided
 
 .PP
 \fB--statuses\fP=""

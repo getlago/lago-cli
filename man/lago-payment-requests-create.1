@@ -10,16 +10,16 @@ lago-payment-requests-create - Create a payment request
 
 
 .SH DESCRIPTION
-This endpoint is used to create a payment request to collect payments of overdue invoices of a given customer
+This endpoint is used to create a payment request to collect the payment of the overdue invoices of a customer.
 
 
 .SH OPTIONS
 \fB--email\fP=""
-	The customer's email address used for sending dunning notifications
+	The email address used for sending dunning notifications. When omitted, the customer's own email address is used.
 
 .PP
 \fB--external-customer-id\fP=""
-	The customer external unique identifier (provided by your own application)
+	The customer external unique identifier (provided by your own application).
 
 .PP
 \fB-h\fP, \fB--help\fP[=false]
@@ -31,7 +31,7 @@ This endpoint is used to create a payment request to collect payments of overdue
 
 .PP
 \fB--lago-invoice-ids\fP=""
-	A list of Lago IDs for the customer's overdue invoices to start the dunning process
+	A list of Lago IDs for the customer's overdue invoices to start the dunning process.
 
 .PP
 \fB--payment-method-payment-method-id\fP=""

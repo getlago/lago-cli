@@ -20,14 +20,14 @@ lago events list [flags]
 
 ```
       --all                                Fetch every page
-      --code string                        Filter events by its code.
+      --code string                        Filter events by code.
       --external-subscription-id string    External subscription ID
   -h, --help                               help for list
       --limit string                       Results per page (1-1000)
       --page string                        Page number.
       --per-page string                    Number of records per page.
       --timestamp-from string              Filter events by timestamp starting from a specific date.
-      --timestamp-from-started-at string   Requires 'external_subscription_id' to be set. Filter events by timestamp after the subscription started at datetime.
+      --timestamp-from-started-at string   Requires 'external_subscription_id' to be set, and cannot be combined with 'timestamp_from'. Filter events by timestamp after the subscription started at datetime.
       --timestamp-to string                Filter events by timestamp up to a specific date.
       --watch                              Poll and re-render when the response changes
       --watch-interval duration            Polling interval used with --watch (default 2s)

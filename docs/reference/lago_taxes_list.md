@@ -4,7 +4,7 @@ List all taxes
 
 ### Synopsis
 
-This endpoint retrieves all existing taxes representing a customizable tax rate applicable to either the organization or a specific customer.
+This endpoint retrieves all existing taxes representing a customizable tax rate applicable to either a billing entity or a specific customer.
 
 ```
 lago taxes list [flags]

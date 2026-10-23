@@ -29,5 +29,5 @@ Manage Lago api logs
 ### SEE ALSO
 
 * [lago](lago)	 - The official CLI for Lago billing
-* [lago api-logs get](lago_api-logs_get)	 - Retrieve an api log
-* [lago api-logs list](lago_api-logs_list)	 - List all api logs
+* [lago api-logs get](lago_api-logs_get)	 - Retrieve an API log
+* [lago api-logs list](lago_api-logs_list)	 - List all API logs

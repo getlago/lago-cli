@@ -35,12 +35,14 @@ lago invoices list [flags]
       --partially-paid string          Filter invoices that are partially paid. When 'true', only invoices with a non-zero amount paid that is below the total due are returned. When 'false', those invoices are excluded.
       --payment-dispute-lost string    Filter invoices with a payment dispute lost. Possible values are 'true' or 'false'.
       --payment-overdue string         Filter invoices by payment_overdue. Possible values are 'true' or 'false'.
+      --payment-status string          Filter invoices by payment status. Possible values are 'pending', 'failed' or 'succeeded'.; one of: pending, failed, succeeded
       --payment-statuses string        Filter invoices by payment statuses. Possible values are 'pending', 'failed' or 'succeeded'.
       --per-page string                Number of records per page.
       --purchase-order-number string   Filter by the invoice purchase order number. The match is exact but case-insensitive.
-      --search-term string             Search invoices by id, number, customer name, customer external_id or customer email.
+      --search-term string             Search invoices by id, number, purchase order number, or by the name, legal name, first name, last name, external_id or email of the customer.
       --self-billed string             Filter invoices by self billed. Possible values are 'true' or 'false'.
       --settlements string             Filter invoices settled by at least one of the given settlement types. 'payment' matches invoices settled by a payment, 'credit_note' matches invoices settled by a credit note.
+      --status string                  Filter invoices by status. Possible values are 'draft', 'failed', 'finalized', 'pending' and 'voided'.; one of: draft, finalized, failed, pending, voided
       --statuses string                Filter invoices by statuses. Possible values are 'draft', 'failed', 'finalized', 'pending' and 'voided'.
       --watch                          Poll and re-render when the response changes
       --watch-interval duration        Polling interval used with --watch (default 2s)

@@ -15,11 +15,11 @@ This endpoint retrieves all existing activity logs that represent actions perfor
 
 .SH OPTIONS
 \fB--activity-sources\fP=""
-	Filter results by activity sources
+	Filter results by activity sources.
 
 .PP
 \fB--activity-types\fP=""
-	Filter results by activity types
+	Filter results by activity types.
 
 .PP
 \fB--all\fP[=false]
@@ -35,7 +35,7 @@ This endpoint retrieves all existing activity logs that represent actions perfor
 
 .PP
 \fB--from-date\fP=""
-	Filter activity logs from a specific date.
+	Filter activity logs logged at or after this date. A date or a full ISO 8601 datetime is accepted.
 
 .PP
 \fB-h\fP, \fB--help\fP[=false]
@@ -55,19 +55,19 @@ This endpoint retrieves all existing activity logs that represent actions perfor
 
 .PP
 \fB--resource-ids\fP=""
-	Filter results by resources unique identifiers
+	Filter results by the unique identifiers of the resources the actions were applied to.
 
 .PP
 \fB--resource-types\fP=""
-	Filter results by resource class types
+	Filter results by resource types.
 
 .PP
 \fB--to-date\fP=""
-	Filter activity logs up to a specific date.
+	Filter activity logs logged at or before this date. A date or a full ISO 8601 datetime is accepted.
 
 .PP
 \fB--user-emails\fP=""
-	Filter results by user emails
+	Filter results by the email of the user who performed the activity.
 
 .PP
 \fB--watch\fP[=false]

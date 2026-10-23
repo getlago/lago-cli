@@ -15,7 +15,7 @@ This endpoint is used to create a manual payment
 
 .SH OPTIONS
 \fB--amount-cents\fP=""
-	The payment amount in cents
+	The payment amount in cents. It must be greater than zero.
 
 .PP
 \fB-h\fP, \fB--help\fP[=false]
@@ -27,15 +27,15 @@ This endpoint is used to create a manual payment
 
 .PP
 \fB--invoice-id\fP=""
-	Unique identifier assigned to the invoice
+	Unique identifier of the invoice the payment is recorded on, created by Lago.
 
 .PP
 \fB--paid-at\fP=""
-	The date the payment was made
+	The date the payment was made. When omitted, the current date and time is used.
 
 .PP
 \fB--reference\fP=""
-	Reference for the payment
+	Reference for the payment, such as the bank transfer or cheque number.
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS

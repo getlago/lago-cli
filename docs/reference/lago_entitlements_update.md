@@ -4,7 +4,7 @@ Partial update of an entitlement
 
 ### Synopsis
 
-This accepts a list of entitlements to update. If the feature isn't part of the plan yet, it's added with all the privileges from the payload. If the feature is already part of the plan, the privilege and values are updated or added. All privileges must be valid for the feature. All features  and privileges not part of the payload are left untouched. To remove privileges or features, use the DELETE endpoints.
+This accepts a list of entitlements to update. If the feature isn't part of the plan yet, it's added with all the privileges from the payload. If the feature is already part of the plan, the privilege and values are updated or added. All privileges must be valid for the feature. All features and privileges not part of the payload are left untouched. To remove privileges or features, use the DELETE endpoints.
 
 ```
 lago entitlements update <code> [flags]

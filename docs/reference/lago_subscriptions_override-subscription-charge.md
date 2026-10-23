@@ -49,7 +49,7 @@ lago subscriptions override-subscription-charge <external_id> <charge_code> [fla
       --properties-pricing-group-keys string                 The list of event properties that are used to group the events on the invoice.
       --properties-rate string                               The percentage rate that is applied to the amount of each transaction for a 'percentage' charge model. It is expressed as a decimal value.
       --properties-volume-ranges string                      Volume ranges, sorted from bottom to top tiers, used for a 'volume' charge model.
-      --subscription-status string                           Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
+      --subscription-status string                           Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', 'canceled', or 'incomplete'.; one of: pending, active, terminated, canceled, incomplete
       --tax-codes string                                     List of unique code used to identify the taxes.
 ```
 

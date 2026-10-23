@@ -26,6 +26,14 @@ This endpoint is used for retrieving all invoices of a customer.
 	Filter invoices up to a specific amount. This parameter must be defined in cents to ensure consistent handling for all currency types.
 
 .PP
+\fB--billing-entity-codes\fP=""
+	Filter invoices by billing entity codes. Possible values are the billing entity codes you have created.
+
+.PP
+\fB--currency\fP=""
+	Filter invoices by currency. Possible values ISO 4217 currency codes.
+
+.PP
 \fB-h\fP, \fB--help\fP[=false]
 	help for invoices
 
@@ -54,6 +62,10 @@ This endpoint is used for retrieving all invoices of a customer.
 	Page number.
 
 .PP
+\fB--partially-paid\fP=""
+	Filter invoices that are partially paid. When 'true', only invoices with a non-zero amount paid that is below the total due are returned. When 'false', those invoices are excluded.
+
+.PP
 \fB--payment-dispute-lost\fP=""
 	Filter invoices with a payment dispute lost. Possible values are 'true' or 'false'.
 
@@ -66,6 +78,10 @@ This endpoint is used for retrieving all invoices of a customer.
 	Filter invoices by payment status. Possible values are 'pending', 'failed' or 'succeeded'.; one of: pending, failed, succeeded
 
 .PP
+\fB--payment-statuses\fP=""
+	Filter invoices by payment statuses. Possible values are 'pending', 'failed' or 'succeeded'.
+
+.PP
 \fB--per-page\fP=""
 	Number of records per page.
 
@@ -75,15 +91,23 @@ This endpoint is used for retrieving all invoices of a customer.
 
 .PP
 \fB--search-term\fP=""
-	Search invoices by id, number, customer name, customer external_id or customer email.
+	Search the customer's invoices by id or number. Customer attributes are not searched here, because the list is already scoped to one customer.
 
 .PP
 \fB--self-billed\fP=""
 	Filter invoices by self billed. Possible values are 'true' or 'false'.
 
 .PP
+\fB--settlements\fP=""
+	Filter invoices settled by at least one of the given settlement types. 'payment' matches invoices settled by a payment, 'credit_note' matches invoices settled by a credit note.
+
+.PP
 \fB--status\fP=""
-	Filter invoices by status. Possible values are 'draft' or 'finalized'.; one of: draft, finalized
+	Filter invoices by status. Possible values are 'draft', 'failed', 'finalized', 'pending' and 'voided'.; one of: draft, finalized, failed, pending, voided
+
+.PP
+\fB--statuses\fP=""
+	Filter invoices by statuses. Possible values are 'draft', 'failed', 'finalized', 'pending' and 'voided'.
 
 .PP
 \fB--watch\fP[=false]
