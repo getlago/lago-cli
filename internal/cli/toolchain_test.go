@@ -19,7 +19,7 @@ import (
 // Bumping it means bumping go.mod, the Dockerfile, and the README together, and
 // re-running the security gates: gosec in particular pins to a release that can read
 // the new toolchain's export data.
-const minimumGoVersion = "1.27.0"
+const minimumGoVersion = "1.27.3"
 
 func TestGoModDeclaresTheSupportedToolchain(t *testing.T) {
 	t.Parallel()
