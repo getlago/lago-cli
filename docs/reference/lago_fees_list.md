@@ -23,7 +23,7 @@ lago fees list [flags]
       --billable-metric-code string       Filter results by the 'code' of the billable metric attached to the fee. Only applies to 'charge' types.
       --created-at-from string            Filter results created at or after this date and time in UTC.
       --created-at-to string              Filter results created at or before this date and time in UTC.
-      --currency string                   Filter results by the fee's currency.; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SZL, THB, TJS, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
+      --currency string                   Filter results by the fee's currency.; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SYP, SZL, THB, TJS, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
       --event-transaction-id string       Filter results by event transaction ID
       --external-customer-id string       Unique identifier assigned to the customer in your application.
       --external-subscription-id string   External subscription ID
@@ -32,9 +32,9 @@ lago fees list [flags]
       --fee-type string                   The fee type. Possible values are 'add_on', 'charge', 'fixed_charge', 'credit', 'subscription' or 'commitment'.; one of: charge, fixed_charge, add_on, subscription, credit, commitment
   -h, --help                              help for list
       --limit string                      Results per page (1-1000)
-      --page string                       Page number.
+      --page string                       Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
       --payment-status string             Indicates the payment status of the fee. It represents the current status of the payment associated with the fee. The possible values for this field are 'pending', 'succeeded', 'failed' and 'refunded'.; one of: pending, succeeded, failed, refunded
-      --per-page string                   Number of records per page.
+      --per-page string                   Number of records per page. Defaults to 100. The maximum is 200, unless another maximum is configured for your organization. A value above the maximum returns a '422' error with 'value_is_out_of_range' on 'per_page'. A value that is not a positive integer, such as '0', returns the default number of records.
       --refunded-at-from string           Filter results with a payment refund at or after this date and time in UTC.
       --refunded-at-to string             Filter results with a payment refund at or before this date and time in UTC.
       --succeeded-at-from string          Filter results with a payment success at or after this date and time in UTC.

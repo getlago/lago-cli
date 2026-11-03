@@ -27,11 +27,11 @@ This endpoint retrieves all filters for a specific charge.
 
 .PP
 \fB--page\fP=""
-	Page number.
+	Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
 
 .PP
 \fB--per-page\fP=""
-	Number of records per page.
+	Number of records per page. Defaults to 100. The maximum is 200, unless another maximum is configured for your organization. A value above the maximum returns a '422' error with 'value_is_out_of_range' on 'per_page'. A value that is not a positive integer, such as '0', returns the default number of records.
 
 .PP
 \fB--watch\fP[=false]

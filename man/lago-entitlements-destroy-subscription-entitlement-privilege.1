@@ -10,7 +10,7 @@ lago-entitlements-destroy-subscription-entitlement-privilege - Remove a privileg
 
 
 .SH DESCRIPTION
-This endpoint removes a specific privilege from a subscription entitlement. The privilege entitlement remains available from the plan.
+This endpoint removes a specific privilege from a subscription entitlement. The plan keeps the privilege and other subscriptions are not affected, but this subscription stops getting it. It returns the full list of entitlements remaining on the subscription.
 
 
 .SH OPTIONS
@@ -19,7 +19,7 @@ This endpoint removes a specific privilege from a subscription entitlement. The 
 
 .PP
 \fB--subscription-status\fP=""
-	Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
+	Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', 'canceled', or 'incomplete'.; one of: pending, active, terminated, canceled, incomplete
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS

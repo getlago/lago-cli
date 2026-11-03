@@ -54,6 +54,29 @@ This endpoint allows you to update a subscription.
 	The display name of the subscription on an invoice. This field allows for customization of the subscription's name for billing purposes, especially useful when a single customer has multiple subscriptions using the same plan.
 
 .PP
+\fB--on-termination-credit-note\fP=""
+	Sets the default credit note behaviour applied when this subscription is later terminated before the end of its billing period:
+.IP \(bu 2
+\&'credit': a credit note is generated for the unused subscription time. The unused amount is credited back to the customer.
+.IP \(bu 2
+\&'refund': a credit note is generated for the unused subscription time. If the invoice is paid or partially paid, the unused paid amount is refunded; any unpaid unused amount is credited back to the customer.
+.IP \(bu 2
+\&'offset': a credit note is generated for the unused subscription time. If the invoice is paid or partially paid, the unused paid amount is refunded; any unpaid unused amount is applied to the invoice reducing its amount due.
+.IP \(bu 2
+\&'skip': no credit note is generated for the unused subscription time.
+
+.PP
+\fINote: This field is only applied to pay-in-advance plans and is ignored for pay-in-arrears plans.\fP; one of: credit, refund, offset, skip
+
+.PP
+\fB--on-termination-invoice\fP=""
+	Sets the default invoice behaviour applied when this subscription is later terminated before the end of its billing period:
+.IP \(bu 2
+\&'generate': an invoice is generated for the unbilled usage.
+.IP \(bu 2
+\&'skip': no invoice is generated for the unbilled usage.; one of: generate, skip
+
+.PP
 \fB--payment-method-payment-method-id\fP=""
 	The unique identifier of the payment method (required when using a specific provider payment method).
 
@@ -67,7 +90,7 @@ This endpoint allows you to update a subscription.
 
 .PP
 \fB--plan-overrides-amount-currency\fP=""
-	The currency of the plan. It indicates the monetary unit in which the plan's cost, including taxes and usage-based charges, is expressed.; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SZL, THB, TJS, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
+	The currency of the plan. It indicates the monetary unit in which the plan's cost, including taxes and usage-based charges, is expressed.; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SYP, SZL, THB, TJS, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
 
 .PP
 \fB--plan-overrides-charges\fP=""
@@ -130,7 +153,7 @@ Set to 'true' to switch progressive billing off for this subscription specifical
 
 .PP
 \fB--status\fP=""
-	By default, this endpoint only return 'active' subscriptions. If you want to update a subscription with a different 'status', you can specify it here.; one of: active, pending
+	By default, this endpoint only updates 'active' subscriptions. If you want to update a subscription with a different 'status', you can specify it here.; one of: active, pending
 
 .PP
 \fB--subscription-at\fP=""

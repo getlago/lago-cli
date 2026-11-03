@@ -10,7 +10,8 @@ lago-invoices-download - Download an invoice PDF
 
 
 .SH DESCRIPTION
-This endpoint is used for downloading a specific invoice PDF document.
+This endpoint is used for downloading a specific invoice PDF document. Only \fBfinalized\fR invoices can be downloaded; any other invoice returns a \fB404\fR error.
+When the PDF has already been generated, the invoice object is returned and its \fBfile_url\fR points to the document. When it has not been generated yet, the response is a \fB200\fR with an empty body and the generation starts in the background. Call the endpoint again to get the invoice object with its \fBfile_url\fR\&.
 
 
 .SH OPTIONS
