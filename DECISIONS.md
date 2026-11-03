@@ -511,6 +511,13 @@ The floor moves from 1.27.0 to 1.27.3. govulncheck reported nine standard-librar
 advisories reachable from `transport.Client.Do`: eight fixed in 1.27.2 (net/http, the
 bundled http2, crypto/tls, net/textproto) and GO-2026-6809 in crypto/x509, fixed in
 1.27.3. The scheduled Security run on `main` had been failing on them since 2026-10-26,
-and every PR inherited the failure. A patch bump changes no language semantics, so no
-other gate moved. go.mod, the Dockerfile, the README and `minimumGoVersion` move
+and every PR inherited the failure. A patch bump changes no language semantics. go.mod, the Dockerfile, the README and `minimumGoVersion` move
 together, as the 2026-09-01 entry requires.
+
+Two gates moved with it, as they did for 1.27.0. **gosec went to 2.30.0**: 1.27.3 writes
+export data version 5, which 2.29.0 cannot decode, so it reported every import as an
+internal error. 2.30.0 adds no findings on this tree. **Two coverage floors were
+re-measured**: 1.27.3 counts a multi-value assignment as one statement and a map literal
+as one, where 1.27.0 counted per name and two. On `main`, unchanged, internal/config reads
+85.3% (was 86.0%) and internal/diagnostics 54.2% (was 56.0%) with identical blocks and hits.
+`coverage.floors` records both old values.
