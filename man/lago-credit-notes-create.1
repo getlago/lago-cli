@@ -11,6 +11,8 @@ lago-credit-notes-create - Create a credit note
 
 .SH DESCRIPTION
 This endpoint creates a new credit note.
+This is a premium feature.
+A credit note cannot be issued on an invoice in a \fBpending\fR or \fBfailed\fR status. In that case the endpoint returns a \fB405\fR error with the \fBinvalid_type_or_status\fR code.
 
 
 .SH OPTIONS

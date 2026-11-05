@@ -20,11 +20,11 @@ lago features create [flags]
 ### Options
 
 ```
-      --code string          Unique code used to identify the feature.
-      --description string   Internal description of the feature.
+      --code string          Unique code used to identify the feature. Max 255 characters.
+      --description string   Internal description of the feature. Max 600 characters.
   -h, --help                 help for create
       --input string         Complete JSON request body or @file.json
-      --name string          Name of the feature.
+      --name string          Name of the feature. Max 255 characters.
       --privileges string    Privileges associated with this feature. Can be empty.
 ```
 

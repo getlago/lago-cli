@@ -20,9 +20,9 @@ lago subscriptions get <external_id> [flags]
 
 ```
   -h, --help                      help for get
-      --status string             By default, this endpoint only return 'active' subscriptions. If you want to retrieve a subscription with a different 'status', you can specify it here.
+      --status string             By default, this endpoint only returns 'active' subscriptions. If you want to retrieve a subscription with a different 'status', you can specify it here.
 
-                                  _Note: As there may exists multiple 'canceled' or 'terminated' subscribtions for the same 'external_id', it is recommended to use the "List all subscriptions" endpoint to retrieve those subscriptions._; one of: active, terminated, pending, canceled
+                                  _Note: As there may exist multiple 'canceled' or 'terminated' subscriptions for the same 'external_id', it is recommended to use the "List all subscriptions" endpoint to retrieve those subscriptions._; one of: active, terminated, pending, canceled, incomplete
       --watch                     Poll and re-render when the response changes
       --watch-interval duration   Polling interval used with --watch (default 2s)
 ```

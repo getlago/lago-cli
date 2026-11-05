@@ -1,10 +1,10 @@
 ## lago taxes get
 
-Retrieve a Tax
+Retrieve a tax
 
 ### Synopsis
 
-This endpoint retrieves an existing tax representing a customizable tax rate applicable to either the organization or a specific customer. The tax is identified by its unique code.
+This endpoint retrieves an existing tax representing a customizable tax rate applicable to either a billing entity or a specific customer. The tax is identified by its unique code.
 
 ```
 lago taxes get <code> [flags]

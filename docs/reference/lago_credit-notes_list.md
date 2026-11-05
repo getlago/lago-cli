@@ -4,7 +4,7 @@ List all credit notes
 
 ### Synopsis
 
-This endpoint list all existing credit notes.
+This endpoint lists all existing credit notes.
 
 ```
 lago credit-notes list [flags]
@@ -31,8 +31,8 @@ lago credit-notes list [flags]
       --issuing-date-from string       Filter credit notes starting from a specific date.
       --issuing-date-to string         Filter credit notes up to a specific date.
       --limit string                   Results per page (1-1000)
-      --page string                    Page number.
-      --per-page string                Number of records per page.
+      --page string                    Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
+      --per-page string                Number of records per page. Defaults to 100. The maximum is 200, unless another maximum is configured for your organization. A value above the maximum returns a '422' error with 'value_is_out_of_range' on 'per_page'. A value that is not a positive integer, such as '0', returns the default number of records.
       --purchase-order-number string   Filter by the invoice purchase order number. The match is exact but case-insensitive.
       --reason string                  Filter credit notes by reasons. Possible values are 'product_unsatisfactory', 'order_change', 'order_cancellation', 'fraudulent_charge', 'duplicated_charge' or 'other'.; one of: product_unsatisfactory, order_change, order_cancellation, fraudulent_charge, duplicated_charge, other
       --refund-status string           Filter credit notes by refund status. Possible values are 'pending', 'succeeded' or 'failed'.; one of: pending, succeeded, failed

@@ -20,7 +20,7 @@ lago subscriptions get-subscription-charge-filter <external_id> <charge_code> <f
 
 ```
   -h, --help                         help for get-subscription-charge-filter
-      --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
+      --subscription-status string   Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', 'canceled', or 'incomplete'.; one of: pending, active, terminated, canceled, incomplete
       --watch                        Poll and re-render when the response changes
       --watch-interval duration      Polling interval used with --watch (default 2s)
 ```

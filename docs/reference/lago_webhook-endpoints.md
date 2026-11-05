@@ -29,7 +29,7 @@ Manage Lago webhook endpoints
 ### SEE ALSO
 
 * [lago](lago)	 - The official CLI for Lago billing
-* [lago webhook-endpoints create](lago_webhook-endpoints_create)	 - Create a webhook_endpoint
+* [lago webhook-endpoints create](lago_webhook-endpoints_create)	 - Create a webhook endpoint
 * [lago webhook-endpoints delete](lago_webhook-endpoints_delete)	 - Delete a webhook endpoint
 * [lago webhook-endpoints get](lago_webhook-endpoints_get)	 - Retrieve a webhook endpoint
 * [lago webhook-endpoints list](lago_webhook-endpoints_list)	 - List all webhook endpoints

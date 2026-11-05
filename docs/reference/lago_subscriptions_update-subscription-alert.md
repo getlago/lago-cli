@@ -4,7 +4,7 @@ Update a subscription alert
 
 ### Synopsis
 
-This endpoint allows you to update an existing alert for a subscription.
+This endpoint allows you to update an existing alert for a subscription. A non-empty `thresholds` array replaces the whole set of thresholds on the alert. When `thresholds` is left out, or sent as an empty array, the thresholds already on the alert are kept. A threshold sent with a `code` it already had, and without `notify_on`, keeps the `notify_on` it had.
 
 ```
 lago subscriptions update-subscription-alert <external_id> <code> [flags]
@@ -25,8 +25,8 @@ lago subscriptions update-subscription-alert <external_id> <code> [flags]
   -h, --help                          help for update-subscription-alert
       --input string                  Complete JSON request body or @file.json
       --name string                   The name of the alert.
-      --subscription-status string    Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', or 'canceled'.; one of: pending, active, terminated, canceled
-      --thresholds string             Array of thresholds associated with the alert.
+      --subscription-status string    Filter by subscription status. When provided, the subscription is looked up with this status instead of the default 'active' status. Possible values are 'pending', 'active', 'terminated', 'canceled', or 'incomplete'.; one of: pending, active, terminated, canceled, incomplete
+      --thresholds string             Array of thresholds associated with the alert. An alert accepts at most 20 thresholds, and a larger array returns a '422' error with 'too_many_thresholds' on 'thresholds'. Two thresholds cannot share the same value and the same 'recurring' flag. The value of a recurring threshold must be positive.
 ```
 
 ### Options inherited from parent commands

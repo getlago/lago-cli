@@ -51,7 +51,7 @@ This endpoint enables the retrieval of the usage-based billing data for a custom
 
 .PP
 \fB--full-usage\fP=""
-	When 'true', returns usage since subscription start instead of the current billing period. Requires one of 'charge_id', 'charge_code', 'group' (or their deprecated 'filter\fIby\fP*' equivalents) to be set.
+	When 'true', returns usage since the subscription started instead of the current billing period. It requires the granular lifetime usage add-on, at least one of 'charge_id', 'charge_code', 'billable_metric_code' or 'group' (or their deprecated 'filter\fIby\fP*' equivalents), and a subscription without prorated charges. The request returns '405' when one of these conditions is not met.
 
 .PP
 \fB--group\fP=""
