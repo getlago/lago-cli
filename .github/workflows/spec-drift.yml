@@ -32,10 +32,15 @@ jobs:
           commit-message: "chore(spec): synchronize Lago OpenAPI"
           title: "chore(spec): synchronize Lago OpenAPI"
           body: |
-            Automated daily drift update from the public Lago OpenAPI document.
+            ## Context
 
-            Owner: @getlago/developers
-            SLA: review and merge or close with rationale within one business day.
+            The CLI commands are generated from a copy of the Lago OpenAPI document kept in `spec/openapi.yaml`. A daily job compares this copy with the published document (https://swagger.getlago.com/openapi.yaml) and opens this PR when they differ.
+
+            ## Description
+
+            `spec/openapi.yaml` was replaced with the published document. The generated code, the command reference, the man pages and the shell completions were generated again from it.
+
+            The `developers` team owns this PR: it is reviewed and merged, or closed with a reason, within one business day.
           labels: spec-drift,automated
       - name: Ask for a review on Slack
         if: steps.drift-pr.outputs.pull-request-operation == 'created' || steps.drift-pr.outputs.pull-request-operation == 'updated'
