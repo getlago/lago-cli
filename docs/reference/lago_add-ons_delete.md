@@ -4,7 +4,7 @@ Delete an add-on
 
 ### Synopsis
 
-This endpoint is used to delete an existing add-on.
+This endpoint is used to delete an existing add-on. The fixed charges that use this add-on are deleted too.
 
 ```
 lago add-ons delete <code> [flags]

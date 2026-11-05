@@ -6,6 +6,8 @@ Update a billable metric
 
 This endpoint updates an existing billable metric representing a pricing component of your application.
 
+Once the billable metric is used by a plan charge, only `name`, `description` and `filters` are applied. The other fields are ignored.
+
 ```
 lago billable-metrics update <code> [flags]
 ```
@@ -23,11 +25,12 @@ lago billable-metrics update <code> [flags]
       --aggregation-type string     Aggregation method used to compute usage for this billable metric.; one of: count_agg, sum_agg, max_agg, unique_count_agg, weighted_sum_agg, latest_agg
       --code string                 Unique code used to identify the billable metric associated with the API request. This code associates each event with the correct metric.
       --description string          Internal description of the billable metric.
-      --expression string           Expression used to calculate the event units. The expression is evalutated for each event and the result is then used to calculate the total aggregated units.
-                                    Accepted function are 'ceil', 'concat' and 'round' as well as '+', '-', '\' and '*' operations.
-                                    Round is accepting an optional second parameter to specify the number of decimal.
-      --field-name string           Property of the billable metric used for aggregating usage data. This field is not required for 'count_agg'.
-      --filters string              API field (array)
+      --expression string           Expression used to calculate the event units. The expression is evaluated for each event and the result is then used to calculate the total aggregated units.
+                                    Event values are read with 'event.code', 'event.timestamp' and 'event.properties.<name>'.
+                                    Accepted functions are 'ceil', 'concat', 'floor', 'greatest', 'least' and 'round' as well as '+', '-', '/' and '*' operations.
+                                    'ceil', 'floor' and 'round' accept an optional second parameter to specify the number of decimals.
+      --field-name string           Property of the billable metric used for aggregating usage data. It is required for every aggregation type except 'count_agg', which ignores it and stores 'null'.
+      --filters string              List of filters of the billable metric. On update, this list replaces the existing filters: a filter that is not sent is deleted.
   -h, --help                        help for update
       --input string                Complete JSON request body or @file.json
       --name string                 Name of the billable metric.
@@ -36,9 +39,10 @@ lago billable-metrics update <code> [flags]
                                     - If set to 'true': the accumulated number of units calculated from the previous billing period is persisted to the next billing period.
                                     - If set to 'false': the accumulated number of units is reset to 0 at the end of the billing period.
                                     - If not defined in the request, default value is 'false'.
-      --rounding-function string    Refers to the numeric value or mathematical expression that will be rounded based on the calculated number of billing units. Possible values are 'round', 'ceil' and 'floor'.; one of: ceil, floor, round,
-      --rounding-precision string   Specifies the number of decimal places to which the 'rounding_function' will be rounded. It can be a positive or negative value.
-      --weighted-interval string    Parameter exclusively utilized in conjunction with the 'weighted_sum' aggregation type. It serves to adjust the aggregation result by assigning weights and proration to the result based on time intervals. When this field is not provided, the default time interval is assumed to be in 'seconds'.; one of: seconds,
+                                    - It cannot be set to 'true' when 'aggregation_type' is 'count_agg', 'max_agg' or 'latest_agg'.
+      --rounding-function string    Rounding applied to the aggregated number of units. Possible values are 'round', 'ceil' and 'floor'. When it is not set, the units are not rounded.; one of: ceil, floor, round,
+      --rounding-precision string   Number of decimal places kept when 'rounding_function' is applied. It can be a positive or negative value, and it defaults to 0.
+      --weighted-interval string    Parameter exclusively utilized in conjunction with the 'weighted_sum_agg' aggregation type. It serves to adjust the aggregation result by assigning weights and proration to the result based on time intervals. It is required when 'aggregation_type' is 'weighted_sum_agg', and 'seconds' is the only accepted value.; one of: seconds,
 ```
 
 ### Options inherited from parent commands

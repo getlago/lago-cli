@@ -31,7 +31,7 @@ Manage Lago features
 * [lago](lago)	 - The official CLI for Lago billing
 * [lago features create](lago_features_create)	 - Create a feature
 * [lago features delete](lago_features_delete)	 - Delete a feature
-* [lago features delete-feature-privilege](lago_features_delete-feature-privilege)	 - Delete a privilege. Deleting a privilege removes it from all plans and subscriptions.
+* [lago features delete-feature-privilege](lago_features_delete-feature-privilege)	 - Delete a privilege
 * [lago features get](lago_features_get)	 - Retrieve a feature
 * [lago features list](lago_features_list)	 - List all features
 * [lago features update](lago_features_update)	 - Update a feature

@@ -31,8 +31,8 @@ lago orders list [flags]
       --order-form-number string   Filter orders by the number of the order form they come from.
       --order-type string          Filter orders by the order type of the quote they come from. Possible values are 'subscription_creation', 'subscription_amendment' and 'one_off'.
       --owner-id string            Filter orders by the Lago identifiers of the users owning the quote they come from.
-      --page string                Page number.
-      --per-page string            Number of records per page.
+      --page string                Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
+      --per-page string            Number of records per page. Defaults to 100. The maximum is 200, unless another maximum is configured for your organization. A value above the maximum returns a '422' error with 'value_is_out_of_range' on 'per_page'. A value that is not a positive integer, such as '0', returns the default number of records.
       --quote-number string        Filter orders by the number of the quote they come from.
       --search-term string         Search orders by number.
       --status string              Filter orders by status. Possible values are 'created', 'executed' and 'failed'.
