@@ -20,6 +20,16 @@ jobs:
           go-version-file: go.mod
       - run: ./scripts/update-spec.sh
       - run: go run ./internal/docgen -markdown docs/reference -man man -completions completions
+      # A run from another branch gets its own drift branch, so it never
+      # overwrites the drift PR opened from main.
+      - name: Pick the drift branch
+        id: branch
+        run: |
+          if [ "$GITHUB_REF" = refs/heads/main ]; then
+            echo "name=automation/openapi-drift" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=automation/openapi-drift-$(date -u +%Y%m%d-%H%M%S)" >> "$GITHUB_OUTPUT"
+          fi
       # No team-reviewers: the review request fails the job while the developers team
       # has no access to this repository, or when the token has no read:org scope.
       - name: Open a reviewable drift PR
@@ -27,7 +37,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.SPEC_DRIFT_TOKEN || github.token }}
-          branch: automation/openapi-drift
+          branch: ${{ steps.branch.outputs.name }}
           delete-branch: true
           commit-message: "chore(spec): synchronize Lago OpenAPI"
           title: "chore(spec): synchronize Lago OpenAPI"
