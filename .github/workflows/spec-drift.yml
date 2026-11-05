@@ -27,13 +27,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          commit=$(gh api 'repos/getlago/lago-openapi/commits?path=openapi.yaml&sha=main&per_page=1' --jq '.[0].sha')
-          blob=$(gh api "repos/getlago/lago-openapi/contents/openapi.yaml?ref=$commit" --jq .sha)
-          if [ "$blob" = "$(git hash-object spec/openapi.yaml)" ]; then
-            source="[getlago/lago-openapi@${commit:0:12}](https://github.com/getlago/lago-openapi/commit/$commit)"
-          else
-            source="not found (the published file matches no commit on lago-openapi main)"
-          fi
+          # The 5 last commits cover a run made before Pages and its cache serve the newest one.
+          fetched=$(git hash-object --no-filters spec/openapi.yaml)
+          source="not found (the published file matches none of the last 5 lago-openapi commits)"
+          for commit in $(gh api 'repos/getlago/lago-openapi/commits?path=openapi.yaml&sha=main&per_page=5' --jq '.[].sha'); do
+            if [ "$(gh api "repos/getlago/lago-openapi/contents/openapi.yaml?ref=$commit" --jq .sha)" = "$fetched" ]; then
+              source="[getlago/lago-openapi@${commit:0:12}](https://github.com/getlago/lago-openapi/commit/$commit)"
+              break
+            fi
+          done
           {
             echo "fetched_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
             echo "version=$(jq -r .spec_version spec/operations.json)"
