@@ -2,7 +2,7 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-webhook-endpoints-create - Create a webhook_endpoint
+lago-webhook-endpoints-create - Create a webhook endpoint
 
 
 .SH SYNOPSIS
@@ -15,7 +15,7 @@ This endpoint is used to create a webhook endpoint.
 
 .SH OPTIONS
 \fB--event-types\fP=""
-	A list of event types that will trigger the webhook. Passing null means that all event types will be sent.
+	The list of event types sent to this webhook endpoint. Pass 'null' or '["*"]' to receive every event type. An empty array stops every delivery.
 
 .PP
 \fB-h\fP, \fB--help\fP[=false]
@@ -27,11 +27,11 @@ This endpoint is used to create a webhook endpoint.
 
 .PP
 \fB--name\fP=""
-	The name of the webhook.
+	The name of the webhook endpoint.
 
 .PP
 \fB--signature-algo\fP=""
-	The signature used for the webhook. If no value is passed,; one of: jwt, hmac,
+	The algorithm used to sign the webhook payload. Defaults to 'jwt' when no value is passed.; one of: jwt, hmac,
 
 .PP
 \fB--webhook-url\fP=""

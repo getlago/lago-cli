@@ -1,10 +1,10 @@
 ## lago api-logs get
 
-Retrieve an api log
+Retrieve an API log
 
 ### Synopsis
 
-This endpoint retrieves an existing api log that represents a request made to the API. The api log is identified by its unique request_id.
+This endpoint retrieves an existing API log, which represents a request made to Lago's API. The API log is identified by its request id.
 
 ```
 lago api-logs get <request_id> [flags]

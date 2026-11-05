@@ -6,6 +6,8 @@ Update a billable metric
 
 This endpoint updates an existing billable metric representing a pricing component of your application.
 
+Once the billable metric is used by a plan charge, only `name`, `description` and `filters` are applied. The other fields are ignored.
+
 ```
 lago billable-metrics update <code> [flags]
 ```
@@ -23,11 +25,12 @@ lago billable-metrics update <code> [flags]
       --aggregation-type string     Aggregation method used to compute usage for this billable metric.; one of: count_agg, sum_agg, max_agg, unique_count_agg, weighted_sum_agg, latest_agg
       --code string                 Unique code used to identify the billable metric associated with the API request. This code associates each event with the correct metric.
       --description string          Internal description of the billable metric.
-      --expression string           Expression used to calculate the event units. The expression is evalutated for each event and the result is then used to calculate the total aggregated units.
-                                    Accepted function are 'ceil', 'concat' and 'round' as well as '+', '-', '\' and '*' operations.
-                                    Round is accepting an optional second parameter to specify the number of decimal.
+      --expression string           Expression used to calculate the event units. The expression is evaluated for each event and the result is then used to calculate the total aggregated units.
+                                    Event values are read with 'event.code', 'event.timestamp' and 'event.properties.<name>'.
+                                    Accepted functions are 'ceil', 'concat', 'floor', 'greatest', 'least' and 'round' as well as '+', '-', '/' and '*' operations.
+                                    'ceil', 'floor' and 'round' accept an optional second parameter to specify the number of decimals.
       --field-name string           Property of the billable metric used for aggregating usage data. This field is not required for 'count_agg'.
-      --filters string              API field (array)
+      --filters string              List of filters of the billable metric. On update, this list replaces the existing filters: a filter that is not sent is deleted.
   -h, --help                        help for update
       --input string                Complete JSON request body or @file.json
       --name string                 Name of the billable metric.
@@ -38,7 +41,7 @@ lago billable-metrics update <code> [flags]
                                     - If not defined in the request, default value is 'false'.
       --rounding-function string    Refers to the numeric value or mathematical expression that will be rounded based on the calculated number of billing units. Possible values are 'round', 'ceil' and 'floor'.; one of: ceil, floor, round,
       --rounding-precision string   Specifies the number of decimal places to which the 'rounding_function' will be rounded. It can be a positive or negative value.
-      --weighted-interval string    Parameter exclusively utilized in conjunction with the 'weighted_sum' aggregation type. It serves to adjust the aggregation result by assigning weights and proration to the result based on time intervals. When this field is not provided, the default time interval is assumed to be in 'seconds'.; one of: seconds,
+      --weighted-interval string    Parameter exclusively utilized in conjunction with the 'weighted_sum_agg' aggregation type. It serves to adjust the aggregation result by assigning weights and proration to the result based on time intervals. It is required when 'aggregation_type' is 'weighted_sum_agg', and 'seconds' is the only accepted value.; one of: seconds,
 ```
 
 ### Options inherited from parent commands

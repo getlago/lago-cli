@@ -10,7 +10,7 @@ lago-wallets-update-customer-wallet-alert - Update a wallet alert
 
 
 .SH DESCRIPTION
-This endpoint allows you to update an existing alert for a wallet.
+This endpoint allows you to update an existing alert for a wallet. A non-empty \fBthresholds\fR array replaces the whole set of thresholds on the alert. When \fBthresholds\fR is left out, or sent as an empty array, the thresholds already on the alert are kept. A threshold sent with a \fBcode\fR it already had, and without \fBnotify_on\fR, keeps the \fBnotify_on\fR it had.
 
 
 .SH OPTIONS
@@ -31,7 +31,7 @@ This endpoint allows you to update an existing alert for a wallet.
 
 .PP
 \fB--thresholds\fP=""
-	Array of thresholds associated with the alert.
+	Array of thresholds associated with the alert. An alert accepts at most 20 thresholds, and a larger array returns a '422' error with 'too_many_thresholds' on 'thresholds'. Two thresholds cannot share the same value and the same 'recurring' flag. The value of a recurring threshold must be positive.
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS

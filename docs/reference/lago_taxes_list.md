@@ -4,7 +4,7 @@ List all taxes
 
 ### Synopsis
 
-This endpoint retrieves all existing taxes representing a customizable tax rate applicable to either the organization or a specific customer.
+This endpoint retrieves all existing taxes representing a customizable tax rate applicable to either a billing entity or a specific customer.
 
 ```
 lago taxes list [flags]
@@ -22,8 +22,8 @@ lago taxes list [flags]
       --all                       Fetch every page
   -h, --help                      help for list
       --limit string              Results per page (1-1000)
-      --page string               Page number.
-      --per-page string           Number of records per page.
+      --page string               Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
+      --per-page string           Number of records per page. Defaults to 100. The maximum is 200, unless another maximum is configured for your organization. A value above the maximum returns a '422' error with 'value_is_out_of_range' on 'per_page'. A value that is not a positive integer, such as '0', returns the default number of records.
       --watch                     Poll and re-render when the response changes
       --watch-interval duration   Polling interval used with --watch (default 2s)
 ```

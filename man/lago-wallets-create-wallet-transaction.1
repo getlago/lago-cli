@@ -65,12 +65,20 @@ Note that this name will apply to all transactions ('paid_credits', 'granted_cre
 	The type of payment method to use.; one of: provider, manual
 
 .PP
+\fB--priority\fP=""
+	The priority of the wallet transaction. It drives the order in which credits are consumed. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50.
+
+.PP
 \fB--purchase-order-number\fP=""
 	The purchase order number associated with this wallet transaction. It will be added to invoices generated for the resulting wallet top-up. If not set, falls back to the wallet's 'purchase_order_number'.
 
 .PP
 \fB--voided-credits\fP=""
 	The number of voided credits.
+
+.PP
+\fB--voided-transaction-id\fP=""
+	Unique identifier of the inbound wallet transaction to void. Only available on traceable wallets, and the target transaction must still have a remaining amount.
 
 .PP
 \fB--wallet-id\fP=""

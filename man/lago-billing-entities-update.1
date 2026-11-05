@@ -23,15 +23,15 @@ This endpoint is used to update an existing billing entity
 
 .PP
 \fB--billing-configuration-document-locale\fP=""
-	The language of the documents generated for this billing entity
+	The language of the documents generated for this billing entity, in the ISO 639-1 format.
 
 .PP
 \fB--billing-configuration-invoice-footer\fP=""
-	The footer text to be displayed on invoices for this billing entity
+	The footer text to be displayed on invoices for this billing entity (600 characters max).
 
 .PP
 \fB--billing-configuration-invoice-grace-period\fP=""
-	The grace period (in days) for invoice finalization
+	The grace period (in days) for invoice finalization. This is a premium feature, the value is ignored without a premium license.
 
 .PP
 \fB--billing-configuration-subscription-invoice-issuing-date-adjustment\fP=""
@@ -51,11 +51,11 @@ This endpoint is used to update an existing billing entity
 
 .PP
 \fB--default-currency\fP=""
-	The default currency of the billing entity; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SZL, THB, TJS, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
+	The default currency of the billing entity; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SYP, SZL, THB, TJS, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
 
 .PP
 \fB--document-number-prefix\fP=""
-	The prefix used in document numbers for this billing entity
+	The prefix used in document numbers for this billing entity (1 to 10 characters). It is upper cased. It cannot be removed once the billing entity exists, and sending 'null' returns a '422' error.
 
 .PP
 \fB--document-numbering\fP=""
@@ -65,7 +65,7 @@ This endpoint is used to update an existing billing entity
 
 .PP
 \fB--einvoicing\fP=""
-	Whether e-invoicing is enabled for this billing entity
+	Whether e-invoicing is enabled for this billing entity. It can only be enabled when the billing entity country is 'FR' or 'DE'.
 
 .PP
 \fB--email\fP=""
@@ -73,11 +73,11 @@ This endpoint is used to update an existing billing entity
 
 .PP
 \fB--email-settings\fP=""
-	The email notification settings for this billing entity
+	The email notification settings for this billing entity. This is a premium feature, the value is ignored without a premium license.
 
 .PP
 \fB--eu-tax-management\fP=""
-	Whether EU tax management is enabled for this billing entity
+	Whether EU tax management is enabled for this billing entity. It can only be enabled when the billing entity country is in the European Union.
 
 .PP
 \fB--finalize-zero-amount-invoice\fP=""
@@ -105,7 +105,7 @@ This endpoint is used to update an existing billing entity
 
 .PP
 \fB--logo\fP=""
-	The base64 encoded logo image for the billing entity. Sending "null" will remove the logo, if any exist.
+	The base64 encoded logo image for the billing entity. Accepted formats are PNG, JPG and JPEG, up to 800 kB. Sending "null" removes the current logo.
 
 .PP
 \fB--name\fP=""
@@ -125,7 +125,7 @@ This endpoint is used to update an existing billing entity
 
 .PP
 \fB--tax-codes\fP=""
-	The tax codes that should be associated with this billing entity
+	The tax codes that should be associated with this billing entity. Codes are matched without case sensitivity, and two codes that differ only by case count as one. An unknown code returns a '404' error.
 
 .PP
 \fB--tax-identification-number\fP=""
@@ -133,7 +133,7 @@ This endpoint is used to update an existing billing entity
 
 .PP
 \fB--timezone\fP=""
-	The timezone of the billing entity; one of: UTC, Africa/Algiers, Africa/Cairo, Africa/Casablanca, Africa/Harare, Africa/Johannesburg, Africa/Monrovia, Africa/Nairobi, America/Argentina/Buenos_Aires, America/Bogota, America/Caracas, America/Chicago, America/Chihuahua, America/Denver, America/Guatemala, America/Guyana, America/Halifax, America/Indiana/Indianapolis, America/Juneau, America/La_Paz, America/Lima, America/Los_Angeles, America/Mazatlan, America/Mexico_City, America/Monterrey, America/Montevideo, America/New_York, America/Nuuk, America/Phoenix, America/Puerto_Rico, America/Regina, America/Santiago, America/Sao_Paulo, America/St_Johns, America/Tijuana, Asia/Almaty, Asia/Baghdad, Asia/Baku, Asia/Bangkok, Asia/Chongqing, Asia/Colombo, Asia/Dhaka, Asia/Hong_Kong, Asia/Irkutsk, Asia/Jakarta, Asia/Jerusalem, Asia/Kabul, Asia/Kamchatka, Asia/Karachi, Asia/Kathmandu, Asia/Kolkata, Asia/Krasnoyarsk, Asia/Kuala_Lumpur, Asia/Kuwait, Asia/Magadan, Asia/Muscat, Asia/Novosibirsk, Asia/Riyadh, Asia/Seoul, Asia/Shanghai, Asia/Singapore, Asia/Srednekolymsk, Asia/Taipei, Asia/Tashkent, Asia/Tbilisi, Asia/Tehran, Asia/Tokyo, Asia/Ulaanbaatar, Asia/Urumqi, Asia/Vladivostok, Asia/Yakutsk, Asia/Yangon, Asia/Yekaterinburg, Asia/Yerevan, Atlantic/Azores, Atlantic/Cape_Verde, Atlantic/South_Georgia, Australia/Adelaide, Australia/Brisbane, Australia/Darwin, Australia/Hobart, Australia/Melbourne, Australia/Perth, Australia/Sydney, Europe/Amsterdam, Europe/Athens, Europe/Belgrade, Europe/Berlin, Europe/Bratislava, Europe/Brussels, Europe/Bucharest, Europe/Budapest, Europe/Copenhagen, Europe/Dublin, Europe/Helsinki, Europe/Istanbul, Europe/Kaliningrad, Europe/Kyiv, Europe/Lisbon, Europe/Ljubljana, Europe/London, Europe/Madrid, Europe/Minsk, Europe/Moscow, Europe/Paris, Europe/Prague, Europe/Riga, Europe/Rome, Europe/Samara, Europe/Sarajevo, Europe/Skopje, Europe/Sofia, Europe/Stockholm, Europe/Tallinn, Europe/Vienna, Europe/Vilnius, Europe/Volgograd, Europe/Warsaw, Europe/Zagreb, Europe/Zurich, GMT+12, Pacific/Apia, Pacific/Auckland, Pacific/Chatham, Pacific/Fakaofo, Pacific/Fiji, Pacific/Guadalcanal, Pacific/Guam, Pacific/Honolulu, Pacific/Majuro, Pacific/Midway, Pacific/Noumea, Pacific/Pago_Pago, Pacific/Port_Moresby, Pacific/Tongatapu
+	The timezone of the billing entity. This is a premium feature, the value is ignored without a premium license.; one of: UTC, Africa/Algiers, Africa/Cairo, Africa/Casablanca, Africa/Harare, Africa/Johannesburg, Africa/Monrovia, Africa/Nairobi, America/Argentina/Buenos_Aires, America/Bogota, America/Caracas, America/Chicago, America/Chihuahua, America/Denver, America/Guatemala, America/Guyana, America/Halifax, America/Indiana/Indianapolis, America/Juneau, America/La_Paz, America/Lima, America/Los_Angeles, America/Mazatlan, America/Mexico_City, America/Monterrey, America/Montevideo, America/New_York, America/Nuuk, America/Phoenix, America/Puerto_Rico, America/Regina, America/Santiago, America/Sao_Paulo, America/St_Johns, America/Tijuana, Asia/Almaty, Asia/Baghdad, Asia/Baku, Asia/Bangkok, Asia/Chongqing, Asia/Colombo, Asia/Dhaka, Asia/Hong_Kong, Asia/Irkutsk, Asia/Jakarta, Asia/Jerusalem, Asia/Kabul, Asia/Kamchatka, Asia/Karachi, Asia/Kathmandu, Asia/Kolkata, Asia/Krasnoyarsk, Asia/Kuala_Lumpur, Asia/Kuwait, Asia/Magadan, Asia/Muscat, Asia/Novosibirsk, Asia/Riyadh, Asia/Seoul, Asia/Shanghai, Asia/Singapore, Asia/Srednekolymsk, Asia/Taipei, Asia/Tashkent, Asia/Tbilisi, Asia/Tehran, Asia/Tokyo, Asia/Ulaanbaatar, Asia/Urumqi, Asia/Vladivostok, Asia/Yakutsk, Asia/Yangon, Asia/Yekaterinburg, Asia/Yerevan, Atlantic/Azores, Atlantic/Cape_Verde, Atlantic/South_Georgia, Australia/Adelaide, Australia/Brisbane, Australia/Darwin, Australia/Hobart, Australia/Melbourne, Australia/Perth, Australia/Sydney, Europe/Amsterdam, Europe/Athens, Europe/Belgrade, Europe/Berlin, Europe/Bratislava, Europe/Brussels, Europe/Bucharest, Europe/Budapest, Europe/Copenhagen, Europe/Dublin, Europe/Helsinki, Europe/Istanbul, Europe/Kaliningrad, Europe/Kyiv, Europe/Lisbon, Europe/Ljubljana, Europe/London, Europe/Madrid, Europe/Minsk, Europe/Moscow, Europe/Paris, Europe/Prague, Europe/Riga, Europe/Rome, Europe/Samara, Europe/Sarajevo, Europe/Skopje, Europe/Sofia, Europe/Stockholm, Europe/Tallinn, Europe/Vienna, Europe/Vilnius, Europe/Volgograd, Europe/Warsaw, Europe/Zagreb, Europe/Zurich, GMT+12, Pacific/Apia, Pacific/Auckland, Pacific/Chatham, Pacific/Fakaofo, Pacific/Fiji, Pacific/Guadalcanal, Pacific/Guam, Pacific/Honolulu, Pacific/Majuro, Pacific/Midway, Pacific/Noumea, Pacific/Pago_Pago, Pacific/Port_Moresby, Pacific/Tongatapu
 
 .PP
 \fB--zipcode\fP=""

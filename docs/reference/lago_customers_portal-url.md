@@ -6,7 +6,9 @@ Get a customer portal URL
 
 Retrieves an embeddable link for displaying a customer portal.
 
-This endpoint allows you to fetch the URL that can be embedded to provide customers access to a dedicated portal
+This endpoint allows you to fetch the URL that can be embedded to provide customers access to a dedicated portal.
+
+The portal lets the customer update their information and top up their wallets, so when API key permissions are enabled, the API key needs the `write` permission on `customer`.
 
 ```
 lago customers portal-url <external_customer_id> [flags]

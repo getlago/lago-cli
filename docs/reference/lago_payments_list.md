@@ -24,8 +24,8 @@ lago payments list [flags]
   -h, --help                          help for list
       --invoice-id string             Unique identifier assigned to the invoice within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the invoice's record within the Lago system.
       --limit string                  Results per page (1-1000)
-      --page string                   Page number.
-      --per-page string               Number of records per page.
+      --page string                   Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
+      --per-page string               Number of records per page. Defaults to 100. The maximum is 200, unless another maximum is configured for your organization. A value above the maximum returns a '422' error with 'value_is_out_of_range' on 'per_page'. A value that is not a positive integer, such as '0', returns the default number of records.
       --watch                         Poll and re-render when the response changes
       --watch-interval duration       Polling interval used with --watch (default 2s)
 ```

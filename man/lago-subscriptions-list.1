@@ -19,7 +19,7 @@ This endpoint retrieves all active subscriptions.
 
 .PP
 \fB--billing-entity-codes\fP=""
-	Filter subscriptions by billing entity codes.
+	Filter subscriptions by billing entity codes. A code that does not match a billing entity of the organization returns a '404' error.
 
 .PP
 \fB--currency\fP=""
@@ -47,11 +47,11 @@ This endpoint retrieves all active subscriptions.
 
 .PP
 \fB--page\fP=""
-	Page number.
+	Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
 
 .PP
 \fB--per-page\fP=""
-	Number of records per page.
+	Number of records per page. Defaults to 100. The maximum is 200, unless another maximum is configured for your organization. A value above the maximum returns a '422' error with 'value_is_out_of_range' on 'per_page'. A value that is not a positive integer, such as '0', returns the default number of records.
 
 .PP
 \fB--plan-code\fP=""
@@ -59,7 +59,7 @@ This endpoint retrieves all active subscriptions.
 
 .PP
 \fB--status\fP=""
-	If the field is not defined, Lago will return only 'active' subscriptions. However, if you wish to fetch subscriptions by different status you can define them in a status[] query param. Available filter values: 'pending', 'canceled', 'terminated', 'active'.
+	If the field is not defined, Lago will return only 'active' subscriptions. However, if you wish to fetch subscriptions by different status you can define them in a status[] query param. Available filter values: 'pending', 'canceled', 'terminated', 'active', 'incomplete'.
 
 .PP
 \fB--watch\fP[=false]

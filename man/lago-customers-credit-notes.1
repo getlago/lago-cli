@@ -10,7 +10,7 @@ lago-customers-credit-notes - List all customer's credit notes
 
 
 .SH DESCRIPTION
-This endpoint list all existing credit notes for a customer.
+This endpoint lists all existing credit notes for a customer.
 
 
 .SH OPTIONS
@@ -26,8 +26,16 @@ This endpoint list all existing credit notes for a customer.
 	Filter credit notes up to a specific amount. This parameter must be defined in cents to ensure consistent handling for all currency types.
 
 .PP
+\fB--billing-entity-codes\fP=""
+	Filter credit notes by billing entity codes.
+
+.PP
 \fB--credit-status\fP=""
-	Filter credit notes by credit status. Possible values are 'available', 'consumed'  or 'voided'.; one of: available, consumed, voided
+	Filter credit notes by credit status. Possible values are 'available', 'consumed' or 'voided'.; one of: available, consumed, voided
+
+.PP
+\fB--currency\fP=""
+	Filter credit notes by currency. Possible values ISO 4217 currency codes.
 
 .PP
 \fB-h\fP, \fB--help\fP[=false]
@@ -51,11 +59,11 @@ This endpoint list all existing credit notes for a customer.
 
 .PP
 \fB--page\fP=""
-	Page number.
+	Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
 
 .PP
 \fB--per-page\fP=""
-	Number of records per page.
+	Number of records per page. Defaults to 100. The maximum is 200, unless another maximum is configured for your organization. A value above the maximum returns a '422' error with 'value_is_out_of_range' on 'per_page'. A value that is not a positive integer, such as '0', returns the default number of records.
 
 .PP
 \fB--purchase-order-number\fP=""
@@ -67,7 +75,7 @@ This endpoint list all existing credit notes for a customer.
 
 .PP
 \fB--refund-status\fP=""
-	Filter credit notes by refund status. Possible values are 'pending', 'succeeded'  or 'failed'.; one of: pending, succeeded, failed
+	Filter credit notes by refund status. Possible values are 'pending', 'succeeded' or 'failed'.; one of: pending, succeeded, failed
 
 .PP
 \fB--search-term\fP=""
@@ -76,6 +84,10 @@ This endpoint list all existing credit notes for a customer.
 .PP
 \fB--self-billed\fP=""
 	Filter credit notes belonging to a self billed invoice. Possible values are 'true' or 'false'.
+
+.PP
+\fB--types\fP=""
+	Filter credit notes by the kind of amount they carry. 'credit' matches credit notes with a credited amount, 'refund' those with a refunded amount and 'offset' those with an amount deducted from the invoice balance. A credit note can match several types.
 
 .PP
 \fB--watch\fP[=false]

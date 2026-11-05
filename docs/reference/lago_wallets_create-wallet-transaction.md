@@ -34,8 +34,10 @@ lago wallets create-wallet-transaction [flags]
       --paid-credits string                                          The number of paid credits.
       --payment-method-payment-method-id string                      The unique identifier of the payment method (required when using a specific provider payment method).
       --payment-method-payment-method-type string                    The type of payment method to use.; one of: provider, manual
+      --priority string                                              The priority of the wallet transaction. It drives the order in which credits are consumed. Allowed values: 1-50, where 1 is highest priority and 50 is lowest. Defaults to 50.
       --purchase-order-number string                                 The purchase order number associated with this wallet transaction. It will be added to invoices generated for the resulting wallet top-up. If not set, falls back to the wallet's 'purchase_order_number'.
       --voided-credits string                                        The number of voided credits.
+      --voided-transaction-id string                                 Unique identifier of the inbound wallet transaction to void. Only available on traceable wallets, and the target transaction must still have a remaining amount.
       --wallet-id string                                             Unique identifier assigned to the wallet within the Lago application. This ID is exclusively created by Lago and serves as a unique identifier for the wallet's record within the Lago system.
 ```
 
