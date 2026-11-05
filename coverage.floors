@@ -14,6 +14,12 @@
 # lost. The two floors below carry their 1.27 measurement and the date, so the next
 # reader can tell a re-measurement from a regression.
 #
+# Go 1.27.3 counts a multi-value assignment (`a, b := f()`) as one statement where
+# 1.27.0 counted one per name, and a map composite literal as one where 1.27.0 counted
+# two. Blocks and their hits are identical between the two; only the statement weights
+# changed. internal/config went 114 -> 109 statements (98 -> 93 covered) and
+# internal/diagnostics 50 -> 48 (28 -> 26), every dropped statement a covered one.
+#
 # The money, credential, and safety-gate packages (cli, config, transport, output,
 # apperr, redact, permissions, api) are held at the 85% target and marked below.
 # internal/update joined them when `lago upgrade` stopped self-installing: it no longer
@@ -25,7 +31,7 @@
 # --- money, credentials, safety gates: 85% target ---------------------------
 internal/apperr         94.0
 internal/cli            86.0
-internal/config         86.0
+internal/config         85.0   # re-measured on Go 1.27.3, 2026-11-03 (was 86.0 on Go 1.27.0)
 internal/output         97.0
 internal/permissions   100.0
 internal/redact        100.0
@@ -34,7 +40,7 @@ internal/update         82.0
 pkg/api                 90.0
 
 # --- generators and tooling: ratchet floors ---------------------------------
-internal/diagnostics    56.0
+internal/diagnostics    54.0   # re-measured on Go 1.27.3, 2026-11-03 (was 56.0 on Go 1.27.0)
 internal/docgen         58.0
 internal/gen             9.5   # re-measured on Go 1.27, 2026-09-01 (was 10.0 on Go 1.25)
 internal/generated      80.0

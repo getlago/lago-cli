@@ -20,25 +20,82 @@ jobs:
           go-version-file: go.mod
       - run: ./scripts/update-spec.sh
       - run: go run ./internal/docgen -markdown docs/reference -man man -completions completions
-      # team-reviewers requires a token with org read scope. The default GITHUB_TOKEN
-      # has none, so with it the review request is silently dropped and the drift PR
-      # lands unassigned, defeating the one-business-day SLA in DECISIONS.md. Provide
-      # SPEC_DRIFT_TOKEN (a PAT with repo + read:org) to make the assignment real.
+      # The published document is lago-openapi's openapi.yaml on main. The commit is
+      # only linked when its blob matches the fetched file.
+      - name: Describe the fetched spec
+        id: spec
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # The 5 last commits cover a run made before Pages and its cache serve the newest one.
+          fetched=$(git hash-object --no-filters spec/openapi.yaml)
+          source="not found (the published file matches none of the last 5 lago-openapi commits)"
+          for commit in $(gh api 'repos/getlago/lago-openapi/commits?path=openapi.yaml&sha=main&per_page=5' --jq '.[].sha'); do
+            if [ "$(gh api "repos/getlago/lago-openapi/contents/openapi.yaml?ref=$commit" --jq .sha)" = "$fetched" ]; then
+              source="[getlago/lago-openapi@${commit:0:12}](https://github.com/getlago/lago-openapi/commit/$commit)"
+              break
+            fi
+          done
+          {
+            echo "fetched_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "version=$(jq -r .spec_version spec/operations.json)"
+            echo "sha256=$(jq -r .spec_sha256 spec/operations.json)"
+            echo "source=$source"
+          } >> "$GITHUB_OUTPUT"
+      # A run from another branch gets its own drift branch, so it never
+      # overwrites the drift PR opened from main.
+      - name: Pick the drift branch
+        id: branch
+        run: |
+          if [ "$GITHUB_REF" = refs/heads/main ]; then
+            echo "name=automation/openapi-drift" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=automation/openapi-drift-$(date -u +%Y%m%d-%H%M%S)" >> "$GITHUB_OUTPUT"
+          fi
+      # No team-reviewers: the review request fails the job while the developers team
+      # has no access to this repository, or when the token has no read:org scope.
       - name: Open a reviewable drift PR
+        id: drift-pr
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.SPEC_DRIFT_TOKEN || github.token }}
-          branch: automation/openapi-drift
+          branch: ${{ steps.branch.outputs.name }}
           delete-branch: true
           commit-message: "chore(spec): synchronize Lago OpenAPI"
           title: "chore(spec): synchronize Lago OpenAPI"
           body: |
-            Automated daily drift update from the public Lago OpenAPI document.
+            ## Context
 
-            Owner: @getlago/developers
-            SLA: review and merge or close with rationale within one business day.
+            The CLI commands are generated from a copy of the Lago OpenAPI document kept in `spec/openapi.yaml`. A daily job compares this copy with the published document (https://swagger.getlago.com/openapi.yaml) and opens this PR when they differ.
 
-            If no reviewer is assigned to this PR, SPEC_DRIFT_TOKEN is missing and
-            the team review request was dropped. Fix that before relying on the SLA.
+            ## Description
+
+            `spec/openapi.yaml` was replaced with the published document. The generated code, the command reference, the man pages and the shell completions were generated again from it.
+
+            | | |
+            |---|---|
+            | Fetched at | ${{ steps.spec.outputs.fetched_at }} |
+            | Spec version | `${{ steps.spec.outputs.version }}` |
+            | Spec SHA-256 | `${{ steps.spec.outputs.sha256 }}` |
+            | lago-openapi commit | ${{ steps.spec.outputs.source }} |
           labels: spec-drift,automated
-          team-reviewers: developers
+      - name: Ask for a review on Slack
+        if: steps.drift-pr.outputs.pull-request-operation == 'created' || steps.drift-pr.outputs.pull-request-operation == 'updated'
+        uses: slackapi/slack-github-action@v4.0.0
+        with:
+          method: chat.postMessage
+          errors: true
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ secrets.SLACK_CHANNEL_ID }}
+            text: ":pr: <${{ steps.drift-pr.outputs.pull-request-url }}|${{ github.repository }}#${{ steps.drift-pr.outputs.pull-request-number }}> - `chore(spec): synchronize Lago OpenAPI`"
+      - name: Notify Slack on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v4.0.0
+        with:
+          method: chat.postMessage
+          errors: true
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ secrets.SLACK_CHANNEL_ID }}
+            text: ":x: lago-cli OpenAPI drift job failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
