@@ -78,7 +78,11 @@ func TestQA_TypeCoercion_GeneratedBodiesSendSpecTypes(t *testing.T) {
 			}
 			parameterFlags := map[string]bool{}
 			for _, parameter := range operation.Parameters {
-				parameterFlags[parameter.Flag] = true
+				// Path parameters are positional arguments, so a body field with the same
+				// name (`--code` on /plans/{code}/charges) still has its own flag.
+				if parameter.In != "path" {
+					parameterFlags[parameter.Flag] = true
+				}
 				if parameter.In == "query" && parameter.Required {
 					arguments = append(arguments, "--"+parameter.Flag, syntheticValue(parameter.Type, parameter.Enum))
 				}

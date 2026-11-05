@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"github.com/getlago/lago-cli/internal/config"
+	"github.com/getlago/lago-cli/internal/generated"
 	"github.com/getlago/lago-cli/internal/transport"
 )
 
@@ -315,7 +316,7 @@ func TestConfiguredAliasExpandsWithoutShadowingBuiltins(t *testing.T) {
 	if code := ExecuteArgs([]string{"v"}, strings.NewReader(""), &stdout, io.Discard); code != 0 {
 		t.Fatalf("exit=%d", code)
 	}
-	if !strings.Contains(stdout.String(), `"spec_version": "1.52.1"`) {
+	if !strings.Contains(stdout.String(), `"spec_version": "`+generated.SpecVersion+`"`) {
 		t.Fatalf("alias output=%s", stdout.String())
 	}
 }
