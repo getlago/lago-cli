@@ -4,7 +4,7 @@ Retrieve a wallet transaction
 
 ### Synopsis
 
-This endpoint is used to retrieve a specific wallet transactions.
+This endpoint is used to retrieve a specific wallet transaction.
 
 ```
 lago wallets get-wallet-transaction <lago_id> [flags]

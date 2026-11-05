@@ -22,9 +22,10 @@ lago wallets wallet-transactions <lago_id> [flags]
       --all                         Fetch every page
   -h, --help                        help for wallet-transactions
       --limit string                Results per page (1-1000)
-      --page string                 Page number.
-      --per-page string             Number of records per page.
-      --status string               The status of the wallet transaction. Possible values are 'pending' or 'settled'.
+      --metadata[key] string        Filter wallet transactions by metadata. Replace 'key' with the actual metadata key you want to match, and provide the corresponding value. For example, 'metadata[color]=blue'.
+      --page string                 Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
+      --per-page string             Number of records per page. Defaults to 100. The maximum is 200, unless another maximum is configured for your organization. A value above the maximum returns a '422' error with 'value_is_out_of_range' on 'per_page'. A value that is not a positive integer, such as '0', returns the default number of records.
+      --status string               The status of the wallet transaction. Possible values are 'pending', 'settled' or 'failed'.
       --transaction-status string   The transaction status of the wallet transaction. Possible values are 'purchased' (with pending or settled status), 'granted' (without invoice_id), 'voided' or 'invoiced'.
       --transaction-type string     The transaction type of the wallet transaction. Possible values are 'inbound' (increasing the wallet balance) or 'outbound' (decreasing the wallet balance).
       --watch                       Poll and re-render when the response changes

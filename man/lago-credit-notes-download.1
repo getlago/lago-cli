@@ -10,7 +10,8 @@ lago-credit-notes-download - Download a credit note PDF
 
 
 .SH DESCRIPTION
-This endpoint downloads the PDF of an existing credit note.
+This endpoint downloads the PDF of an existing credit note. Only \fBfinalized\fR credit notes can be downloaded; any other credit note returns a \fB404\fR error.
+When the PDF has already been generated, the credit note object is returned and its \fBfile_url\fR points to the document. When it has not been generated yet, the response is a \fB200\fR with an empty body and the generation starts in the background. Call the endpoint again to get the credit note object with its \fBfile_url\fR\&.
 
 
 .SH OPTIONS

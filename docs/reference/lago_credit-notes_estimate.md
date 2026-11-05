@@ -5,6 +5,8 @@ Estimate amounts for a new credit note
 ### Synopsis
 
 This endpoint allows you to retrieve amounts for a new credit note creation.
+This is a premium feature.
+Amounts cannot be estimated on an invoice in a `pending` or `failed` status. In that case the endpoint returns a `405` error with the `invalid_type_or_status` code.
 
 ```
 lago credit-notes estimate [flags]

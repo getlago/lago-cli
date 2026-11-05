@@ -21,11 +21,12 @@ lago customers payment-requests <external_customer_id> [flags]
 ```
       --all                           Fetch every page
       --billing-entity-codes string   Filter payment requests by billing entity codes.
+      --currency string               Filter the results by currency, expressed as an ISO 4217 code.
   -h, --help                          help for payment-requests
       --limit string                  Results per page (1-1000)
-      --page string                   Page number.
+      --page string                   Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
       --payment-status string         Filter by payment status. Possible values are 'pending', 'failed' or 'succeeded'.; one of: pending, failed, succeeded
-      --per-page string               Number of records per page.
+      --per-page string               Number of records per page. Defaults to 100. The maximum is 200, unless another maximum is configured for your organization. A value above the maximum returns a '422' error with 'value_is_out_of_range' on 'per_page'. A value that is not a positive integer, such as '0', returns the default number of records.
       --watch                         Poll and re-render when the response changes
       --watch-interval duration       Polling interval used with --watch (default 2s)
 ```

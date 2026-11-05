@@ -4,7 +4,8 @@ Download a credit note PDF
 
 ### Synopsis
 
-This endpoint downloads the PDF of an existing credit note.
+This endpoint downloads the PDF of an existing credit note. Only `finalized` credit notes can be downloaded; any other credit note returns a `404` error.
+When the PDF has already been generated, the credit note object is returned and its `file_url` points to the document. When it has not been generated yet, the response is a `200` with an empty body and the generation starts in the background. Call the endpoint again to get the credit note object with its `file_url`.
 
 ```
 lago credit-notes download <lago_id> [flags]

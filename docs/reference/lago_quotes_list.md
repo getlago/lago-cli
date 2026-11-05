@@ -29,8 +29,8 @@ lago quotes list [flags]
       --number string                 Filter quotes by their number, as assigned by Lago.
       --order-type string             Filter quotes by order type. Possible values are 'subscription_creation', 'subscription_amendment' and 'one_off'.
       --owner-id string               Filter quotes by the Lago identifiers of the users owning them.
-      --page string                   Page number.
-      --per-page string               Number of records per page.
+      --page string                   Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
+      --per-page string               Number of records per page. Defaults to 100. The maximum is 200, unless another maximum is configured for your organization. A value above the maximum returns a '422' error with 'value_is_out_of_range' on 'per_page'. A value that is not a positive integer, such as '0', returns the default number of records.
       --status string                 Filter quotes by the status of their current version. Possible values are 'draft', 'approved' and 'voided'.
       --to-date string                Filter quotes created up to a specific date.
       --watch                         Poll and re-render when the response changes

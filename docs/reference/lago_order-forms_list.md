@@ -30,8 +30,8 @@ lago order-forms list [flags]
       --limit string              Results per page (1-1000)
       --number string             Filter order forms by their number, as assigned by Lago.
       --owner-id string           Filter order forms by the Lago identifiers of the users owning the quote they come from.
-      --page string               Page number.
-      --per-page string           Number of records per page.
+      --page string               Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
+      --per-page string           Number of records per page. Defaults to 100. The maximum is 200, unless another maximum is configured for your organization. A value above the maximum returns a '422' error with 'value_is_out_of_range' on 'per_page'. A value that is not a positive integer, such as '0', returns the default number of records.
       --quote-number string       Filter order forms by the number of the quote they come from.
       --search-term string        Search order forms by number.
       --status string             Filter order forms by status. Possible values are 'generated', 'signed', 'expired' and 'voided'.

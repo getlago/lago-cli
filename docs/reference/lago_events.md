@@ -35,4 +35,4 @@ Manage Lago events
 * [lago events estimate-instant-fees](lago_events_estimate-instant-fees)	 - Estimate instant fees for a pay in advance charge
 * [lago events get](lago_events_get)	 - Retrieve a specific event
 * [lago events list](lago_events_list)	 - List all events
-* [lago events send](lago_events_send)	 - Send usage events
+* [lago events send](lago_events_send)	 - Send a usage event

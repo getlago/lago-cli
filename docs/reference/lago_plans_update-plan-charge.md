@@ -6,6 +6,10 @@ Update a charge
 
 This endpoint updates a specific charge for a plan.
 
+The payload replaces the charge configuration: `charge_model` must be sent on every update, and `invoice_display_name` is cleared when it is left out.
+
+Once the plan is attached to a subscription, only `invoice_display_name`, `properties`, `filters`, `tax_codes`, `applied_pricing_unit` and `accepts_target_wallet` are applied. The other fields are ignored.
+
 ```
 lago plans update-plan-charge <code> <charge_code> [flags]
 ```
