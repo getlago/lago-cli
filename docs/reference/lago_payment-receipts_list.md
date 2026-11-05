@@ -21,10 +21,10 @@ lago payment-receipts list [flags]
 ```
       --all                       Fetch every page
   -h, --help                      help for list
-      --invoice-id string         Filter payment receipts by invoice id.
+      --invoice-id string         Filter payment receipts by invoice. It returns the receipts of the payments made on this invoice, including the payments made through a payment request that covers it.
       --limit string              Results per page (1-1000)
-      --page string               Page number.
-      --per-page string           Number of records per page.
+      --page string               Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
+      --per-page string           Number of records per page. Defaults to 100. The maximum is 200, unless another maximum is configured for your organization. A value above the maximum returns a '422' error with 'value_is_out_of_range' on 'per_page'. A value that is not a positive integer, such as '0', returns the default number of records.
       --watch                     Poll and re-render when the response changes
       --watch-interval duration   Polling interval used with --watch (default 2s)
 ```

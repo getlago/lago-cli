@@ -31,6 +31,6 @@ Manage Lago taxes
 * [lago](lago)	 - The official CLI for Lago billing
 * [lago taxes create](lago_taxes_create)	 - Create a tax
 * [lago taxes delete](lago_taxes_delete)	 - Delete a tax
-* [lago taxes get](lago_taxes_get)	 - Retrieve a Tax
+* [lago taxes get](lago_taxes_get)	 - Retrieve a tax
 * [lago taxes list](lago_taxes_list)	 - List all taxes
 * [lago taxes update](lago_taxes_update)	 - Update a tax

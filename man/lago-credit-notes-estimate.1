@@ -11,6 +11,8 @@ lago-credit-notes-estimate - Estimate amounts for a new credit note
 
 .SH DESCRIPTION
 This endpoint allows you to retrieve amounts for a new credit note creation.
+This is a premium feature.
+Amounts cannot be estimated on an invoice in a \fBpending\fR or \fBfailed\fR status. In that case the endpoint returns a \fB405\fR error with the \fBinvalid_type_or_status\fR code.
 
 
 .SH OPTIONS

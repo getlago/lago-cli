@@ -5,6 +5,8 @@ Create a credit note
 ### Synopsis
 
 This endpoint creates a new credit note.
+This is a premium feature.
+A credit note cannot be issued on an invoice in a `pending` or `failed` status. In that case the endpoint returns a `405` error with the `invalid_type_or_status` code.
 
 ```
 lago credit-notes create [flags]

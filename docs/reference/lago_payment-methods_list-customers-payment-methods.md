@@ -4,7 +4,7 @@ List all customer payment methods
 
 ### Synopsis
 
-This endpoint retrieves all payment methods of a Customer.
+This endpoint retrieves all payment methods of a customer.
 
 ```
 lago payment-methods list-customers-payment-methods <external_customer_id> [flags]
@@ -22,8 +22,8 @@ lago payment-methods list-customers-payment-methods <external_customer_id> [flag
       --all                       Fetch every page
   -h, --help                      help for list-customers-payment-methods
       --limit string              Results per page (1-1000)
-      --page string               Page number.
-      --per-page string           Number of records per page.
+      --page string               Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
+      --per-page string           Number of records per page. Defaults to 100. The maximum is 200, unless another maximum is configured for your organization. A value above the maximum returns a '422' error with 'value_is_out_of_range' on 'per_page'. A value that is not a positive integer, such as '0', returns the default number of records.
       --watch                     Poll and re-render when the response changes
       --watch-interval duration   Polling interval used with --watch (default 2s)
 ```

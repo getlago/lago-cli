@@ -22,9 +22,9 @@ lago features list [flags]
       --all                       Fetch every page
   -h, --help                      help for list
       --limit string              Results per page (1-1000)
-      --page string               Page number.
-      --per-page string           Number of records per page.
-      --search-term string        Search in name, code and description.
+      --page string               Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
+      --per-page string           Number of records per page. Defaults to 100. The maximum is 200, unless another maximum is configured for your organization. A value above the maximum returns a '422' error with 'value_is_out_of_range' on 'per_page'. A value that is not a positive integer, such as '0', returns the default number of records.
+      --search-term string        Filter features by search term. The term is matched against the name, the code and the description of the feature.
       --watch                     Poll and re-render when the response changes
       --watch-interval duration   Polling interval used with --watch (default 2s)
 ```
