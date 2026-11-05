@@ -39,8 +39,6 @@ jobs:
             ## Description
 
             `spec/openapi.yaml` was replaced with the published document. The generated code, the command reference, the man pages and the shell completions were generated again from it.
-
-            The `developers` team owns this PR: it is reviewed and merged, or closed with a reason, within one business day.
           labels: spec-drift,automated
       - name: Ask for a review on Slack
         if: steps.drift-pr.outputs.pull-request-operation == 'created' || steps.drift-pr.outputs.pull-request-operation == 'updated'
