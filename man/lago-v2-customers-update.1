@@ -1,0 +1,268 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-v2-customers-update - Update customer
+
+
+.SH SYNOPSIS
+\fBlago v2 customers update  [flags]\fP
+
+
+.SH DESCRIPTION
+PUT and PATCH both accept partial updates. Omitted fields are unchanged. When metadata or integration_customers is supplied, it replaces the entire corresponding list. Send each existing entry with its id to keep or update it; omitted entries are deleted. Use the response lago_id as the request id. An empty array removes all entries.
+The path identifies the existing customer. A missing customer returns 404. Billing and payment settings are top-level fields. Relationships are not expanded in the update response.
+Requires the product catalog to be enabled and customer write permission on the API key.
+
+
+.SH OPTIONS
+\fB--account-type\fP=""
+	Account type. Requires revenue share to be enabled. On update, changes are ignored if the customer has subscriptions, invoices, add-ons, wallets or currency-based coupons.; one of: customer, partner
+
+.PP
+\fB--address-line1\fP=""
+	Address line1.
+
+.PP
+\fB--address-line2\fP=""
+	Address line2.
+
+.PP
+\fB--billing-entity-code\fP=""
+	Code of the customer billing entity.
+
+.PP
+\fB--city\fP=""
+	City.
+
+.PP
+\fB--country\fP=""
+	Country.
+
+.PP
+\fB--currency\fP=""
+	Currency as an ISO 4217 code.
+
+.PP
+\fB--customer-type\fP=""
+	Type of customer.; one of: company, individual,
+
+.PP
+\fB--document-locale\fP=""
+	Document locale.
+
+.PP
+\fB--email\fP=""
+	Email.
+
+.PP
+\fB--external-id\fP=""
+	Unique customer identifier in your application. On update, changes are ignored if the customer has subscriptions, invoices, add-ons, wallets or currency-based coupons.
+
+.PP
+\fB--external-salesforce-id\fP=""
+	External salesforce id.
+
+.PP
+\fB--finalize-zero-amount-invoice\fP=""
+	Whether to finalize zero-amount invoices. Null resets this setting to inherit.; one of: inherit, skip, finalize,
+
+.PP
+\fB--firstname\fP=""
+	Firstname.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for update
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--integration-customers\fP=""
+	Integration mappings. Only one entry per integration type is accepted. On update, this is a full replacement. Include id for each existing mapping to keep or update it. Omitted mappings are deleted.
+
+.PP
+\fB--invoice-custom-section-codes\fP=""
+	Invoice custom section codes to assign. An empty array removes the assignments.
+
+.PP
+\fB--invoice-grace-period\fP=""
+	Invoice grace period. Requires a premium license; otherwise the value is ignored.
+
+.PP
+\fB--lastname\fP=""
+	Lastname.
+
+.PP
+\fB--legal-name\fP=""
+	Legal name.
+
+.PP
+\fB--legal-number\fP=""
+	Legal number.
+
+.PP
+\fB--logo-url\fP=""
+	Logo url.
+
+.PP
+\fB--metadata\fP=""
+	Customer metadata. At most five entries. On update, this is a full replacement. Include id for each existing entry to keep or update it. Entries without id are created, not matched by key. Omitted entries are deleted.
+
+.PP
+\fB--name\fP=""
+	Name.
+
+.PP
+\fB--payment-provider\fP=""
+	Payment provider.
+
+.PP
+\fB--payment-provider-code\fP=""
+	Payment provider code.
+
+.PP
+\fB--periodic-invoice-issuing-date-adjustment\fP=""
+	Adjustment applied to periodic invoice issuing dates.; one of: keep_anchor, align_with_finalization_date,
+
+.PP
+\fB--periodic-invoice-issuing-date-anchor\fP=""
+	Date used to issue periodic invoices.; one of: current_period_end, next_period_start,
+
+.PP
+\fB--phone\fP=""
+	Phone.
+
+.PP
+\fB--provider-customer-id\fP=""
+	Customer identifier in the payment provider.
+
+.PP
+\fB--provider-payment-methods\fP=""
+	Payment methods allowed by the provider.
+
+.PP
+\fB--shipping-address-address-line1\fP=""
+	Address line1.
+
+.PP
+\fB--shipping-address-address-line2\fP=""
+	Address line2.
+
+.PP
+\fB--shipping-address-city\fP=""
+	City.
+
+.PP
+\fB--shipping-address-country\fP=""
+	Country.
+
+.PP
+\fB--shipping-address-state\fP=""
+	State.
+
+.PP
+\fB--shipping-address-zipcode\fP=""
+	Zipcode.
+
+.PP
+\fB--skip-invoice-custom-sections\fP=""
+	Skip invoice custom sections.
+
+.PP
+\fB--state\fP=""
+	State.
+
+.PP
+\fB--sync\fP=""
+	Whether to run payment-provider synchronization before returning the response rather than in a background job.
+
+.PP
+\fB--sync-with-provider\fP=""
+	Whether to create or synchronize the customer with the selected payment provider.
+
+.PP
+\fB--tax-codes\fP=""
+	Tax codes to assign. An empty array removes the assignments.
+
+.PP
+\fB--tax-identification-number\fP=""
+	Tax identification number.
+
+.PP
+\fB--timezone\fP=""
+	Timezone. Requires a premium license; otherwise the value is ignored.
+
+.PP
+\fB--url\fP=""
+	Url.
+
+.PP
+\fB--zipcode\fP=""
+	Zipcode.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago v2 customers update <external_id> --input @payload.json
+  lago v2 customers update <external_id> --input @payload.json --output json  # full resource
+.EE
+
+
+.SH SEE ALSO
+\fBlago-v2-customers(1)\fP

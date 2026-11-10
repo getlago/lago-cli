@@ -74,6 +74,12 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 		cmd.Flags().BoolVar(&all, "all", false, "Fetch every page")
 		_ = all
 	}
+	if operation.CursorPaginated {
+		// --limit, --after and --before come from the spec's own query parameters.
+		all := false
+		cmd.Flags().BoolVar(&all, "all", false, "Fetch every page by following next_cursor")
+		_ = all
+	}
 	var bulkFile string
 	var concurrency int
 	if operation.Resource == "events" && operation.Action == "send" {
@@ -89,7 +95,7 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		if bulkFile != "" {
-			return runEventStream(cmd, app, bulkFile, concurrency)
+			return runEventStream(cmd, app, bulkFile, concurrency, operation.APIVersion)
 		}
 		path := operation.Path
 		for index, parameter := range pathParameters {
@@ -122,6 +128,11 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 			all, _ := cmd.Flags().GetBool("all")
 			if all {
 				return runAllPages(cmd, app, operation, path, query)
+			}
+		}
+		if operation.CursorPaginated {
+			if all, _ := cmd.Flags().GetBool("all"); all {
+				return runAllCursorPages(cmd, app, operation, path, query)
 			}
 		}
 		// Read before the generated-ID block below, which sets the flag and marks it changed.
@@ -167,7 +178,7 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 			return runWatch(cmd, app, operation, path, query, watchInterval)
 		}
 		subjects := identifierSubjects(operation, pathParameters, args, cmd, flagValues)
-		value, response, err := app.Request(cmd.Context(), transport.Request{Method: operation.Method, Path: path, Query: query, Body: body, Idempotent: operation.Idempotent, Subjects: subjects})
+		value, response, err := app.Request(cmd.Context(), transport.Request{Method: operation.Method, Path: path, Query: query, Body: body, Idempotent: operation.Idempotent, Subjects: subjects, APIVersion: operation.APIVersion})
 		if err != nil {
 			return err
 		}
@@ -182,7 +193,7 @@ func newGeneratedCommand(app *App, operation generated.Operation) *cobra.Command
 func runWatch(cmd *cobra.Command, app *App, operation generated.Operation, path string, query url.Values, interval time.Duration) error {
 	var previous []byte
 	render := func() error {
-		value, response, err := app.Request(cmd.Context(), transport.Request{Method: operation.Method, Path: path, Query: query, Idempotent: true})
+		value, response, err := app.Request(cmd.Context(), transport.Request{Method: operation.Method, Path: path, Query: query, Idempotent: true, APIVersion: operation.APIVersion})
 		if err != nil {
 			return err
 		}
@@ -380,7 +391,7 @@ func runAllPages(cmd *cobra.Command, app *App, operation generated.Operation, pa
 	}
 	for {
 		query.Set("page", strconv.Itoa(page))
-		value, response, err := app.Request(cmd.Context(), transport.Request{Method: operation.Method, Path: path, Query: query, Idempotent: true})
+		value, response, err := app.Request(cmd.Context(), transport.Request{Method: operation.Method, Path: path, Query: query, Idempotent: true, APIVersion: operation.APIVersion})
 		if err != nil {
 			return err
 		}
@@ -395,6 +406,54 @@ func runAllPages(cmd *cobra.Command, app *App, operation generated.Operation, pa
 		}
 		page++
 	}
+}
+
+// maxCursorPageSize is the largest page API v2 lists accept; --all asks for it when the
+// caller did not choose a --limit, so a full walk takes as few requests as possible.
+const maxCursorPageSize = 100
+
+// runAllCursorPages walks an API v2 list by following meta.next_cursor until the server
+// reports null. A cursor the walk has already sent stops it, so a server that keeps
+// answering with the same cursor cannot loop the CLI forever.
+func runAllCursorPages(cmd *cobra.Command, app *App, operation generated.Operation, path string, query url.Values) error {
+	if app.query != "" {
+		return apperr.New(apperr.ExitUsage, "--all cannot safely buffer a full-collection JMESPath query", "Use a per-page --query without --all, or stream JSON pages and process them with jq.")
+	}
+	if query.Get("before") != "" {
+		return apperr.New(apperr.ExitUsage, "--all walks forward and cannot be combined with --before", "Drop --before, or pass --after to resume a forward walk from a cursor.")
+	}
+	if query.Get("limit") == "" {
+		query.Set("limit", strconv.Itoa(maxCursorPageSize))
+	}
+	seen := map[string]bool{}
+	for {
+		value, response, err := app.Request(cmd.Context(), transport.Request{Method: operation.Method, Path: path, Query: query, Idempotent: true, APIVersion: operation.APIVersion})
+		if err != nil {
+			return err
+		}
+		renderer := app.Renderer()
+		renderer.AllPages = true
+		if err := app.render(renderer, value, response); err != nil {
+			return err
+		}
+		cursor := nextCursor(value)
+		if cursor == "" || seen[cursor] {
+			return nil
+		}
+		seen[cursor] = true
+		query.Set("after", cursor)
+		// The total count is only accepted on the first page.
+		query.Del("include_total_count")
+	}
+}
+
+// nextCursor returns meta.next_cursor from an API v2 list response, or "" when the
+// response has no next page or no usable pagination metadata.
+func nextCursor(value any) string {
+	object, _ := value.(map[string]any)
+	meta, _ := object["meta"].(map[string]any)
+	cursor, _ := meta["next_cursor"].(string)
+	return cursor
 }
 
 func hasNextPage(value any, current int) (bool, error) {
@@ -512,6 +571,10 @@ func singularResource(resource string) string {
 func generatedExample(operation generated.Operation, pathParameters []generated.Parameter) string {
 	var command strings.Builder
 	command.WriteString("  lago ")
+	if operation.APIVersion != "" {
+		command.WriteString(operation.APIVersion)
+		command.WriteByte(' ')
+	}
 	command.WriteString(operation.Resource)
 	command.WriteByte(' ')
 	command.WriteString(operation.Action)

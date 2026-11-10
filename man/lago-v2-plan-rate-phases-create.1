@@ -1,0 +1,107 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-v2-plan-rate-phases-create - Create rate phase
+
+
+.SH SYNOPSIS
+\fBlago v2 plan-rate-phases create   [flags]\fP
+
+
+.SH DESCRIPTION
+Inserts a phase and renumbers later positions. The last phase must be indefinite and no earlier phase may be indefinite. Parent locking rules apply.
+Requires the product catalog to be enabled and plan_rate_card write permission on the API key.
+
+
+.SH OPTIONS
+\fB--billing-interval-cycle-count\fP=""
+	Number of billing cycles. Only the final phase is indefinite, represented by null.
+
+.PP
+\fB--code\fP=""
+	Code unique within the applied rate card.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for create
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--name\fP=""
+	Name of the phase.
+
+.PP
+\fB--position\fP=""
+	One-based sequence position.
+
+.PP
+\fB--rate-override\fP=""
+	Pricing override. On update, null removes the existing override.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago v2 plan-rate-phases create <plan_code> <applied_rate_card_code> --input @payload.json
+  lago v2 plan-rate-phases create <plan_code> <applied_rate_card_code> --input @payload.json --output json  # full resource
+.EE
+
+
+.SH SEE ALSO
+\fBlago-v2-plan-rate-phases(1)\fP

@@ -42,6 +42,6 @@ pkg/api                 90.0
 # --- generators and tooling: ratchet floors ---------------------------------
 internal/diagnostics    54.0   # re-measured on Go 1.27.3, 2026-11-03 (was 56.0 on Go 1.27.0)
 internal/docgen         58.0
-internal/gen             9.5   # re-measured on Go 1.27, 2026-09-01 (was 10.0 on Go 1.25)
-internal/generated      80.0
+internal/gen            59.0   # raised 2026-11-10 with the API v2 generator tests (was 9.5)
+internal/generated     100.0   # raised 2026-11-10 when the table decode moved into a tested helper
 internal/moneycheck     15.0  # re-measured on Go 1.27, 2026-09-01 (was 16.0 on Go 1.25)

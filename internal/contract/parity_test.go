@@ -160,3 +160,46 @@ func TestNoReadIsClassifiedAsAMutation(t *testing.T) {
 		}
 	}
 }
+
+// The v2 document generates into its own table under `lago v2`. Every v2 operation must
+// map to exactly one command there, and the count must match the pinned v2 spec.
+func TestEveryOpenAPIV2OperationHasExactlyOneCommand(t *testing.T) {
+	t.Parallel()
+	root := cli.NewRoot(cli.NewApp(nil, io.Discard, io.Discard, "test"))
+	seenCommands := map[string]string{}
+	for _, operation := range generated.OperationsV2 {
+		key := operation.Resource + " " + operation.Action
+		if owner := seenCommands[key]; owner != "" {
+			t.Fatalf("v2 command %s maps both %s and %s", key, owner, operation.OperationID)
+		}
+		seenCommands[key] = operation.OperationID
+		command, _, err := root.Find([]string{"v2", operation.Resource, operation.Action})
+		if err != nil || command == nil || command.Name() != operation.Action || command.Parent().Parent().Name() != "v2" {
+			t.Fatalf("v2 operation %s has no command v2 %s: %v", operation.OperationID, key, err)
+		}
+	}
+	data, err := os.ReadFile(filepath.Join("..", "..", "spec", "openapi-v2.yaml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var spec struct {
+		Paths map[string]map[string]any `yaml:"paths"`
+	}
+	if err := yaml.Unmarshal(data, &spec); err != nil {
+		t.Fatal(err)
+	}
+	count := 0
+	for _, path := range spec.Paths {
+		for _, method := range []string{"get", "post", "put", "patch", "delete", "head", "options"} {
+			if _, exists := path[method]; exists {
+				count++
+			}
+		}
+	}
+	if count != len(generated.OperationsV2) {
+		t.Fatalf("OpenAPI v2 has %d operations but command manifest has %d", count, len(generated.OperationsV2))
+	}
+	if count != 155 {
+		t.Fatalf("review the pinned v2 spec operation-count change: got %d, previous contract is 155", count)
+	}
+}

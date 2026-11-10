@@ -1,0 +1,118 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-v2-events-send - Ingest an event
+
+
+.SH SYNOPSIS
+\fBlago v2 events send [flags]\fP
+
+
+.SH DESCRIPTION
+Accepts product-catalog events. external_subscription_id is not supported and returns 422. For ClickHouse organizations, the product event pipeline must be configured, and success acknowledges ingestion rather than completed enrichment. Newly accepted events may not appear in the list immediately.
+Requires the product catalog to be enabled and event write permission on the API key.
+
+
+.SH OPTIONS
+\fB--code\fP=""
+	Event code.
+
+.PP
+\fB--concurrency\fP=4
+	Concurrent bulk event requests (1-64)
+
+.PP
+\fB--external-contract-id\fP=""
+	External contract identifier.
+
+.PP
+\fB--file\fP=""
+	Stream newline-delimited JSON events from a file, or - for stdin
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for send
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--precise-total-amount-cents\fP=""
+	Finite amount in cents, as a number or decimal string.
+
+.PP
+\fB--properties\fP=""
+	Event properties. Defaults to an empty object.
+
+.PP
+\fB--timestamp\fP=""
+	Unix timestamp in seconds. Defaults to the request time. Must be on or after 1970-01-01 and before 2300-01-01; deployment-specific time limits may also apply.
+
+.PP
+\fB--transaction-id\fP=""
+	Transaction identifier supplied by the sender.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago v2 events send --input @payload.json
+.EE
+
+
+.SH SEE ALSO
+\fBlago-v2-events(1)\fP

@@ -24,10 +24,12 @@ coverage:
 
 generate:
 	go run ./internal/gen -spec spec/openapi.yaml -out internal/generated/spec_gen.go -manifest spec/operations.json
+	go run ./internal/gen -api-version v2 -spec spec/openapi-v2.yaml -out internal/generated/spec_v2_gen.go -manifest spec/operations-v2.json
 	go run ./internal/docgen -markdown docs/reference -man man -completions completions
 
 generate-check:
 	go run ./internal/gen -check -spec spec/openapi.yaml -out internal/generated/spec_gen.go -manifest spec/operations.json
+	go run ./internal/gen -check -api-version v2 -spec spec/openapi-v2.yaml -out internal/generated/spec_v2_gen.go -manifest spec/operations-v2.json
 	go run ./internal/docgen -markdown docs/reference -man man -completions completions
 	git diff --exit-code -- docs/reference man completions
 

@@ -19,8 +19,12 @@ import (
 // messages and tests; it is empty when nothing matched.
 func classifyRequest(method, path string) (dangerous bool, operationID string) {
 	method = strings.ToUpper(strings.TrimSpace(method))
-	actual := requestPathSegments(path)
-	for _, operation := range generated.Operations {
+	actual, isV2 := requestPathSegments(path)
+	operations := generated.Operations
+	if isV2 {
+		operations = generated.OperationsV2
+	}
+	for _, operation := range operations {
 		if operation.Method != method {
 			continue
 		}
@@ -32,13 +36,19 @@ func classifyRequest(method, path string) (dangerous bool, operationID string) {
 }
 
 // requestPathSegments normalizes a request path the way the transport will send it
-// (redundant /api/v1 stripped, query dropped) and splits it into segments.
-func requestPathSegments(path string) []string {
+// (redundant /api/v1 stripped, query dropped) and splits it into segments. It reports
+// whether the path addresses /api/v2, whose operations are a separate table.
+func requestPathSegments(path string) ([]string, bool) {
 	if index := strings.IndexAny(path, "?#"); index >= 0 {
 		path = path[:index]
 	}
-	normalized := transport.NormalizeRequestPath(strings.TrimSpace(path))
-	return splitPath(normalized)
+	path = strings.TrimSpace(path)
+	trimmed := "/" + strings.TrimLeft(path, "/")
+	if trimmed == transport.APIPrefixV2 || strings.HasPrefix(trimmed, transport.APIPrefixV2+"/") {
+		return splitPath(strings.TrimPrefix(trimmed, transport.APIPrefixV2)), true
+	}
+	normalized := transport.NormalizeRequestPath(path)
+	return splitPath(normalized), false
 }
 
 func splitPath(path string) []string {

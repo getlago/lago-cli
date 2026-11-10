@@ -1,0 +1,139 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-v2-api-logs-list - List api logs
+
+
+.SH SYNOPSIS
+\fBlago v2 api-logs list [flags]\fP
+
+
+.SH DESCRIPTION
+Returns a cursor-paginated list ordered by log time, newest first. Use after or before to navigate. The page and per_page parameters are rejected.
+Requires a premium license and available log storage. Results are ordered by logged_at and request_id, both descending, within the configured retention period.
+Requires the product catalog to be enabled and api_log read permission on the API key.
+
+
+.SH OPTIONS
+\fB--after\fP=""
+	Opaque next_cursor from a previous response. Returns the next page. Cannot be combined with before or include_total_count=true. Keep the same filters when paging.
+
+.PP
+\fB--all\fP[=false]
+	Fetch every page by following next_cursor
+
+.PP
+\fB--api-version\fP=""
+	Api version.
+
+.PP
+\fB--before\fP=""
+	Opaque prev_cursor from a previous response. Returns the previous page in the same list order. Cannot be combined with after or include_total_count=true. Keep the same filters when paging.
+
+.PP
+\fB--clients\fP=""
+	Clients[].
+
+.PP
+\fB--from-date\fP=""
+	Inclusive lower log-time bound as an ISO 8601 date or timestamp. A date is interpreted as midnight UTC.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for list
+
+.PP
+\fB--http-methods\fP=""
+	Http methods[].
+
+.PP
+\fB--http-statuses\fP=""
+	HTTP status codes or status groups. succeeded selects codes up to 399; failed selects codes above 399. Groups take precedence over numeric codes. Selecting both groups returns no matches.
+
+.PP
+\fB--include-total-count\fP=""
+	Requests the total number of matching records. Supported only on the first page, without after or before. The count can be estimated; total_count_estimated is then present and true.
+
+.PP
+\fB--limit\fP=""
+	Maximum number of records per page. Values outside the supported range return 400.
+
+.PP
+\fB--request-paths\fP=""
+	Request paths[].
+
+.PP
+\fB--to-date\fP=""
+	Inclusive upper log-time bound as an ISO 8601 date or timestamp. A date is interpreted as midnight UTC.
+
+.PP
+\fB--watch\fP[=false]
+	Poll and re-render when the response changes
+
+.PP
+\fB--watch-interval\fP=2s
+	Polling interval used with --watch
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago v2 api-logs list
+.EE
+
+
+.SH SEE ALSO
+\fBlago-v2-api-logs(1)\fP

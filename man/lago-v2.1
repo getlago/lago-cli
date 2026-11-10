@@ -1,0 +1,86 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-v2 - Lago API v2 (beta): product catalog, contracts and v2 resources
+
+
+.SH SYNOPSIS
+\fBlago v2 [flags]\fP
+
+
+.SH DESCRIPTION
+Commands generated from the Lago API v2 document (2.0.0-beta).
+
+.PP
+API v2 adds the product catalog (products, product categories, product filters, rate cards and rates), catalog plans, contracts and their applied rate cards and rate phases, and native v2 versions of billing resources. Lists use cursor pagination: pass --after with the previous response's meta.next_cursor, or --all to walk every page. Requests go to /api/v2 on the profile's API host.
+
+
+.SH OPTIONS
+\fB-h\fP, \fB--help\fP[=false]
+	help for v2
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago v2 products list
+  lago v2 products create --code compute --name Compute --product-type fixed
+  lago v2 rate-cards list --all
+.EE
+
+
+.SH SEE ALSO
+\fBlago(1)\fP, \fBlago-v2-activity-logs(1)\fP, \fBlago-v2-api-logs(1)\fP, \fBlago-v2-billable-metrics(1)\fP, \fBlago-v2-billing-entities(1)\fP, \fBlago-v2-catalog-plans(1)\fP, \fBlago-v2-contract-applied-rate-cards(1)\fP, \fBlago-v2-contract-rate-phases(1)\fP, \fBlago-v2-contracts(1)\fP, \fBlago-v2-credit-notes(1)\fP, \fBlago-v2-customers(1)\fP, \fBlago-v2-events(1)\fP, \fBlago-v2-fees(1)\fP, \fBlago-v2-invoices(1)\fP, \fBlago-v2-organizations(1)\fP, \fBlago-v2-payment-receipts(1)\fP, \fBlago-v2-payment-requests(1)\fP, \fBlago-v2-payments(1)\fP, \fBlago-v2-plan-applied-rate-cards(1)\fP, \fBlago-v2-plan-rate-phases(1)\fP, \fBlago-v2-product-categories(1)\fP, \fBlago-v2-product-filters(1)\fP, \fBlago-v2-products(1)\fP, \fBlago-v2-rate-card-rates(1)\fP, \fBlago-v2-rate-cards(1)\fP, \fBlago-v2-security-logs(1)\fP, \fBlago-v2-taxes(1)\fP, \fBlago-v2-webhook-endpoints(1)\fP

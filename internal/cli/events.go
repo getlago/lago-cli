@@ -36,7 +36,7 @@ type eventResult struct {
 	err     error
 }
 
-func runEventStream(cmd *cobra.Command, app *App, source string, concurrency int) error {
+func runEventStream(cmd *cobra.Command, app *App, source string, concurrency int, apiVersion string) error {
 	if concurrency < 1 || concurrency > 64 {
 		return apperr.New(apperr.ExitUsage, "concurrency must be between 1 and 64", "Pass --concurrency 4 or another value in the allowed range.")
 	}
@@ -61,7 +61,7 @@ func runEventStream(cmd *cobra.Command, app *App, source string, concurrency int
 		go func() {
 			defer workers.Done()
 			for job := range jobs {
-				response, requestErr := client.Do(cmd.Context(), transport.Request{Method: http.MethodPost, Path: "/events", Body: job.body, Idempotent: job.retryable, DryRun: app.dryRun})
+				response, requestErr := client.Do(cmd.Context(), transport.Request{Method: http.MethodPost, Path: "/events", Body: job.body, Idempotent: job.retryable, DryRun: app.dryRun, APIVersion: apiVersion})
 				retried := 0
 				if response != nil && response.Attempts > 1 {
 					retried = response.Attempts - 1

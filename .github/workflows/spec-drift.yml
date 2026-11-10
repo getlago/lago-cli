@@ -28,19 +28,24 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           # The 5 last commits cover a run made before Pages and its cache serve the newest one.
-          fetched=$(git hash-object --no-filters spec/openapi.yaml)
-          source="not found (the published file matches none of the last 5 lago-openapi commits)"
-          for commit in $(gh api 'repos/getlago/lago-openapi/commits?path=openapi.yaml&sha=main&per_page=5' --jq '.[].sha'); do
-            if [ "$(gh api "repos/getlago/lago-openapi/contents/openapi.yaml?ref=$commit" --jq .sha)" = "$fetched" ]; then
-              source="[getlago/lago-openapi@${commit:0:12}](https://github.com/getlago/lago-openapi/commit/$commit)"
-              break
-            fi
-          done
+          find_source() {
+            fetched=$(git hash-object --no-filters "spec/$1")
+            for commit in $(gh api "repos/getlago/lago-openapi/commits?path=$1&sha=main&per_page=5" --jq '.[].sha'); do
+              if [ "$(gh api "repos/getlago/lago-openapi/contents/$1?ref=$commit" --jq .sha)" = "$fetched" ]; then
+                echo "[getlago/lago-openapi@${commit:0:12}](https://github.com/getlago/lago-openapi/commit/$commit)"
+                return
+              fi
+            done
+            echo "not found (the published file matches none of the last 5 lago-openapi commits)"
+          }
           {
             echo "fetched_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
             echo "version=$(jq -r .spec_version spec/operations.json)"
             echo "sha256=$(jq -r .spec_sha256 spec/operations.json)"
-            echo "source=$source"
+            echo "source=$(find_source openapi.yaml)"
+            echo "v2_version=$(jq -r .spec_version spec/operations-v2.json)"
+            echo "v2_sha256=$(jq -r .spec_sha256 spec/operations-v2.json)"
+            echo "v2_source=$(find_source openapi-v2.yaml)"
           } >> "$GITHUB_OUTPUT"
       # A run from another branch gets its own drift branch, so it never
       # overwrites the drift PR opened from main.
@@ -66,11 +71,11 @@ jobs:
           body: |
             ## Context
 
-            The CLI commands are generated from a copy of the Lago OpenAPI document kept in `spec/openapi.yaml`. A daily job compares this copy with the published document (https://swagger.getlago.com/openapi.yaml) and opens this PR when they differ.
+            The CLI commands are generated from copies of the Lago OpenAPI documents kept in `spec/openapi.yaml` (API v1) and `spec/openapi-v2.yaml` (API v2, under `lago v2`). A daily job compares these copies with the published documents (https://swagger.getlago.com/openapi.yaml and https://swagger.getlago.com/openapi-v2.yaml) and opens this PR when they differ.
 
             ## Description
 
-            `spec/openapi.yaml` was replaced with the published document. The generated code, the command reference, the man pages and the shell completions were generated again from it.
+            `spec/openapi.yaml` and `spec/openapi-v2.yaml` were replaced with the published documents. The generated code, the command reference, the man pages and the shell completions were generated again from it.
 
             | | |
             |---|---|
@@ -78,6 +83,9 @@ jobs:
             | Spec version | `${{ steps.spec.outputs.version }}` |
             | Spec SHA-256 | `${{ steps.spec.outputs.sha256 }}` |
             | lago-openapi commit | ${{ steps.spec.outputs.source }} |
+            | v2 spec version | `${{ steps.spec.outputs.v2_version }}` |
+            | v2 spec SHA-256 | `${{ steps.spec.outputs.v2_sha256 }}` |
+            | v2 lago-openapi commit | ${{ steps.spec.outputs.v2_source }} |
           labels: spec-drift,automated
       - name: Ask for a review on Slack
         if: steps.drift-pr.outputs.pull-request-operation == 'created' || steps.drift-pr.outputs.pull-request-operation == 'updated'

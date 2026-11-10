@@ -4,6 +4,12 @@
 
 Use Go, Cobra, and pflag for one cross-platform static binary. Generate every API command from the pinned OpenAPI document. `x-lago-cli-action` is the upstream escape hatch for naming collisions; no CLI-local operation mapping is allowed.
 
+## 2026-11-10 — API v2 commands live under `lago v2`
+
+Lago publishes API v2 as a separate OpenAPI document (`openapi-v2.yaml`, version `2.0.0-beta`). It adds the product catalog, rate cards and contracts. It also reuses resource names v1 already owns, such as customers, invoices, plans and taxes, with different shapes: cursor pagination, opt-in expansions and structured errors. Merging both into one tree would change what `lago customers list` calls, so v2 is generated into its own operation table and mounted under `lago v2 <resource> <action>`. The v1 command tree is unchanged.
+
+Both documents follow the same rules: one pinned snapshot each, the same generator, `x-lago-cli-action` as the only naming escape hatch, and the same danger and retry classification. `lago api` routes a path starting with `/api/v2` to v2 and classifies it against the v2 table. If v2 becomes the default API, promoting its commands to the top level is a separate breaking change.
+
 ## 2026-08-31 — Backend-independent 1.0 gate
 
 The 1.0 GA gate is install, init, full API parity, golden billing flow, safety, and all harnesses. Browser device login, webhook listen/trigger, activity-log tailing, and dashboard deep links require server contracts and ship through the 1.1 beta channel as those contracts land. Capability probes must return actionable unsupported-version errors.

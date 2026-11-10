@@ -240,7 +240,7 @@ func TestResolvedRequestURLNeverDoublesThePrefix(t *testing.T) {
 			t.Fatalf("New(%q) failed: %v", base, err)
 		}
 		for _, path := range []string{"/customers", "/api/v1/customers"} {
-			resolved, err := client.resolve(path, url.Values{"page": {"2"}})
+			resolved, err := client.resolve("", path, url.Values{"page": {"2"}})
 			if err != nil {
 				t.Fatalf("%s + %s: %v", base, path, err)
 			}

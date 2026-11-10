@@ -198,11 +198,11 @@ func TestAbsolutePathsAreRefused(t *testing.T) {
 	t.Parallel()
 	client := testClient(t, "https://api.getlago.com", nil)
 	for _, path := range []string{"https://evil.example.com/customers", "http://evil.example.com/customers"} {
-		if _, err := client.resolve(path, nil); err == nil {
+		if _, err := client.resolve("", path, nil); err == nil {
 			t.Errorf("absolute path %q was accepted", path)
 		}
 	}
-	resolved, err := client.resolve("/customers", url.Values{"page": {"2"}})
+	resolved, err := client.resolve("", "/customers", url.Values{"page": {"2"}})
 	if err != nil {
 		t.Fatal(err)
 	}

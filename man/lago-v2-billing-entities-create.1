@@ -1,0 +1,203 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-v2-billing-entities-create - Create billing entity
+
+
+.SH SYNOPSIS
+\fBlago v2 billing-entities create [flags]\fP
+
+
+.SH DESCRIPTION
+Creating additional billing entities requires the relevant entitlement. Grace periods, timezones, email settings and periodic invoice settings may require a premium license.
+Requires the product catalog to be enabled and billing_entity write permission on the API key.
+
+
+.SH OPTIONS
+\fB--address-line1\fP=""
+	Address line1.
+
+.PP
+\fB--address-line2\fP=""
+	Address line2.
+
+.PP
+\fB--city\fP=""
+	City.
+
+.PP
+\fB--code\fP=""
+	Unique code among active billing entities.
+
+.PP
+\fB--country\fP=""
+	Country.
+
+.PP
+\fB--default-currency\fP=""
+	Default currency.
+
+.PP
+\fB--document-locale\fP=""
+	Document locale.
+
+.PP
+\fB--document-number-prefix\fP=""
+	Document number prefix.
+
+.PP
+\fB--document-numbering\fP=""
+	Document numbering scope.; one of: per_customer, per_billing_entity
+
+.PP
+\fB--einvoicing\fP=""
+	Einvoicing.
+
+.PP
+\fB--email\fP=""
+	Email.
+
+.PP
+\fB--email-settings\fP=""
+	Enabled email notification types.
+
+.PP
+\fB--eu-tax-management\fP=""
+	Eu tax management.
+
+.PP
+\fB--finalize-zero-amount-invoice\fP=""
+	Finalize zero amount invoice.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for create
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--invoice-custom-section-codes\fP=""
+	Invoice custom section codes to assign. An empty array removes the assignments.
+
+.PP
+\fB--invoice-footer\fP=""
+	Invoice footer.
+
+.PP
+\fB--invoice-grace-period\fP=""
+	Invoice grace period.
+
+.PP
+\fB--legal-name\fP=""
+	Legal name.
+
+.PP
+\fB--legal-number\fP=""
+	Legal number.
+
+.PP
+\fB--logo\fP=""
+	PNG or JPEG logo encoded as a base64 data URL.
+
+.PP
+\fB--name\fP=""
+	Name.
+
+.PP
+\fB--periodic-invoice-issuing-date-adjustment\fP=""
+	Adjustment applied to periodic invoice issuing dates.; one of: keep_anchor, align_with_finalization_date
+
+.PP
+\fB--periodic-invoice-issuing-date-anchor\fP=""
+	Date used to issue periodic invoices.; one of: current_period_end, next_period_start
+
+.PP
+\fB--phone\fP=""
+	Phone.
+
+.PP
+\fB--state\fP=""
+	State.
+
+.PP
+\fB--tax-codes\fP=""
+	Tax codes to assign. An empty array removes the assignments.
+
+.PP
+\fB--tax-identification-number\fP=""
+	Tax identification number.
+
+.PP
+\fB--timezone\fP=""
+	Timezone.
+
+.PP
+\fB--zipcode\fP=""
+	Zipcode.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago v2 billing-entities create --input @payload.json
+  lago v2 billing-entities create --input @payload.json --output json  # full resource
+.EE
+
+
+.SH SEE ALSO
+\fBlago-v2-billing-entities(1)\fP

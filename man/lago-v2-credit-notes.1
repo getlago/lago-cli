@@ -1,0 +1,75 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-v2-credit-notes - Manage Lago credit notes
+
+
+.SH SYNOPSIS
+\fBlago v2 credit-notes [flags]\fP
+
+
+.SH DESCRIPTION
+Manage Lago credit notes
+
+
+.SH OPTIONS
+\fB-h\fP, \fB--help\fP[=false]
+	help for credit-notes
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH SEE ALSO
+\fBlago-v2(1)\fP, \fBlago-v2-credit-notes-create(1)\fP, \fBlago-v2-credit-notes-delete-metadata(1)\fP, \fBlago-v2-credit-notes-delete-metadata-key(1)\fP, \fBlago-v2-credit-notes-download-pdf(1)\fP, \fBlago-v2-credit-notes-download-xml(1)\fP, \fBlago-v2-credit-notes-estimate(1)\fP, \fBlago-v2-credit-notes-get(1)\fP, \fBlago-v2-credit-notes-list(1)\fP, \fBlago-v2-credit-notes-merge-metadata(1)\fP, \fBlago-v2-credit-notes-patch(1)\fP, \fBlago-v2-credit-notes-patch-metadata(1)\fP, \fBlago-v2-credit-notes-replace-metadata(1)\fP, \fBlago-v2-credit-notes-resend-email(1)\fP, \fBlago-v2-credit-notes-update(1)\fP, \fBlago-v2-credit-notes-void(1)\fP

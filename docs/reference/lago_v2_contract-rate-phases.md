@@ -1,0 +1,36 @@
+## lago v2 contract-rate-phases
+
+Manage Lago contract rate phases
+
+### Options
+
+```
+  -h, --help   help for contract-rate-phases
+```
+
+### Options inherited from parent commands
+
+```
+      --api-key string     Override the Lago API key
+      --api-url string     Override the Lago API URL
+      --confirm string     Confirm a dangerous operation with its resource identifier
+      --dry-run            Print mutating requests without sending them
+      --insecure           Allow insecure HTTP or TLS for self-hosted Lago
+      --mode string        Environment mode: live or test
+      --no-retry           Disable automatic retries
+  -o, --output string      Output format: table, json, or yaml (default "table")
+      --profile string     Named profile to use
+      --query string       JMESPath expression applied to the response
+      --timeout duration   Total request timeout (default 30s)
+      --timing             Print request latency breakdown
+      --verbose            Print redacted request and response details
+```
+
+### SEE ALSO
+
+* [lago v2](lago_v2)	 - Lago API v2 (beta): product catalog, contracts and v2 resources
+* [lago v2 contract-rate-phases create](lago_v2_contract-rate-phases_create)	 - Create rate phase
+* [lago v2 contract-rate-phases delete](lago_v2_contract-rate-phases_delete)	 - Delete rate phase
+* [lago v2 contract-rate-phases list](lago_v2_contract-rate-phases_list)	 - List contract rate phases
+* [lago v2 contract-rate-phases patch](lago_v2_contract-rate-phases_patch)	 - Update rate phase
+* [lago v2 contract-rate-phases update](lago_v2_contract-rate-phases_update)	 - Update rate phase

@@ -83,6 +83,7 @@ func NewRoot(app *App) *cobra.Command {
 	root.AddCommand(newLogsCommand(app))
 	root.AddCommand(newCompletionCommand(root))
 	addGenerated(root, app, generated.Operations)
+	root.AddCommand(newV2Command(app))
 	addImportExport(root, app)
 	return root
 }
@@ -125,3 +126,26 @@ func configPath() (string, error) {
 }
 
 func normalizeCommandName(value string) string { return strings.ReplaceAll(value, "_", "-") }
+
+// newV2Command mounts the operations generated from the Lago API v2 document under
+// `lago v2`. v2 reuses resource names that v1 already owns (customers, invoices,
+// plans) with different request and response shapes, so the commands live in their own
+// namespace instead of silently changing what `lago customers list` calls.
+func newV2Command(app *App) *cobra.Command {
+	v2 := &cobra.Command{
+		Use:   "v2",
+		Short: "Lago API v2 (beta): product catalog, contracts and v2 resources",
+		Long: "Commands generated from the Lago API v2 document (" + generated.SpecV2Version + ").\n\n" +
+			"API v2 adds the product catalog (products, product categories, product filters, rate cards and rates), " +
+			"catalog plans, contracts and their applied rate cards and rate phases, and native v2 versions of billing " +
+			"resources. Lists use cursor pagination: pass --after with the previous response's meta.next_cursor, " +
+			"or --all to walk every page. Requests go to /api/v2 on the profile's API host.",
+		Example: "  lago v2 products list\n  lago v2 products create --code compute --name Compute --product-type fixed\n  lago v2 rate-cards list --all",
+		Args:    cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, _ []string) error {
+			return cmd.Help()
+		},
+	}
+	addGenerated(v2, app, generated.OperationsV2)
+	return v2
+}

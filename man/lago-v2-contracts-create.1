@@ -1,0 +1,135 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-v2-contracts-create - Create contract
+
+
+.SH SYNOPSIS
+\fBlago v2 contracts create [flags]\fP
+
+
+.SH DESCRIPTION
+Creates a contract for an existing customer. The plan is optional. One pending or active contract may use an external_id at a time. A plan supplies the initial applied rate cards.
+Requires the product catalog to be enabled and contract write permission on the API key.
+
+
+.SH OPTIONS
+\fB--billing-anchor-date\fP=""
+	Optional billing anchor.
+
+.PP
+\fB--billing-time\fP=""
+	Whether billing aligns to the calendar or contract anniversary.; one of: calendar, anniversary
+
+.PP
+\fB--consolidate-invoice\fP=""
+	Whether invoices can consolidate compatible contracts.
+
+.PP
+\fB--ended-at\fP=""
+	Optional end timestamp. Must be after the start and not already in the past.
+
+.PP
+\fB--external-customer-id\fP=""
+	External customer identifier.
+
+.PP
+\fB--external-id\fP=""
+	Unique identifier for a live contract in your application.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for create
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--invoice-custom-section-invoice-custom-section-codes\fP=""
+	Invoice custom section codes.
+
+.PP
+\fB--invoice-custom-section-skip-invoice-custom-sections\fP=""
+	Whether to skip invoice custom sections.
+
+.PP
+\fB--name\fP=""
+	Contract name.
+
+.PP
+\fB--plan-code\fP=""
+	Optional plan code. Plan-less contracts use directly attached rate cards.
+
+.PP
+\fB--purchase-order-number\fP=""
+	Purchase order reference.
+
+.PP
+\fB--started-at\fP=""
+	Start timestamp. Defaults to now. A future start creates a pending contract.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago v2 contracts create --input @payload.json
+  lago v2 contracts create --input @payload.json --output json  # full resource
+.EE
+
+
+.SH SEE ALSO
+\fBlago-v2-contracts(1)\fP

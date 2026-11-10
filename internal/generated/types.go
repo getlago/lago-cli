@@ -1,5 +1,7 @@
 package generated
 
+import "encoding/json"
+
 type Operation struct {
 	Resource    string      `json:"resource"`
 	Action      string      `json:"action"`
@@ -17,6 +19,12 @@ type Operation struct {
 	// Mutation marks a write whose default table output is the terse identifier block
 	// (identifiers plus status). Full detail stays available through --output json|yaml.
 	Mutation bool `json:"mutation"`
+	// CursorPaginated marks a list that pages with opaque `after`/`before` cursors and
+	// reports `meta.next_cursor`, the API v2 scheme, instead of page/per_page.
+	CursorPaginated bool `json:"cursor_paginated,omitempty"`
+	// APIVersion is the API the path is relative to. It is empty for /api/v1 and "v2"
+	// for operations generated from the v2 document, which run under `lago v2`.
+	APIVersion string `json:"api_version,omitempty"`
 }
 
 type Parameter struct {
@@ -49,4 +57,14 @@ type Field struct {
 	Complex     bool     `json:"complex"`
 	Description string   `json:"description,omitempty"`
 	Enum        []string `json:"enum,omitempty"`
+}
+
+// mustDecodeOperations decodes an embedded operation table. The JSON is written by
+// internal/gen from the pinned spec, so a decode failure is a build defect and panics.
+func mustDecodeOperations(data string) []Operation {
+	var operations []Operation
+	if err := json.Unmarshal([]byte(data), &operations); err != nil {
+		panic("decode generated Lago operations: " + err.Error())
+	}
+	return operations
 }

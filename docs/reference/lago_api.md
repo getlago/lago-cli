@@ -11,6 +11,7 @@ lago api METHOD PATH [flags]
 ```
   lago api GET /customers?page=2
   lago api POST /events --data @event.json
+  lago api GET /api/v2/products
   printf '{"event":{}}' | lago api POST /events --data -
 ```
 

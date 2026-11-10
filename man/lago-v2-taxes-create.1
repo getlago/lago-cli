@@ -1,0 +1,106 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-v2-taxes-create - Create a tax
+
+
+.SH SYNOPSIS
+\fBlago v2 taxes create [flags]\fP
+
+
+.SH DESCRIPTION
+Creates a tax rate for the organization.
+Requires the product catalog to be enabled and tax write permission on the API key.
+Name, code and rate are required. A code already used by another tax of the organization, including a deleted one, returns 422.
+The applied_to_organization parameter is ignored and is not returned. Creating a tax does not assign it to any resource.
+Taxes have no supported expansions; a nonempty expands[] returns 400 before creation.
+
+
+.SH OPTIONS
+\fB--code\fP=""
+	Unique code of the tax within the organization, including deleted taxes. It cannot be blank.
+
+.PP
+\fB--description\fP=""
+	Internal description of the tax. Set to null to clear it.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for create
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--name\fP=""
+	Name of the tax. It cannot be blank.
+
+.PP
+\fB--rate\fP=""
+	Percentage rate of the tax. Accepts a number or a decimal string.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago v2 taxes create --input @payload.json
+  lago v2 taxes create --input @payload.json --output json  # full resource
+.EE
+
+
+.SH SEE ALSO
+\fBlago-v2-taxes(1)\fP
