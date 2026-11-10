@@ -499,8 +499,9 @@ func responseError(response *Response, subjects []Subject) error {
 	}
 	_ = json.Unmarshal(response.Body, &envelope)
 	message := envelope.Error
-	if message == "" && envelope.Error == "" && envelope.Code != "" && envelope.V2Details != nil {
-		message, envelope.Details = describeV2Error(envelope.Code, envelope.V2Details)
+	var fieldErrors []map[string]any
+	if message == "" && envelope.Code != "" && envelope.V2Details != nil {
+		message, envelope.Details, fieldErrors = describeV2Error(envelope.Code, envelope.V2Details)
 	}
 	if message == "" {
 		message = strings.TrimSpace(string(response.Body))
@@ -515,7 +516,7 @@ func responseError(response *Response, subjects []Subject) error {
 			suggestion = "Check that each identifier is the right kind for the flag it was passed to: a plan code is not a subscription external ID, and a Lago ID is not an external ID."
 		}
 	}
-	return &apperr.Error{ExitCode: exitCode, Status: response.Status, Code: envelope.Code, Message: message, Details: envelope.Details, RequestID: response.RequestID, Suggestion: suggestion}
+	return &apperr.Error{ExitCode: exitCode, Status: response.Status, Code: envelope.Code, Message: message, Details: envelope.Details, FieldErrors: fieldErrors, RequestID: response.RequestID, Suggestion: suggestion}
 }
 
 // describeNotFound turns a 404 into a message naming the resource type and, when the
@@ -740,18 +741,20 @@ type v2ErrorDetail struct {
 	Meta  map[string]any `json:"meta"`
 }
 
-// describeV2Error turns the API v2 error body into the message and field details the
-// v1 renderer already prints. v2 carries no prose: `{"code":"validation_errors",
-// "details":[{"code":"value_is_mandatory","field":"name"}]}` becomes "validation
-// errors: name: value_is_mandatory", and the details map keeps the v1 shape of field
-// to list of codes so `--output json` consumers read both versions the same way.
-func describeV2Error(code string, details []v2ErrorDetail) (string, map[string]any) {
+// describeV2Error turns the API v2 error body into what the v1 renderer prints: a
+// message, the field-to-codes details map, and the raw entries with their meta.
+//
+// v2 carries no prose. The message is the humanized code, and the field lines come
+// from the details, as for a v1 422, so the terminal does not print them twice. The
+// one meta value a caller acts on is a payment provider's own error code: a declined
+// card must read "provider error: card_declined", not "provider error".
+func describeV2Error(code string, details []v2ErrorDetail) (string, map[string]any, []map[string]any) {
 	message := strings.ReplaceAll(code, "_", " ")
 	if len(details) == 0 {
-		return message, nil
+		return message, nil, nil
 	}
 	fields := map[string]any{}
-	parts := make([]string, 0, len(details))
+	raw := make([]map[string]any, 0, len(details))
 	for _, detail := range details {
 		field := detail.Field
 		if field == "" {
@@ -759,9 +762,16 @@ func describeV2Error(code string, details []v2ErrorDetail) (string, map[string]a
 		}
 		existing, _ := fields[field].([]any)
 		fields[field] = append(existing, detail.Code)
-		parts = append(parts, field+": "+detail.Code)
+		entry := map[string]any{"field": field, "code": detail.Code}
+		if len(detail.Meta) > 0 {
+			entry["meta"] = detail.Meta
+		}
+		raw = append(raw, entry)
+		if providerCode, _ := detail.Meta["provider_error_code"].(string); providerCode != "" && !strings.Contains(message, providerCode) {
+			message += ": " + providerCode
+		}
 	}
-	return message + ": " + strings.Join(parts, ", "), fields
+	return message, fields, raw
 }
 
 // v2NotFoundCode rewrites the API v2 `resource_not_found` code, which names the missing

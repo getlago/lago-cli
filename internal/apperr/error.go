@@ -19,14 +19,19 @@ const (
 )
 
 type Error struct {
-	ExitCode   int            `json:"-"`
-	Status     int            `json:"status,omitempty"`
-	Code       string         `json:"code,omitempty"`
-	Message    string         `json:"message"`
-	Details    map[string]any `json:"details,omitempty"`
-	RequestID  string         `json:"request_id,omitempty"`
-	Suggestion string         `json:"suggestion,omitempty"`
-	Cause      error          `json:"-"`
+	ExitCode int            `json:"-"`
+	Status   int            `json:"status,omitempty"`
+	Code     string         `json:"code,omitempty"`
+	Message  string         `json:"message"`
+	Details  map[string]any `json:"details,omitempty"`
+	// FieldErrors is the API v2 `details` array as the server sent it, one
+	// `{field, code, meta}` entry each. Details above keeps the v1 field-to-codes shape
+	// for both versions; this carries the meta (provider error codes, bounds, allowed
+	// values) that the v1 shape has no room for.
+	FieldErrors []map[string]any `json:"field_errors,omitempty"`
+	RequestID   string           `json:"request_id,omitempty"`
+	Suggestion  string           `json:"suggestion,omitempty"`
+	Cause       error            `json:"-"`
 }
 
 func (e *Error) Error() string {

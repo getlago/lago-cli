@@ -29,7 +29,11 @@ func writeTextError(errOut io.Writer, err error) {
 	// API-controlled text reaches the terminal here, so it takes the same escaping as a
 	// table cell (QA S-22). See output.Sanitize.
 	fmt.Fprintf(errOut, "Error: %s\n", output.Sanitize(appErr.Message))
-	for _, line := range formatErrorDetails(appErr.Details) {
+	lines := formatFieldErrors(appErr.FieldErrors)
+	if len(lines) == 0 {
+		lines = formatErrorDetails(appErr.Details)
+	}
+	for _, line := range lines {
 		fmt.Fprintf(errOut, "  %s\n", output.Sanitize(line))
 	}
 	if appErr.Status > 0 {
@@ -84,6 +88,39 @@ func formatErrorDetails(details map[string]any) []string {
 			reason = fmt.Sprint(typed)
 		}
 		lines = append(lines, field+": "+reason)
+	}
+	return lines
+}
+
+// formatFieldErrors renders API v2 `{field, code, meta}` entries as `field: code` lines,
+// in the order the server sent them, with any meta appended as sorted `key=value` pairs:
+// `base: provider_error (provider_error_code=card_declined, provider_name=stripe)`.
+func formatFieldErrors(entries []map[string]any) []string {
+	lines := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		line := fmt.Sprintf("%v: %v", entry["field"], entry["code"])
+		meta, _ := entry["meta"].(map[string]any)
+		if len(meta) > 0 {
+			keys := make([]string, 0, len(meta))
+			for key := range meta {
+				keys = append(keys, key)
+			}
+			sort.Strings(keys)
+			pairs := make([]string, 0, len(keys))
+			for _, key := range keys {
+				value := meta[key]
+				if nested, ok := value.([]any); ok {
+					parts := make([]string, 0, len(nested))
+					for _, item := range nested {
+						parts = append(parts, fmt.Sprint(item))
+					}
+					value = strings.Join(parts, "|")
+				}
+				pairs = append(pairs, fmt.Sprintf("%s=%v", key, value))
+			}
+			line += " (" + strings.Join(pairs, ", ") + ")"
+		}
+		lines = append(lines, line)
 	}
 	return lines
 }

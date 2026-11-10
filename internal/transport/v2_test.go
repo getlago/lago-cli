@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/getlago/lago-cli/internal/apperr"
@@ -49,8 +50,9 @@ func TestV2RequestsResolveUnderAPIV2OnEveryDeployment(t *testing.T) {
 	}
 }
 
-// API v2 errors carry a code and field details but no message. The CLI must still print
-// what failed instead of the raw body, and keep the v1 details shape for JSON output.
+// API v2 errors carry a code and field details but no message. The message is the
+// humanized code (the field lines are printed from the details, as for v1), the details
+// keep the v1 field-to-codes shape, and the raw entries are kept for JSON output.
 func TestV2ValidationErrorIsDescribed(t *testing.T) {
 	t.Parallel()
 	err := responseError(&Response{Status: http.StatusUnprocessableEntity, Body: []byte(`{"code":"validation_errors","details":[{"code":"value_is_mandatory","field":"name","meta":{}},{"code":"value_already_exist","field":"code","meta":{}}]}`)}, nil)
@@ -58,7 +60,7 @@ func TestV2ValidationErrorIsDescribed(t *testing.T) {
 	if !asAppError(err, &appError) {
 		t.Fatalf("error is %T", err)
 	}
-	if appError.Message != "validation errors: name: value_is_mandatory, code: value_already_exist" {
+	if appError.Message != "validation errors" {
 		t.Errorf("message = %q", appError.Message)
 	}
 	if appError.Code != "validation_errors" {
@@ -67,6 +69,34 @@ func TestV2ValidationErrorIsDescribed(t *testing.T) {
 	want := map[string]any{"name": []any{"value_is_mandatory"}, "code": []any{"value_already_exist"}}
 	if !reflect.DeepEqual(appError.Details, want) {
 		t.Errorf("details = %#v, want %#v", appError.Details, want)
+	}
+	if len(appError.FieldErrors) != 2 || appError.FieldErrors[0]["field"] != "name" || appError.FieldErrors[0]["meta"] != nil {
+		t.Errorf("field errors = %#v", appError.FieldErrors)
+	}
+}
+
+// A declined card is the case the meta exists for: the provider's own code must reach
+// the message and the JSON payload, not just "provider error".
+func TestV2ProviderErrorKeepsTheProviderCode(t *testing.T) {
+	t.Parallel()
+	body := []byte(`{"code":"provider_error","details":[{"code":"provider_error","field":"base","meta":{"provider_name":"stripe","provider_code":"stripe_eu","provider_error_code":"card_declined"}}]}`)
+	err := responseError(&Response{Status: http.StatusUnprocessableEntity, Body: body}, nil)
+	var appError *apperr.Error
+	if !asAppError(err, &appError) {
+		t.Fatalf("error is %T", err)
+	}
+	if appError.Message != "provider error: card_declined" {
+		t.Errorf("message = %q", appError.Message)
+	}
+	meta, _ := appError.FieldErrors[0]["meta"].(map[string]any)
+	if meta["provider_name"] != "stripe" || meta["provider_error_code"] != "card_declined" {
+		t.Errorf("field errors = %#v", appError.FieldErrors)
+	}
+	encoded := string(apperr.Encode(err))
+	for _, want := range []string{`"field_errors"`, `"provider_error_code": "card_declined"`, `"details"`} {
+		if !strings.Contains(encoded, want) {
+			t.Errorf("JSON error is missing %s:\n%s", want, encoded)
+		}
 	}
 }
 

@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"strings"
@@ -111,16 +112,27 @@ func TestV2AllRefusesBefore(t *testing.T) {
 	}
 }
 
-// A v2 validation error must print the field codes, not the raw JSON body.
+// A v2 error must print each field once, with its meta, never the raw JSON body.
 func TestV2ErrorIsReadable(t *testing.T) {
 	server := jsonAPI(t, func(response http.ResponseWriter, _ *http.Request) {
 		response.WriteHeader(http.StatusUnprocessableEntity)
-		_, _ = response.Write([]byte(`{"code":"validation_errors","details":[{"code":"value_is_mandatory","field":"name","meta":{}}]}`))
+		_, _ = response.Write([]byte(`{"code":"validation_errors","details":[{"code":"value_is_mandatory","field":"name","meta":{}},{"code":"value_out_of_range","field":"limit","meta":{"min":1,"max":100}}]}`))
 	})
 	profileAt(t, server.URL)
 	_, _, err := execute(t, "", "v2", "products", "create", "--code", "c", "--name", "n", "--product-type", "fixed")
-	if err == nil || !strings.Contains(err.Error(), "name: value_is_mandatory") {
-		t.Fatalf("err = %v", err)
+	if err == nil {
+		t.Fatal("expected an error")
+	}
+	var text bytes.Buffer
+	writeTextError(&text, err)
+	got := text.String()
+	for _, want := range []string{"Error: validation errors\n", "  name: value_is_mandatory\n", "  limit: value_out_of_range (max=100, min=1)\n", "Lago code: validation_errors"} {
+		if !strings.Contains(got, want) {
+			t.Errorf("text error is missing %q:\n%s", want, got)
+		}
+	}
+	if strings.Count(got, "value_is_mandatory") != 1 {
+		t.Errorf("field printed more than once:\n%s", got)
 	}
 }
 
