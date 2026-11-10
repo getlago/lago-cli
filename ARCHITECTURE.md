@@ -4,7 +4,9 @@ Lago CLI is a single static Go binary. Its boundary packages are deliberately sm
 
 ## OpenAPI generation
 
-`spec/openapi.yaml` is a pinned copy of `https://swagger.getlago.com/openapi.yaml`. It is the only source for API paths, methods, parameters, body fields, types, enums, and descriptions.
+`spec/openapi.yaml` is a pinned copy of `https://swagger.getlago.com/openapi.yaml`, and `spec/openapi-v2.yaml` a pinned copy of `https://swagger.getlago.com/openapi-v2.yaml`. They are the only source for API paths, methods, parameters, body fields, types, enums, and descriptions.
+
+The v2 document is generated with `-api-version v2` into `internal/generated/spec_v2_gen.go` (`OperationsV2`) and `spec/operations-v2.json`, and mounted under `lago v2`. Each v2 operation records `api_version: v2`, which makes the transport replace the base URL's `/api/v1` with `/api/v2`. A list with `after`/`before` query parameters is marked `cursor_paginated`, and its `--all` follows `meta.next_cursor` instead of `meta.total_pages`. Neither field is set for v1, so the v1 output is unchanged.
 
 ```text
 spec/openapi.yaml

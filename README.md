@@ -345,6 +345,20 @@ $ lago api GET /customers?page=2
 $ lago api POST /events --data @event.json
 ```
 
+### API v2 (beta)
+
+The Lago API v2 commands live under `lago v2`. They include the product catalog (products, product categories, product filters, rate cards and rates), catalog plans and their applied rate cards and rate phases, contracts, and the native v2 versions of billing resources. They use the same profiles, safety gates, and output formats as the v1 commands, and send requests to `/api/v2` on the profile's API host.
+
+```console
+$ lago v2 product-categories create --code compute --name Compute
+$ lago v2 products create --code gpu_hours --name "GPU hours" --product-type metered --billable-metric-code gpu_hours
+$ lago v2 products list --product-category-code compute --all
+$ lago v2 rate-cards get standard --expands product
+$ lago api GET /api/v2/products?limit=5
+```
+
+v2 lists use cursor pagination. `--limit` sets the page size (up to 100). `--after` takes the previous response's `meta.next_cursor`, and `--all` follows the cursors until the last page. v2 errors carry a code and field details instead of a message. The CLI prints them as `field: code`, the same way it prints v1 validation errors.
+
 Global scripting controls: `--output table|json|yaml`, `--query`, `--dry-run`, `--timing`, `--verbose`, `--timeout`, `--no-retry`. `--timing` separates API round-trip, retry wait, and CLI overhead, and prints on failure too, including network errors, so retry behaviour is visible when it matters. The API key is redacted from dry runs, errors, and verbose logs.
 
 ## Stable exit codes
@@ -376,7 +390,7 @@ make lint
 make security
 ```
 
-Pull requests validate the checked-in OpenAPI snapshot. A daily workflow fetches `https://swagger.getlago.com/openapi.yaml` and opens a spec-drift PR when it changed. See [ARCHITECTURE.md](ARCHITECTURE.md), [CONTRIBUTING.md](CONTRIBUTING.md), [DECISIONS.md](DECISIONS.md), and [SECURITY.md](SECURITY.md).
+Pull requests validate the checked-in OpenAPI snapshots. A daily workflow fetches `https://swagger.getlago.com/openapi.yaml` and `https://swagger.getlago.com/openapi-v2.yaml` and opens a spec-drift PR when either changed. See [ARCHITECTURE.md](ARCHITECTURE.md), [CONTRIBUTING.md](CONTRIBUTING.md), [DECISIONS.md](DECISIONS.md), and [SECURITY.md](SECURITY.md).
 
 ## Telemetry
 

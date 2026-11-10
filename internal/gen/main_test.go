@@ -200,3 +200,50 @@ func TestQA_TypeCoercion_SchemaTypeResolvesUnions(t *testing.T) {
 		}
 	}
 }
+
+// A list with after/before query parameters is cursor-paginated; one with page/per_page
+// is not. Only the v2 document records an APIVersion, so the v1 output stays unchanged.
+func TestCursorPaginationAndAPIVersion(t *testing.T) {
+	t.Parallel()
+	document := map[string]any{"paths": map[string]any{
+		"/products": map[string]any{"get": map[string]any{
+			"operationId": "findAllProducts", "summary": "List products", "tags": []any{"products"},
+			"parameters": []any{map[string]any{"name": "after", "in": "query", "schema": map[string]any{"type": "string"}}},
+		}},
+		"/customers": map[string]any{"get": map[string]any{
+			"operationId": "findAllCustomers", "summary": "List customers", "tags": []any{"customers"},
+			"parameters": []any{map[string]any{"name": "page", "in": "query", "schema": map[string]any{"type": "integer"}}},
+		}},
+	}}
+	for _, version := range []string{"", "v1", "v2"} {
+		operations, err := (generator{document: document, apiVersion: version}).operations()
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, operation := range operations {
+			wantVersion := version
+			if version == "v1" {
+				wantVersion = ""
+			}
+			if operation.APIVersion != wantVersion {
+				t.Errorf("%s with -api-version %q recorded %q", operation.OperationID, version, operation.APIVersion)
+			}
+			isProducts := operation.Resource == "products"
+			if operation.CursorPaginated != isProducts || operation.Paginated == isProducts {
+				t.Errorf("%s cursor=%v page=%v", operation.OperationID, operation.CursorPaginated, operation.Paginated)
+			}
+		}
+	}
+}
+
+func TestSymbolSuffix(t *testing.T) {
+	t.Parallel()
+	for version, want := range map[string]string{"": "", "v1": "", "v2": "V2"} {
+		if got, err := symbolSuffix(version); err != nil || got != want {
+			t.Errorf("symbolSuffix(%q) = %q, %v", version, got, err)
+		}
+	}
+	if _, err := symbolSuffix("v3"); err == nil {
+		t.Error("v3 was accepted")
+	}
+}

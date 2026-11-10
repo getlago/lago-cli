@@ -1,0 +1,127 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-v2-payments-list - List payments
+
+
+.SH SYNOPSIS
+\fBlago v2 payments list [flags]\fP
+
+
+.SH DESCRIPTION
+Returns a cursor-paginated list ordered by creation time, newest first. Use after or before to navigate. The page and per_page parameters are rejected.
+Lists organization payments, including manual and provider payments and payments attached to a payment request.
+Requires the product catalog to be enabled and payment read permission on the API key.
+
+
+.SH OPTIONS
+\fB--after\fP=""
+	Opaque next_cursor from a previous response. Returns the next page. Cannot be combined with before or include_total_count=true. Keep the same filters when paging.
+
+.PP
+\fB--all\fP[=false]
+	Fetch every page by following next_cursor
+
+.PP
+\fB--before\fP=""
+	Opaque prev_cursor from a previous response. Returns the previous page in the same list order. Cannot be combined with after or include_total_count=true. Keep the same filters when paging.
+
+.PP
+\fB--created-at-from\fP=""
+	Inclusive lower bound on the creation time, as an ISO 8601 date or timestamp. A date starts at midnight UTC. Invalid values return 422.
+
+.PP
+\fB--created-at-to\fP=""
+	Inclusive upper bound on the creation time, as an ISO 8601 date or timestamp. A date includes that whole UTC day. Invalid values return 422.
+
+.PP
+\fB--external-customer-id\fP=""
+	External customer id.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for list
+
+.PP
+\fB--include-total-count\fP=""
+	Requests the total number of matching records. Supported only on the first page, without after or before. The count can be estimated; total_count_estimated is then present and true.
+
+.PP
+\fB--invoice-id\fP=""
+	Includes payments made through a payment request that covers this invoice.
+
+.PP
+\fB--limit\fP=""
+	Maximum number of records per page. Values outside the supported range return 400.
+
+.PP
+\fB--watch\fP[=false]
+	Poll and re-render when the response changes
+
+.PP
+\fB--watch-interval\fP=2s
+	Polling interval used with --watch
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago v2 payments list
+.EE
+
+
+.SH SEE ALSO
+\fBlago-v2-payments(1)\fP

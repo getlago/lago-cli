@@ -38,11 +38,13 @@ func newVersionCommand(app *App) *cobra.Command {
 		Args:    cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			result := map[string]any{
-				"version":      app.Version,
-				"go_version":   runtime.Version(),
-				"platform":     runtime.GOOS + "/" + runtime.GOARCH,
-				"spec_version": generated.SpecVersion,
-				"spec_sha256":  generated.SpecSHA256,
+				"version":         app.Version,
+				"go_version":      runtime.Version(),
+				"platform":        runtime.GOOS + "/" + runtime.GOARCH,
+				"spec_version":    generated.SpecVersion,
+				"spec_sha256":     generated.SpecSHA256,
+				"spec_v2_version": generated.SpecV2Version,
+				"spec_v2_sha256":  generated.SpecV2SHA256,
 			}
 			if check {
 				updateCheck, _, err := cliupdate.Latest(cmd.Context(), app.Version, channel, "lago-cli/"+app.Version, updateAPIBase())
@@ -433,6 +435,7 @@ func newAPICommand(app *App) *cobra.Command {
 		Short: "Make an authenticated request to any Lago API endpoint",
 		Example: "  lago api GET /customers?page=2\n" +
 			"  lago api POST /events --data @event.json\n" +
+			"  lago api GET /api/v2/products\n" +
 			"  printf '{\"event\":{}}' | lago api POST /events --data -",
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {

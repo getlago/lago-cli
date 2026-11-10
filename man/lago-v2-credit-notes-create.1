@@ -1,0 +1,119 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-v2-credit-notes-create - Create credit note
+
+
+.SH SYNOPSIS
+\fBlago v2 credit-notes create [flags]\fP
+
+
+.SH DESCRIPTION
+Requires a premium license and an eligible invoice. Credits are allocated across credit, refund and offset amounts. Product and legacy invoice fees can be credited.
+Requires the product catalog to be enabled and credit_note write permission on the API key.
+
+
+.SH OPTIONS
+\fB--credit-amount-cents\fP=""
+	Amount credited to the customer balance, in cents.
+
+.PP
+\fB--description\fP=""
+	Description of the adjustment.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for create
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--invoice-id\fP=""
+	Invoice identifier.
+
+.PP
+\fB--items\fP=""
+	Invoice fees to credit.
+
+.PP
+\fB--metadata\fP=""
+	Metadata as an object of key-value pairs. At most 50 keys are allowed. Keys are limited to 100 characters and values to 255 characters. Values must be strings or null.
+
+.PP
+\fB--offset-amount-cents\fP=""
+	Amount offset against the invoice balance, in cents.
+
+.PP
+\fB--reason\fP=""
+	Reason for issuing the credit note.; one of: duplicated_charge, product_unsatisfactory, order_change, order_cancellation, fraudulent_charge, other
+
+.PP
+\fB--refund-amount-cents\fP=""
+	Amount to refund, in cents.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago v2 credit-notes create --input @payload.json
+  lago v2 credit-notes create --input @payload.json --output json  # full resource
+.EE
+
+
+.SH SEE ALSO
+\fBlago-v2-credit-notes(1)\fP

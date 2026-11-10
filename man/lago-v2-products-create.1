@@ -1,0 +1,115 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-v2-products-create - Create product
+
+
+.SH SYNOPSIS
+\fBlago v2 products create [flags]\fP
+
+
+.SH DESCRIPTION
+Creates a fixed or metered product. Metered products require billable_metric_code; fixed products reject it.
+Requires the product catalog to be enabled and product write permission on the API key.
+
+
+.SH OPTIONS
+\fB--billable-metric-code\fP=""
+	Billable metric code. Required for metered products and not allowed for fixed products.
+
+.PP
+\fB--code\fP=""
+	Unique code within the organization.
+
+.PP
+\fB--description\fP=""
+	Internal description.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for create
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--invoice-display-name\fP=""
+	Name used on invoices. Defaults to the name when blank.
+
+.PP
+\fB--name\fP=""
+	Name shown in the catalog.
+
+.PP
+\fB--product-category-code\fP=""
+	Category code. Omit or clear it to leave the product uncategorized.
+
+.PP
+\fB--product-type\fP=""
+	Type of product. Metered products require a billable metric; fixed products must not reference one.; one of: metered, fixed
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago v2 products create --input @payload.json
+  lago v2 products create --input @payload.json --output json  # full resource
+.EE
+
+
+.SH SEE ALSO
+\fBlago-v2-products(1)\fP

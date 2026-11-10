@@ -1,0 +1,120 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-v2-rate-card-rates-update - Update rate
+
+
+.SH SYNOPSIS
+\fBlago v2 rate-card-rates update   [flags]\fP
+
+
+.SH DESCRIPTION
+PUT and PATCH both accept partial updates. Omitted fields are unchanged.
+Terminated rates are frozen. Active rates reject effective_from, rate_model, min_amount_cents and billing interval fields, even when unchanged. Pending rates are fully editable; attachment and identity restrictions also apply.
+Requires the product catalog to be enabled and rate_card write permission on the API key.
+
+
+.SH OPTIONS
+\fB--applied-pricing-unit-conversion-rate\fP=""
+	Conversion rate for the applied pricing unit. Required when the card uses a pricing unit. Sent as a decimal string.
+
+.PP
+\fB--billing-interval-count\fP=""
+	Number of billing interval units. Defaults to 1 on creation.
+
+.PP
+\fB--billing-interval-unit\fP=""
+	Unit of the billing interval.; one of: day, week, month, year
+
+.PP
+\fB--code\fP=""
+	Code unique within the rate card.
+
+.PP
+\fB--effective-from\fP=""
+	Effective timestamp. It cannot be before today in the organization timezone, must be unique on the card, and must be after the active rate. Arrears rates start at the beginning of the day.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for update
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--min-amount-cents\fP=""
+	Minimum charge in cents. Allowed only for arrears billing. Defaults to 0 on creation.
+
+.PP
+\fB--rate-model\fP=""
+	Pricing model. Fixed products support standard, graduated and volume. Volume cannot be billed in advance; dynamic requires a sum metric. Proration and aggregation can impose further restrictions.; one of: standard, graduated, package, percentage, volume, graduated_percentage, custom, dynamic
+
+.PP
+\fB--rate-properties\fP=""
+	Pricing configuration for the selected rate model. Standard requires amount; package also requires package_size. Graduated, volume and graduated_percentage models use their matching ranges array. Custom properties remain model-specific.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago v2 rate-card-rates update <rate_card_code> <code> --input @payload.json
+  lago v2 rate-card-rates update <rate_card_code> <code> --input @payload.json --output json  # full resource
+.EE
+
+
+.SH SEE ALSO
+\fBlago-v2-rate-card-rates(1)\fP

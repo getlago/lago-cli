@@ -1,0 +1,107 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-v2-payment-requests-create - Create payment request
+
+
+.SH SYNOPSIS
+\fBlago v2 payment-requests create [flags]\fP
+
+
+.SH DESCRIPTION
+Requires a premium license. Selected customer invoices must be overdue, ready for payment processing, and share the same currency and billing entity. Payment collection and email delivery are asynchronous.
+Requires the product catalog to be enabled and payment_request write permission on the API key.
+
+
+.SH OPTIONS
+\fB--email\fP=""
+	Recipient email. Defaults to the customer email.
+
+.PP
+\fB--external-customer-id\fP=""
+	External customer identifier.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for create
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--lago-invoice-ids\fP=""
+	Customer invoices to include.
+
+.PP
+\fB--payment-method-payment-method-id\fP=""
+	Identifier of a payment method belonging to the customer.
+
+.PP
+\fB--payment-method-payment-method-type\fP=""
+	How the payment is collected.; one of: provider, manual
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago v2 payment-requests create --input @payload.json
+  lago v2 payment-requests create --input @payload.json --output json  # full resource
+.EE
+
+
+.SH SEE ALSO
+\fBlago-v2-payment-requests(1)\fP

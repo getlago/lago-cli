@@ -23,7 +23,21 @@ import (
 var supportedMethods = []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete, http.MethodHead, http.MethodOptions}
 
 type generator struct {
-	document map[string]any
+	document   map[string]any
+	apiVersion string
+}
+
+// symbolSuffix names the Go symbols one document generates into, so the v1 and v2
+// tables live side by side in package generated: `Operations` and `OperationsV2`.
+func symbolSuffix(apiVersion string) (string, error) {
+	switch apiVersion {
+	case "", "v1":
+		return "", nil
+	case "v2":
+		return "V2", nil
+	default:
+		return "", fmt.Errorf("unsupported -api-version %q; use v1 or v2", apiVersion)
+	}
 }
 
 func main() {
@@ -31,13 +45,16 @@ func main() {
 	outputPath := flag.String("out", "internal/generated/spec_gen.go", "generated Go output")
 	manifestPath := flag.String("manifest", "spec/operations.json", "generated operation manifest")
 	check := flag.Bool("check", false, "fail if generated files are stale")
+	apiVersion := flag.String("api-version", "", `API version of the document: "" for /api/v1, "v2" for /api/v2`)
 	flag.Parse()
+	suffix, err := symbolSuffix(*apiVersion)
+	fatalIf(err)
 
 	specData, err := os.ReadFile(filepath.Clean(*specPath))
 	fatalIf(err)
 	var document map[string]any
 	fatalIf(yaml.Unmarshal(specData, &document))
-	g := generator{document: document}
+	g := generator{document: document, apiVersion: *apiVersion}
 	operations, err := g.operations()
 	fatalIf(err)
 	version := nestedString(document, "info", "version")
@@ -50,21 +67,13 @@ func main() {
 
 package generated
 
-import "encoding/json"
+const Spec%[1]sVersion = %[2]q
+const Spec%[1]sSHA256 = %[3]q
 
-const SpecVersion = %q
-const SpecSHA256 = %q
+var Operations%[1]s = mustDecodeOperations(operations%[1]sJSON)
 
-var Operations []Operation
-
-func init() {
-	if err := json.Unmarshal([]byte(operationsJSON), &Operations); err != nil {
-		panic("decode generated Lago operations: " + err.Error())
-	}
-}
-
-const operationsJSON = %s
-`, version, sha, strconv.Quote(string(operationJSON)))
+const operations%[1]sJSON = %[4]s
+`, suffix, version, sha, strconv.Quote(string(operationJSON)))
 	formatted, err := format.Source([]byte(source))
 	fatalIf(err)
 	manifest, err := json.MarshalIndent(map[string]any{"spec_version": version, "spec_sha256": sha, "operation_count": len(operations), "operations": operations}, "", "  ")
@@ -152,9 +161,10 @@ func (g generator) operations() ([]generated.Operation, error) {
 			if err != nil {
 				return nil, fmt.Errorf("%s request body: %w", operationID, err)
 			}
-			paginated := false
+			paginated, cursorPaginated := false, false
 			for _, parameter := range parameters {
 				paginated = paginated || (parameter.In == "query" && (parameter.Name == "page" || parameter.Name == "per_page"))
+				cursorPaginated = cursorPaginated || (parameter.In == "query" && (parameter.Name == "after" || parameter.Name == "before"))
 			}
 			lowerAction := strings.ToLower(action)
 			operations = append(operations, generated.Operation{
@@ -172,6 +182,9 @@ func (g generator) operations() ([]generated.Operation, error) {
 				Dangerous:   dangerousOperation(operationMap, method, path, lowerAction),
 				Paginated:   paginated,
 				Mutation:    mutationOperation(method, lowerAction),
+				// A v1 document leaves both empty, so its generated output is unchanged.
+				CursorPaginated: cursorPaginated,
+				APIVersion:      g.versionLabel(),
 			})
 		}
 	}
@@ -182,6 +195,15 @@ func (g generator) operations() ([]generated.Operation, error) {
 		return operations[i].Resource < operations[j].Resource
 	})
 	return operations, nil
+}
+
+// versionLabel is the APIVersion recorded on each operation: empty for v1, so the v1
+// manifest and table stay byte-identical to what they were before v2 existed.
+func (g generator) versionLabel() string {
+	if g.apiVersion == "v1" {
+		return ""
+	}
+	return g.apiVersion
 }
 
 func (g generator) documentationURLs() map[string]string {

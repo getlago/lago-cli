@@ -67,6 +67,10 @@ type Request struct {
 	// an Idempotency-Key header, so no other mutation is safe to replay.
 	Idempotent bool
 	DryRun     bool
+	// APIVersion selects the API the path is relative to: "" or "v1" for /api/v1, "v2"
+	// for /api/v2. The base URL is normalized to end in /api/v1, so a v2 request swaps
+	// that one segment. A path that itself starts with /api/v2 selects v2 as well.
+	APIVersion string
 
 	// Subjects are the identifiers this request addressed, used to turn the API's bare
 	// 404 into a message naming what was not found. See Subject.
@@ -236,7 +240,7 @@ func APIHostFor(hostname string) (string, bool) {
 func (c *Client) Do(ctx context.Context, request Request) (*Response, error) {
 	started := time.Now()
 	method := strings.ToUpper(request.Method)
-	target, err := c.resolve(request.Path, request.Query)
+	target, err := c.resolve(request.APIVersion, request.Path, request.Query)
 	if err != nil {
 		return nil, err
 	}
@@ -416,15 +420,41 @@ func (c *Client) redactedURL(target *url.URL) string {
 	return visible.Redacted()
 }
 
-func (c *Client) resolve(path string, query url.Values) (*url.URL, error) {
+func (c *Client) resolve(apiVersion, path string, query url.Values) (*url.URL, error) {
 	result := *c.baseURL
 	cleanPath := strings.TrimSpace(path)
 	if strings.HasPrefix(cleanPath, "http://") || strings.HasPrefix(cleanPath, "https://") {
 		return nil, apperr.New(apperr.ExitUsage, "absolute API paths are not allowed", "Use a relative path and select the server with --api-url.")
 	}
-	result.Path = strings.TrimRight(c.baseURL.Path, "/") + "/" + strings.TrimLeft(NormalizeRequestPath(cleanPath), "/")
+	if rest, isV2 := cutV2Prefix(cleanPath); isV2 {
+		apiVersion, cleanPath = "v2", rest
+	}
+	base := strings.TrimRight(c.baseURL.Path, "/")
+	if apiVersion == "v2" {
+		base = strings.TrimSuffix(base, APIPrefix) + APIPrefixV2
+	}
+	result.Path = base + "/" + strings.TrimLeft(NormalizeRequestPath(cleanPath), "/")
 	result.RawQuery = query.Encode()
 	return &result, nil
+}
+
+// APIPrefixV2 is the path segment the Lago API v2 lives under. It replaces APIPrefix
+// on the normalized base URL, so every deployment shape that works for v1 (custom
+// ports, sub-paths behind a proxy) reaches v2 the same way.
+const APIPrefixV2 = "/api/v2"
+
+// cutV2Prefix reports whether a request path was written against /api/v2 -- the form
+// anyone copying from the v2 API reference will type into `lago api` -- and returns
+// the path relative to it.
+func cutV2Prefix(path string) (string, bool) {
+	trimmed := "/" + strings.TrimLeft(path, "/")
+	if trimmed == APIPrefixV2 {
+		return "/", true
+	}
+	if rest, found := strings.CutPrefix(trimmed, APIPrefixV2+"/"); found {
+		return "/" + rest, true
+	}
+	return path, false
 }
 
 // NormalizeRequestPath strips a redundant /api/v1 prefix from a request path.
@@ -463,9 +493,15 @@ func responseError(response *Response, subjects []Subject) error {
 		Error   string         `json:"error"`
 		Code    string         `json:"code"`
 		Details map[string]any `json:"error_details"`
+		// V2Details is the API v2 error shape: `{code, details: [{code, field, meta}]}`
+		// with no human-readable message.
+		V2Details []v2ErrorDetail `json:"details"`
 	}
 	_ = json.Unmarshal(response.Body, &envelope)
 	message := envelope.Error
+	if message == "" && envelope.Error == "" && envelope.Code != "" && envelope.V2Details != nil {
+		message, envelope.Details = describeV2Error(envelope.Code, envelope.V2Details)
+	}
 	if message == "" {
 		message = strings.TrimSpace(string(response.Body))
 	}
@@ -474,7 +510,7 @@ func responseError(response *Response, subjects []Subject) error {
 	}
 	exitCode, suggestion := classify(response.Status)
 	if response.Status == http.StatusNotFound {
-		if described, ok := describeNotFound(envelope.Code, subjects); ok {
+		if described, ok := describeNotFound(v2NotFoundCode(envelope.Code, envelope.V2Details), subjects); ok {
 			message = described
 			suggestion = "Check that each identifier is the right kind for the flag it was passed to: a plan code is not a subscription external ID, and a Lago ID is not an external ID."
 		}
@@ -696,4 +732,49 @@ func mergeTiming(total *Timing, attempt Timing) {
 	total.Download += attempt.Download
 	total.RoundTrip += attempt.RoundTrip
 	total.ResponseBytes += attempt.ResponseBytes
+}
+
+type v2ErrorDetail struct {
+	Code  string         `json:"code"`
+	Field string         `json:"field"`
+	Meta  map[string]any `json:"meta"`
+}
+
+// describeV2Error turns the API v2 error body into the message and field details the
+// v1 renderer already prints. v2 carries no prose: `{"code":"validation_errors",
+// "details":[{"code":"value_is_mandatory","field":"name"}]}` becomes "validation
+// errors: name: value_is_mandatory", and the details map keeps the v1 shape of field
+// to list of codes so `--output json` consumers read both versions the same way.
+func describeV2Error(code string, details []v2ErrorDetail) (string, map[string]any) {
+	message := strings.ReplaceAll(code, "_", " ")
+	if len(details) == 0 {
+		return message, nil
+	}
+	fields := map[string]any{}
+	parts := make([]string, 0, len(details))
+	for _, detail := range details {
+		field := detail.Field
+		if field == "" {
+			field = "base"
+		}
+		existing, _ := fields[field].([]any)
+		fields[field] = append(existing, detail.Code)
+		parts = append(parts, field+": "+detail.Code)
+	}
+	return message + ": " + strings.Join(parts, ", "), fields
+}
+
+// v2NotFoundCode rewrites the API v2 `resource_not_found` code, which names the missing
+// resource in `details[].meta.resource`, into the v1 `<resource>_not_found` form that
+// describeNotFound already understands. Any other code is returned unchanged.
+func v2NotFoundCode(code string, details []v2ErrorDetail) string {
+	if code != "resource_not_found" {
+		return code
+	}
+	for _, detail := range details {
+		if resource, _ := detail.Meta["resource"].(string); resource != "" {
+			return resource + "_not_found"
+		}
+	}
+	return code
 }

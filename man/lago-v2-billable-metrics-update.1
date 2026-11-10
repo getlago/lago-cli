@@ -1,0 +1,132 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-v2-billable-metrics-update - Update billable metric
+
+
+.SH SYNOPSIS
+\fBlago v2 billable-metrics update  [flags]\fP
+
+
+.SH DESCRIPTION
+PUT and PATCH both accept partial updates. Omitted fields are unchanged.
+When attached to a plan, only the name, description and permitted filter changes can be updated. Changes to locked fields return 422. Filter values referenced by product filters cannot be removed.
+Requires the product catalog to be enabled and billable_metric write permission on the API key.
+
+
+.SH OPTIONS
+\fB--aggregation-type\fP=""
+	Aggregation method. field_name is required except for count_agg.; one of: count_agg, sum_agg, max_agg, unique_count_agg, weighted_sum_agg, latest_agg
+
+.PP
+\fB--code\fP=""
+	Code.
+
+.PP
+\fB--description\fP=""
+	Description.
+
+.PP
+\fB--expression\fP=""
+	Expression.
+
+.PP
+\fB--field-name\fP=""
+	Field name.
+
+.PP
+\fB--filters\fP=""
+	Complete filter definitions. An empty array removes existing filters. Null, malformed filters and non-string values are rejected before any changes are saved.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for update
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--name\fP=""
+	Name.
+
+.PP
+\fB--recurring\fP=""
+	Whether values carry over between billing periods.
+
+.PP
+\fB--rounding-function\fP=""
+	Rounding applied to aggregated values.; one of: ceil, floor, round,
+
+.PP
+\fB--rounding-precision\fP=""
+	Rounding precision.
+
+.PP
+\fB--weighted-interval\fP=""
+	Weighting interval. Required for weighted_sum_agg.; one of: seconds,
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago v2 billable-metrics update <code> --input @payload.json
+  lago v2 billable-metrics update <code> --input @payload.json --output json  # full resource
+.EE
+
+
+.SH SEE ALSO
+\fBlago-v2-billable-metrics(1)\fP
