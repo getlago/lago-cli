@@ -2,21 +2,25 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-v2-contract-rate-phases-destroy - Delete rate phase
+lago-v2-credit-notes-replace-metadata - Replace credit note metadata
 
 
 .SH SYNOPSIS
-\fBlago v2 contract-rate-phases destroy    [flags]\fP
+\fBlago v2 credit-notes replace-metadata  [flags]\fP
 
 
 .SH DESCRIPTION
-Removes the phase and renumbers later positions. The final indefinite phase and the only remaining phase cannot be deleted.
-Requires the product catalog to be enabled and contract_rate_card write permission on the API key.
+The credit note must be finalized. POST replaces all metadata; PUT and PATCH merge keys; DELETE clears all metadata. The response contains only the metadata object or null.
+Requires the product catalog to be enabled and credit_note write permission on the API key.
 
 
 .SH OPTIONS
 \fB-h\fP, \fB--help\fP[=false]
-	help for destroy
+	help for replace-metadata
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
@@ -74,10 +78,10 @@ Requires the product catalog to be enabled and contract_rate_card write permissi
 
 .SH EXAMPLE
 .EX
-  lago v2 contract-rate-phases destroy <contract_external_id> <applied_rate_card_code> <code>
-  lago v2 contract-rate-phases destroy <contract_external_id> <applied_rate_card_code> <code> --output json  # full resource
+  lago v2 credit-notes replace-metadata <credit_note_id> --input @payload.json
+  lago v2 credit-notes replace-metadata <credit_note_id> --input @payload.json --output json  # full resource
 .EE
 
 
 .SH SEE ALSO
-\fBlago-v2-contract-rate-phases(1)\fP
+\fBlago-v2-credit-notes(1)\fP

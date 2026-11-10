@@ -1,28 +1,27 @@
-## lago v2 credit-notes patch-credit-note-metadata
+## lago v2 customers set-default-payment-method
 
-Merge credit note metadata
+Set the default customer payment method
 
 ### Synopsis
 
-The credit note must be finalized. POST replaces all metadata; PUT and PATCH merge keys; DELETE clears all metadata. The response contains only the metadata object or null.
-Requires the product catalog to be enabled and credit_note write permission on the API key.
+Sets this payment method as the customer default. No request body is required.
+Requires the product catalog to be enabled and payment_method write permission on the API key.
 
 ```
-lago v2 credit-notes patch-credit-note-metadata <credit_note_id> [flags]
+lago v2 customers set-default-payment-method <customer_external_id> <lago_id> [flags]
 ```
 
 ### Examples
 
 ```
-  lago v2 credit-notes patch-credit-note-metadata <credit_note_id> --input @payload.json
-  lago v2 credit-notes patch-credit-note-metadata <credit_note_id> --input @payload.json --output json  # full resource
+  lago v2 customers set-default-payment-method <customer_external_id> <lago_id>
+  lago v2 customers set-default-payment-method <customer_external_id> <lago_id> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help           help for patch-credit-note-metadata
-      --input string   Complete JSON request body or @file.json
+  -h, --help   help for set-default-payment-method
 ```
 
 ### Options inherited from parent commands
@@ -45,4 +44,4 @@ lago v2 credit-notes patch-credit-note-metadata <credit_note_id> [flags]
 
 ### SEE ALSO
 
-* [lago v2 credit-notes](lago_v2_credit-notes)	 - Manage Lago credit notes
+* [lago v2 customers](lago_v2_customers)	 - Manage Lago customers

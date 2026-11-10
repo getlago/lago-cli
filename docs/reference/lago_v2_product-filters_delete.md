@@ -1,4 +1,4 @@
-## lago v2 product-filters destroy
+## lago v2 product-filters delete
 
 Delete filter
 
@@ -8,20 +8,20 @@ Soft-deletes the filter, its values, its scoped rate cards and their rates. Dele
 Requires the product catalog to be enabled and product write permission on the API key.
 
 ```
-lago v2 product-filters destroy <product_code> <code> [flags]
+lago v2 product-filters delete <product_code> <code> [flags]
 ```
 
 ### Examples
 
 ```
-  lago v2 product-filters destroy <product_code> <code>
-  lago v2 product-filters destroy <product_code> <code> --output json  # full resource
+  lago v2 product-filters delete <product_code> <code>
+  lago v2 product-filters delete <product_code> <code> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help   help for destroy
+  -h, --help   help for delete
 ```
 
 ### Options inherited from parent commands

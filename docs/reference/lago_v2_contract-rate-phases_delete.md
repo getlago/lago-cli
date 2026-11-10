@@ -1,27 +1,27 @@
-## lago v2 credit-notes delete-credit-note-metadata
+## lago v2 contract-rate-phases delete
 
-Delete all credit note metadata
+Delete rate phase
 
 ### Synopsis
 
-The credit note must be finalized. POST replaces all metadata; PUT and PATCH merge keys; DELETE clears all metadata. The response contains only the metadata object or null.
-Requires the product catalog to be enabled and credit_note write permission on the API key.
+Removes the phase and renumbers later positions. The final indefinite phase and the only remaining phase cannot be deleted.
+Requires the product catalog to be enabled and contract_rate_card write permission on the API key.
 
 ```
-lago v2 credit-notes delete-credit-note-metadata <credit_note_id> [flags]
+lago v2 contract-rate-phases delete <contract_external_id> <applied_rate_card_code> <code> [flags]
 ```
 
 ### Examples
 
 ```
-  lago v2 credit-notes delete-credit-note-metadata <credit_note_id>
-  lago v2 credit-notes delete-credit-note-metadata <credit_note_id> --output json  # full resource
+  lago v2 contract-rate-phases delete <contract_external_id> <applied_rate_card_code> <code>
+  lago v2 contract-rate-phases delete <contract_external_id> <applied_rate_card_code> <code> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help   help for delete-credit-note-metadata
+  -h, --help   help for delete
 ```
 
 ### Options inherited from parent commands
@@ -44,4 +44,4 @@ lago v2 credit-notes delete-credit-note-metadata <credit_note_id> [flags]
 
 ### SEE ALSO
 
-* [lago v2 credit-notes](lago_v2_credit-notes)	 - Manage Lago credit notes
+* [lago v2 contract-rate-phases](lago_v2_contract-rate-phases)	 - Manage Lago contract rate phases

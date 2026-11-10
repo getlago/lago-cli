@@ -30,7 +30,7 @@ Manage Lago rate card rates
 
 * [lago v2](lago_v2)	 - Lago API v2 (beta): product catalog, contracts and v2 resources
 * [lago v2 rate-card-rates create](lago_v2_rate-card-rates_create)	 - Create rate
-* [lago v2 rate-card-rates destroy](lago_v2_rate-card-rates_destroy)	 - Delete rate
+* [lago v2 rate-card-rates delete](lago_v2_rate-card-rates_delete)	 - Delete rate
 * [lago v2 rate-card-rates get](lago_v2_rate-card-rates_get)	 - Retrieve rate
 * [lago v2 rate-card-rates list](lago_v2_rate-card-rates_list)	 - List rate card rates
 * [lago v2 rate-card-rates patch](lago_v2_rate-card-rates_patch)	 - Update rate

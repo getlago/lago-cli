@@ -33,5 +33,5 @@ Manage Lago taxes
 * [lago v2 taxes delete](lago_v2_taxes_delete)	 - Delete a tax
 * [lago v2 taxes get](lago_v2_taxes_get)	 - Retrieve a tax
 * [lago v2 taxes list](lago_v2_taxes_list)	 - List all taxes
-* [lago v2 taxes patch-tax](lago_v2_taxes_patch-tax)	 - Partially update a tax
+* [lago v2 taxes patch](lago_v2_taxes_patch)	 - Partially update a tax
 * [lago v2 taxes update](lago_v2_taxes_update)	 - Update a tax

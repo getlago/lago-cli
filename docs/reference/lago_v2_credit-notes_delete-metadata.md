@@ -1,27 +1,27 @@
-## lago v2 contract-applied-rate-cards destroy
+## lago v2 credit-notes delete-metadata
 
-Delete applied rate card
+Delete all credit note metadata
 
 ### Synopsis
 
-Removes the rate card from a pending contract.
-Requires the product catalog to be enabled and contract_rate_card write permission on the API key.
+The credit note must be finalized. POST replaces all metadata; PUT and PATCH merge keys; DELETE clears all metadata. The response contains only the metadata object or null.
+Requires the product catalog to be enabled and credit_note write permission on the API key.
 
 ```
-lago v2 contract-applied-rate-cards destroy <contract_external_id> <code> [flags]
+lago v2 credit-notes delete-metadata <credit_note_id> [flags]
 ```
 
 ### Examples
 
 ```
-  lago v2 contract-applied-rate-cards destroy <contract_external_id> <code>
-  lago v2 contract-applied-rate-cards destroy <contract_external_id> <code> --output json  # full resource
+  lago v2 credit-notes delete-metadata <credit_note_id>
+  lago v2 credit-notes delete-metadata <credit_note_id> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help   help for destroy
+  -h, --help   help for delete-metadata
 ```
 
 ### Options inherited from parent commands
@@ -44,4 +44,4 @@ lago v2 contract-applied-rate-cards destroy <contract_external_id> <code> [flags
 
 ### SEE ALSO
 
-* [lago v2 contract-applied-rate-cards](lago_v2_contract-applied-rate-cards)	 - Manage Lago contract applied rate cards
+* [lago v2 credit-notes](lago_v2_credit-notes)	 - Manage Lago credit notes

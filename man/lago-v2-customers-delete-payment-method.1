@@ -2,21 +2,21 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-v2-rate-card-rates-destroy - Delete rate
+lago-v2-customers-delete-payment-method - Delete a customer payment method
 
 
 .SH SYNOPSIS
-\fBlago v2 rate-card-rates destroy   [flags]\fP
+\fBlago v2 customers delete-payment-method   [flags]\fP
 
 
 .SH DESCRIPTION
-Only pending rates can be deleted. Active and terminated rates remain for history.
-Requires the product catalog to be enabled and rate_card write permission on the API key.
+Deletes the payment method and returns it with deleted_at set.
+Requires the product catalog to be enabled and payment_method write permission on the API key.
 
 
 .SH OPTIONS
 \fB-h\fP, \fB--help\fP[=false]
-	help for destroy
+	help for delete-payment-method
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
@@ -74,10 +74,10 @@ Requires the product catalog to be enabled and rate_card write permission on the
 
 .SH EXAMPLE
 .EX
-  lago v2 rate-card-rates destroy <rate_card_code> <code>
-  lago v2 rate-card-rates destroy <rate_card_code> <code> --output json  # full resource
+  lago v2 customers delete-payment-method <customer_external_id> <lago_id>
+  lago v2 customers delete-payment-method <customer_external_id> <lago_id> --output json  # full resource
 .EE
 
 
 .SH SEE ALSO
-\fBlago-v2-rate-card-rates(1)\fP
+\fBlago-v2-customers(1)\fP

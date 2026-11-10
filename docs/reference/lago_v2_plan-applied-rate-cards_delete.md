@@ -1,27 +1,27 @@
-## lago v2 customers destroy-customer-payment-method
+## lago v2 plan-applied-rate-cards delete
 
-Delete a customer payment method
+Delete applied rate card
 
 ### Synopsis
 
-Deletes the payment method and returns it with deleted_at set.
-Requires the product catalog to be enabled and payment_method write permission on the API key.
+Removes the rate card from an editable plan.
+Requires the product catalog to be enabled and plan_rate_card write permission on the API key.
 
 ```
-lago v2 customers destroy-customer-payment-method <customer_external_id> <lago_id> [flags]
+lago v2 plan-applied-rate-cards delete <plan_code> <code> [flags]
 ```
 
 ### Examples
 
 ```
-  lago v2 customers destroy-customer-payment-method <customer_external_id> <lago_id>
-  lago v2 customers destroy-customer-payment-method <customer_external_id> <lago_id> --output json  # full resource
+  lago v2 plan-applied-rate-cards delete <plan_code> <code>
+  lago v2 plan-applied-rate-cards delete <plan_code> <code> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help   help for destroy-customer-payment-method
+  -h, --help   help for delete
 ```
 
 ### Options inherited from parent commands
@@ -44,4 +44,4 @@ lago v2 customers destroy-customer-payment-method <customer_external_id> <lago_i
 
 ### SEE ALSO
 
-* [lago v2 customers](lago_v2_customers)	 - Manage Lago customers
+* [lago v2 plan-applied-rate-cards](lago_v2_plan-applied-rate-cards)	 - Manage Lago plan applied rate cards

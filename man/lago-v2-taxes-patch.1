@@ -2,25 +2,44 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-v2-credit-notes-put-credit-note-metadata - Merge credit note metadata
+lago-v2-taxes-patch - Partially update a tax
 
 
 .SH SYNOPSIS
-\fBlago v2 credit-notes put-credit-note-metadata  [flags]\fP
+\fBlago v2 taxes patch  [flags]\fP
 
 
 .SH DESCRIPTION
-The credit note must be finalized. POST replaces all metadata; PUT and PATCH merge keys; DELETE clears all metadata. The response contains only the metadata object or null.
-Requires the product catalog to be enabled and credit_note write permission on the API key.
+Updates only the supplied fields of a non-deleted tax identified by its code.
+Requires the product catalog to be enabled and tax write permission on the API key.
+Behaves the same as PUT. The tax wrapper must be nonempty, and omitted fields keep their current values.
+The applied_to_organization parameter is ignored and existing assignments are not changed by this parameter.
+Taxes have no supported expansions; a nonempty expands[] returns 400 before updating the tax.
 
 
 .SH OPTIONS
+\fB--code\fP=""
+	Unique code of the tax within the organization, including deleted taxes. It cannot be blank.
+
+.PP
+\fB--description\fP=""
+	Internal description of the tax. Set to null to clear it.
+
+.PP
 \fB-h\fP, \fB--help\fP[=false]
-	help for put-credit-note-metadata
+	help for patch
 
 .PP
 \fB--input\fP=""
 	Complete JSON request body or @file.json
+
+.PP
+\fB--name\fP=""
+	Name of the tax. It cannot be blank.
+
+.PP
+\fB--rate\fP=""
+	Percentage rate of the tax. Accepts a number or a decimal string.
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
@@ -78,10 +97,10 @@ Requires the product catalog to be enabled and credit_note write permission on t
 
 .SH EXAMPLE
 .EX
-  lago v2 credit-notes put-credit-note-metadata <credit_note_id> --input @payload.json
-  lago v2 credit-notes put-credit-note-metadata <credit_note_id> --input @payload.json --output json  # full resource
+  lago v2 taxes patch <code> --input @payload.json
+  lago v2 taxes patch <code> --input @payload.json --output json  # full resource
 .EE
 
 
 .SH SEE ALSO
-\fBlago-v2-credit-notes(1)\fP
+\fBlago-v2-taxes(1)\fP

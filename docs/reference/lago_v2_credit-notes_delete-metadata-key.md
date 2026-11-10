@@ -1,27 +1,27 @@
-## lago v2 rate-card-rates destroy
+## lago v2 credit-notes delete-metadata-key
 
-Delete rate
+Delete one credit note metadata key
 
 ### Synopsis
 
-Only pending rates can be deleted. Active and terminated rates remain for history.
-Requires the product catalog to be enabled and rate_card write permission on the API key.
+Deletes one metadata key from a finalized credit note and returns the remaining metadata.
+Requires the product catalog to be enabled and credit_note write permission on the API key.
 
 ```
-lago v2 rate-card-rates destroy <rate_card_code> <code> [flags]
+lago v2 credit-notes delete-metadata-key <credit_note_id> <key> [flags]
 ```
 
 ### Examples
 
 ```
-  lago v2 rate-card-rates destroy <rate_card_code> <code>
-  lago v2 rate-card-rates destroy <rate_card_code> <code> --output json  # full resource
+  lago v2 credit-notes delete-metadata-key <credit_note_id> <key>
+  lago v2 credit-notes delete-metadata-key <credit_note_id> <key> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help   help for destroy
+  -h, --help   help for delete-metadata-key
 ```
 
 ### Options inherited from parent commands
@@ -44,4 +44,4 @@ lago v2 rate-card-rates destroy <rate_card_code> <code> [flags]
 
 ### SEE ALSO
 
-* [lago v2 rate-card-rates](lago_v2_rate-card-rates)	 - Manage Lago rate card rates
+* [lago v2 credit-notes](lago_v2_credit-notes)	 - Manage Lago credit notes

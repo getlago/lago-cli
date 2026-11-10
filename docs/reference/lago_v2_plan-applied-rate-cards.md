@@ -30,7 +30,7 @@ Manage Lago plan applied rate cards
 
 * [lago v2](lago_v2)	 - Lago API v2 (beta): product catalog, contracts and v2 resources
 * [lago v2 plan-applied-rate-cards create](lago_v2_plan-applied-rate-cards_create)	 - Create applied rate card
-* [lago v2 plan-applied-rate-cards destroy](lago_v2_plan-applied-rate-cards_destroy)	 - Delete applied rate card
+* [lago v2 plan-applied-rate-cards delete](lago_v2_plan-applied-rate-cards_delete)	 - Delete applied rate card
 * [lago v2 plan-applied-rate-cards get](lago_v2_plan-applied-rate-cards_get)	 - Retrieve applied rate card
 * [lago v2 plan-applied-rate-cards list](lago_v2_plan-applied-rate-cards_list)	 - List plan applied rate cards
 * [lago v2 plan-applied-rate-cards patch](lago_v2_plan-applied-rate-cards_patch)	 - Update applied rate card

@@ -1,4 +1,4 @@
-## lago v2 taxes patch-tax
+## lago v2 taxes patch
 
 Partially update a tax
 
@@ -11,14 +11,14 @@ The applied_to_organization parameter is ignored and existing assignments are no
 Taxes have no supported expansions; a nonempty expands[] returns 400 before updating the tax.
 
 ```
-lago v2 taxes patch-tax <code> [flags]
+lago v2 taxes patch <code> [flags]
 ```
 
 ### Examples
 
 ```
-  lago v2 taxes patch-tax <code> --input @payload.json
-  lago v2 taxes patch-tax <code> --input @payload.json --output json  # full resource
+  lago v2 taxes patch <code> --input @payload.json
+  lago v2 taxes patch <code> --input @payload.json --output json  # full resource
 ```
 
 ### Options
@@ -26,7 +26,7 @@ lago v2 taxes patch-tax <code> [flags]
 ```
       --code string          Unique code of the tax within the organization, including deleted taxes. It cannot be blank.
       --description string   Internal description of the tax. Set to null to clear it.
-  -h, --help                 help for patch-tax
+  -h, --help                 help for patch
       --input string         Complete JSON request body or @file.json
       --name string          Name of the tax. It cannot be blank.
       --rate string          Percentage rate of the tax. Accepts a number or a decimal string.

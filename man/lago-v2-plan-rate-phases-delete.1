@@ -2,21 +2,21 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-v2-customers-set-as-default - Set the default customer payment method
+lago-v2-plan-rate-phases-delete - Delete rate phase
 
 
 .SH SYNOPSIS
-\fBlago v2 customers set-as-default   [flags]\fP
+\fBlago v2 plan-rate-phases delete    [flags]\fP
 
 
 .SH DESCRIPTION
-Sets this payment method as the customer default. No request body is required.
-Requires the product catalog to be enabled and payment_method write permission on the API key.
+Removes the phase and renumbers later positions. The final indefinite phase and the only remaining phase cannot be deleted.
+Requires the product catalog to be enabled and plan_rate_card write permission on the API key.
 
 
 .SH OPTIONS
 \fB-h\fP, \fB--help\fP[=false]
-	help for set-as-default
+	help for delete
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
@@ -74,10 +74,10 @@ Requires the product catalog to be enabled and payment_method write permission o
 
 .SH EXAMPLE
 .EX
-  lago v2 customers set-as-default <customer_external_id> <lago_id>
-  lago v2 customers set-as-default <customer_external_id> <lago_id> --output json  # full resource
+  lago v2 plan-rate-phases delete <plan_code> <applied_rate_card_code> <code>
+  lago v2 plan-rate-phases delete <plan_code> <applied_rate_card_code> <code> --output json  # full resource
 .EE
 
 
 .SH SEE ALSO
-\fBlago-v2-customers(1)\fP
+\fBlago-v2-plan-rate-phases(1)\fP

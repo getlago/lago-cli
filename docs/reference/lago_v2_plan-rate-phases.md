@@ -30,7 +30,7 @@ Manage Lago plan rate phases
 
 * [lago v2](lago_v2)	 - Lago API v2 (beta): product catalog, contracts and v2 resources
 * [lago v2 plan-rate-phases create](lago_v2_plan-rate-phases_create)	 - Create rate phase
-* [lago v2 plan-rate-phases destroy](lago_v2_plan-rate-phases_destroy)	 - Delete rate phase
+* [lago v2 plan-rate-phases delete](lago_v2_plan-rate-phases_delete)	 - Delete rate phase
 * [lago v2 plan-rate-phases list](lago_v2_plan-rate-phases_list)	 - List plan rate phases
 * [lago v2 plan-rate-phases patch](lago_v2_plan-rate-phases_patch)	 - Update rate phase
 * [lago v2 plan-rate-phases update](lago_v2_plan-rate-phases_update)	 - Update rate phase

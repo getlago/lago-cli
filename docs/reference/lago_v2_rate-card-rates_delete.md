@@ -1,28 +1,27 @@
-## lago v2 credit-notes metadata
+## lago v2 rate-card-rates delete
 
-Replace credit note metadata
+Delete rate
 
 ### Synopsis
 
-The credit note must be finalized. POST replaces all metadata; PUT and PATCH merge keys; DELETE clears all metadata. The response contains only the metadata object or null.
-Requires the product catalog to be enabled and credit_note write permission on the API key.
+Only pending rates can be deleted. Active and terminated rates remain for history.
+Requires the product catalog to be enabled and rate_card write permission on the API key.
 
 ```
-lago v2 credit-notes metadata <credit_note_id> [flags]
+lago v2 rate-card-rates delete <rate_card_code> <code> [flags]
 ```
 
 ### Examples
 
 ```
-  lago v2 credit-notes metadata <credit_note_id> --input @payload.json
-  lago v2 credit-notes metadata <credit_note_id> --input @payload.json --output json  # full resource
+  lago v2 rate-card-rates delete <rate_card_code> <code>
+  lago v2 rate-card-rates delete <rate_card_code> <code> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help           help for metadata
-      --input string   Complete JSON request body or @file.json
+  -h, --help   help for delete
 ```
 
 ### Options inherited from parent commands
@@ -45,4 +44,4 @@ lago v2 credit-notes metadata <credit_note_id> [flags]
 
 ### SEE ALSO
 
-* [lago v2 credit-notes](lago_v2_credit-notes)	 - Manage Lago credit notes
+* [lago v2 rate-card-rates](lago_v2_rate-card-rates)	 - Manage Lago rate card rates

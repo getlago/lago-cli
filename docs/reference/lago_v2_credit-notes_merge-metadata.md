@@ -1,27 +1,28 @@
-## lago v2 plan-applied-rate-cards destroy
+## lago v2 credit-notes merge-metadata
 
-Delete applied rate card
+Merge credit note metadata
 
 ### Synopsis
 
-Removes the rate card from an editable plan.
-Requires the product catalog to be enabled and plan_rate_card write permission on the API key.
+The credit note must be finalized. POST replaces all metadata; PUT and PATCH merge keys; DELETE clears all metadata. The response contains only the metadata object or null.
+Requires the product catalog to be enabled and credit_note write permission on the API key.
 
 ```
-lago v2 plan-applied-rate-cards destroy <plan_code> <code> [flags]
+lago v2 credit-notes merge-metadata <credit_note_id> [flags]
 ```
 
 ### Examples
 
 ```
-  lago v2 plan-applied-rate-cards destroy <plan_code> <code>
-  lago v2 plan-applied-rate-cards destroy <plan_code> <code> --output json  # full resource
+  lago v2 credit-notes merge-metadata <credit_note_id> --input @payload.json
+  lago v2 credit-notes merge-metadata <credit_note_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help   help for destroy
+  -h, --help           help for merge-metadata
+      --input string   Complete JSON request body or @file.json
 ```
 
 ### Options inherited from parent commands
@@ -44,4 +45,4 @@ lago v2 plan-applied-rate-cards destroy <plan_code> <code> [flags]
 
 ### SEE ALSO
 
-* [lago v2 plan-applied-rate-cards](lago_v2_plan-applied-rate-cards)	 - Manage Lago plan applied rate cards
+* [lago v2 credit-notes](lago_v2_credit-notes)	 - Manage Lago credit notes

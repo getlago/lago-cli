@@ -1,27 +1,27 @@
-## lago v2 customers set-as-default
+## lago v2 customers delete-payment-method
 
-Set the default customer payment method
+Delete a customer payment method
 
 ### Synopsis
 
-Sets this payment method as the customer default. No request body is required.
+Deletes the payment method and returns it with deleted_at set.
 Requires the product catalog to be enabled and payment_method write permission on the API key.
 
 ```
-lago v2 customers set-as-default <customer_external_id> <lago_id> [flags]
+lago v2 customers delete-payment-method <customer_external_id> <lago_id> [flags]
 ```
 
 ### Examples
 
 ```
-  lago v2 customers set-as-default <customer_external_id> <lago_id>
-  lago v2 customers set-as-default <customer_external_id> <lago_id> --output json  # full resource
+  lago v2 customers delete-payment-method <customer_external_id> <lago_id>
+  lago v2 customers delete-payment-method <customer_external_id> <lago_id> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help   help for set-as-default
+  -h, --help   help for delete-payment-method
 ```
 
 ### Options inherited from parent commands

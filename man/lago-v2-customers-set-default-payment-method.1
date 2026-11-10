@@ -2,25 +2,21 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-v2-credit-notes-patch-credit-note-metadata - Merge credit note metadata
+lago-v2-customers-set-default-payment-method - Set the default customer payment method
 
 
 .SH SYNOPSIS
-\fBlago v2 credit-notes patch-credit-note-metadata  [flags]\fP
+\fBlago v2 customers set-default-payment-method   [flags]\fP
 
 
 .SH DESCRIPTION
-The credit note must be finalized. POST replaces all metadata; PUT and PATCH merge keys; DELETE clears all metadata. The response contains only the metadata object or null.
-Requires the product catalog to be enabled and credit_note write permission on the API key.
+Sets this payment method as the customer default. No request body is required.
+Requires the product catalog to be enabled and payment_method write permission on the API key.
 
 
 .SH OPTIONS
 \fB-h\fP, \fB--help\fP[=false]
-	help for patch-credit-note-metadata
-
-.PP
-\fB--input\fP=""
-	Complete JSON request body or @file.json
+	help for set-default-payment-method
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
@@ -78,10 +74,10 @@ Requires the product catalog to be enabled and credit_note write permission on t
 
 .SH EXAMPLE
 .EX
-  lago v2 credit-notes patch-credit-note-metadata <credit_note_id> --input @payload.json
-  lago v2 credit-notes patch-credit-note-metadata <credit_note_id> --input @payload.json --output json  # full resource
+  lago v2 customers set-default-payment-method <customer_external_id> <lago_id>
+  lago v2 customers set-default-payment-method <customer_external_id> <lago_id> --output json  # full resource
 .EE
 
 
 .SH SEE ALSO
-\fBlago-v2-credit-notes(1)\fP
+\fBlago-v2-customers(1)\fP

@@ -2,11 +2,11 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-v2-contract-applied-rate-cards-destroy - Delete applied rate card
+lago-v2-contract-applied-rate-cards-delete - Delete applied rate card
 
 
 .SH SYNOPSIS
-\fBlago v2 contract-applied-rate-cards destroy   [flags]\fP
+\fBlago v2 contract-applied-rate-cards delete   [flags]\fP
 
 
 .SH DESCRIPTION
@@ -16,7 +16,7 @@ Requires the product catalog to be enabled and contract_rate_card write permissi
 
 .SH OPTIONS
 \fB-h\fP, \fB--help\fP[=false]
-	help for destroy
+	help for delete
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
@@ -74,8 +74,8 @@ Requires the product catalog to be enabled and contract_rate_card write permissi
 
 .SH EXAMPLE
 .EX
-  lago v2 contract-applied-rate-cards destroy <contract_external_id> <code>
-  lago v2 contract-applied-rate-cards destroy <contract_external_id> <code> --output json  # full resource
+  lago v2 contract-applied-rate-cards delete <contract_external_id> <code>
+  lago v2 contract-applied-rate-cards delete <contract_external_id> <code> --output json  # full resource
 .EE
 
 

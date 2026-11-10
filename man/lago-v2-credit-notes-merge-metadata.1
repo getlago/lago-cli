@@ -2,21 +2,25 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-v2-credit-notes-delete-credit-note-metadata-key - Delete one credit note metadata key
+lago-v2-credit-notes-merge-metadata - Merge credit note metadata
 
 
 .SH SYNOPSIS
-\fBlago v2 credit-notes delete-credit-note-metadata-key   [flags]\fP
+\fBlago v2 credit-notes merge-metadata  [flags]\fP
 
 
 .SH DESCRIPTION
-Deletes one metadata key from a finalized credit note and returns the remaining metadata.
+The credit note must be finalized. POST replaces all metadata; PUT and PATCH merge keys; DELETE clears all metadata. The response contains only the metadata object or null.
 Requires the product catalog to be enabled and credit_note write permission on the API key.
 
 
 .SH OPTIONS
 \fB-h\fP, \fB--help\fP[=false]
-	help for delete-credit-note-metadata-key
+	help for merge-metadata
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
@@ -74,8 +78,8 @@ Requires the product catalog to be enabled and credit_note write permission on t
 
 .SH EXAMPLE
 .EX
-  lago v2 credit-notes delete-credit-note-metadata-key <credit_note_id> <key>
-  lago v2 credit-notes delete-credit-note-metadata-key <credit_note_id> <key> --output json  # full resource
+  lago v2 credit-notes merge-metadata <credit_note_id> --input @payload.json
+  lago v2 credit-notes merge-metadata <credit_note_id> --input @payload.json --output json  # full resource
 .EE
 
 

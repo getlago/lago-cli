@@ -1,4 +1,4 @@
-## lago v2 plan-rate-phases destroy
+## lago v2 plan-rate-phases delete
 
 Delete rate phase
 
@@ -8,20 +8,20 @@ Removes the phase and renumbers later positions. The final indefinite phase and 
 Requires the product catalog to be enabled and plan_rate_card write permission on the API key.
 
 ```
-lago v2 plan-rate-phases destroy <plan_code> <applied_rate_card_code> <code> [flags]
+lago v2 plan-rate-phases delete <plan_code> <applied_rate_card_code> <code> [flags]
 ```
 
 ### Examples
 
 ```
-  lago v2 plan-rate-phases destroy <plan_code> <applied_rate_card_code> <code>
-  lago v2 plan-rate-phases destroy <plan_code> <applied_rate_card_code> <code> --output json  # full resource
+  lago v2 plan-rate-phases delete <plan_code> <applied_rate_card_code> <code>
+  lago v2 plan-rate-phases delete <plan_code> <applied_rate_card_code> <code> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help   help for destroy
+  -h, --help   help for delete
 ```
 
 ### Options inherited from parent commands

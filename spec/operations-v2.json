@@ -2478,7 +2478,7 @@
     },
     {
       "resource": "contract-applied-rate-cards",
-      "action": "destroy",
+      "action": "delete",
       "operation_id": "destroyContractAppliedRateCard",
       "method": "DELETE",
       "path": "/contracts/{contract_external_id}/applied_rate_cards/{code}",
@@ -2823,7 +2823,7 @@
     },
     {
       "resource": "contract-rate-phases",
-      "action": "destroy",
+      "action": "delete",
       "operation_id": "destroyContractRatePhase",
       "method": "DELETE",
       "path": "/contracts/{contract_external_id}/applied_rate_cards/{applied_rate_card_code}/rate_phases/{code}",
@@ -3896,7 +3896,7 @@
     },
     {
       "resource": "credit-notes",
-      "action": "delete-credit-note-metadata",
+      "action": "delete-metadata",
       "operation_id": "deleteCreditNoteMetadata",
       "method": "DELETE",
       "path": "/credit_notes/{credit_note_id}/metadata",
@@ -3920,7 +3920,7 @@
     },
     {
       "resource": "credit-notes",
-      "action": "delete-credit-note-metadata-key",
+      "action": "delete-metadata-key",
       "operation_id": "deleteCreditNoteMetadataKey",
       "method": "DELETE",
       "path": "/credit_notes/{credit_note_id}/metadata/{key}",
@@ -4259,11 +4259,11 @@
     },
     {
       "resource": "credit-notes",
-      "action": "metadata",
-      "operation_id": "postCreditNoteMetadata",
-      "method": "POST",
+      "action": "merge-metadata",
+      "operation_id": "putCreditNoteMetadata",
+      "method": "PUT",
       "path": "/credit_notes/{credit_note_id}/metadata",
-      "summary": "Replace credit note metadata",
+      "summary": "Merge credit note metadata",
       "description": "The credit note must be finalized. POST replaces all metadata; PUT and PATCH merge keys; DELETE clears all metadata. The response contains only the metadata object or null.\nRequires the product catalog to be enabled and credit_note write permission on the API key.",
       "parameters": [
         {
@@ -4345,7 +4345,7 @@
     },
     {
       "resource": "credit-notes",
-      "action": "patch-credit-note-metadata",
+      "action": "patch-metadata",
       "operation_id": "patchCreditNoteMetadata",
       "method": "PATCH",
       "path": "/credit_notes/{credit_note_id}/metadata",
@@ -4373,11 +4373,11 @@
     },
     {
       "resource": "credit-notes",
-      "action": "put-credit-note-metadata",
-      "operation_id": "putCreditNoteMetadata",
-      "method": "PUT",
+      "action": "replace-metadata",
+      "operation_id": "postCreditNoteMetadata",
+      "method": "POST",
       "path": "/credit_notes/{credit_note_id}/metadata",
-      "summary": "Merge credit note metadata",
+      "summary": "Replace credit note metadata",
       "description": "The credit note must be finalized. POST replaces all metadata; PUT and PATCH merge keys; DELETE clears all metadata. The response contains only the metadata object or null.\nRequires the product catalog to be enabled and credit_note write permission on the API key.",
       "parameters": [
         {
@@ -5312,7 +5312,7 @@
     },
     {
       "resource": "customers",
-      "action": "destroy-customer-payment-method",
+      "action": "delete-payment-method",
       "operation_id": "destroyCustomerPaymentMethod",
       "method": "DELETE",
       "path": "/customers/{customer_external_id}/payment_methods/{lago_id}",
@@ -6503,7 +6503,7 @@
     },
     {
       "resource": "customers",
-      "action": "set-as-default",
+      "action": "set-default-payment-method",
       "operation_id": "setDefaultCustomerPaymentMethod",
       "method": "PUT",
       "path": "/customers/{customer_external_id}/payment_methods/{lago_id}/set_as_default",
@@ -8938,7 +8938,7 @@
     },
     {
       "resource": "plan-applied-rate-cards",
-      "action": "destroy",
+      "action": "delete",
       "operation_id": "destroyPlanAppliedRateCard",
       "method": "DELETE",
       "path": "/plans/{plan_code}/applied_rate_cards/{code}",
@@ -9263,7 +9263,7 @@
     },
     {
       "resource": "plan-rate-phases",
-      "action": "destroy",
+      "action": "delete",
       "operation_id": "destroyPlanRatePhase",
       "method": "DELETE",
       "path": "/plans/{plan_code}/applied_rate_cards/{applied_rate_card_code}/rate_phases/{code}",
@@ -9940,7 +9940,7 @@
     },
     {
       "resource": "product-filters",
-      "action": "destroy",
+      "action": "delete",
       "operation_id": "destroyProductFilter",
       "method": "DELETE",
       "path": "/products/{product_code}/filters/{code}",
@@ -10812,7 +10812,7 @@
     },
     {
       "resource": "rate-card-rates",
-      "action": "destroy",
+      "action": "delete",
       "operation_id": "destroyRateCardRate",
       "method": "DELETE",
       "path": "/rate_cards/{rate_card_code}/rates/{code}",
@@ -12078,7 +12078,7 @@
     },
     {
       "resource": "taxes",
-      "action": "patch-tax",
+      "action": "patch",
       "operation_id": "patchTax",
       "method": "PATCH",
       "path": "/taxes/{code}",
@@ -12550,6 +12550,6 @@
       "api_version": "v2"
     }
   ],
-  "spec_sha256": "061bc0db9258d640739cce0024ecad80dc0773509bfcfe55972c6a1e5742c6e4",
+  "spec_sha256": "a863ec9655bf690a94e3edabb520fd3d0a3bcf1b44108ab0dc2b5d72c4ba9d7b",
   "spec_version": "2.0.0-beta"
 }

@@ -170,6 +170,20 @@ func TestV2OperationTable(t *testing.T) {
 	if cursor == 0 {
 		t.Error("no v2 list was detected as cursor-paginated")
 	}
+	// lago-openapi names these through x-lago-cli-action: every v2 delete reads
+	// `delete`, nested or not, and no action repeats its resource's operation ID.
+	actions := map[string]bool{}
+	for _, operation := range generated.OperationsV2 {
+		actions[operation.Resource+" "+operation.Action] = true
+		if strings.HasPrefix(operation.Action, "destroy") {
+			t.Errorf("v2 command %s %s is named destroy; v2 deletes read delete", operation.Resource, operation.Action)
+		}
+	}
+	for _, want := range []string{"product-filters delete", "rate-card-rates delete", "taxes patch", "credit-notes replace-metadata", "credit-notes merge-metadata", "customers delete-payment-method", "customers set-default-payment-method"} {
+		if !actions[want] {
+			t.Errorf("v2 command %q is missing", want)
+		}
+	}
 	for _, operation := range generated.Operations {
 		if operation.APIVersion != "" || operation.CursorPaginated {
 			t.Errorf("v1 operation %s carries v2 metadata", operation.OperationID)

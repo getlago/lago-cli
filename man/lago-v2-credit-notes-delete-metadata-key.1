@@ -2,21 +2,21 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-v2-customers-destroy-customer-payment-method - Delete a customer payment method
+lago-v2-credit-notes-delete-metadata-key - Delete one credit note metadata key
 
 
 .SH SYNOPSIS
-\fBlago v2 customers destroy-customer-payment-method   [flags]\fP
+\fBlago v2 credit-notes delete-metadata-key   [flags]\fP
 
 
 .SH DESCRIPTION
-Deletes the payment method and returns it with deleted_at set.
-Requires the product catalog to be enabled and payment_method write permission on the API key.
+Deletes one metadata key from a finalized credit note and returns the remaining metadata.
+Requires the product catalog to be enabled and credit_note write permission on the API key.
 
 
 .SH OPTIONS
 \fB-h\fP, \fB--help\fP[=false]
-	help for destroy-customer-payment-method
+	help for delete-metadata-key
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
@@ -74,10 +74,10 @@ Requires the product catalog to be enabled and payment_method write permission o
 
 .SH EXAMPLE
 .EX
-  lago v2 customers destroy-customer-payment-method <customer_external_id> <lago_id>
-  lago v2 customers destroy-customer-payment-method <customer_external_id> <lago_id> --output json  # full resource
+  lago v2 credit-notes delete-metadata-key <credit_note_id> <key>
+  lago v2 credit-notes delete-metadata-key <credit_note_id> <key> --output json  # full resource
 .EE
 
 
 .SH SEE ALSO
-\fBlago-v2-customers(1)\fP
+\fBlago-v2-credit-notes(1)\fP

@@ -30,7 +30,7 @@ Manage Lago product filters
 
 * [lago v2](lago_v2)	 - Lago API v2 (beta): product catalog, contracts and v2 resources
 * [lago v2 product-filters create](lago_v2_product-filters_create)	 - Create filter
-* [lago v2 product-filters destroy](lago_v2_product-filters_destroy)	 - Delete filter
+* [lago v2 product-filters delete](lago_v2_product-filters_delete)	 - Delete filter
 * [lago v2 product-filters get](lago_v2_product-filters_get)	 - Retrieve filter
 * [lago v2 product-filters list](lago_v2_product-filters_list)	 - List product filters
 * [lago v2 product-filters patch](lago_v2_product-filters_patch)	 - Update filter

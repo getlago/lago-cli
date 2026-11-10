@@ -1,6 +1,6 @@
-## lago v2 credit-notes put-credit-note-metadata
+## lago v2 credit-notes replace-metadata
 
-Merge credit note metadata
+Replace credit note metadata
 
 ### Synopsis
 
@@ -8,20 +8,20 @@ The credit note must be finalized. POST replaces all metadata; PUT and PATCH mer
 Requires the product catalog to be enabled and credit_note write permission on the API key.
 
 ```
-lago v2 credit-notes put-credit-note-metadata <credit_note_id> [flags]
+lago v2 credit-notes replace-metadata <credit_note_id> [flags]
 ```
 
 ### Examples
 
 ```
-  lago v2 credit-notes put-credit-note-metadata <credit_note_id> --input @payload.json
-  lago v2 credit-notes put-credit-note-metadata <credit_note_id> --input @payload.json --output json  # full resource
+  lago v2 credit-notes replace-metadata <credit_note_id> --input @payload.json
+  lago v2 credit-notes replace-metadata <credit_note_id> --input @payload.json --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help           help for put-credit-note-metadata
+  -h, --help           help for replace-metadata
       --input string   Complete JSON request body or @file.json
 ```
 

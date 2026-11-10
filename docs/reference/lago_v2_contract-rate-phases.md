@@ -30,7 +30,7 @@ Manage Lago contract rate phases
 
 * [lago v2](lago_v2)	 - Lago API v2 (beta): product catalog, contracts and v2 resources
 * [lago v2 contract-rate-phases create](lago_v2_contract-rate-phases_create)	 - Create rate phase
-* [lago v2 contract-rate-phases destroy](lago_v2_contract-rate-phases_destroy)	 - Delete rate phase
+* [lago v2 contract-rate-phases delete](lago_v2_contract-rate-phases_delete)	 - Delete rate phase
 * [lago v2 contract-rate-phases list](lago_v2_contract-rate-phases_list)	 - List contract rate phases
 * [lago v2 contract-rate-phases patch](lago_v2_contract-rate-phases_patch)	 - Update rate phase
 * [lago v2 contract-rate-phases update](lago_v2_contract-rate-phases_update)	 - Update rate phase

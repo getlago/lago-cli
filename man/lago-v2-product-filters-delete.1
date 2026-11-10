@@ -2,21 +2,21 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-v2-credit-notes-delete-credit-note-metadata - Delete all credit note metadata
+lago-v2-product-filters-delete - Delete filter
 
 
 .SH SYNOPSIS
-\fBlago v2 credit-notes delete-credit-note-metadata  [flags]\fP
+\fBlago v2 product-filters delete   [flags]\fP
 
 
 .SH DESCRIPTION
-The credit note must be finalized. POST replaces all metadata; PUT and PATCH merge keys; DELETE clears all metadata. The response contains only the metadata object or null.
-Requires the product catalog to be enabled and credit_note write permission on the API key.
+Soft-deletes the filter, its values, its scoped rate cards and their rates. Deletion is rejected while the product is used by a plan or contract.
+Requires the product catalog to be enabled and product write permission on the API key.
 
 
 .SH OPTIONS
 \fB-h\fP, \fB--help\fP[=false]
-	help for delete-credit-note-metadata
+	help for delete
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
@@ -74,10 +74,10 @@ Requires the product catalog to be enabled and credit_note write permission on t
 
 .SH EXAMPLE
 .EX
-  lago v2 credit-notes delete-credit-note-metadata <credit_note_id>
-  lago v2 credit-notes delete-credit-note-metadata <credit_note_id> --output json  # full resource
+  lago v2 product-filters delete <product_code> <code>
+  lago v2 product-filters delete <product_code> <code> --output json  # full resource
 .EE
 
 
 .SH SEE ALSO
-\fBlago-v2-credit-notes(1)\fP
+\fBlago-v2-product-filters(1)\fP

@@ -2,21 +2,21 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-v2-product-filters-destroy - Delete filter
+lago-v2-contract-rate-phases-delete - Delete rate phase
 
 
 .SH SYNOPSIS
-\fBlago v2 product-filters destroy   [flags]\fP
+\fBlago v2 contract-rate-phases delete    [flags]\fP
 
 
 .SH DESCRIPTION
-Soft-deletes the filter, its values, its scoped rate cards and their rates. Deletion is rejected while the product is used by a plan or contract.
-Requires the product catalog to be enabled and product write permission on the API key.
+Removes the phase and renumbers later positions. The final indefinite phase and the only remaining phase cannot be deleted.
+Requires the product catalog to be enabled and contract_rate_card write permission on the API key.
 
 
 .SH OPTIONS
 \fB-h\fP, \fB--help\fP[=false]
-	help for destroy
+	help for delete
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
@@ -74,10 +74,10 @@ Requires the product catalog to be enabled and product write permission on the A
 
 .SH EXAMPLE
 .EX
-  lago v2 product-filters destroy <product_code> <code>
-  lago v2 product-filters destroy <product_code> <code> --output json  # full resource
+  lago v2 contract-rate-phases delete <contract_external_id> <applied_rate_card_code> <code>
+  lago v2 contract-rate-phases delete <contract_external_id> <applied_rate_card_code> <code> --output json  # full resource
 .EE
 
 
 .SH SEE ALSO
-\fBlago-v2-product-filters(1)\fP
+\fBlago-v2-contract-rate-phases(1)\fP

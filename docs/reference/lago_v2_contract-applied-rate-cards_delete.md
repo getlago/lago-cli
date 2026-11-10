@@ -1,27 +1,27 @@
-## lago v2 credit-notes delete-credit-note-metadata-key
+## lago v2 contract-applied-rate-cards delete
 
-Delete one credit note metadata key
+Delete applied rate card
 
 ### Synopsis
 
-Deletes one metadata key from a finalized credit note and returns the remaining metadata.
-Requires the product catalog to be enabled and credit_note write permission on the API key.
+Removes the rate card from a pending contract.
+Requires the product catalog to be enabled and contract_rate_card write permission on the API key.
 
 ```
-lago v2 credit-notes delete-credit-note-metadata-key <credit_note_id> <key> [flags]
+lago v2 contract-applied-rate-cards delete <contract_external_id> <code> [flags]
 ```
 
 ### Examples
 
 ```
-  lago v2 credit-notes delete-credit-note-metadata-key <credit_note_id> <key>
-  lago v2 credit-notes delete-credit-note-metadata-key <credit_note_id> <key> --output json  # full resource
+  lago v2 contract-applied-rate-cards delete <contract_external_id> <code>
+  lago v2 contract-applied-rate-cards delete <contract_external_id> <code> --output json  # full resource
 ```
 
 ### Options
 
 ```
-  -h, --help   help for delete-credit-note-metadata-key
+  -h, --help   help for delete
 ```
 
 ### Options inherited from parent commands
@@ -44,4 +44,4 @@ lago v2 credit-notes delete-credit-note-metadata-key <credit_note_id> <key> [fla
 
 ### SEE ALSO
 
-* [lago v2 credit-notes](lago_v2_credit-notes)	 - Manage Lago credit notes
+* [lago v2 contract-applied-rate-cards](lago_v2_contract-applied-rate-cards)	 - Manage Lago contract applied rate cards

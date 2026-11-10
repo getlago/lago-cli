@@ -2,21 +2,21 @@
 .TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
 
 .SH NAME
-lago-v2-plan-applied-rate-cards-destroy - Delete applied rate card
+lago-v2-credit-notes-delete-metadata - Delete all credit note metadata
 
 
 .SH SYNOPSIS
-\fBlago v2 plan-applied-rate-cards destroy   [flags]\fP
+\fBlago v2 credit-notes delete-metadata  [flags]\fP
 
 
 .SH DESCRIPTION
-Removes the rate card from an editable plan.
-Requires the product catalog to be enabled and plan_rate_card write permission on the API key.
+The credit note must be finalized. POST replaces all metadata; PUT and PATCH merge keys; DELETE clears all metadata. The response contains only the metadata object or null.
+Requires the product catalog to be enabled and credit_note write permission on the API key.
 
 
 .SH OPTIONS
 \fB-h\fP, \fB--help\fP[=false]
-	help for destroy
+	help for delete-metadata
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS
@@ -74,10 +74,10 @@ Requires the product catalog to be enabled and plan_rate_card write permission o
 
 .SH EXAMPLE
 .EX
-  lago v2 plan-applied-rate-cards destroy <plan_code> <code>
-  lago v2 plan-applied-rate-cards destroy <plan_code> <code> --output json  # full resource
+  lago v2 credit-notes delete-metadata <credit_note_id>
+  lago v2 credit-notes delete-metadata <credit_note_id> --output json  # full resource
 .EE
 
 
 .SH SEE ALSO
-\fBlago-v2-plan-applied-rate-cards(1)\fP
+\fBlago-v2-credit-notes(1)\fP
