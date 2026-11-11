@@ -10,6 +10,18 @@ Lago publishes API v2 as a separate OpenAPI document (`openapi-v2.yaml`, version
 
 Both documents follow the same rules: one pinned snapshot each, the same generator, `x-lago-cli-action` as the only naming escape hatch, and the same danger and retry classification. `lago api` routes a path starting with `/api/v2` to v2 and classifies it against the v2 table. If v2 becomes the default API, promoting its commands to the top level is a separate breaking change.
 
+## 2026-11-11 — `lago v2 apply`: catalog as code, pruning from a state file
+
+`lago v2 apply DIR` reconciles the v2 product catalog with a folder of YAML files. It covers what a catalog needs to be reviewed in git: billable metrics, product categories, products, rate cards with their rates, and plans with their applied rate cards. Everything is matched by code, which every one of these objects already has.
+
+**The field lists come from the lago-api controllers, not the OpenAPI document.** The v2 document leaves `description` out of the update bodies of products, product categories, rate cards and plans, but the controllers accept it. apply keeps a hand-written create and update field list per kind. A declared field outside the create list is a usage error, so a typo is not silently dropped by strong parameters. A difference on a field outside the update list is refused before any write: the object has to be replaced under a new code. The document should be fixed upstream; until then this table is the one place to update.
+
+**Comparison is semantic.** The API returns decimals as strings and timestamps with microseconds (`"0.70"`, `2026-11-11T00:00:00.000000Z`). Compared as text, every run would update rates that did not change, and an update to an active rate's `effective_from` is refused, so apply would fail on its second run. Decimals compare as exact rationals, timestamps as instants, and maps as subsets, because the API adds defaulted keys. A declared field the API does not return, such as `tax_codes`, is sent on create and never compared. YAML numbers keep their literal text and are sent as written, never through a float64.
+
+**Deleting needs to know what the folder owns.** Catalog objects carry no metadata or label, and an organization is often shared: a dev org already holds other people's products and plans. Deleting everything undeclared would delete them. apply therefore records the objects it created or adopted in `DIR/.lago-state/<organization id>.json`, and `--prune` only deletes managed objects the files dropped. The state is keyed by organization so one folder can be applied to several environments, and a state for another organization is refused. Children are owned by their parent: a declared plan's applied rate cards and a declared rate card's pending rates match the files exactly under `--prune`. Active and terminated rates are history and the API refuses to delete them, so apply never tries. Deletes go in reverse dependency order, ask for confirmation like every other destructive command, and do nothing without `--prune`. Plans have no DELETE route in v2: a dropped plan is released from the state and reported.
+
+**Writes are not retried.** lago-api reads no idempotency key, as for every other catalog write, so a failed write stops the run and the state records what went through. A rerun shows the done work as unchanged.
+
 ## 2026-08-31 — Backend-independent 1.0 gate
 
 The 1.0 GA gate is install, init, full API parity, golden billing flow, safety, and all harnesses. Browser device login, webhook listen/trigger, activity-log tailing, and dashboard deep links require server contracts and ship through the 1.1 beta channel as those contracts land. Capability probes must return actionable unsupported-version errors.

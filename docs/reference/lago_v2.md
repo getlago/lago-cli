@@ -49,6 +49,7 @@ lago v2 [flags]
 * [lago](lago)	 - The official CLI for Lago billing
 * [lago v2 activity-logs](lago_v2_activity-logs)	 - Manage Lago activity logs
 * [lago v2 api-logs](lago_v2_api-logs)	 - Manage Lago api logs
+* [lago v2 apply](lago_v2_apply)	 - Reconcile the product catalog with a folder of YAML files
 * [lago v2 billable-metrics](lago_v2_billable-metrics)	 - Manage Lago billable metrics
 * [lago v2 billing-entities](lago_v2_billing-entities)	 - Manage Lago billing entities
 * [lago v2 catalog-plans](lago_v2_catalog-plans)	 - Manage Lago catalog plans

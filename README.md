@@ -359,6 +359,48 @@ $ lago api GET /api/v2/products?limit=5
 
 v2 lists use cursor pagination. `--limit` sets the page size (up to 100). `--after` takes the previous response's `meta.next_cursor`, and `--all` follows the cursors until the last page. v2 errors carry a code and field details instead of a message. The CLI prints them as `field: code`, the same way it prints v1 validation errors.
 
+#### Catalog as code: `lago v2 apply`
+
+`lago v2 apply DIR` makes the organization's product catalog match a folder of YAML files, so the catalog can live in git and be reviewed like code. A file is a map whose keys are among `billable_metrics`, `product_categories`, `products`, `rate_cards` (with their `rates`) and `plans` (with their `applied_rate_cards`). Each object takes the fields of its v2 create request and is matched by `code`. Files can be split and nested however you like; every `.yml` and `.yaml` file under `DIR` is read.
+
+```yaml
+rate_cards:
+  - code: usage_based_events
+    product_code: usage_based_events
+    name: Usage-based events
+    currency: USD
+    billing_timing: arrears
+    rates:
+      - code: usage_based_events_usd_2026_11
+        effective_from: "2026-11-11T00:00:00Z"
+        rate_model: standard
+        rate_properties: { amount: "0.00002" }
+        billing_interval_unit: month
+        billing_interval_count: 1
+
+plans:
+  - code: lago_launch
+    name: Lago Launch
+    currency: USD
+    applied_rate_cards:
+      - rate_card_code: usage_based_events
+```
+
+```console
+$ lago v2 apply billing/ --dry-run
+ACTION  KIND               CODE                PARENT       CHANGES  NOTE
+create  rate card          usage_based_events                        with 1 rate(s)
+create  plan               lago_launch
+create  applied rate card  usage_based_events  lago_launch
+Plan: 3 to create, 0 to update, 0 to delete, 0 unchanged.
+Dry run: no request was sent.
+$ lago v2 apply billing/
+```
+
+apply prints the plan, then creates and updates in dependency order, sending only the fields that changed. Numbers are sent exactly as written and compared as decimals, so `"0.7"` and `0.70` match. A difference on a field the API cannot update in place, such as a product's `product_type`, is refused before anything is sent. A failed write stops the run; rerunning picks up where it stopped.
+
+apply deletes nothing unless you pass `--prune`. It records the objects it manages in `DIR/.lago-state/<organization id>.json`; commit that file with the YAML. `--prune` deletes the managed objects the files no longer declare, never an object the folder did not create or adopt, and asks for confirmation (`--confirm prune` in scripts). The applied rate cards of a declared plan and the pending rates of a declared rate card are reconciled with it. Active and terminated rates are history: to change a price, add a rate with a later `effective_from`. The API cannot delete a plan, so a dropped plan is released from the state and left in Lago.
+
 Global scripting controls: `--output table|json|yaml`, `--query`, `--dry-run`, `--timing`, `--verbose`, `--timeout`, `--no-retry`. `--timing` separates API round-trip, retry wait, and CLI overhead, and prints on failure too, including network errors, so retry behaviour is visible when it matters. The API key is redacted from dry runs, errors, and verbose logs.
 
 ## Stable exit codes

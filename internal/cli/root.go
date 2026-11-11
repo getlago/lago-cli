@@ -147,5 +147,6 @@ func newV2Command(app *App) *cobra.Command {
 		},
 	}
 	addGenerated(v2, app, generated.OperationsV2)
+	v2.AddCommand(newV2ApplyCommand(app))
 	return v2
 }
