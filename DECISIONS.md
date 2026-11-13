@@ -527,3 +527,15 @@ re-measured**: 1.27.3 counts a multi-value assignment as one statement and a map
 as one, where 1.27.0 counted per name and two. On `main`, unchanged, internal/config reads
 85.3% (was 86.0%) and internal/diagnostics 54.2% (was 56.0%) with identical blocks and hits.
 `coverage.floors` records both old values.
+
+## 2026-11-11 — Go 1.27.4, for GO-2026-6859
+
+The floor moves from 1.27.3 to 1.27.4. govulncheck reports GO-2026-6859, an HTTP/1 server
+crash caused by a `MaxBytesReader` header race in net/http, as reachable from
+`transport.Client.Do` and every other net/http caller. The CLI runs no HTTP server, but the
+Security gate fails on any reachable advisory, and a patch release changes no language
+semantics. go.mod, the Dockerfile, the README and `minimumGoVersion` move together, as the
+2026-09-01 entry requires.
+
+Unlike 1.27.3, nothing else moved. gosec 2.30.0 reads 1.27.4 export data and reports no
+issue. Every coverage package measures at or above its floor, so no floor is re-measured.
