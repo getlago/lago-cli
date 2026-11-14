@@ -1,0 +1,145 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-customers-attributed-usage - Retrieve customer attributed usage
+
+
+.SH SYNOPSIS
+\fBlago customers attributed-usage  [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint retrieves the usage of an active subscription broken down by the values of a usage attribution type, one level of the account tree at a time. Only charges whose billable metric uses the \fBcount_agg\fR or \fBsum_agg\fR aggregation and is not recurring are included. By default, the usage covers the current billing period, narrowed to its last 31 days when the period is longer.
+
+
+.SH OPTIONS
+\fB--all\fP[=false]
+	Fetch every page
+
+.PP
+\fB--basis\fP=""
+	Basis of the breakdown. With 'units', no amount is computed and values are ranked by units, summed across the selected charges. With 'amount', amounts are computed and values are ranked by amount.; one of: units, amount
+
+.PP
+\fB--charge-codes\fP=""
+	Codes of the charges of the plan to include. All the supported charges are included when it is not sent.
+
+.PP
+\fB--external-subscription-id\fP=""
+	The unique identifier of the subscription within your application. The subscription must be active.
+
+.PP
+\fB--filters\fP=""
+	Values of usage attribution types to filter the usage by, keyed by type code, e.g. 'filters[department]=rnd&filters[model][]=opus&filters[model][]=haiku'. Each type accepts up to 20 values, and up to 3 'flat' types can be filtered on. More than 20 values for a type returns a 'too_many_values' validation error.
+
+.PP
+\fB--from-datetime\fP=""
+	Start of the period, in ISO 8601 format. It must be sent together with 'to_datetime', and the period cannot be longer than 31 days. It is moved to the start of the subscription when earlier.
+
+.PP
+\fB--group-by\fP=""
+	Code of the usage attribution type to group the usage by. When the type has a parent, 'filters' must include a value of the parent type, so the tree is read one level at a time. Lago tracks up to 100,000 values per type for each customer. Once the type reaches this limit, grouping by it returns a 'too_many_values' validation error, unless 'filters' includes a value of its parent type.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for attributed-usage
+
+.PP
+\fB--limit\fP=""
+	Results per page (1-1000)
+
+.PP
+\fB--page\fP=""
+	Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
+
+.PP
+\fB--per-page\fP=""
+	Number of attribution values per page, between 1 and 100.
+
+.PP
+\fB--search-term\fP=""
+	Filter the attribution values by search term, up to 100 characters. The totals are not affected by the search.
+
+.PP
+\fB--split-charge-code\fP=""
+	Code of a charge of the plan to split by charge filter, with one entry per filter in 'charges_usage'. The filters are returned 10 at a time, in the order of the charge, starting at 'split_filters_offset'. The charge must have at least 1 filter, and must be part of 'charge_codes[]' when it is sent. A 'too_many_filters' validation error is returned when the filter values of the charge are too many to match events.
+
+.PP
+\fB--split-filters-offset\fP=""
+	Index of the first filter of the split charge to return, starting at 0. Use it with 'split_filters_count' to page through the filters 10 at a time. It is ignored when 'split_charge_code' is not sent.
+
+.PP
+\fB--to-datetime\fP=""
+	End of the period, in ISO 8601 format. It must be sent together with 'from_datetime'.
+
+.PP
+\fB--watch\fP[=false]
+	Poll and re-render when the response changes
+
+.PP
+\fB--watch-interval\fP=2s
+	Polling interval used with --watch
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago customers attributed-usage <external_customer_id>
+.EE
+
+
+.SH SEE ALSO
+\fBlago-customers(1)\fP

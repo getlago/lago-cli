@@ -42,7 +42,7 @@ lago organizations update [flags]
       --input string                                        Complete JSON request body or @file.json
       --legal-name string                                   The legal name of your organization.
       --legal-number string                                 The legal number of your organization.
-      --net-payment-term string                             The net payment term, expressed in days, specifies the duration within which a customer is expected to remit payment after the invoice is finalized.
+      --net-payment-term string                             **Deprecated.** Use 'payment_term' on the billing entity endpoints instead. The net payment term, expressed in days, applied to the organization's default billing entity. It sets the billing entity's 'payment_term' to a 'net' term of that many days.
       --slug string                                         A concise and unique identifier for your organization. It must contain between 3 and 40 characters, limited to lowercase letters, digits and hyphens, and it must start and end with a letter or a digit. Lago trims it and converts it to lowercase before saving it. A value already taken by another organization, or one of the names Lago reserves for its own routes, is rejected.
       --state string                                        The state of your organization's billing address.
       --tax-identification-number string                    The tax identification number of your organization.

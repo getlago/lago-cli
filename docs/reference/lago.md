@@ -63,6 +63,7 @@ lago [flags]
 * [lago subscriptions](lago_subscriptions)	 - Manage Lago subscriptions
 * [lago taxes](lago_taxes)	 - Manage Lago taxes
 * [lago upgrade](lago_upgrade)	 - Print the command that upgrades this Lago CLI installation
+* [lago usage-attribution-types](lago_usage-attribution-types)	 - Manage Lago usage attribution types
 * [lago v2](lago_v2)	 - Lago API v2 (beta): product catalog, contracts and v2 resources
 * [lago version](lago_version)	 - Show the Lago CLI version
 * [lago wallets](lago_wallets)	 - Manage Lago wallets
