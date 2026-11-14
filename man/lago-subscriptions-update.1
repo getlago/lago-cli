@@ -85,6 +85,10 @@ This endpoint allows you to update a subscription.
 	The type of payment method to use.; one of: provider, manual
 
 .PP
+\fB--payment-term\fP=""
+	The structured payment term of the subscription. It takes precedence over the customer's and the billing entity's terms for the invoices of this subscription. Send 'null' to remove it. A pending downgrade of this subscription that shared the previous term gets the new one too.
+
+.PP
 \fB--plan-overrides-amount-cents\fP=""
 	The base cost of the plan, excluding any applicable taxes, that is billed on a recurring basis. This value is defined at 0 if your plan is a pay-as-you-go plan.
 

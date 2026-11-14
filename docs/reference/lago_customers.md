@@ -30,6 +30,7 @@ Manage Lago customers
 
 * [lago](lago)	 - The official CLI for Lago billing
 * [lago customers applied-coupons](lago_customers_applied-coupons)	 - List all customer's applied coupons
+* [lago customers attributed-usage](lago_customers_attributed-usage)	 - Retrieve customer attributed usage
 * [lago customers checkout-url](lago_customers_checkout-url)	 - Generate a Customer Payment Provider Checkout URL
 * [lago customers create](lago_customers_create)	 - Create a customer
 * [lago customers credit-notes](lago_customers_credit-notes)	 - List all customer's credit notes

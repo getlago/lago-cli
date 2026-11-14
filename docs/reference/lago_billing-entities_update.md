@@ -46,7 +46,12 @@ lago billing-entities update <code> [flags]
       --legal-number string                                                         The legal registration number of the billing entity
       --logo string                                                                 The base64 encoded logo image for the billing entity. Accepted formats are PNG, JPG and JPEG, up to 800 kB. Sending "null" removes the current logo.
       --name string                                                                 The name of the billing entity
-      --net-payment-term string                                                     The net payment term (in days) for this billing entity
+      --net-payment-term string                                                     **Deprecated.** Use 'payment_term' instead. The net payment term (in days) for this billing entity. When 'payment_term' is sent in the same request, even as 'null', 'payment_term' wins and this field is ignored; see 'payment_term' for the full rules.
+      --payment-term string                                                         The structured payment term of the billing entity. It applies to every customer and subscription of the billing entity that has no term of its own. Send 'null' to remove it.
+
+                                                                                    It supersedes the legacy 'net_payment_term', which is kept in sync as an alias. Whenever 'payment_term' is sent, it wins and 'net_payment_term' is ignored, even when 'payment_term' is 'null', which clears both.
+
+                                                                                    When only 'net_payment_term' is sent, the term becomes a 'net' term of that many days, and 'null' clears both.
       --phone string                                                                The phone number of the billing entity
       --state string                                                                The state of the billing address
       --tax-codes string                                                            The tax codes that should be associated with this billing entity. Codes are matched without case sensitivity, and two codes that differ only by case count as one. An unknown code returns a '404' error.

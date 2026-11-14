@@ -6,6 +6,9 @@ Create an invoice preview
 
 This endpoint is used for generating invoice preview.
 
+The payment due date of the preview follows the resolved payment term: the subscription's, then the customer's, then the billing entity's, defaulting to `due_on_receipt`. When several subscriptions are previewed, they must resolve to terms giving the same due date, as subscriptions with different terms are billed on separate invoices; otherwise the request fails with a `422` and the error code `subscription_payment_terms_do_not_match`.
+
+
 ```
 lago invoices preview [flags]
 ```
@@ -32,6 +35,7 @@ lago invoices preview [flags]
       --input string                            Complete JSON request body or @file.json
       --integration-customers string            API field (array)
       --name string                             The full name of the customer
+      --payment-term string                     The structured payment term of the previewed subscription. When previewing a new subscription ('plan_code' at the top level), it is the term the subscription would have. When previewing a plan change ('subscriptions.plan_code'), it replaces the term of the current subscription, and 'null' removes it; when not sent, the current subscription's term is carried over. The term is ignored when previewing an existing subscription or its termination.
       --plan-code string                        The code of the plan. It serves as a unique identifier associated with a particular plan. The code is typically used for internal or system-level identification purposes, like assigning a subscription, for instance.
       --shipping-address-address-line1 string   The first line of the shipping address
       --shipping-address-address-line2 string   The second line of the shipping address

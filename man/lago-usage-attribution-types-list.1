@@ -1,0 +1,113 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-usage-attribution-types-list - List all usage attribution types
+
+
+.SH SYNOPSIS
+\fBlago usage-attribution-types list [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint retrieves all the usage attribution types of the organization.
+
+
+.SH OPTIONS
+\fB--all\fP[=false]
+	Fetch every page
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for list
+
+.PP
+\fB--limit\fP=""
+	Results per page (1-1000)
+
+.PP
+\fB--page\fP=""
+	Page number. Defaults to 1. A value that is not a positive integer, such as '0', returns the first page.
+
+.PP
+\fB--per-page\fP=""
+	Number of records per page. Defaults to 100. The maximum is 200, unless another maximum is configured for your organization. A value above the maximum returns a '422' error with 'value_is_out_of_range' on 'per_page'. A value that is not a positive integer, such as '0', returns the default number of records.
+
+.PP
+\fB--role\fP=""
+	Filter usage attribution types by role.; one of: hierarchical, flat
+
+.PP
+\fB--search-term\fP=""
+	Filter usage attribution types by search term. The term is matched against the code and the name of the type.
+
+.PP
+\fB--watch\fP[=false]
+	Poll and re-render when the response changes
+
+.PP
+\fB--watch-interval\fP=2s
+	Polling interval used with --watch
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago usage-attribution-types list
+.EE
+
+
+.SH SEE ALSO
+\fBlago-usage-attribution-types(1)\fP

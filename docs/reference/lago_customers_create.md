@@ -63,7 +63,12 @@ lago customers create [flags]
       --logo-url string                                                             The logo URL of the customer
       --metadata string                                                             Set of key-value pairs that you can attach to a customer. This can be useful for storing additional information about the customer in a structured format. A customer can hold up to 5 key-value pairs.
       --name string                                                                 The full name of the customer (255 characters max).
-      --net-payment-term string                                                     The net payment term, expressed in days, specifies the duration within which a customer is expected to remit payment after the invoice is finalized.
+      --net-payment-term string                                                     **Deprecated.** Use 'payment_term' instead. The net payment term, expressed in days, specifies the duration within which a customer is expected to remit payment after the invoice is finalized. When 'payment_term' is sent in the same request, even as 'null', 'payment_term' wins and this field is ignored; see 'payment_term' for the full rules.
+      --payment-term string                                                         The structured payment term of the customer. Send 'null' to remove the customer's own term, so the term of the billing entity applies.
+
+                                                                                    It supersedes the legacy 'net_payment_term', which is kept in sync as an alias. Whenever 'payment_term' is sent, it wins and 'net_payment_term' is ignored, even when 'payment_term' is 'null', which clears both.
+
+                                                                                    When only 'net_payment_term' is sent, the term becomes a 'net' term of that many days, and 'null' clears both.
       --phone string                                                                The phone number of the customer
       --shipping-address-address-line1 string                                       API field (string)
       --shipping-address-address-line2 string                                       API field (string)
