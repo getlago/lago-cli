@@ -15,7 +15,6 @@ lago credit-notes download-xml <lago_id> [flags]
 
 ```
   lago credit-notes download-xml <lago_id>
-  lago credit-notes download-xml <lago_id> --output json  # full resource
 ```
 
 ### Options

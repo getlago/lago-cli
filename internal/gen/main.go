@@ -876,7 +876,7 @@ func mutationOperation(method, lowerAction string) bool {
 
 // readShapedActions are writes whose response is the answer, not a resource: the caller
 // asked a question, and reducing the reply to identifiers would delete it.
-var readShapedActions = []string{"preview", "estimate", "estimate-fees", "download", "evaluate-expression", "send", "batch"}
+var readShapedActions = []string{"preview", "estimate", "estimate-fees", "download", "download-xml", "evaluate-expression", "send", "batch"}
 
 func boolExtension(operation map[string]any, key string) (bool, bool) {
 	value, exists := operation[key]

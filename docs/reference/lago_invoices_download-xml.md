@@ -15,7 +15,6 @@ lago invoices download-xml <lago_id> [flags]
 
 ```
   lago invoices download-xml <lago_id>
-  lago invoices download-xml <lago_id> --output json  # full resource
 ```
 
 ### Options

@@ -60,8 +60,8 @@ func TestEveryOpenAPIOperationHasExactlyOneCommand(t *testing.T) {
 	if count != len(generated.Operations) {
 		t.Fatalf("OpenAPI has %d operations but command manifest has %d", count, len(generated.Operations))
 	}
-	if count != 217 {
-		t.Fatalf("review the pinned spec operation-count change: got %d, previous contract is 217", count)
+	if count != 225 {
+		t.Fatalf("review the pinned spec operation-count change: got %d, previous contract is 225", count)
 	}
 }
 
@@ -123,7 +123,7 @@ func isDestructiveOperation(operation generated.Operation) bool {
 // generator's list: if the two drift, this test says so.
 var readShapedWrites = map[string]bool{
 	"preview": true, "estimate": true, "estimate-fees": true, "estimate-instant-fees": true,
-	"batch-estimate-instant-fees": true, "evaluate-expression": true, "download": true,
+	"batch-estimate-instant-fees": true, "evaluate-expression": true, "download": true, "download-xml": true,
 	"checkout-url": true, "payment-url": true, "wallet-transaction-payment-url": true,
 	"send": true, "batch": true,
 }
@@ -145,7 +145,7 @@ func TestEveryWriteIsClassifiedAsAMutation(t *testing.T) {
 			mutations++
 		}
 	}
-	if mutations != 109 {
+	if mutations != 112 {
 		t.Fatalf("the mutation set changed to %d commands; review the terse-output contract in DECISIONS.md before updating this count", mutations)
 	}
 }

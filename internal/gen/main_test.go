@@ -73,6 +73,7 @@ func TestMutationClassification(t *testing.T) {
 		{"POST", "send", false}, // events send: the summary is the answer
 		{"POST", "batch", false},
 		{"POST", "download", false},
+		{"POST", "download-xml", false},
 		{"POST", "checkout-url", false},
 		{"POST", "payment-url", false},
 		{"POST", "wallet-transaction-payment-url", false},

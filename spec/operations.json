@@ -5774,7 +5774,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": true
+      "mutation": false
     },
     {
       "resource": "credit-notes",
@@ -10470,7 +10470,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": true
+      "mutation": false
     },
     {
       "resource": "invoices",
