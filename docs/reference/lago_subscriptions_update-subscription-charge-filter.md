@@ -5,6 +5,7 @@ Update a charge filter
 ### Synopsis
 
 This endpoint updates a specific filter for a charge on a subscription.
+This is a premium feature.
 
 ```
 lago subscriptions update-subscription-charge-filter <external_id> <charge_code> <filter_id> [flags]

@@ -12,6 +12,9 @@ lago-invoices-preview - Create an invoice preview
 .SH DESCRIPTION
 This endpoint is used for generating invoice preview.
 
+.PP
+The payment due date of the preview follows the resolved payment term: the subscription's, then the customer's, then the billing entity's, defaulting to \fBdue_on_receipt\fR\&. When several subscriptions are previewed, they must resolve to terms giving the same due date, as subscriptions with different terms are billed on separate invoices; otherwise the request fails with a \fB422\fR and the error code \fBsubscription_payment_terms_do_not_match\fR\&.
+
 
 .SH OPTIONS
 \fB--address-line1\fP=""
@@ -64,6 +67,10 @@ This endpoint is used for generating invoice preview.
 .PP
 \fB--name\fP=""
 	The full name of the customer
+
+.PP
+\fB--payment-term\fP=""
+	The structured payment term of the previewed subscription. When previewing a new subscription ('plan_code' at the top level), it is the term the subscription would have. When previewing a plan change ('subscriptions.plan_code'), it replaces the term of the current subscription, and 'null' removes it; when not sent, the current subscription's term is carried over. The term is ignored when previewing an existing subscription or its termination.
 
 .PP
 \fB--plan-code\fP=""

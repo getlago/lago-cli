@@ -4,7 +4,7 @@ List of finalized invoices
 
 ### Synopsis
 
-Represents a monthly aggregation, detailing both the total count and the cumulative amount of invoices that have been marked as `finalized`. This report sorts invoices categorically based on their `payment_status`. Self-billed invoices and invoices with a lost payment dispute are excluded.
+Represents a monthly aggregation, detailing both the total count and the cumulative amount of invoices that have been marked as `finalized`. This report sorts invoices categorically based on their `payment_status`. Self-billed invoices and invoices with a lost payment dispute are excluded. Every month is returned, including the months without a finalized invoice, from the oldest to the most recent, and within a month by payment status and currency.
 This is a premium feature.
 
 ```
@@ -23,7 +23,7 @@ lago analytics invoice-collection [flags]
       --billing-entity-code string   Restrict the analytics to a single billing entity, identified by its code. An unknown code is ignored and the analytics cover the whole organization.
       --currency string              The currency of revenue analytics. Format must be ISO 4217.; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SYP, SZL, THB, TJS, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
   -h, --help                         help for invoice-collection
-      --months string                Show data only for given number of months.
+      --months string                Limit the result to this number of months, counting back from the current month, which is included. When it is not set, the result covers every month since the organization was created.
       --watch                        Poll and re-render when the response changes
       --watch-interval duration      Polling interval used with --watch (default 2s)
 ```

@@ -4,7 +4,7 @@ List all API logs
 
 ### Synopsis
 
-This endpoint retrieves all existing API logs, which represent the requests made to Lago's API. Logs older than the retention period of your organization are left out. The retention period is 30 days unless another one was set for your organization.
+This endpoint retrieves all existing API logs, which represent the requests made to Lago's API. Logs are returned from the most recent to the oldest. Logs older than the retention period of your organization are left out. The retention period is 30 days unless another one was set for your organization.
 
 ```
 lago api-logs list [flags]

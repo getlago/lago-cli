@@ -33,6 +33,7 @@ Manage Lago credit notes
 * [lago credit-notes delete-all-credit-note-metadata](lago_credit-notes_delete-all-credit-note-metadata)	 - Delete all credit note metadata
 * [lago credit-notes delete-credit-note-metadata-key](lago_credit-notes_delete-credit-note-metadata-key)	 - Delete a metadata key
 * [lago credit-notes download](lago_credit-notes_download)	 - Download a credit note PDF
+* [lago credit-notes download-xml](lago_credit-notes_download-xml)	 - Download a credit note XML
 * [lago credit-notes estimate](lago_credit-notes_estimate)	 - Estimate amounts for a new credit note
 * [lago credit-notes get](lago_credit-notes_get)	 - Retrieve a credit note
 * [lago credit-notes list](lago_credit-notes_list)	 - List all credit notes

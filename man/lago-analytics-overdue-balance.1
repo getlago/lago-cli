@@ -10,7 +10,7 @@ lago-analytics-overdue-balance - List overdue balance
 
 
 .SH DESCRIPTION
-Overdue balance is the amount still due on invoices that are past their payment due date. Each entry covers one month of payment due dates and sums the invoice totals minus the amounts already paid and minus the credits applied by finalized credit notes. Self-billed invoices are excluded.
+Overdue balance is the amount still due on invoices that are past their payment due date. Each entry covers one month of payment due dates and sums the invoice totals minus the amounts already paid and minus the credits applied by finalized credit notes. Self-billed invoices are excluded. Only months with an overdue amount are returned, from the oldest to the most recent.
 
 
 .SH OPTIONS
@@ -31,7 +31,7 @@ Overdue balance is the amount still due on invoices that are past their payment 
 
 .PP
 \fB--months\fP=""
-	Show data only for given number of months.
+	Limit the result to this number of months, counting back from the current month, which is included. When it is not set, the result covers every month since the organization was created.
 
 .PP
 \fB--watch\fP[=false]

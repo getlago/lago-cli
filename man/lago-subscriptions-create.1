@@ -82,6 +82,10 @@ This endpoint assigns a plan to a customer, creating or modifying a subscription
 	The type of payment method to use.; one of: provider, manual
 
 .PP
+\fB--payment-term\fP=""
+	The structured payment term of the subscription. It takes precedence over the customer's and the billing entity's terms for the invoices of this subscription. Subscriptions of a customer whose terms give different due dates are billed on separate invoices. When upgrading or downgrading, the term is carried over to the new subscription unless this field is sent.
+
+.PP
 \fB--plan-code\fP=""
 	The unique code representing the plan to be attached to the customer. This code must correspond to the 'code' property of one of the active plans.
 

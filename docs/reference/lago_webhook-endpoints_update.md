@@ -20,12 +20,12 @@ lago webhook-endpoints update <lago_id> [flags]
 ### Options
 
 ```
-      --event-types string      The list of event types sent to this webhook endpoint. Pass 'null' or '["*"]' to receive every event type. An empty array stops every delivery.
+      --event-types string      The list of event types sent to this webhook endpoint. Pass 'null' or '["*"]' to receive every event type. An empty array stops every delivery. Values are trimmed, lowercased and deduplicated, and an unsupported event type is rejected.
   -h, --help                    help for update
       --input string            Complete JSON request body or @file.json
       --name string             The name of the webhook endpoint.
-      --signature-algo string   The algorithm used to sign the webhook payload. When the field is omitted, the current value is kept.; one of: jwt, hmac,
-      --webhook-url string      The URL of the webhook endpoint. It must be unique within the organization.
+      --signature-algo string   The algorithm used to sign the webhook payload. When the field is omitted, the current value is kept. 'null' is refused.; one of: jwt, hmac
+      --webhook-url string      The URL of the webhook endpoint. It must be an HTTP or HTTPS URL with a host, and it must be unique within the organization.
 ```
 
 ### Options inherited from parent commands

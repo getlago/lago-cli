@@ -539,3 +539,12 @@ semantics. go.mod, the Dockerfile, the README and `minimumGoVersion` move togeth
 
 Unlike 1.27.3, nothing else moved. gosec 2.30.0 reads 1.27.4 export data and reports no
 issue. Every coverage package measures at or above its floor, so no floor is re-measured.
+
+## 2026-11-16 — `download-xml` is a read-shaped write
+
+The spec sync added `invoices download-xml` and `credit-notes download-xml` (POST). Like
+`download`, the response is the answer: the invoice or credit note with its `xml_url`, or an
+empty body while the XML is generated. The terse identifier block would hide the URL, so
+`download-xml` joins the read-shaped actions in the generator and in the parity test. The new
+`usage-attribution-types` create, update and delete are terse writes. The mutation set is 112
+commands out of 225.

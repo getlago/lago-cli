@@ -30,6 +30,7 @@ lago invoices create [flags]
       --invoice-custom-section-skip-invoice-custom-sections string   Set to 'true' to exclude all invoice custom sections from PDF generation for invoices related to this resource. When 'true', 'invoice_custom_section_codes' is ignored.
       --payment-method-payment-method-id string                      The unique identifier of the payment method (required when using a specific provider payment method).
       --payment-method-payment-method-type string                    The type of payment method to use.; one of: provider, manual
+      --payment-term string                                          The structured payment term of the invoice, used to compute its payment due date. When not sent or 'null', the term of the customer, then of the billing entity, applies.
       --purchase-order-number string                                 The purchase order number to associate with the invoice.
       --skip-psp string                                              If true, the invoice will be created but not sent to the payment provider.
 ```

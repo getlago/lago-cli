@@ -15,7 +15,7 @@ This endpoint is used to update an existing webhook endpoint.
 
 .SH OPTIONS
 \fB--event-types\fP=""
-	The list of event types sent to this webhook endpoint. Pass 'null' or '["*"]' to receive every event type. An empty array stops every delivery.
+	The list of event types sent to this webhook endpoint. Pass 'null' or '["*"]' to receive every event type. An empty array stops every delivery. Values are trimmed, lowercased and deduplicated, and an unsupported event type is rejected.
 
 .PP
 \fB-h\fP, \fB--help\fP[=false]
@@ -31,11 +31,11 @@ This endpoint is used to update an existing webhook endpoint.
 
 .PP
 \fB--signature-algo\fP=""
-	The algorithm used to sign the webhook payload. When the field is omitted, the current value is kept.; one of: jwt, hmac,
+	The algorithm used to sign the webhook payload. When the field is omitted, the current value is kept. 'null' is refused.; one of: jwt, hmac
 
 .PP
 \fB--webhook-url\fP=""
-	The URL of the webhook endpoint. It must be unique within the organization.
+	The URL of the webhook endpoint. It must be an HTTP or HTTPS URL with a host, and it must be unique within the organization.
 
 
 .SH OPTIONS INHERITED FROM PARENT COMMANDS

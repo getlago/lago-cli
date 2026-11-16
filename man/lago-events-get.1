@@ -16,7 +16,7 @@ This endpoint is used for retrieving a specific usage measurement event that has
 Note that transaction_id is unique per external_subscription_id so multiple subscriptions can share the same transaction_id. This endpoint will only return the first event found with the given transaction_id.
 
 .PP
-WARNING: If your Lago organization is configured to use the Clickhouse-based event pipeline, multiple events can share the same \fBtransaction_id\fR (with different timestamps). This endpoint will only return the first event found.
+WARNING: If your Lago organization is configured to use the ClickHouse-based event pipeline, multiple events can share the same \fBtransaction_id\fR (with different timestamps). This endpoint will only return the first event found.
 
 
 .SH OPTIONS

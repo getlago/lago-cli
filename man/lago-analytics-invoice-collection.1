@@ -10,7 +10,7 @@ lago-analytics-invoice-collection - List of finalized invoices
 
 
 .SH DESCRIPTION
-Represents a monthly aggregation, detailing both the total count and the cumulative amount of invoices that have been marked as \fBfinalized\fR\&. This report sorts invoices categorically based on their \fBpayment_status\fR\&. Self-billed invoices and invoices with a lost payment dispute are excluded.
+Represents a monthly aggregation, detailing both the total count and the cumulative amount of invoices that have been marked as \fBfinalized\fR\&. This report sorts invoices categorically based on their \fBpayment_status\fR\&. Self-billed invoices and invoices with a lost payment dispute are excluded. Every month is returned, including the months without a finalized invoice, from the oldest to the most recent, and within a month by payment status and currency.
 This is a premium feature.
 
 
@@ -28,7 +28,7 @@ This is a premium feature.
 
 .PP
 \fB--months\fP=""
-	Show data only for given number of months.
+	Limit the result to this number of months, counting back from the current month, which is included. When it is not set, the result covers every month since the organization was created.
 
 .PP
 \fB--watch\fP[=false]

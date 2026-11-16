@@ -54,6 +54,10 @@ This endpoint is used for issuing a one-off invoice.
 	The type of payment method to use.; one of: provider, manual
 
 .PP
+\fB--payment-term\fP=""
+	The structured payment term of the invoice, used to compute its payment due date. When not sent or 'null', the term of the customer, then of the billing entity, applies.
+
+.PP
 \fB--purchase-order-number\fP=""
 	The purchase order number to associate with the invoice.
 

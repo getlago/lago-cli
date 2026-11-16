@@ -3995,7 +3995,7 @@
       "idempotent": false,
       "dangerous": false,
       "paginated": false,
-      "mutation": true,
+      "mutation": false,
       "api_version": "v2"
     },
     {

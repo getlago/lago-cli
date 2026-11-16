@@ -33,7 +33,7 @@ lago events send [flags]
       --transaction-id string               This field represents a unique identifier for the event.
                                             It is crucial for ensuring idempotency, meaning that each event can be uniquely identified and processed without causing any unintended side effects.
 
-                                            WARNING: If the Lago organization is configured to use the new Clickhouse-based event pipeline (designed for high-volume processing), the idempotency logic is handled differently.
+                                            WARNING: If the Lago organization is configured to use the new ClickHouse-based event pipeline (designed for high-volume processing), the idempotency logic is handled differently.
                                             Event uniqueness is maintained with both 'transaction_id' and 'timestamp' fields.
                                             If a new event arrives with identical values for these two fields as an existing event, the new one will overwrite the previous event rather than being rejected.
 ```

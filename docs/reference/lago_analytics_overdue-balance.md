@@ -4,7 +4,7 @@ List overdue balance
 
 ### Synopsis
 
-Overdue balance is the amount still due on invoices that are past their payment due date. Each entry covers one month of payment due dates and sums the invoice totals minus the amounts already paid and minus the credits applied by finalized credit notes. Self-billed invoices are excluded.
+Overdue balance is the amount still due on invoices that are past their payment due date. Each entry covers one month of payment due dates and sums the invoice totals minus the amounts already paid and minus the credits applied by finalized credit notes. Self-billed invoices are excluded. Only months with an overdue amount are returned, from the oldest to the most recent.
 
 ```
 lago analytics overdue-balance [flags]
@@ -23,7 +23,7 @@ lago analytics overdue-balance [flags]
       --currency string               Filter the overdue balances by the currency of the invoices. Format must be ISO 4217.; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SYP, SZL, THB, TJS, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
       --external-customer-id string   The customer external unique identifier (provided by your own application). Use it to restrict the overdue balances to a single customer.
   -h, --help                          help for overdue-balance
-      --months string                 Show data only for given number of months.
+      --months string                 Limit the result to this number of months, counting back from the current month, which is included. When it is not set, the result covers every month since the organization was created.
       --watch                         Poll and re-render when the response changes
       --watch-interval duration       Polling interval used with --watch (default 2s)
 ```
