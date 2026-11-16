@@ -5,6 +5,7 @@ Delete a charge filter
 ### Synopsis
 
 This endpoint deletes a specific filter from a charge on a subscription.
+This is a premium feature.
 
 ```
 lago subscriptions destroy-subscription-charge-filter <external_id> <charge_code> <filter_id> [flags]

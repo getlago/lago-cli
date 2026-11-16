@@ -1,0 +1,83 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-invoices-download-xml - Download an invoice XML
+
+
+.SH SYNOPSIS
+\fBlago invoices download-xml  [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint is used for downloading the e-invoicing XML document of a specific invoice. Only \fBfinalized\fR invoices can be downloaded; any other invoice returns a \fB404\fR error.
+When the XML has already been generated, the invoice object is returned and its \fBxml_url\fR points to the document. When it has not been generated yet, the response is a \fB200\fR with an empty body and the generation starts in the background. Call the endpoint again to get the invoice object with its \fBxml_url\fR\&.
+
+
+.SH OPTIONS
+\fB-h\fP, \fB--help\fP[=false]
+	help for download-xml
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago invoices download-xml <lago_id>
+  lago invoices download-xml <lago_id> --output json  # full resource
+.EE
+
+
+.SH SEE ALSO
+\fBlago-invoices(1)\fP

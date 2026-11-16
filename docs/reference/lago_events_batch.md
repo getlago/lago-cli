@@ -4,7 +4,7 @@ Batch multiple events
 
 ### Synopsis
 
-This endpoint can be used to send a batch of usage records. Each request may include up to 100 events.
+This endpoint can be used to send a batch of usage records. Each request must include at least one event and may include up to 100 events.
 
 ```
 lago events batch [flags]
@@ -19,7 +19,7 @@ lago events batch [flags]
 ### Options
 
 ```
-      --events string   API field (array)
+      --events string   The usage events to ingest. An empty list returns a '422' error with 'no_events', and more than 100 events returns a '422' error with 'too_many_events'.
   -h, --help            help for batch
       --input string    Complete JSON request body or @file.json
 ```

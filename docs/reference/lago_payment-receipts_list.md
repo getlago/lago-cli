@@ -4,7 +4,7 @@ List all payment receipts
 
 ### Synopsis
 
-This endpoint is used to list all existing payment receipts.
+This endpoint is used to list all existing payment receipts. Payment receipts are ordered by creation date, from the most recent to the oldest.
 
 ```
 lago payment-receipts list [flags]

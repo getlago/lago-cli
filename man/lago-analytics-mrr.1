@@ -22,6 +22,9 @@ Revenue from \fBsemiannual\fR subscription invoices is distributed evenly over s
 .IP \(bu 2
 Revenue from \fBweekly\fR subscription invoices, the total revenue from all invoices issued within a month is summed up. This total is then divided by the number of invoices issued during that month, and the result is multiplied by 4.33, representing the average number of weeks in a month.
 
+.PP
+Every month is returned, including the months without a subscription fee, from the oldest to the most recent. This is a premium feature.
+
 
 .SH OPTIONS
 \fB--billing-entity-code\fP=""
@@ -37,7 +40,7 @@ Revenue from \fBweekly\fR subscription invoices, the total revenue from all invo
 
 .PP
 \fB--months\fP=""
-	Show data only for given number of months.
+	Limit the result to this number of months, counting back from the current month, which is included. When it is not set, the result covers every month since the organization was created.
 
 .PP
 \fB--watch\fP[=false]

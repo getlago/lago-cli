@@ -1,0 +1,110 @@
+.nh
+.TH "LAGO" "1" "Sep 2026" "Lago CLI" "Lago CLI Manual"
+
+.SH NAME
+lago-usage-attribution-types-update - Update a usage attribution type
+
+
+.SH SYNOPSIS
+\fBlago usage-attribution-types update  [flags]\fP
+
+
+.SH DESCRIPTION
+This endpoint updates an existing usage attribution type. Only the fields present in the payload are updated. Once usage is attributed to the type, only its \fBname\fR, \fBdescription\fR and \fBattribution_keys\fR can be changed.
+
+
+.SH OPTIONS
+\fB--attribution-keys\fP=""
+	Keys of the event properties that attribute usage to this type, up to 4. Blank and duplicate keys are removed. A key already used by another usage attribution type of the organization is rejected.
+
+.PP
+\fB--code\fP=""
+	Unique code used to identify the usage attribution type within the organization. Once usage is attributed to the type, the code cannot be changed.
+
+.PP
+\fB--description\fP=""
+	Description of the usage attribution type.
+
+.PP
+\fB-h\fP, \fB--help\fP[=false]
+	help for update
+
+.PP
+\fB--input\fP=""
+	Complete JSON request body or @file.json
+
+.PP
+\fB--name\fP=""
+	Name of the usage attribution type.
+
+.PP
+\fB--parent-code\fP=""
+	Code of the parent usage attribution type, which must be 'hierarchical'. Send 'null' or an empty string to remove the parent. Once usage is attributed to the type, the parent cannot be changed.
+
+.PP
+\fB--role\fP=""
+	Role of the usage attribution type. A 'flat' type cannot have a parent, and a type with children cannot become 'flat'. Once usage is attributed to the type, the role cannot be changed.; one of: hierarchical, flat
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+\fB--api-key\fP=""
+	Override the Lago API key
+
+.PP
+\fB--api-url\fP=""
+	Override the Lago API URL
+
+.PP
+\fB--confirm\fP=""
+	Confirm a dangerous operation with its resource identifier
+
+.PP
+\fB--dry-run\fP[=false]
+	Print mutating requests without sending them
+
+.PP
+\fB--insecure\fP[=false]
+	Allow insecure HTTP or TLS for self-hosted Lago
+
+.PP
+\fB--mode\fP=""
+	Environment mode: live or test
+
+.PP
+\fB--no-retry\fP[=false]
+	Disable automatic retries
+
+.PP
+\fB-o\fP, \fB--output\fP="table"
+	Output format: table, json, or yaml
+
+.PP
+\fB--profile\fP=""
+	Named profile to use
+
+.PP
+\fB--query\fP=""
+	JMESPath expression applied to the response
+
+.PP
+\fB--timeout\fP=30s
+	Total request timeout
+
+.PP
+\fB--timing\fP[=false]
+	Print request latency breakdown
+
+.PP
+\fB--verbose\fP[=false]
+	Print redacted request and response details
+
+
+.SH EXAMPLE
+.EX
+  lago usage-attribution-types update <code> --input @payload.json
+  lago usage-attribution-types update <code> --input @payload.json --output json  # full resource
+.EE
+
+
+.SH SEE ALSO
+\fBlago-usage-attribution-types(1)\fP

@@ -10,12 +10,12 @@ lago-events-batch - Batch multiple events
 
 
 .SH DESCRIPTION
-This endpoint can be used to send a batch of usage records. Each request may include up to 100 events.
+This endpoint can be used to send a batch of usage records. Each request must include at least one event and may include up to 100 events.
 
 
 .SH OPTIONS
 \fB--events\fP=""
-	API field (array)
+	The usage events to ingest. An empty list returns a '422' error with 'no_events', and more than 100 events returns a '422' error with 'too_many_events'.
 
 .PP
 \fB-h\fP, \fB--help\fP[=false]

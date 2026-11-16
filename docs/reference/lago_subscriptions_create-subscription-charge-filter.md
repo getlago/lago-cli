@@ -5,6 +5,7 @@ Create a charge filter
 ### Synopsis
 
 This endpoint creates a new filter for a specific charge on a subscription.
+This is a premium feature.
 
 ```
 lago subscriptions create-subscription-charge-filter <external_id> <charge_code> [flags]

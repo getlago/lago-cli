@@ -32,6 +32,7 @@ Manage Lago invoices
 * [lago invoices create](lago_invoices_create)	 - Create a one-off invoice
 * [lago invoices delete](lago_invoices_delete)	 - Delete a draft invoice
 * [lago invoices download](lago_invoices_download)	 - Download an invoice PDF
+* [lago invoices download-xml](lago_invoices_download-xml)	 - Download an invoice XML
 * [lago invoices finalize](lago_invoices_finalize)	 - Finalize a draft invoice
 * [lago invoices get](lago_invoices_get)	 - Retrieve an invoice
 * [lago invoices list](lago_invoices_list)	 - List all invoices

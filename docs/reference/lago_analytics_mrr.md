@@ -12,6 +12,8 @@ Quantifies the revenue generated from `subscription` fees on a monthly basis. Th
 - Revenue from `semiannual` subscription invoices is distributed evenly over six months. This allocation is applicable for fees paid in advance (spread over the next remaining months depending on calendar or anniversary billing) and for fees paid in arrears (spread over the previous months depending on calendar or anniversary billing).
 - Revenue from `weekly` subscription invoices, the total revenue from all invoices issued within a month is summed up. This total is then divided by the number of invoices issued during that month, and the result is multiplied by 4.33, representing the average number of weeks in a month.
 
+Every month is returned, including the months without a subscription fee, from the oldest to the most recent. This is a premium feature.
+
 ```
 lago analytics mrr [flags]
 ```
@@ -28,7 +30,7 @@ lago analytics mrr [flags]
       --billing-entity-code string   Restrict the analytics to a single billing entity, identified by its code. An unknown code is ignored and the analytics cover the whole organization.
       --currency string              The currency of MRR analytics. Format must be ISO 4217.; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SYP, SZL, THB, TJS, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
   -h, --help                         help for mrr
-      --months string                Show data only for given number of months.
+      --months string                Limit the result to this number of months, counting back from the current month, which is included. When it is not set, the result covers every month since the organization was created.
       --watch                        Poll and re-render when the response changes
       --watch-interval duration      Polling interval used with --watch (default 2s)
 ```

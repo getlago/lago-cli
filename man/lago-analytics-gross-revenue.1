@@ -10,7 +10,7 @@ lago-analytics-gross-revenue - List gross revenue
 
 
 .SH DESCRIPTION
-Gross revenue is the monthly sum of the totals of \fBfinalized\fR invoices and of the amounts of the fees paid in advance that are not attached to an invoice. Invoice totals include taxes, are net of coupons, and are reduced by the amounts refunded through credit notes. Self-billed invoices and invoices with a lost payment dispute are excluded.
+Gross revenue is the monthly sum of the totals of \fBfinalized\fR invoices and of the amounts of the fees paid in advance that are not attached to an invoice. Invoice totals include taxes, are net of coupons, and are reduced by the amounts refunded through credit notes. Self-billed invoices and invoices with a lost payment dispute are excluded. Only months with revenue are returned, from the oldest to the most recent.
 
 
 .SH OPTIONS
@@ -31,7 +31,7 @@ Gross revenue is the monthly sum of the totals of \fBfinalized\fR invoices and o
 
 .PP
 \fB--months\fP=""
-	Show data only for given number of months.
+	Limit the result to this number of months, counting back from the current month, which is included. When it is not set, the result covers every month since the organization was created.
 
 .PP
 \fB--watch\fP[=false]
