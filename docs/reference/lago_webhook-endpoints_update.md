@@ -4,7 +4,7 @@ Update a webhook endpoint
 
 ### Synopsis
 
-This endpoint is used to update an existing webhook endpoint.
+This endpoint is used to update an existing webhook endpoint. The response includes the endpoint's `signing_keys` when the API key has write access to webhook endpoints.
 
 ```
 lago webhook-endpoints update <lago_id> [flags]
@@ -24,7 +24,9 @@ lago webhook-endpoints update <lago_id> [flags]
   -h, --help                    help for update
       --input string            Complete JSON request body or @file.json
       --name string             The name of the webhook endpoint.
-      --signature-algo string   The algorithm used to sign the webhook payload. When the field is omitted, the current value is kept. 'null' is refused.; one of: jwt, hmac
+      --signature-algo string   The algorithm used to sign the webhook payload. When the field is omitted, the current value is kept. 'null' is refused.
+                                'standard_webhooks' is available to every organization. An unknown value returns a '422' error with 'value_is_invalid' on 'signature_algo'.
+                                Switching to 'standard_webhooks' creates the endpoint's signing key, or reuses the key it kept from an earlier switch.; one of: jwt, hmac, standard_webhooks
       --webhook-url string      The URL of the webhook endpoint. It must be an HTTP or HTTPS URL with a host, and it must be unique within the organization.
 ```
 
