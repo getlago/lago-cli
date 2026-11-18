@@ -4,7 +4,7 @@ Delete webhook endpoint
 
 ### Synopsis
 
-Permanently deletes the endpoint and its delivery records. Returns the deleted endpoint configuration without a deleted_at field.
+Permanently deletes the endpoint and its delivery records. Returns the deleted endpoint configuration without a deleted_at field. Expansions are not supported; a nonempty expands[] returns 400 expand_not_supported.
 Requires the product catalog to be enabled and webhook_endpoint write permission on the API key.
 
 ```

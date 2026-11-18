@@ -23328,7 +23328,7 @@
       "method": "POST",
       "path": "/webhook_endpoints",
       "summary": "Create a webhook endpoint",
-      "description": "This endpoint is used to create a webhook endpoint. An organization can have at most 10 webhook endpoints.",
+      "description": "This endpoint is used to create a webhook endpoint. An organization can have at most 10 webhook endpoints. The response includes the endpoint's `signing_keys` when the API key has write access to webhook endpoints.",
       "docs_url": "https://getlago.com/docs/api-reference/webhook-endpoints/webhook-endpoint-object",
       "body": {
         "wrapper": "webhook_endpoint",
@@ -23364,10 +23364,11 @@
             "required": false,
             "nullable": true,
             "complex": false,
-            "description": "The algorithm used to sign the webhook payload. Defaults to `jwt` when no value is passed.",
+            "description": "The algorithm used to sign the webhook payload. Defaults to `jwt` when no value is passed.\n`standard_webhooks` is available to every organization. An unknown value returns a `422` error with `value_is_invalid` on `signature_algo`.\nCreating a `standard_webhooks` endpoint creates its signing key, returned in `signing_keys`.",
             "enum": [
               "jwt",
               "hmac",
+              "standard_webhooks",
               ""
             ]
           },
@@ -23396,7 +23397,7 @@
       "method": "DELETE",
       "path": "/webhook_endpoints/{lago_id}",
       "summary": "Delete a webhook endpoint",
-      "description": "This endpoint is used to delete an existing webhook endpoint.",
+      "description": "This endpoint is used to delete an existing webhook endpoint. The deleted endpoint does not include its `signing_keys`.",
       "docs_url": "https://getlago.com/docs/api-reference/webhook-endpoints/webhook-endpoint-object",
       "parameters": [
         {
@@ -23420,7 +23421,7 @@
       "method": "GET",
       "path": "/webhook_endpoints/{lago_id}",
       "summary": "Retrieve a webhook endpoint",
-      "description": "This endpoint is used to retrieve an existing webhook endpoint.",
+      "description": "This endpoint is used to retrieve an existing webhook endpoint. The response includes the endpoint's `signing_keys` when the API key has write access to webhook endpoints.",
       "docs_url": "https://getlago.com/docs/api-reference/webhook-endpoints/webhook-endpoint-object",
       "parameters": [
         {
@@ -23444,7 +23445,7 @@
       "method": "GET",
       "path": "/webhook_endpoints",
       "summary": "List all webhook endpoints",
-      "description": "This endpoint is used to list all webhook endpoints.",
+      "description": "This endpoint is used to list all webhook endpoints. The listed endpoints do not include their `signing_keys`.",
       "docs_url": "https://getlago.com/docs/api-reference/webhook-endpoints/webhook-endpoint-object",
       "parameters": [
         {
@@ -23476,7 +23477,7 @@
       "method": "PUT",
       "path": "/webhook_endpoints/{lago_id}",
       "summary": "Update a webhook endpoint",
-      "description": "This endpoint is used to update an existing webhook endpoint.",
+      "description": "This endpoint is used to update an existing webhook endpoint. The response includes the endpoint's `signing_keys` when the API key has write access to webhook endpoints.",
       "docs_url": "https://getlago.com/docs/api-reference/webhook-endpoints/webhook-endpoint-object",
       "parameters": [
         {
@@ -23521,10 +23522,11 @@
             "type": "string",
             "required": false,
             "complex": false,
-            "description": "The algorithm used to sign the webhook payload. When the field is omitted, the current value is kept. `null` is refused.",
+            "description": "The algorithm used to sign the webhook payload. When the field is omitted, the current value is kept. `null` is refused.\n`standard_webhooks` is available to every organization. An unknown value returns a `422` error with `value_is_invalid` on `signature_algo`.\nSwitching to `standard_webhooks` creates the endpoint's signing key, or reuses the key it kept from an earlier switch.",
             "enum": [
               "jwt",
-              "hmac"
+              "hmac",
+              "standard_webhooks"
             ]
           },
           {
@@ -23574,6 +23576,6 @@
       "mutation": false
     }
   ],
-  "spec_sha256": "37cfbdac50207b3deb4fa1b9c1cf6a510e43a729eff8f2093c4a09809d5d2036",
+  "spec_sha256": "a851ec0b07271cbdd80c8a04924d3240426ef931d24084bf41821d70c76a6f00",
   "spec_version": "1.57.0"
 }

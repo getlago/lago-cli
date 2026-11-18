@@ -12225,7 +12225,17 @@
       "method": "POST",
       "path": "/webhook_endpoints",
       "summary": "Create webhook endpoint",
-      "description": "Creates a webhook endpoint. The organization can have at most ten endpoints, each with a distinct URL.\nRequires the product catalog to be enabled and webhook_endpoint write permission on the API key.",
+      "description": "Creates a webhook endpoint. The organization can have at most ten endpoints, each with a distinct URL. The endpoint signs its deliveries with Standard Webhooks; request expands[]=signing_keys to read its signing key.\nRequires the product catalog to be enabled and webhook_endpoint write permission on the API key.",
+      "parameters": [
+        {
+          "name": "expands[]",
+          "flag": "expands",
+          "in": "query",
+          "type": "array",
+          "required": false,
+          "description": "Relationships to include in this response. Only one expansion level is supported."
+        }
+      ],
       "body": {
         "wrapper": "webhook_endpoint",
         "fields": [
@@ -12259,10 +12269,9 @@
             "type": "string",
             "required": false,
             "complex": false,
-            "description": "Webhook signature algorithm.",
+            "description": "Webhook signature algorithm. Only `standard_webhooks` is accepted, and it is the default on create. Another value returns 422 with `value_is_invalid` on `signature_algo` and the accepted algorithms in `allowed_values`. An existing endpoint keeps its algorithm when the field is omitted or sent with its current value.",
             "enum": [
-              "jwt",
-              "hmac"
+              "standard_webhooks"
             ]
           },
           {
@@ -12291,7 +12300,7 @@
       "method": "DELETE",
       "path": "/webhook_endpoints/{lago_id}",
       "summary": "Delete webhook endpoint",
-      "description": "Permanently deletes the endpoint and its delivery records. Returns the deleted endpoint configuration without a deleted_at field.\nRequires the product catalog to be enabled and webhook_endpoint write permission on the API key.",
+      "description": "Permanently deletes the endpoint and its delivery records. Returns the deleted endpoint configuration without a deleted_at field. Expansions are not supported; a nonempty expands[] returns 400 expand_not_supported.\nRequires the product catalog to be enabled and webhook_endpoint write permission on the API key.",
       "parameters": [
         {
           "name": "lago_id",
@@ -12315,7 +12324,7 @@
       "method": "GET",
       "path": "/webhook_endpoints/{lago_id}",
       "summary": "Retrieve webhook endpoint",
-      "description": "Returns the record without nested relationships unless a supported expansion is requested.\nRequires the product catalog to be enabled and webhook_endpoint read permission on the API key.",
+      "description": "Returns the record without nested relationships unless a supported expansion is requested.\nRequires the product catalog to be enabled and webhook_endpoint read permission on the API key. Requesting expands[]=signing_keys also requires webhook_endpoint write permission and returns 403 without it.",
       "parameters": [
         {
           "name": "lago_id",
@@ -12324,6 +12333,14 @@
           "type": "string",
           "required": true,
           "description": "Unique identifier created by Lago."
+        },
+        {
+          "name": "expands[]",
+          "flag": "expands",
+          "in": "query",
+          "type": "array",
+          "required": false,
+          "description": "Relationships to include in this response. Only one expansion level is supported."
         }
       ],
       "idempotent": true,
@@ -12339,7 +12356,7 @@
       "method": "GET",
       "path": "/webhook_endpoints",
       "summary": "List webhook endpoints",
-      "description": "Returns a cursor-paginated list ordered by creation time, newest first. Use after or before to navigate. The page and per_page parameters are rejected.\n\nRequires the product catalog to be enabled and webhook_endpoint read permission on the API key.",
+      "description": "Returns a cursor-paginated list ordered by creation time, newest first. Use after or before to navigate. The page and per_page parameters are rejected. Expansions are not supported; a nonempty expands[] returns 400 expand_not_supported.\n\nRequires the product catalog to be enabled and webhook_endpoint read permission on the API key.",
       "parameters": [
         {
           "name": "limit",
@@ -12404,7 +12421,7 @@
       "method": "PATCH",
       "path": "/webhook_endpoints/{lago_id}",
       "summary": "Update webhook endpoint",
-      "description": "PUT and PATCH both accept partial updates. Omitted fields are unchanged.\n\nRequires the product catalog to be enabled and webhook_endpoint write permission on the API key.",
+      "description": "PUT and PATCH both accept partial updates. Omitted fields are unchanged. Switching to standard_webhooks creates the endpoint's signing key, or reuses the key kept from an earlier switch; request expands[]=signing_keys to read it.\n\nRequires the product catalog to be enabled and webhook_endpoint write permission on the API key.",
       "parameters": [
         {
           "name": "lago_id",
@@ -12413,6 +12430,14 @@
           "type": "string",
           "required": true,
           "description": "Unique identifier created by Lago."
+        },
+        {
+          "name": "expands[]",
+          "flag": "expands",
+          "in": "query",
+          "type": "array",
+          "required": false,
+          "description": "Relationships to include in this response. Only one expansion level is supported."
         }
       ],
       "body": {
@@ -12448,10 +12473,9 @@
             "type": "string",
             "required": false,
             "complex": false,
-            "description": "Webhook signature algorithm.",
+            "description": "Webhook signature algorithm. Only `standard_webhooks` is accepted, and it is the default on create. Another value returns 422 with `value_is_invalid` on `signature_algo` and the accepted algorithms in `allowed_values`. An existing endpoint keeps its algorithm when the field is omitted or sent with its current value.",
             "enum": [
-              "jwt",
-              "hmac"
+              "standard_webhooks"
             ]
           },
           {
@@ -12480,7 +12504,7 @@
       "method": "PUT",
       "path": "/webhook_endpoints/{lago_id}",
       "summary": "Update webhook endpoint",
-      "description": "PUT and PATCH both accept partial updates. Omitted fields are unchanged.\n\nRequires the product catalog to be enabled and webhook_endpoint write permission on the API key.",
+      "description": "PUT and PATCH both accept partial updates. Omitted fields are unchanged. Switching to standard_webhooks creates the endpoint's signing key, or reuses the key kept from an earlier switch; request expands[]=signing_keys to read it.\n\nRequires the product catalog to be enabled and webhook_endpoint write permission on the API key.",
       "parameters": [
         {
           "name": "lago_id",
@@ -12489,6 +12513,14 @@
           "type": "string",
           "required": true,
           "description": "Unique identifier created by Lago."
+        },
+        {
+          "name": "expands[]",
+          "flag": "expands",
+          "in": "query",
+          "type": "array",
+          "required": false,
+          "description": "Relationships to include in this response. Only one expansion level is supported."
         }
       ],
       "body": {
@@ -12524,10 +12556,9 @@
             "type": "string",
             "required": false,
             "complex": false,
-            "description": "Webhook signature algorithm.",
+            "description": "Webhook signature algorithm. Only `standard_webhooks` is accepted, and it is the default on create. Another value returns 422 with `value_is_invalid` on `signature_algo` and the accepted algorithms in `allowed_values`. An existing endpoint keeps its algorithm when the field is omitted or sent with its current value.",
             "enum": [
-              "jwt",
-              "hmac"
+              "standard_webhooks"
             ]
           },
           {
@@ -12550,6 +12581,6 @@
       "api_version": "v2"
     }
   ],
-  "spec_sha256": "a863ec9655bf690a94e3edabb520fd3d0a3bcf1b44108ab0dc2b5d72c4ba9d7b",
+  "spec_sha256": "579b02b81a1a372e2dc80b1892ba347ea8f18cfb828da91028d72d2ce26da530",
   "spec_version": "2.0.0-beta"
 }

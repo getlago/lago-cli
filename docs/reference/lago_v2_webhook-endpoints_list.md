@@ -4,7 +4,7 @@ List webhook endpoints
 
 ### Synopsis
 
-Returns a cursor-paginated list ordered by creation time, newest first. Use after or before to navigate. The page and per_page parameters are rejected.
+Returns a cursor-paginated list ordered by creation time, newest first. Use after or before to navigate. The page and per_page parameters are rejected. Expansions are not supported; a nonempty expands[] returns 400 expand_not_supported.
 
 Requires the product catalog to be enabled and webhook_endpoint read permission on the API key.
 

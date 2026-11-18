@@ -5,7 +5,7 @@ Retrieve webhook endpoint
 ### Synopsis
 
 Returns the record without nested relationships unless a supported expansion is requested.
-Requires the product catalog to be enabled and webhook_endpoint read permission on the API key.
+Requires the product catalog to be enabled and webhook_endpoint read permission on the API key. Requesting expands[]=signing_keys also requires webhook_endpoint write permission and returns 403 without it.
 
 ```
 lago v2 webhook-endpoints get <lago_id> [flags]
@@ -20,6 +20,7 @@ lago v2 webhook-endpoints get <lago_id> [flags]
 ### Options
 
 ```
+      --expands string            Relationships to include in this response. Only one expansion level is supported.
   -h, --help                      help for get
       --watch                     Poll and re-render when the response changes
       --watch-interval duration   Polling interval used with --watch (default 2s)
