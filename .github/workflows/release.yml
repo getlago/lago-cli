@@ -20,6 +20,16 @@ jobs:
     if: github.repository == 'getlago/lago-cli' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
+      # Go modules only resolve full semantic versions: a tag such as v1.1 is published
+      # but `go install ...@latest` never picks it up.
+      - name: Tag is a full semantic version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          if ! [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Tag $TAG is not vMAJOR.MINOR.PATCH (for example v1.1.0)."
+            exit 1
+          fi
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -36,6 +46,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+          # Release the pushed tag, not the highest tag on the same commit.
+          GORELEASER_CURRENT_TAG: ${{ github.ref_name }}
 
   # Three supported channels, three smoke tests. A channel with no post-release smoke test
   # is an untested channel, so these jobs gate the release rather than reporting on it.
@@ -128,3 +140,47 @@ jobs:
         run: test -x /usr/local/bin/lago
       - name: Doctor runs and exits 3 with no credentials
         run: lago doctor --output json || test $? -eq 3
+
+  # Announced only for a tag push where the release and every smoke test passed, so a
+  # manual re-run of the smoke tests does not announce the release again.
+  notify-release:
+    needs: [release, smoke-homebrew, smoke-go-install, smoke-install-script]
+    if: github.repository == 'getlago/lago-cli' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Announce the release on Slack
+        uses: slackapi/slack-github-action@v4.0.0
+        with:
+          method: chat.postMessage
+          errors: true
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ secrets.SLACK_RELEASE_CHANNEL_ID }}
+            text: |
+              _New Release_ :postal_horn:
+
+              We've just released a new version of the Lago CLI: `${{ github.ref_name }}`.
+
+              Install or upgrade it with:
+              • Homebrew: `brew upgrade getlago/tap/lago` (or `brew install getlago/tap/lago`)
+              • Go: `go install github.com/getlago/lago-cli/cmd/lago@${{ github.ref_name }}`
+              • Script: `curl -fsSL https://getlago.github.io/lago-cli/install.sh | sh`
+
+              Find all the fixes and improvements in the release notes:
+
+              • <${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }}|lago-cli ${{ github.ref_name }}>
+
+  notify-failure:
+    needs: [release, smoke-homebrew, smoke-go-install, smoke-install-script]
+    if: always() && github.repository == 'getlago/lago-cli' && contains(needs.*.result, 'failure')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack on failure
+        uses: slackapi/slack-github-action@v4.0.0
+        with:
+          method: chat.postMessage
+          errors: true
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ secrets.SLACK_CHANNEL_ID }}
+            text: ":x: `lago-cli` release ${{ github.event_name == 'push' && github.ref_name || format('v{0}', inputs.version) }} failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
