@@ -155,18 +155,18 @@ jobs:
           payload: |
             channel: ${{ secrets.SLACK_RELEASE_CHANNEL_ID }}
             text: |
-              > _New Release_ :postal_horn:
-              >
-              > We've just released a new version of the Lago CLI: `${{ github.ref_name }}`.
-              >
-              > Install or upgrade it with:
-              > • Homebrew: `brew upgrade getlago/tap/lago` (or `brew install getlago/tap/lago`)
-              > • Go: `go install github.com/getlago/lago-cli/cmd/lago@${{ github.ref_name }}`
-              > • Script: `curl -fsSL https://getlago.github.io/lago-cli/install.sh | sh`
-              >
-              > Find all the fixes and improvements in the release notes:
-              >
-              > • <${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }}|lago-cli ${{ github.ref_name }}>
+              _New Release_ :postal_horn:
+
+              We've just released a new version of the Lago CLI: `${{ github.ref_name }}`.
+
+              Install or upgrade it with:
+              • Homebrew: `brew upgrade getlago/tap/lago` (or `brew install getlago/tap/lago`)
+              • Go: `go install github.com/getlago/lago-cli/cmd/lago@${{ github.ref_name }}`
+              • Script: `curl -fsSL https://getlago.github.io/lago-cli/install.sh | sh`
+
+              Find all the fixes and improvements in the release notes:
+
+              • <${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }}|lago-cli ${{ github.ref_name }}>
 
   notify-failure:
     needs: [release, smoke-homebrew, smoke-go-install, smoke-install-script]
