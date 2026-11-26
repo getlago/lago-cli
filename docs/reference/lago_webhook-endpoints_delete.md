@@ -4,7 +4,7 @@ Delete a webhook endpoint
 
 ### Synopsis
 
-This endpoint is used to delete an existing webhook endpoint.
+This endpoint is used to delete an existing webhook endpoint. The deleted endpoint does not include its `signing_keys`.
 
 ```
 lago webhook-endpoints delete <lago_id> [flags]

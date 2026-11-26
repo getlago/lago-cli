@@ -4,7 +4,7 @@ Create a webhook endpoint
 
 ### Synopsis
 
-This endpoint is used to create a webhook endpoint. An organization can have at most 10 webhook endpoints.
+This endpoint is used to create a webhook endpoint. An organization can have at most 10 webhook endpoints. The response includes the endpoint's `signing_keys` when the API key has write access to webhook endpoints.
 
 ```
 lago webhook-endpoints create [flags]
@@ -24,7 +24,9 @@ lago webhook-endpoints create [flags]
   -h, --help                    help for create
       --input string            Complete JSON request body or @file.json
       --name string             The name of the webhook endpoint.
-      --signature-algo string   The algorithm used to sign the webhook payload. Defaults to 'jwt' when no value is passed.; one of: jwt, hmac,
+      --signature-algo string   The algorithm used to sign the webhook payload. Defaults to 'jwt' when no value is passed.
+                                'standard_webhooks' is available to every organization. An unknown value returns a '422' error with 'value_is_invalid' on 'signature_algo'.
+                                Creating a 'standard_webhooks' endpoint creates its signing key, returned in 'signing_keys'.; one of: jwt, hmac, standard_webhooks,
       --webhook-url string      The URL of the webhook endpoint. It must be an HTTP or HTTPS URL with a host, and it must be unique within the organization.
 ```
 

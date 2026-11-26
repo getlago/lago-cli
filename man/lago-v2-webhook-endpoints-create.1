@@ -10,13 +10,17 @@ lago-v2-webhook-endpoints-create - Create webhook endpoint
 
 
 .SH DESCRIPTION
-Creates a webhook endpoint. The organization can have at most ten endpoints, each with a distinct URL.
+Creates a webhook endpoint. The organization can have at most ten endpoints, each with a distinct URL. The endpoint signs its deliveries with Standard Webhooks; request expands[]=signing_keys to read its signing key.
 Requires the product catalog to be enabled and webhook_endpoint write permission on the API key.
 
 
 .SH OPTIONS
 \fB--event-types\fP=""
 	Event types to deliver. Null or ["*"] selects all events. Names are trimmed, lowercased and deduplicated. An empty array selects none.
+
+.PP
+\fB--expands\fP=""
+	Relationships to include in this response. Only one expansion level is supported.
 
 .PP
 \fB-h\fP, \fB--help\fP[=false]
@@ -32,7 +36,7 @@ Requires the product catalog to be enabled and webhook_endpoint write permission
 
 .PP
 \fB--signature-algo\fP=""
-	Webhook signature algorithm.; one of: jwt, hmac
+	Webhook signature algorithm. Only 'standard_webhooks' is accepted, and it is the default on create. Another value returns 422 with 'value_is_invalid' on 'signature_algo' and the accepted algorithms in 'allowed_values'. An existing endpoint keeps its algorithm when the field is omitted or sent with its current value.; one of: standard_webhooks
 
 .PP
 \fB--webhook-url\fP=""
