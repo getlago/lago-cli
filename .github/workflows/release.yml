@@ -181,4 +181,4 @@ jobs:
           token: ${{ secrets.SLACK_BOT_TOKEN }}
           payload: |
             channel: ${{ secrets.SLACK_CHANNEL_ID }}
-            text: ":x: lago-cli release ${{ github.event_name == 'push' && github.ref_name || format('v{0}', inputs.version) }} failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            text: ":x: `lago-cli` release ${{ github.event_name == 'push' && github.ref_name || format('v{0}', inputs.version) }} failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
