@@ -143,7 +143,7 @@ jobs:
   # manual re-run of the smoke tests does not announce the release again.
   notify-release:
     needs: [release, smoke-homebrew, smoke-go-install, smoke-install-script]
-    if: github.repository == 'getlago/lago-cli' && github.event_name == 'push'
+    if: always() && github.repository == 'getlago/lago-cli' # TEMP: Slack test on dispatch, revert
     runs-on: ubuntu-latest
     steps:
       - name: Announce the release on Slack
