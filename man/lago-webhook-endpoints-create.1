@@ -10,7 +10,7 @@ lago-webhook-endpoints-create - Create a webhook endpoint
 
 
 .SH DESCRIPTION
-This endpoint is used to create a webhook endpoint. An organization can have at most 10 webhook endpoints.
+This endpoint is used to create a webhook endpoint. An organization can have at most 10 webhook endpoints. The response includes the endpoint's \fBsigning_keys\fR when the API key has write access to webhook endpoints.
 
 
 .SH OPTIONS
@@ -31,7 +31,9 @@ This endpoint is used to create a webhook endpoint. An organization can have at 
 
 .PP
 \fB--signature-algo\fP=""
-	The algorithm used to sign the webhook payload. Defaults to 'jwt' when no value is passed.; one of: jwt, hmac,
+	The algorithm used to sign the webhook payload. Defaults to 'jwt' when no value is passed.
+\&'standard_webhooks' is available to every organization. An unknown value returns a '422' error with 'value_is_invalid' on 'signature_algo'.
+Creating a 'standard_webhooks' endpoint creates its signing key, returned in 'signing_keys'.; one of: jwt, hmac, standard_webhooks,
 
 .PP
 \fB--webhook-url\fP=""

@@ -4,7 +4,7 @@ Retrieve a webhook endpoint
 
 ### Synopsis
 
-This endpoint is used to retrieve an existing webhook endpoint.
+This endpoint is used to retrieve an existing webhook endpoint. The response includes the endpoint's `signing_keys` when the API key has write access to webhook endpoints.
 
 ```
 lago webhook-endpoints get <lago_id> [flags]

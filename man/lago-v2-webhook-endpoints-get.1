@@ -11,10 +11,14 @@ lago-v2-webhook-endpoints-get - Retrieve webhook endpoint
 
 .SH DESCRIPTION
 Returns the record without nested relationships unless a supported expansion is requested.
-Requires the product catalog to be enabled and webhook_endpoint read permission on the API key.
+Requires the product catalog to be enabled and webhook_endpoint read permission on the API key. Requesting expands[]=signing_keys also requires webhook_endpoint write permission and returns 403 without it.
 
 
 .SH OPTIONS
+\fB--expands\fP=""
+	Relationships to include in this response. Only one expansion level is supported.
+
+.PP
 \fB-h\fP, \fB--help\fP[=false]
 	help for get
 

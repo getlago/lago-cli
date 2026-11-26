@@ -4,7 +4,7 @@ List all webhook endpoints
 
 ### Synopsis
 
-This endpoint is used to list all webhook endpoints.
+This endpoint is used to list all webhook endpoints. The listed endpoints do not include their `signing_keys`.
 
 ```
 lago webhook-endpoints list [flags]

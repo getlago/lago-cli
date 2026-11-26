@@ -4,7 +4,7 @@ Create webhook endpoint
 
 ### Synopsis
 
-Creates a webhook endpoint. The organization can have at most ten endpoints, each with a distinct URL.
+Creates a webhook endpoint. The organization can have at most ten endpoints, each with a distinct URL. The endpoint signs its deliveries with Standard Webhooks; request expands[]=signing_keys to read its signing key.
 Requires the product catalog to be enabled and webhook_endpoint write permission on the API key.
 
 ```
@@ -22,10 +22,11 @@ lago v2 webhook-endpoints create [flags]
 
 ```
       --event-types string      Event types to deliver. Null or ["*"] selects all events. Names are trimmed, lowercased and deduplicated. An empty array selects none.
+      --expands string          Relationships to include in this response. Only one expansion level is supported.
   -h, --help                    help for create
       --input string            Complete JSON request body or @file.json
       --name string             Endpoint name.
-      --signature-algo string   Webhook signature algorithm.; one of: jwt, hmac
+      --signature-algo string   Webhook signature algorithm. Only 'standard_webhooks' is accepted, and it is the default on create. Another value returns 422 with 'value_is_invalid' on 'signature_algo' and the accepted algorithms in 'allowed_values'. An existing endpoint keeps its algorithm when the field is omitted or sent with its current value.; one of: standard_webhooks
       --webhook-url string      Public URL receiving webhook requests. Private addresses are rejected.
 ```
 
