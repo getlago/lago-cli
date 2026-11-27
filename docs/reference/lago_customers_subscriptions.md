@@ -20,7 +20,7 @@ lago customers subscriptions <external_customer_id> [flags]
 
 ```
       --all                           Fetch every page
-      --billing-entity-codes string   Filter subscriptions by billing entity codes.
+      --billing-entity-codes string   Filter subscriptions by billing entity codes. A code that does not match a billing entity of the organization returns a '404' error.
       --currency string               Filter the results by currency, expressed as an ISO 4217 code.
       --external-id string            The subscription external unique identifier (provided by your own application).
   -h, --help                          help for subscriptions

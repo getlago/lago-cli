@@ -3344,8 +3344,9 @@
             "flag": "net-payment-term",
             "type": "integer",
             "required": false,
+            "nullable": true,
             "complex": false,
-            "description": "**Deprecated.** Use `payment_term` instead. The net payment term (in days) for this billing entity. When `payment_term` is sent in the same request, even as `null`, `payment_term` wins and this field is ignored; see `payment_term` for the full rules. It must be between 0 and 365 days."
+            "description": "**Deprecated.** Use `payment_term` instead. The net payment term (in days) for this billing entity. When `payment_term` is sent in the same request, even as `null`, `payment_term` wins and this field is ignored; see `payment_term` for the full rules. It must be between 0 and 365 days. Send `null` to create the billing entity with no term of its own."
           },
           {
             "path": [
@@ -3355,7 +3356,7 @@
             "type": "string",
             "required": false,
             "complex": false,
-            "description": "The structured payment term of the billing entity. It applies to every customer and subscription of the billing entity that has no term of its own. When neither `payment_term` nor `net_payment_term` is sent, the billing entity gets a `net` term of `0` days.\n\nIt supersedes the legacy `net_payment_term`, which is kept in sync as an alias. Whenever `payment_term` is sent, it wins and `net_payment_term` is ignored, even when `payment_term` is `null`, which clears both.\n"
+            "description": "The structured payment term of the billing entity. It applies to every customer and subscription of the billing entity that has no term of its own. When neither `payment_term` nor `net_payment_term` is sent, the billing entity gets a `net` term of `0` days.\n\nIt supersedes the legacy `net_payment_term`, which is kept in sync as an alias. Whenever `payment_term` is sent, it wins and `net_payment_term` is ignored, even when `payment_term` is `null`, which clears both.\n\nWhen only `net_payment_term` is sent, the term becomes a `net` term of that many days, and `null` clears both.\n"
           },
           {
             "path": [
@@ -4262,8 +4263,9 @@
             "flag": "net-payment-term",
             "type": "integer",
             "required": false,
+            "nullable": true,
             "complex": false,
-            "description": "**Deprecated.** Use `payment_term` instead. The net payment term (in days) for this billing entity. When `payment_term` is sent in the same request, even as `null`, `payment_term` wins and this field is ignored; see `payment_term` for the full rules. It must be between 0 and 365 days."
+            "description": "**Deprecated.** Use `payment_term` instead. The net payment term (in days) for this billing entity. When `payment_term` is sent in the same request, even as `null`, `payment_term` wins and this field is ignored; see `payment_term` for the full rules. It must be between 0 and 365 days. Send `null` to remove the billing entity's term."
           },
           {
             "path": [
@@ -5896,7 +5898,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Search credit notes by id, number, customer name, customer external_id or customer email."
+          "description": "Search credit notes by id, number, customer name, customer first name, customer last name, customer external_id or customer email."
         },
         {
           "name": "currency",
@@ -6096,7 +6098,7 @@
             "type": "object",
             "required": false,
             "complex": true,
-            "description": "Metadata to set as key-value pairs. Keys are strings (max 100 characters), values can be strings (max 255 characters) or null."
+            "description": "Metadata to merge with the metadata already stored on the credit note. Keys that are not in the request are kept, new keys are added and existing keys are updated. To replace every key at once, use the credit note metadata endpoint."
           },
           {
             "path": [
@@ -7757,7 +7759,7 @@
           "in": "query",
           "type": "string",
           "required": false,
-          "description": "Search credit notes by id, number, customer name, customer external_id or customer email."
+          "description": "Search credit notes by id, number, customer name, customer first name, customer last name, customer external_id or customer email."
         },
         {
           "name": "currency",
@@ -8740,7 +8742,7 @@
           "in": "query",
           "type": "array",
           "required": false,
-          "description": "Filter subscriptions by billing entity codes."
+          "description": "Filter subscriptions by billing entity codes. A code that does not match a billing entity of the organization returns a `404` error."
         }
       ],
       "idempotent": true,
@@ -10368,7 +10370,7 @@
             "type": "string",
             "required": false,
             "complex": false,
-            "description": "The structured payment term of the invoice, used to compute its payment due date. When not sent or `null`, the term of the customer, then of the billing entity, applies."
+            "description": "The structured payment term of the invoice, used to compute its payment due date. When not sent or `null`, the term of the customer, then of the billing entity, applies, defaulting to `due_on_receipt`."
           },
           {
             "path": [
@@ -10787,7 +10789,7 @@
       "method": "POST",
       "path": "/invoices/preview",
       "summary": "Create an invoice preview",
-      "description": "This endpoint is used for generating invoice preview.\n\nThe payment due date of the preview follows the resolved payment term: the subscription's, then the customer's, then the billing entity's, defaulting to `due_on_receipt`. When several subscriptions are previewed, they must resolve to terms giving the same due date, as subscriptions with different terms are billed on separate invoices; otherwise the request fails with a `422` and the error code `subscription_payment_terms_do_not_match`.\n",
+      "description": "This endpoint is used for generating invoice preview. This is a premium feature. Previewing existing subscriptions also needs the invoice preview premium integration; without it the request fails with a `405` and the error code `premium_integration_missing`.\n\nThe payment due date of the preview follows the resolved payment term: the subscription's, then the customer's, then the billing entity's, defaulting to `due_on_receipt`. When several subscriptions are previewed, they must resolve to terms giving the same due date, as subscriptions with different terms are billed on separate invoices; otherwise the request fails with a `422` and the error code `subscription_payment_terms_do_not_match`.\n",
       "docs_url": "https://getlago.com/docs/api-reference/invoices/invoice-object",
       "body": {
         "fields": [
@@ -13308,7 +13310,7 @@
             "type": "string",
             "required": false,
             "complex": false,
-            "description": "Sets the URL of the first webhook endpoint of your organization. This URL allows your organization to receive important messages, notifications, or data from the Lago system. When your organization has no webhook endpoint yet, this creates one."
+            "description": "Sets the URL of the first webhook endpoint of your organization. This URL allows your organization to receive important messages, notifications, or data from the Lago system. When your organization has no webhook endpoint yet, this creates one, with `jwt` as its signature algorithm. The value must be an HTTP or HTTPS URL with a host, and it must not already be used by another webhook endpoint of your organization."
           },
           {
             "path": [
@@ -13504,7 +13506,7 @@
       "method": "POST",
       "path": "/payment_requests",
       "summary": "Create a payment request",
-      "description": "This endpoint is used to create a payment request to collect the payment of the overdue invoices of a customer.",
+      "description": "This endpoint is used to create a payment request to collect the payment of the overdue invoices of a customer.\nThis is a premium feature.",
       "docs_url": "https://getlago.com/docs/api-reference/payment-requests/payment-request-object",
       "body": {
         "wrapper": "payment_request",
@@ -21261,7 +21263,7 @@
       "method": "POST",
       "path": "/customers/{external_customer_id}/wallets",
       "summary": "Create a wallet",
-      "description": "This endpoint is used to create a wallet with prepaid credits.",
+      "description": "This endpoint is used to create a wallet with prepaid credits. The customer comes from the path, so the body takes no `external_customer_id`.",
       "docs_url": "https://getlago.com/docs/api-reference/wallets/wallet-object",
       "parameters": [
         {
@@ -21483,16 +21485,6 @@
             "nullable": true,
             "complex": false,
             "description": "The date and time that determines when the wallet will expire. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC)."
-          },
-          {
-            "path": [
-              "external_customer_id"
-            ],
-            "flag": "external-customer-id",
-            "type": "string",
-            "required": true,
-            "complex": false,
-            "description": "The customer external unique identifier (provided by your own application)"
           },
           {
             "path": [
@@ -22388,7 +22380,7 @@
           "in": "query",
           "type": "array",
           "required": false,
-          "description": "Filter wallets by billing entity codes."
+          "description": "Filter wallets by billing entity codes. A code that does not match a billing entity of the organization returns a `404` error."
         }
       ],
       "idempotent": true,
@@ -22444,7 +22436,7 @@
           "in": "query",
           "type": "array",
           "required": false,
-          "description": "Filter wallets by billing entity codes."
+          "description": "Filter wallets by billing entity codes. A code that does not match a billing entity of the organization returns a `404` error."
         }
       ],
       "idempotent": true,
@@ -23576,6 +23568,6 @@
       "mutation": false
     }
   ],
-  "spec_sha256": "a851ec0b07271cbdd80c8a04924d3240426ef931d24084bf41821d70c76a6f00",
+  "spec_sha256": "8e2f6678885c699c7b6152c91f82242372967b1aacebfc55f988c13c41356957",
   "spec_version": "1.57.0"
 }

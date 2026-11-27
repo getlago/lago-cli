@@ -36,7 +36,7 @@ lago credit-notes list [flags]
       --purchase-order-number string   Filter by the invoice purchase order number. The match is exact but case-insensitive.
       --reason string                  Filter credit notes by reasons. Possible values are 'product_unsatisfactory', 'order_change', 'order_cancellation', 'fraudulent_charge', 'duplicated_charge' or 'other'.; one of: product_unsatisfactory, order_change, order_cancellation, fraudulent_charge, duplicated_charge, other
       --refund-status string           Filter credit notes by refund status. Possible values are 'pending', 'succeeded' or 'failed'.; one of: pending, succeeded, failed
-      --search-term string             Search credit notes by id, number, customer name, customer external_id or customer email.
+      --search-term string             Search credit notes by id, number, customer name, customer first name, customer last name, customer external_id or customer email.
       --self-billed string             Filter credit notes belonging to a self billed invoice. Possible values are 'true' or 'false'.
       --types string                   Filter credit notes by the kind of amount they carry. 'credit' matches credit notes with a credited amount, 'refund' those with a refunded amount and 'offset' those with an amount deducted from the invoice balance. A credit note can match several types.
       --watch                          Poll and re-render when the response changes

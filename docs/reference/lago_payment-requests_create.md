@@ -5,6 +5,7 @@ Create a payment request
 ### Synopsis
 
 This endpoint is used to create a payment request to collect the payment of the overdue invoices of a customer.
+This is a premium feature.
 
 ```
 lago payment-requests create [flags]

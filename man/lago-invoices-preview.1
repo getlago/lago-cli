@@ -10,7 +10,7 @@ lago-invoices-preview - Create an invoice preview
 
 
 .SH DESCRIPTION
-This endpoint is used for generating invoice preview.
+This endpoint is used for generating invoice preview. This is a premium feature. Previewing existing subscriptions also needs the invoice preview premium integration; without it the request fails with a \fB405\fR and the error code \fBpremium_integration_missing\fR\&.
 
 .PP
 The payment due date of the preview follows the resolved payment term: the subscription's, then the customer's, then the billing entity's, defaulting to \fBdue_on_receipt\fR\&. When several subscriptions are previewed, they must resolve to terms giving the same due date, as subscriptions with different terms are billed on separate invoices; otherwise the request fails with a \fB422\fR and the error code \fBsubscription_payment_terms_do_not_match\fR\&.
