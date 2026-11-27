@@ -4,7 +4,7 @@ Create a wallet
 
 ### Synopsis
 
-This endpoint is used to create a wallet with prepaid credits.
+This endpoint is used to create a wallet with prepaid credits. The customer comes from the path, so the body takes no `external_customer_id`.
 
 ```
 lago wallets create-customer-wallet <external_customer_id> [flags]
@@ -26,7 +26,6 @@ lago wallets create-customer-wallet <external_customer_id> [flags]
       --code string                                                  The code of the wallet.
       --currency string                                              The currency of the wallet. Required when the customer has no currency yet. When omitted, the wallet uses the customer's currency. When provided on a customer without a currency, it also sets the customer's currency.; one of: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BIF, BMD, BND, BOB, BRL, BSD, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CVE, CZK, DJF, DKK, DOP, DZD, EGP, ETB, EUR, FJD, FKP, GBP, GEL, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, INR, ISK, JMD, JPY, KES, KGS, KHR, KMF, KRW, KYD, KZT, LAK, LBP, LKR, LRD, LSL, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, RON, RSD, RUB, RWF, SAR, SBD, SCR, SEK, SGD, SHP, SLL, SOS, SRD, STD, SYP, SZL, THB, TJS, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMW
       --expiration-at string                                         The date and time that determines when the wallet will expire. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC).
-      --external-customer-id string                                  The customer external unique identifier (provided by your own application)
       --granted-credits string                                       The number of free granted credits. Required only if there is no paid credits.
   -h, --help                                                         help for create-customer-wallet
       --ignore-paid-top-up-limits-on-creation string                 If set to true, the wallet will ignore paid top-up limits on creation.

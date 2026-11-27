@@ -10,7 +10,7 @@ lago-wallets-create-customer-wallet - Create a wallet
 
 
 .SH DESCRIPTION
-This endpoint is used to create a wallet with prepaid credits.
+This endpoint is used to create a wallet with prepaid credits. The customer comes from the path, so the body takes no \fBexternal_customer_id\fR\&.
 
 
 .SH OPTIONS
@@ -36,10 +36,6 @@ This endpoint is used to create a wallet with prepaid credits.
 .PP
 \fB--expiration-at\fP=""
 	The date and time that determines when the wallet will expire. It follows the ISO 8601 datetime format and is expressed in Coordinated Universal Time (UTC).
-
-.PP
-\fB--external-customer-id\fP=""
-	The customer external unique identifier (provided by your own application)
 
 .PP
 \fB--granted-credits\fP=""

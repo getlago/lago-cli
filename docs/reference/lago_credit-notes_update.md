@@ -22,7 +22,7 @@ lago credit-notes update <lago_id> [flags]
 ```
   -h, --help                   help for update
       --input string           Complete JSON request body or @file.json
-      --metadata string        Metadata to set as key-value pairs. Keys are strings (max 100 characters), values can be strings (max 255 characters) or null.
+      --metadata string        Metadata to merge with the metadata already stored on the credit note. Keys that are not in the request are kept, new keys are added and existing keys are updated. To replace every key at once, use the credit note metadata endpoint.
       --refund-status string   The status of the refund portion of the credit note. It indicates the current state or condition of the refund associated with the credit note. The possible values for this field are:
 
                                - 'pending': this status indicates that the refund is pending execution. The refund request has been initiated but has not been processed or completed yet.

@@ -23,7 +23,7 @@ This endpoint updates an existing credit note.
 
 .PP
 \fB--metadata\fP=""
-	Metadata to set as key-value pairs. Keys are strings (max 100 characters), values can be strings (max 255 characters) or null.
+	Metadata to merge with the metadata already stored on the credit note. Keys that are not in the request are kept, new keys are added and existing keys are updated. To replace every key at once, use the credit note metadata endpoint.
 
 .PP
 \fB--refund-status\fP=""

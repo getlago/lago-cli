@@ -55,7 +55,7 @@ This endpoint is used for issuing a one-off invoice.
 
 .PP
 \fB--payment-term\fP=""
-	The structured payment term of the invoice, used to compute its payment due date. When not sent or 'null', the term of the customer, then of the billing entity, applies.
+	The structured payment term of the invoice, used to compute its payment due date. When not sent or 'null', the term of the customer, then of the billing entity, applies, defaulting to 'due_on_receipt'.
 
 .PP
 \fB--purchase-order-number\fP=""

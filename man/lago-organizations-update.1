@@ -118,7 +118,7 @@ The default value for 'document_numbering' is set to 'per_customer', meaning tha
 
 .PP
 \fB--webhook-url\fP=""
-	Sets the URL of the first webhook endpoint of your organization. This URL allows your organization to receive important messages, notifications, or data from the Lago system. When your organization has no webhook endpoint yet, this creates one.
+	Sets the URL of the first webhook endpoint of your organization. This URL allows your organization to receive important messages, notifications, or data from the Lago system. When your organization has no webhook endpoint yet, this creates one, with 'jwt' as its signature algorithm. The value must be an HTTP or HTTPS URL with a host, and it must not already be used by another webhook endpoint of your organization.
 
 .PP
 \fB--zipcode\fP=""

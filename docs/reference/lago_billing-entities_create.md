@@ -46,10 +46,12 @@ lago billing-entities create [flags]
       --legal-number string                                                         The legal registration number of the billing entity
       --logo string                                                                 The base64 encoded logo image for the billing entity. Accepted formats are PNG, JPG and JPEG, up to 800 kB.
       --name string                                                                 The name of the billing entity
-      --net-payment-term string                                                     **Deprecated.** Use 'payment_term' instead. The net payment term (in days) for this billing entity. When 'payment_term' is sent in the same request, even as 'null', 'payment_term' wins and this field is ignored; see 'payment_term' for the full rules. It must be between 0 and 365 days.
+      --net-payment-term string                                                     **Deprecated.** Use 'payment_term' instead. The net payment term (in days) for this billing entity. When 'payment_term' is sent in the same request, even as 'null', 'payment_term' wins and this field is ignored; see 'payment_term' for the full rules. It must be between 0 and 365 days. Send 'null' to create the billing entity with no term of its own.
       --payment-term string                                                         The structured payment term of the billing entity. It applies to every customer and subscription of the billing entity that has no term of its own. When neither 'payment_term' nor 'net_payment_term' is sent, the billing entity gets a 'net' term of '0' days.
 
                                                                                     It supersedes the legacy 'net_payment_term', which is kept in sync as an alias. Whenever 'payment_term' is sent, it wins and 'net_payment_term' is ignored, even when 'payment_term' is 'null', which clears both.
+
+                                                                                    When only 'net_payment_term' is sent, the term becomes a 'net' term of that many days, and 'null' clears both.
       --phone string                                                                The phone number of the billing entity
       --state string                                                                The state of the billing address
       --tax-identification-number string                                            The tax identification number of the billing entity

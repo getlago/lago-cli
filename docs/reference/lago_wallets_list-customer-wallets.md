@@ -20,7 +20,7 @@ lago wallets list-customer-wallets <external_customer_id> [flags]
 
 ```
       --all                           Fetch every page
-      --billing-entity-codes string   Filter wallets by billing entity codes.
+      --billing-entity-codes string   Filter wallets by billing entity codes. A code that does not match a billing entity of the organization returns a '404' error.
       --currency string               Filter the results by currency, expressed as an ISO 4217 code.
   -h, --help                          help for list-customer-wallets
       --limit string                  Results per page (1-1000)
