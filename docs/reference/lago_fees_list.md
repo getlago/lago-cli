@@ -4,7 +4,7 @@ List all fees
 
 ### Synopsis
 
-This endpoint is used for retrieving all fees that have been issued.
+This endpoint is used for retrieving all fees that have been issued. Fees are returned from the oldest to the most recent.
 
 ```
 lago fees list [flags]

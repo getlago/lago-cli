@@ -9774,7 +9774,7 @@
       "method": "GET",
       "path": "/fees",
       "summary": "List all fees",
-      "description": "This endpoint is used for retrieving all fees that have been issued.",
+      "description": "This endpoint is used for retrieving all fees that have been issued. Fees are returned from the oldest to the most recent.",
       "docs_url": "https://getlago.com/docs/api-reference/invoices/invoice-object#fee-object",
       "parameters": [
         {
@@ -23568,6 +23568,6 @@
       "mutation": false
     }
   ],
-  "spec_sha256": "8e2f6678885c699c7b6152c91f82242372967b1aacebfc55f988c13c41356957",
+  "spec_sha256": "16645c2475845ce3072bd0173aa306cb0587b68dec6d24cafb2fb6306a6d1b87",
   "spec_version": "1.57.0"
 }
